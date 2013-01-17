@@ -8,6 +8,7 @@ cChannelColumn::cChannelColumn(int num, cChannel *channel, cMyTime *myTime) {
 }
 
 cChannelColumn::~cChannelColumn(void) {
+    osdManager.releasePixmap(pixmapLogo, cString::sprintf("channelcolumn logo %s", channel->Name()));
 	grids.Clear();
 }
 
@@ -16,14 +17,21 @@ void cChannelColumn::clearGrids() {
 }
 
 void cChannelColumn::createHeader() {
-	color = theme.Color(clrHeader);
-	colorBlending = theme.Color(clrHeaderBlending);
-	caller = cString::sprintf("channelcolumn %s", channel->Name());
-	pixmap = osdManager.requestPixmap(2, cRect(tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 0, tvguideConfig.colWidth, tvguideConfig.headerHeight),
-										cRect::Null, *caller);
+    color = theme.Color(clrHeader);
+    colorBlending = theme.Color(clrHeaderBlending);
+    caller = cString::sprintf("channelcolumn %s", channel->Name());
+    pixmap = osdManager.requestPixmap(2, cRect(tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 0, tvguideConfig.colWidth, tvguideConfig.headerHeight),
+                                         cRect::Null, *caller);
 	if (!pixmap) {
 		return;
 	}
+    pixmapLogo = osdManager.requestPixmap(3, cRect(tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 0, tvguideConfig.colWidth, tvguideConfig.headerHeight),
+                                             cRect::Null, *caller);
+    if (!pixmapLogo) {
+		return;
+	}
+    pixmapLogo->Fill(clrTransparent);
+
 	drawBackground();
 	cTextWrapper tw;
 	cString headerText = cString::sprintf("%d - %s", channel->Number(), channel->Name());
@@ -37,7 +45,7 @@ void cChannelColumn::createHeader() {
 		if (imgLoader.LoadLogo(channel->Name())) {
 				cImage logo = imgLoader.GetImage();
 				int logoX = (tvguideConfig.colWidth - tvguideConfig.logoWidth)/2;
-				pixmap->DrawImage(cPoint(logoX, 5), logo);
+				pixmapLogo->DrawImage(cPoint(logoX, 5), logo);
 		}
 		yStart = tvguideConfig.logoHeight + 8;
 	}
@@ -53,6 +61,7 @@ void cChannelColumn::createHeader() {
 
 void cChannelColumn::drawHeader() {
 	pixmap->SetViewPort(cRect(tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 0, tvguideConfig.colWidth, tvguideConfig.headerHeight));
+	pixmapLogo->SetViewPort(cRect(tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 0, tvguideConfig.colWidth, tvguideConfig.headerHeight));
 }
 
 bool cChannelColumn::readGrids() {

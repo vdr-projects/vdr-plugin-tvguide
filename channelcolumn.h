@@ -7,6 +7,7 @@ class cEpgGrid;
 class cChannelColumn : public cListObject, public cStyledPixmap {
 friend class cEpgGrid;
 private:
+    cPixmap *pixmapLogo;
 	cMyTime *myTime;
 	int num;
 	cChannel *channel;
