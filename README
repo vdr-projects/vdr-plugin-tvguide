@@ -1,0 +1,132 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Louis Braun <louis DOT braun AT gmx DOT de>
+
+Project's homepage:          URL
+
+Latest version available at: URL
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+See the file COPYING for more information.
+
+Requirements
+------------
+
+- VDR version >= 1.7.17 (TrueColor OSD is mandatorily needed)
+
+- Installed ImageMagick for showing png/jpg Channel Logos and EPG Images
+
+
+Description
+-----------
+
+"TvGuide" is a highly customizable 2D EPG viewer plugin.
+
+Installation
+------------
+
+After "normal" Plugin installation copy the themes from 
+
+/put/your/path/here/VDR/PLUGINS/src/tvguide/themes/
+
+to
+
+VDRCONF/themes/
+
+Options
+-------
+
+-l path, --logodir=path
+    Path to the logos (Default: <vdrconfdir>/plugins/tvguide/channellogos/).
+
+-i path, --epgimages=path
+    Path to the epgimages (Default: <vdrconfdir>/plugins/tvguide/epgimages/).
+
+
+Usage
+-----
+
+Remote Control Keys:
+
+Up/Down/Left/Right:    Navigation in the EPG grid
+Ok:                    Detailed EPG View of the selected grid
+                       2nd Ok closes the detailed view
+Red:                   Set recording timer for the currently selected grid
+Green / Yellow:	       Jump (default) five channels back / forward
+Blue:                  Switch to currently selected channel
+1 / 3:                 Big jump (default 3h) back / forward in time
+4 / 6:                 huge jump (default 24h) back / forward in time
+7 / 9:                 jump to previous / next prime time (8pm)
+Exit:                  closes plugin
+
+
+Setup Options
+-------------
+
+* General:
+
+- Number of Channels / Columns:				
+  Number of columns per screen (max. 8)
+  Keep in mind that the True Color OSD displays 64 Pixmaps in maximum, and each EPG
+  entry is a dedicated Pixmap. So if this value is too large, maybe not all EPG
+  information is shown on the screen.
+
+- Channel Jump (Keys Green / Yellow):
+  Number of channels to jump back / forward, counted from the currently selected
+  channel (channel to which the selected EPG entry belongs)
+
+- Time to display vertically in minutes
+  With this value the number of minutes per screen is determinated. The value is
+  an approximately value, because rounded values are used during calculation.
+  int((OSD Height - Header Height - Footer Height) / value) 
+  --> Number of Pixel for one minute
+
+- Big Step (Keys 1 / 3) in hours
+  Hours to jump vertically with keys 1 / 3    
+
+- Huge Step (Keys 4 / 6) in hours
+  Hours to jump vertically with keys 4 / 6
+
+- Time Format (12h/24h)
+  Switching between 12h and 24h time format
+  
+* Screen Layout:
+
+- Theme
+  Used Theme, theme files have to be placed accordingly
+  
+- Width of left Time Column
+  Width of almost left column in Pixel
+  
+- Height of Header (Channel Logos)
+  Height of header row in Pixel
+  
+- Height of Footer (Buttons)
+  Height of footer with color buttons in Pixel
+  
+- Show Channel Logos	
+  show / hide channel logos, if logos are shown:
+  - Logo Extension
+    jpg / png
+  - Logo width
+    in Pixel
+  - Logo height
+    in Pixel
+	
+- Show EPG Images
+  show / hide EPG images, if images are shown:
+  - EPG Image width
+    in Pixel
+  - EPG Image height
+    in Pixel
+	
+* Fonts and Fontsizes:
+
+- Font:
+  Used Font, all Fonts installed on your system are shown
+- various font sizes:
+  Size in Pixel used for described purpose
+
