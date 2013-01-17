@@ -1,7 +1,7 @@
 Description = nOpacity
 clrBackground = FF000000
 clrBackgroundOSD = FF000000
-clrGrid1 = EE444444
+clrGrid1 = EE555555
 clrGrid1Blending = 90000000
 clrGrid2 = EE888888
 clrGrid2Blending = 90000000
@@ -10,7 +10,7 @@ clrHighlightBlending = DD000000
 clrFont = FFFFFFFF
 clrFontHeader = FFFFFFFF
 clrFontButtons = FFFFFFFF
-clrHeader = EE444444
+clrHeader = EE888888
 clrHeaderBlending = 90000000
 clrBorder = DD003DF5 
 clrTimeline1 = BBFFFFFF
