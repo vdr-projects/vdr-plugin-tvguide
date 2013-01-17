@@ -13,7 +13,7 @@ cTvguideConfig::cTvguideConfig() {
 	displayTime = 160;
 	minuteHeight = 0;
 	timeColWidth = 120;
-	headerHeight = 145;
+	headerHeight = 150;
 	footerHeight = 80;
 	stepMinutes = 30;
 	bigStepHours = 3;
