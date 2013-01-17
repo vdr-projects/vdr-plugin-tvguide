@@ -22,11 +22,13 @@ void cStyledPixmap::setPixmap(cPixmap *pixmap) {
 }
 
 void cStyledPixmap::drawBackground() {
-	if (!tvguideConfig.useBlending) {
-		pixmap->Fill(color);
-	} else {
+    if (tvguideConfig.useBlending == 1){
 		drawBlendedBackground();
-	}
+	} else if (tvguideConfig.useBlending == 2){
+		drawSparsedBackground();
+	} else {
+        pixmap->Fill(color);
+    }
 }
 
 void cStyledPixmap::drawBlendedBackground() {
@@ -50,6 +52,15 @@ void cStyledPixmap::drawBlendedBackground() {
 		pixmap->DrawRectangle(cRect(0,i*stepY,width,stepY), clr);
 		alpha += alphaStep;
 	}
+}
+
+void cStyledPixmap::drawSparsedBackground() {
+	int width = pixmap->ViewPort().Width();
+	int height = pixmap->ViewPort().Height();
+    cImageLoader imgLoader;
+    if (imgLoader.DrawBackground(colorBlending, color, width, height))
+        pixmap->DrawImage(cPoint(0,0), imgLoader.GetImage());
+
 }
 
 void cStyledPixmap::drawBorder() {

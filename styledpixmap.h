@@ -19,6 +19,7 @@ public:
   virtual ~cStyledPixmap(void);
   void drawBackground();
   void drawBlendedBackground();
+  void drawSparsedBackground();
   void drawBorder();
   void drawBoldBorder();
   void drawDefaultBorder(int width, int height);

@@ -44,7 +44,9 @@ bool cImageLoader::LoadEPGImage(int eventID) {
     return true;
 }
 
-void cImageLoader::DrawBackground(tColor back, tColor blend, int width, int height) {
+bool cImageLoader::DrawBackground(tColor back, tColor blend, int width, int height) {
+    if ((width == 0) || (height == 0))
+        return false;
     Color Back = Argb2Color(back);
     Color Blend = Argb2Color(blend);
     Image tmp(Geometry(width, height), Blend);
@@ -53,17 +55,7 @@ void cImageLoader::DrawBackground(tColor back, tColor blend, int width, int heig
     Image tmp2(Geometry(width, height), Back);
     tmp.composite(tmp2, 0, 0, OverlayCompositeOp);
     buffer = tmp;
-}
-
-void cImageLoader::DrawBackground2(tColor back, tColor blend, int width, int height) {
-    Color Back = Argb2Color(back);
-    Color Blend = Argb2Color(blend);
-    Image tmp(Geometry(width, height), Blend);
-    double arguments[9] = {0.0,(double)height,0.0,-0.5*(double)width,0.0,0.0,0.75*(double)width,0.0,1.0};
-    tmp.sparseColor(MatteChannel, BarycentricColorInterpolate, 9, arguments);
-    Image tmp2(Geometry(width, height), Back);
-    tmp.composite(tmp2, 0, 0, OverlayCompositeOp);
-    buffer = tmp;
+    return true;
 }
 
 cImage cImageLoader::GetImage() {

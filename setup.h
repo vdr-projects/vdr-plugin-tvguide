@@ -38,6 +38,7 @@ class cMenuSetupScreenLayout : public cMenuSetupSubMenu {
 		cThemes themes;
 		const char * hideChannelLogosItems[2];
 		const char * logoExtensionItems[2];
+        const char * blendingMethods[3];
 		void Set(void);
 	public:
 		cMenuSetupScreenLayout(cTvguideConfig *data);

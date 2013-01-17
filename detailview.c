@@ -16,6 +16,7 @@ cDetailView::cDetailView(cEpgGrid *grid) {
 
 cDetailView::~cDetailView(void){
 	delete header;
+	osdManager.releasePixmap(headerLogo);
 	osdManager.releasePixmap(content);
 	osdManager.releasePixmap(scrollBar);
 	osdManager.releasePixmap(footer);
@@ -36,6 +37,9 @@ void cDetailView::createPixmaps() {
 	
 	header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeader"), "detailViewHeader");
 	header->SetAlpha(0);
+	headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeaderLogo");
+    headerLogo->Fill(clrTransparent);
+	headerLogo->SetAlpha(0);
 	header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
 	content = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight),
 									cRect(0,0, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, max(heightContent, tvguideConfig.osdHeight-2*borderWidth-headerHeight)));	
@@ -51,7 +55,7 @@ void cDetailView::createPixmaps() {
 }
 
 void cDetailView::drawHeader() {
-	header->drawBackground();
+    header->drawBackground();
 	header->drawBoldBorder();
 	
 	int lineHeight = tvguideConfig.FontDetailHeader->Height();
@@ -63,7 +67,7 @@ void cDetailView::drawHeader() {
 	} else {
 		if (imgLoader.LoadLogo(grid->column->getChannel()->Name())) {
 			cImage logo = imgLoader.GetImage();
-			header->DrawImage(cPoint(20, 20), logo);
+			headerLogo->DrawImage(cPoint(20, 20), logo);
 		}
 		offset += tvguideConfig.logoHeight;
 	}
@@ -172,6 +176,7 @@ void cDetailView::Action(void) {
 		double t = min(double(Now - Start) / FadeTime, 1.0);
 	    int Alpha = t * ALPHA_OPAQUE;
 	    header->SetAlpha(Alpha);
+        headerLogo->SetAlpha(Alpha);
 		content->SetAlpha(Alpha);
 		scrollBar->SetAlpha(Alpha);
 		footer->SetAlpha(Alpha);

@@ -80,9 +80,10 @@ void cTimeLine::drawTimeline() {
 }
 
 cImage *cTimeLine::createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend) {
-	cImage *image = new cImage(cSize(width, height));
-	image->Fill(clrBgr);
-	if (tvguideConfig.useBlending) {
+	cImage *image = NULL;
+    if (tvguideConfig.useBlending == 1) {
+        image = new cImage(cSize(width, height));
+        image->Fill(clrBgr);
 		int stepY = 0.5*height / 64;
 		int alpha = 0x00;
 		tColor clr;
@@ -95,7 +96,15 @@ cImage *cTimeLine::createBackgroundImage(int width, int height, tColor clrBgr, t
 			}
 			alpha += 0x04;
 		}
-	}
+	} else  if (tvguideConfig.useBlending == 2) {
+        cImageLoader imgLoader;
+        if (imgLoader.DrawBackground(clrBgr, clrBlend, width, height)) {
+            image = new cImage(imgLoader.GetImage());
+        }
+    } else {
+        image = new cImage(cSize(width, height));
+        image->Fill(clrBgr);
+    }
 	return image;
 }
 

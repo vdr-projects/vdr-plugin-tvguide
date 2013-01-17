@@ -135,6 +135,9 @@ cMenuSetupScreenLayout::cMenuSetupScreenLayout(cTvguideConfig* data)  : cMenuSet
 	hideChannelLogosItems[1] = trVDR("no");
 	logoExtensionItems[0] = "png";
 	logoExtensionItems[1] = "jpg";
+    blendingMethods[0] = "none";
+    blendingMethods[1] = "classic";
+    blendingMethods[2] = "nOpacity style";
 	Set();
 }
 
@@ -143,7 +146,7 @@ void cMenuSetupScreenLayout::Set(void) {
 	Clear();
 	if (themes.NumThemes())
 		Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
-	Add(new cMenuEditBoolItem(tr("Use color gradients"), &tmpTvguideConfig->useBlending));
+	Add(new cMenuEditStraItem(tr("Use color gradients"), &tmpTvguideConfig->useBlending, 3, blendingMethods));
 	Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
 	Add(new cMenuEditIntItem(tr("Width of Timeline"), &tmpTvguideConfig->timeColWidth, 50, 300));
 	Add(new cMenuEditIntItem(tr("Height of Header"), &tmpTvguideConfig->headerHeight, 50, 300));

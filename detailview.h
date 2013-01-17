@@ -9,6 +9,7 @@ class cDetailView : public cThread  {
 private:
 	cEpgGrid *grid;
 	cStyledPixmap *header;
+	cPixmap *headerLogo;
 	cPixmap *content;
 	cPixmap *scrollBar;
 	cPixmap *footer;
