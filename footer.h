@@ -5,12 +5,12 @@
 
 class cFooter  {
 private:
-	cStyledPixmap *buttonRed;
-	cStyledPixmap *buttonGreen;
-	cStyledPixmap *buttonYellow;
-	cStyledPixmap *buttonBlue;
-	int textY;
+	cPixmap *footer;
 	int buttonWidth;
+    int buttonHeight;
+    int buttonY;
+    int buttonBorder;
+    void DrawButton(const char *text, tColor color, tColor borderColor, int num);
 public:
 	cFooter();
 	virtual ~cFooter(void);

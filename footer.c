@@ -1,59 +1,53 @@
 #include "footer.h"
 
 cFooter::cFooter() {
-	int buttonHeight= tvguideConfig.footerHeight - 20;
-	textY = (buttonHeight - tvguideConfig.FontButton->Height())/2;
-	int distanceX = 20;
-	buttonWidth = (tvguideConfig.osdWidth - tvguideConfig.timeColWidth-5*distanceX)/4;
-	int startX = tvguideConfig.timeColWidth + distanceX;
-	int Y = tvguideConfig.osdHeight - tvguideConfig.footerHeight + (tvguideConfig.footerHeight - buttonHeight)/2;
+    buttonBorder = 20;
+	buttonWidth = (tvguideConfig.osdWidth - tvguideConfig.timeColWidth - 5*buttonBorder)/4;
+	buttonHeight= tvguideConfig.footerHeight - 2*buttonBorder;
+    buttonY = (tvguideConfig.footerHeight - buttonHeight)/2;
 	
-	buttonRed = new cStyledPixmap(osdManager.requestPixmap(3, cRect(startX, Y, buttonWidth, buttonHeight), cRect::Null, "btnRed"), "btnRed");
-	buttonGreen = new cStyledPixmap(osdManager.requestPixmap(3, cRect(startX + buttonWidth + distanceX, Y, buttonWidth, buttonHeight), cRect::Null, "btnGreen"), "btnGreen");
-	buttonYellow = new cStyledPixmap(osdManager.requestPixmap(3, cRect(startX + 2*(buttonWidth + distanceX), Y, buttonWidth, buttonHeight), cRect::Null, "btnYellow"), "btnYellow");
-	buttonBlue = new cStyledPixmap(osdManager.requestPixmap(3, cRect(startX + 3*(buttonWidth + distanceX), Y, buttonWidth, buttonHeight), cRect::Null, "btnBlue"), "btnBlue");
+    footer = osdManager.requestPixmap(2, cRect( tvguideConfig.timeColWidth, 
+                                                tvguideConfig.osdHeight - tvguideConfig.footerHeight, 
+                                                tvguideConfig.osdWidth - tvguideConfig.timeColWidth, 
+                                                tvguideConfig.footerHeight),
+                                         cRect::Null, "footer");
+    footer->Fill(clrTransparent);
 }
 
 cFooter::~cFooter(void) {
-	delete buttonRed;
-	delete buttonGreen;
-	delete buttonYellow;
-	delete buttonBlue;
+    osdManager.releasePixmap(footer, "footer");;
 }
 
 void cFooter::drawRedButton() {
-	buttonRed->setColor(theme.Color(clrButtonRed), theme.Color(clrButtonRedBlending));
-	buttonRed->drawBackground();
-	buttonRed->drawBorder();
-	cString text(tr("Set Timer"));
-	int width = tvguideConfig.FontButton->Width(*(text));
-	buttonRed->DrawText(cPoint((buttonWidth-width)/2, textY), *(text), theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
-
+    cString text(tr("Set Timer"));
+    DrawButton(*text, theme.Color(clrButtonRed), theme.Color(clrButtonRedBorder), 0);
 }
 
 void cFooter::drawGreenButton() {
-	buttonGreen->setColor(theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBlending));
-	buttonGreen->drawBackground();
-	buttonGreen->drawBorder();
-	cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels back"));
-	int width = tvguideConfig.FontButton->Width(*text);
-	buttonGreen->DrawText(cPoint((buttonWidth-width)/2, textY), *text, theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
+    cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels back"));
+    DrawButton(*text, theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBorder), 1);
 }
 
 void cFooter::drawYellowButton() {
-	buttonYellow->setColor(theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBlending));
-	buttonYellow->drawBackground();
-	buttonYellow->drawBorder();
-	cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels forward"));
-	int width = tvguideConfig.FontButton->Width(*text);
-	buttonYellow->DrawText(cPoint((buttonWidth-width)/2, textY), *text, theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
+    cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels forward"));
+    DrawButton(*text, theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), 2);
 }
 
 void cFooter::drawBlueButton() {
-	buttonBlue->setColor(theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBlending));
-	buttonBlue->drawBackground();
-	buttonBlue->drawBorder();
-	cString text(tr("Switch to Channel"));
-	int width = tvguideConfig.FontButton->Width(*(text));
-	buttonBlue->DrawText(cPoint((buttonWidth-width)/2, textY), *(text), theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
+    cString text(tr("Switch to Channel"));
+    DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), 3);
+}
+
+void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int num) {
+    
+    int left = num * buttonWidth + (num + 1) * buttonBorder;
+    footer->DrawRectangle(cRect(left, buttonY, buttonWidth, buttonHeight), borderColor);
+    
+    cImageLoader imgLoader;
+    imgLoader.DrawBackground(theme.Color(clrButtonBlend), color, buttonWidth-4, buttonHeight-4);
+    footer->DrawImage(cPoint(left+2, buttonY+2), imgLoader.GetImage());    
+    
+    int textWidth = tvguideConfig.FontButton->Width(text);
+    int textHeight = tvguideConfig.FontButton->Height();
+    footer->DrawText(cPoint(left + (buttonWidth-textWidth)/2, buttonY + (buttonHeight-textHeight)/2), text, theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
 }

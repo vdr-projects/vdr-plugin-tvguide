@@ -13,7 +13,7 @@ cTvguideConfig::cTvguideConfig() {
 	displayTime = 160;
 	minuteHeight = 0;
 	timeColWidth = 120;
-	headerHeight = 120;
+	headerHeight = 145;
 	footerHeight = 80;
 	stepMinutes = 30;
 	bigStepHours = 3;
@@ -21,7 +21,7 @@ cTvguideConfig::cTvguideConfig() {
 	jumpChannels = 5;
 	hideChannelLogos = 0;
 	logoWidth = 130;
-	logoHeight = 73;
+	logoHeight = 100;
 	logoExtension = 0;
 	hideEpgImages = 0;
 	epgImageWidth = 315;

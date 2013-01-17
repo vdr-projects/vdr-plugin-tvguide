@@ -4,3 +4,7 @@ VDR Plugin 'tvguide' Revision History
 2012-08-12: Version 0.0.1
 
 - Initial revision.
+
+2013-01-17: Version 0.0.2
+
+- Changed color buttons to nOpacity style

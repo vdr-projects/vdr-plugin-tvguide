@@ -19,14 +19,15 @@ THEME_CLR(theme, clrTimeline1, clrWhite);
 THEME_CLR(theme, clrTimeline1Blending, 0xFF828282);
 THEME_CLR(theme, clrTimeline2, clrBlack);
 THEME_CLR(theme, clrTimeline2Blending, 0xFF3F3F3F);
-THEME_CLR(theme, clrButtonRed, 0xFFD42627);
-THEME_CLR(theme, clrButtonRedBlending, 0xFFE0E0E0);
-THEME_CLR(theme, clrButtonGreen, 0xFF004F00);
-THEME_CLR(theme, clrButtonGreenBlending, 0xFFE0E0E0);
-THEME_CLR(theme, clrButtonYellow, 0xFFffa300);
-THEME_CLR(theme, clrButtonYellowBlending, 0xFFE0E0E0);
-THEME_CLR(theme, clrButtonBlue, 0xFF0000fe);
-THEME_CLR(theme, clrButtonBlueBlending, 0xFFE0E0E0);
+THEME_CLR(theme, clrButtonRed, 0x99BB0000);
+THEME_CLR(theme, clrButtonRedBorder, 0xFFBB0000);
+THEME_CLR(theme, clrButtonGreen, 0x9900BB00);
+THEME_CLR(theme, clrButtonGreenBorder, 0xFF00BB00);
+THEME_CLR(theme, clrButtonYellow, 0x99BBBB00);
+THEME_CLR(theme, clrButtonYellowBorder, 0xFFBBBB00);
+THEME_CLR(theme, clrButtonBlue, 0x990000BB);
+THEME_CLR(theme, clrButtonBlueBorder, 0xFF0000BB);
+THEME_CLR(theme, clrButtonBlend, 0xDD000000);
 
 #include "config.c"
 cTvguideConfig tvguideConfig;
