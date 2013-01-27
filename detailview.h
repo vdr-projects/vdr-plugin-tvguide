@@ -10,6 +10,7 @@ private:
 	cEpgGrid *grid;
 	cStyledPixmap *header;
 	cPixmap *headerLogo;
+	cPixmap *headerBack;
 	cPixmap *content;
 	cPixmap *scrollBar;
 	cPixmap *footer;

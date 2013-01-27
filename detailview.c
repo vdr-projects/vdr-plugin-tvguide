@@ -17,6 +17,7 @@ cDetailView::cDetailView(cEpgGrid *grid) {
 cDetailView::~cDetailView(void){
 	delete header;
 	osdManager.releasePixmap(headerLogo);
+    osdManager.releasePixmap(headerBack);
 	osdManager.releasePixmap(content);
 	osdManager.releasePixmap(scrollBar);
 	osdManager.releasePixmap(footer);
@@ -40,7 +41,10 @@ void cDetailView::createPixmaps() {
 	headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeaderLogo");
     headerLogo->Fill(clrTransparent);
 	headerLogo->SetAlpha(0);
-	header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
+	headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeaderBack");
+	headerBack->SetAlpha(0);
+    headerBack->Fill(clrBlack);
+    header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
 	content = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight),
 									cRect(0,0, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, max(heightContent, tvguideConfig.osdHeight-2*borderWidth-headerHeight)));	
 	content->SetAlpha(0);
@@ -51,7 +55,7 @@ void cDetailView::createPixmaps() {
 	
 	footer = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight + content->ViewPort().Height(), tvguideConfig.osdWidth - 2*borderWidth, 3));
 	footer->SetAlpha(0);
-	footer->Fill(clrWhite);
+	footer->Fill(theme.Color(clrBorder));
 }
 
 void cDetailView::drawHeader() {
@@ -176,6 +180,7 @@ void cDetailView::Action(void) {
 		double t = min(double(Now - Start) / FadeTime, 1.0);
 	    int Alpha = t * ALPHA_OPAQUE;
 	    header->SetAlpha(Alpha);
+        headerBack->SetAlpha(Alpha);
         headerLogo->SetAlpha(Alpha);
 		content->SetAlpha(Alpha);
 		scrollBar->SetAlpha(Alpha);
