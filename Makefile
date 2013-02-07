@@ -43,10 +43,13 @@ SOFILE = libvdr-$(PLUGIN).so
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES +=
-INCLUDES += -I/usr/include/ImageMagick
+INCLUDES += $(shell pkg-config --cflags-only-I Magick++)
 
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+DEFINES += -DMAGICKCORE_HDRI_ENABLE=0
+DEFINES += -DMAGICKCORE_QUANTUM_DEPTH=16
+
+LIBS += $(shell pkg-config --libs Magick++)
 
 ### The object files (add further files here):
 
@@ -98,7 +101,7 @@ install-i18n: $(I18Nmsgs)
 
 ### Targets:
 $(SOFILE): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) -lMagick++ -o $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) $(LIBS) -o $@
 
 install-lib: $(SOFILE)
 	install -D $^ $(DESTDIR)$(LIBDIR)/$^.$(APIVERSION)
