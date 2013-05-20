@@ -10,12 +10,12 @@ cFooter::cFooter() {
                                                 tvguideConfig.osdHeight - tvguideConfig.footerHeight, 
                                                 tvguideConfig.osdWidth - tvguideConfig.timeColWidth, 
                                                 tvguideConfig.footerHeight),
-                                         cRect::Null, "footer");
+                                         cRect::Null);
     footer->Fill(clrTransparent);
 }
 
 cFooter::~cFooter(void) {
-    osdManager.releasePixmap(footer, "footer");;
+    osdManager.releasePixmap(footer);
 }
 
 void cFooter::drawRedButton() {

@@ -9,13 +9,12 @@ private:
 	void drawHorizontalLine(int y, int xStart, int xStop, tColor col);
 protected:
 	cPixmap *pixmap;
-	cString caller;
 	tColor color;
 	tColor colorBlending;
 	void setPixmap(cPixmap *pixmap);
 public:
   cStyledPixmap(void);
-  cStyledPixmap(cPixmap *pixmap, cString caller);
+  cStyledPixmap(cPixmap *pixmap);
   virtual ~cStyledPixmap(void);
   void drawBackground();
   void drawBlendedBackground();

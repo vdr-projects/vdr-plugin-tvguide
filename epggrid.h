@@ -3,41 +3,25 @@
 
 // --- cEpgGrid  -------------------------------------------------------------
 
-class cEpgGrid : public cListObject, public cStyledPixmap {
+class cEpgGrid : public cGrid {
 private:
 	const cEvent *event;
-	cTextWrapper *text;
 	cTextWrapper *extText;
-	int viewportHeight;
-	int borderWidth;
+    bool hasTimer;
 	void drawText();
-	void setBackground();
-	bool isColor1;
-	bool active;
-	bool dirty;
-	bool intersects(cEpgGrid *neighbor);
-	bool hasTimer;
-	void DrawRecIcon();
+	void drawRecIcon();
+    time_t Duration(void) { return event->Duration(); };
 public:
 	cEpgGrid(cChannelColumn *c, const cEvent *event);
 	virtual ~cEpgGrid(void);
-	cChannelColumn *column;
 	void SetViewportHeight();
-	void PositionPixmap();
-	void setText();
-	void Draw();
-	void SetDirty() {dirty = true;};
-	void SetActive() {dirty = true; active = true;};
-	void SetInActive() {dirty = true; active = false;};
-	void SetColor(bool color) {isColor1 = color;};
-	bool IsColor1() {return isColor1;};
-	int GetViewportHeight() {return viewportHeight;};
+    void PositionPixmap();
+    void setText(void);
 	const cEvent *GetEvent() {return event;};
-	bool isActiveInitial(time_t t);
 	time_t StartTime() { return event->StartTime(); };
 	time_t EndTime() { return event->EndTime(); };
-	int calcOverlap(cEpgGrid *neighbor);
 	void setTimer() {hasTimer = true;};
+    cString getTimeString(void);
 	void debug();
 };
 

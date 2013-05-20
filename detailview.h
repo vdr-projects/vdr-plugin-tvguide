@@ -7,7 +7,7 @@ class cEpgGrid;
 
 class cDetailView : public cThread  {
 private:
-	cEpgGrid *grid;
+	cGrid *grid;
 	cStyledPixmap *header;
 	cPixmap *headerLogo;
 	cPixmap *headerBack;
@@ -31,7 +31,7 @@ private:
 	void drawScrollbar();
 	cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);
 public:
-	cDetailView(cEpgGrid *grid);
+	cDetailView(cGrid *grid);
 	virtual ~cDetailView(void);
 	void createPixmaps();
 	void scrollUp();

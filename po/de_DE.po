@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-01-17 14:01+0100\n"
+"POT-Creation-Date: 2013-05-20 11:27+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -11,6 +11,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "No EPG Information available"
+msgstr "Keine EPG Daten verfügbar"
 
 msgid "Set Timer"
 msgstr "Aufnehmen"
@@ -53,6 +56,15 @@ msgstr "Zeitformat (12h/24h)"
 
 msgid "Theme"
 msgstr "Theme"
+
+msgid "Display status header"
+msgstr "Status Header anzeigen"
+
+msgid "Scale video to upper right corner"
+msgstr "Video in obere rechte Ecke skalieren"
+
+msgid "Height of status header (Perc. of osd height)"
+msgstr "Höhe des Status Headers (% der OSD Höhe)"
 
 msgid "Use color gradients"
 msgstr "Farbverläufe verwenden"
@@ -98,6 +110,12 @@ msgstr "Höhe der EPG Bilder"
 
 msgid "Font"
 msgstr "Schriftart"
+
+msgid "Status Header Large Font Size"
+msgstr "Status Header große Schriftgröße"
+
+msgid "Status Header Font Size"
+msgstr "Status Header Schriftgröße"
 
 msgid "Channel Header Font Size"
 msgstr "Kanal Header Schriftgröße"

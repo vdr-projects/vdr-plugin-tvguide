@@ -46,7 +46,10 @@ void cTvguideSetup::Store(void) {
 	tvguideConfig = tmpTvguideConfig;
 
 	SetupStore("themeIndex", tvguideConfig.themeIndex);
-	SetupStore("useBlending", tvguideConfig.useBlending);
+    SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
+	SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
+	SetupStore("scaleVideo", tvguideConfig.scaleVideo);
+    SetupStore("useBlending", tvguideConfig.useBlending);
 	SetupStore("roundedCorners", tvguideConfig.roundedCorners);
 	SetupStore("timeFormat", tvguideConfig.timeFormat);
 	SetupStore("channelCols", tvguideConfig.channelCols);
@@ -67,6 +70,8 @@ void cTvguideSetup::Store(void) {
 	SetupStore("footerHeight", tvguideConfig.footerHeight);
 	SetupStore("fontIndex", tvguideConfig.fontIndex);
 	SetupStore("fontHeaderSize", tvguideConfig.fontHeaderSize);
+    SetupStore("fontStatusHeaderSize", tvguideConfig.fontStatusHeaderSize);
+    SetupStore("fontStatusHeaderLargeSize", tvguideConfig.fontStatusHeaderLargeSize);
 	SetupStore("fontGridSize", tvguideConfig.fontGridSize);
 	SetupStore("fontGridSmallSize", tvguideConfig.fontGridSmallSize);
 	SetupStore("fontTimeLineWeekdaySize", tvguideConfig.fontTimeLineWeekdaySize);
@@ -142,17 +147,23 @@ cMenuSetupScreenLayout::cMenuSetupScreenLayout(cTvguideConfig* data)  : cMenuSet
 }
 
 void cMenuSetupScreenLayout::Set(void) {
+	const char *indent = "    ";
 	int currentItem = Current();
 	Clear();
 	if (themes.NumThemes())
 		Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
+	
+    Add(new cMenuEditBoolItem(tr("Display status header"), &tmpTvguideConfig->displayStatusHeader));
+    if (tmpTvguideConfig->displayStatusHeader) {
+        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", indent, tr("Scale video to upper right corner")), &tmpTvguideConfig->scaleVideo));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of status header (Perc. of osd height)")), &tmpTvguideConfig->statusHeaderPercent, 5, 50));
+    }
 	Add(new cMenuEditStraItem(tr("Use color gradients"), &tmpTvguideConfig->useBlending, 3, blendingMethods));
 	Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
 	Add(new cMenuEditIntItem(tr("Width of Timeline"), &tmpTvguideConfig->timeColWidth, 50, 300));
 	Add(new cMenuEditIntItem(tr("Height of Header"), &tmpTvguideConfig->headerHeight, 50, 300));
 	Add(new cMenuEditIntItem(tr("Height of Footer"), &tmpTvguideConfig->footerHeight, 50, 300));
 	
-	const char *indent = "    ";
 	Add(new cMenuEditStraItem(tr("Show Channel Logos"), &tmpTvguideConfig->hideChannelLogos, 2,  hideChannelLogosItems));	
 	if (!tmpTvguideConfig->hideChannelLogos) {
 		Add(InfoItem(tr("Logo Path used"), *tvguideConfig.logoPath));
@@ -195,6 +206,8 @@ void cMenuSetupFont::Set(void) {
 	Clear();
 	
 	Add(new cMenuEditStraItem(tr("Font"), &tmpTvguideConfig->fontIndex, fontNames.Size(), &fontNames[0]));
+    Add(new cMenuEditIntItem(tr("Status Header Large Font Size"), &tmpTvguideConfig->fontStatusHeaderLargeSize, 10, 70));
+    Add(new cMenuEditIntItem(tr("Status Header Font Size"), &tmpTvguideConfig->fontStatusHeaderSize, 10, 70));    
 	Add(new cMenuEditIntItem(tr("Channel Header Font Size"), &tmpTvguideConfig->fontHeaderSize, 10, 70));
 	Add(new cMenuEditIntItem(tr("Grid Font Size"), &tmpTvguideConfig->fontGridSize, 10, 70));
 	Add(new cMenuEditIntItem(tr("Grid Font Small Size"), &tmpTvguideConfig->fontGridSmallSize, 10, 70));

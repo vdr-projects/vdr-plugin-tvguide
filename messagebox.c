@@ -8,7 +8,9 @@ cMessageBoxThread::cMessageBoxThread(cPixmap *content, int displayTime) {
 }
 
 cMessageBoxThread::~cMessageBoxThread(void) {
-	Cancel(0);
+    Cancel(-1);
+	while (Active())
+        cCondWait::SleepMs(10);
 }
 
 void cMessageBoxThread::Action(void) {
@@ -18,7 +20,7 @@ void cMessageBoxThread::Action(void) {
 		cPixmap::Lock();
 		double t = min(double(Now - Start) / FadeTime, 1.0);
 	    int Alpha = t * ALPHA_OPAQUE;
-		if (content) {
+		if (Running() && content) {
 			content->SetAlpha(Alpha);
 			osdManager.flush();
 		}
@@ -36,7 +38,7 @@ void cMessageBoxThread::Action(void) {
 		cPixmap::Lock();
 		double t = min(double(Now - Start) / FadeTime, 1.0);
 	    int Alpha = (1-t) * ALPHA_OPAQUE;
-		if (content) {
+		if (Running() && content) {
 			content->SetAlpha(Alpha);
 			osdManager.flush();
 		}
@@ -51,19 +53,16 @@ void cMessageBoxThread::Action(void) {
 }
 
 //--cMessageBox-------------------------------------------------------------
-cMutex cMessageBox::mutex;
 cMessageBoxThread *cMessageBox::msgboxThread = NULL;
 cPixmap *cMessageBox::content = NULL;
 
 bool cMessageBox::Start(int displayTime, cString msg) {
-	cMutexLock MutexLock(&mutex);
 	int width = (tvguideConfig.osdWidth - 600)/2;
 	if (!content) {
 		int height = 400;
 		content = osdManager.requestPixmap(5, cRect((tvguideConfig.osdWidth - width)/2, 
 													(tvguideConfig.osdHeight- height)/2, 
-													width, height), 
-													cRect::Null, "msgbox");
+													width, height));
 	}
 	if (msgboxThread) {
 		delete msgboxThread;
@@ -94,7 +93,6 @@ bool cMessageBox::Start(int displayTime, cString msg) {
 }
 
 void cMessageBox::Stop(void) {
-	cMutexLock MutexLock(&mutex);
 	if (msgboxThread) {
 		delete msgboxThread;
 		msgboxThread = NULL;
@@ -102,13 +100,12 @@ void cMessageBox::Stop(void) {
 }
 
 void cMessageBox::Destroy(void) {
-	cMutexLock MutexLock(&mutex);
 	if (msgboxThread) {
 		delete msgboxThread;
 		msgboxThread = NULL;
 	}
 	if (content) {
-		osdManager.releasePixmap(content, "msgboxDestroy");
+		osdManager.releasePixmap(content);
 		content = NULL;
 	}
 }

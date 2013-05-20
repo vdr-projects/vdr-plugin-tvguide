@@ -13,6 +13,10 @@ class cTvguideConfig {
 		int channelCols;
 		int displayTime;
 		int minuteHeight;
+        int displayStatusHeader;
+        int statusHeaderPercent;
+        int statusHeaderHeight;
+        int scaleVideo;
 		int timeColWidth;
 		int headerHeight;
 		int footerHeight;
@@ -32,6 +36,8 @@ class cTvguideConfig {
 		int fontIndex;
 		const char *fontNameDefault;
 		int fontHeaderSize;
+		int fontStatusHeaderSize;
+		int fontStatusHeaderLargeSize;
 		int fontGridSize;
 		int fontGridSmallSize;
 		int fontTimeLineWeekdaySize;
@@ -45,6 +51,8 @@ class cTvguideConfig {
 		int fontMessageBoxSize;
 		int fontMessageBoxLargeSize;
 		const cFont *FontHeader;
+		const cFont *FontStatusHeader;
+		const cFont *FontStatusHeaderLarge;
 		const cFont *FontGrid;
 		const cFont *FontGridSmall;
 		const cFont *FontTimeLineWeekday;

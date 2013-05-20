@@ -10,3 +10,12 @@ VDR Plugin 'tvguide' Revision History
 - Changed color buttons to nOpacity style
 - Changed channelheader to display transparent logos properly
 - Added "style nOpacity" for backgrounds and theme nOpacity
+
+Version 0.0.3
+
+- Added dummy grids if no EPG information is available for a certain
+  time
+- Completely rewrote code for creation of epg grids for a channel column
+- Completely rewrote code for scrolling forward and backward in time
+- Added status header with epg information of currently selected 
+  schedule and scaled video picture

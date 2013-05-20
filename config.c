@@ -12,6 +12,10 @@ cTvguideConfig::cTvguideConfig() {
 	channelCols = 5;
 	displayTime = 160;
 	minuteHeight = 0;
+    displayStatusHeader = 1;
+    statusHeaderPercent = 20;
+    statusHeaderHeight = 0;
+    scaleVideo = 1;
 	timeColWidth = 120;
 	headerHeight = 150;
 	footerHeight = 80;
@@ -29,6 +33,8 @@ cTvguideConfig::cTvguideConfig() {
 	fontIndex = 0;
 	fontNameDefault = "VDRSymbols Sans:Book";
 	fontHeaderSize = 33;
+    fontStatusHeaderSize = 27;
+	fontStatusHeaderLargeSize = 33;
 	fontGridSize = 27;
 	fontGridSmallSize = 24;
 	fontTimeLineWeekdaySize = 40;
@@ -41,8 +47,6 @@ cTvguideConfig::cTvguideConfig() {
 	fontDetailHeaderSize = 40;
 	fontMessageBoxSize = 33;
 	fontMessageBoxLargeSize = 40;
-
-
 	FontHeader = NULL;
 	FontGrid = NULL;
 	FontGridSmall = NULL;
@@ -63,6 +67,8 @@ cTvguideConfig::cTvguideConfig() {
 
 cTvguideConfig::~cTvguideConfig() {
 	delete FontHeader;
+    delete FontStatusHeader;
+    delete FontStatusHeaderLarge;
 	delete FontGrid;
 	delete FontGridSmall;
 	delete FontTimeLineWeekday;
@@ -79,7 +85,8 @@ void cTvguideConfig::setDynamicValues(int width, int height) {
 	osdWidth = width;
 	osdHeight = height;
 	colWidth = (osdWidth - timeColWidth) / channelCols;
-	minuteHeight = (osdHeight - headerHeight - footerHeight) / displayTime;
+	statusHeaderHeight = (displayStatusHeader)?(statusHeaderPercent * osdHeight / 100):0;
+    minuteHeight = (osdHeight - statusHeaderHeight - headerHeight - footerHeight) / displayTime;
 	
 	if (!fontTimeLineTimeSize) {
 		if (timeFormat == e12Hours) {
@@ -110,6 +117,8 @@ void cTvguideConfig::setDynamicValues(int width, int height) {
 	}
 	delete test;
 	FontHeader = cFont::CreateFont(*fontname, fontHeaderSize);
+    FontStatusHeader = cFont::CreateFont(*fontname, fontStatusHeaderSize);
+    FontStatusHeaderLarge = cFont::CreateFont(*fontname, fontStatusHeaderLargeSize);
 	FontGrid = cFont::CreateFont(*fontname, fontGridSize);
 	FontGridSmall = cFont::CreateFont(*fontname, fontGridSmallSize);
 	FontTimeLineWeekday = cFont::CreateFont(*fontname, fontTimeLineWeekdaySize);
@@ -142,6 +151,9 @@ void cTvguideConfig::loadTheme() {
 bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
 	if      (strcmp(Name, "timeFormat") == 0)               timeFormat = atoi(Value);
 	else if (strcmp(Name, "themeIndex") == 0)         		themeIndex = atoi(Value);
+    else if (strcmp(Name, "displayStatusHeader") == 0)      displayStatusHeader = atoi(Value);
+    else if (strcmp(Name, "statusHeaderPercent") == 0)      statusHeaderPercent = atoi(Value);
+    else if (strcmp(Name, "scaleVideo") == 0)         		scaleVideo = atoi(Value);
 	else if (strcmp(Name, "useBlending") == 0)         		useBlending = atoi(Value);
 	else if (strcmp(Name, "roundedCorners") == 0)         	roundedCorners = atoi(Value);
 	else if (strcmp(Name, "channelCols") == 0)         		channelCols = atoi(Value);
@@ -160,7 +172,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
 	else if (strcmp(Name, "headerHeight") == 0) 			headerHeight = atoi(Value);
 	else if (strcmp(Name, "footerHeight") == 0) 			footerHeight = atoi(Value);	
 	else if (strcmp(Name, "fontIndex") == 0) 				fontIndex = atoi(Value);	
-	else if (strcmp(Name, "fontHeaderSize") == 0) 			fontHeaderSize = atoi(Value);	
+	else if (strcmp(Name, "fontHeaderSize") == 0) 			fontHeaderSize = atoi(Value);
+	else if (strcmp(Name, "fontStatusHeaderSize") == 0) 	fontStatusHeaderSize = atoi(Value);
+	else if (strcmp(Name, "fontStatusHeaderLargeSize") == 0) fontStatusHeaderLargeSize = atoi(Value);
 	else if (strcmp(Name, "fontGridSize") == 0) 			fontGridSize = atoi(Value);	
 	else if (strcmp(Name, "fontGridSmallSize") == 0) 		fontGridSmallSize = atoi(Value);	
 	else if (strcmp(Name, "fontTimeLineWeekdaySize") == 0) 	fontTimeLineWeekdaySize = atoi(Value);	

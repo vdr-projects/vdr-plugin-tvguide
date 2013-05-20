@@ -1,6 +1,6 @@
 #include "detailview.h"
 
-cDetailView::cDetailView(cEpgGrid *grid) {
+cDetailView::cDetailView(cGrid *grid) {
 	this->grid = grid;
 	this->event = grid->GetEvent();
 	imgScrollBar = NULL;
@@ -36,12 +36,12 @@ bool cDetailView::setContentDrawportHeight() {
 void cDetailView::createPixmaps() {
 	int scrollBarWidth = 50;
 	
-	header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeader"), "detailViewHeader");
+	header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null));
 	header->SetAlpha(0);
-	headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeaderLogo");
+	headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
     headerLogo->Fill(clrTransparent);
 	headerLogo->SetAlpha(0);
-	headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null, "detailViewHeaderBack");
+	headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
 	headerBack->SetAlpha(0);
     headerBack->Fill(clrBlack);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));

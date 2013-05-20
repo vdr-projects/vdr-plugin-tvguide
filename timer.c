@@ -3,16 +3,24 @@
 cMyTime::~cMyTime(void) {
 }
 
+cString cMyTime::printTime(time_t displayTime) {
+    struct tm *ts;
+    ts = localtime(&displayTime);
+    cString strTime = cString::sprintf("%d.%d-%d:%d.%d", ts->tm_mday, ts->tm_mon+1, ts->tm_hour, ts->tm_min, ts->tm_sec);
+    return strTime;
+}
+
+
 void cMyTime::Now() {	
 	t = time(0);
 	tStart = t;
 	tStart = GetRounded();
-	tStop = tStart + (tvguideConfig.osdHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight)/tvguideConfig.minuteHeight*60;
+	tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight)/tvguideConfig.minuteHeight*60;
 }
 
 void cMyTime::AddStep(int step) {
 	tStart += step*60;
-	tStop  += step*60;
+	tEnd  += step*60;
 }
 
 bool cMyTime::DelStep(int step) {
@@ -20,13 +28,13 @@ bool cMyTime::DelStep(int step) {
 		return true;
 	}
 	tStart -= step*60;
-	tStop -= step*60;
+	tEnd -= step*60;
 	return false;
 }
 
 void cMyTime::SetTime(time_t newTime) {
 	tStart = newTime;
-	tStop = tStart + (tvguideConfig.osdHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight)/tvguideConfig.minuteHeight*60;
+	tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight)/tvguideConfig.minuteHeight*60;
 }
 
 time_t cMyTime::getPrevPrimetime(time_t current) {
@@ -102,5 +110,5 @@ time_t cMyTime::GetRounded() {
 }
 
 void cMyTime::debug() {
-	esyslog("t: %s, tStart: %s, tStop: %s", *TimeString(t), *TimeString(tStart), *TimeString(tStop));
+	esyslog("t: %s, tStart: %s, tEnd: %s", *TimeString(t), *TimeString(tStart), *TimeString(tEnd));
 }

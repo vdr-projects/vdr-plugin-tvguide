@@ -7,14 +7,14 @@ class cTvGuideOsd : public cOsdObject {
 private:
   cMyTime *myTime;
   cList<cChannelColumn> columns;
-  cEpgGrid *activeGrid;
+  cGrid *activeGrid;
+  cStatusHeader *statusHeader;
   cDetailView *detailView;
   cTimeLine *timeLine;
   cFooter *footer;
   bool detailViewActive;
   void drawOsd();
-  void readChannels(cChannel *channelStart);
-  bool readChannelsReverse(cChannel *channelStart);
+  void readChannels(const cChannel *channelStart);
   void drawGridsChannelJump();
   void drawGridsTimeJump();
   void processKeyUp();
@@ -32,9 +32,10 @@ private:
   void processKey6();
   void processKey7();
   void processKey9();
-  void setNextActiveGrid(cEpgGrid *next);
+  void setNextActiveGrid(cGrid *next);
   void ScrollForward();
   void ScrollBack();
+  void dump();
 public:
   cTvGuideOsd(void);
   virtual ~cTvGuideOsd(void);

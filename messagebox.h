@@ -1,8 +1,6 @@
 #ifndef __TVGUIDE_MESSAGEBOX_H
 #define __TVGUIDE_MESSAGEBOX_H
 
-class cMessageBoxThreadPool;
-
 // --- cMessageBox  -------------------------------------------------------------
 
 class cMessageBoxThread : public cThread {

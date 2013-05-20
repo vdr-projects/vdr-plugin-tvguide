@@ -2,10 +2,24 @@
 
 cTimeLine::cTimeLine(cMyTime *myTime) {
 	this->myTime = myTime;
-	dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 0, tvguideConfig.timeColWidth, tvguideConfig.headerHeight), cRect::Null, "dateViewer"), "dateViewer");
-	timeline = osdManager.requestPixmap(2, cRect(0, tvguideConfig.headerHeight, tvguideConfig.timeColWidth, tvguideConfig.osdHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight), 
-									cRect(0,0, tvguideConfig.timeColWidth, 1440*tvguideConfig.minuteHeight), "timeline");
-	clock = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, tvguideConfig.osdHeight-tvguideConfig.footerHeight, tvguideConfig.timeColWidth, tvguideConfig.footerHeight-9), cRect::Null, "timeViewer"), "timeViewer");
+	dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
+                                                                     tvguideConfig.statusHeaderHeight, 
+                                                                     tvguideConfig.timeColWidth, 
+                                                                     tvguideConfig.headerHeight)
+                                                             , cRect::Null));
+	timeline = osdManager.requestPixmap(2, cRect(0, 
+                                                 tvguideConfig.statusHeaderHeight + tvguideConfig.headerHeight, 
+                                                 tvguideConfig.timeColWidth, 
+                                                 tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.headerHeight - tvguideConfig.footerHeight)
+                                         , cRect(0,
+                                                 0, 
+                                                 tvguideConfig.timeColWidth, 
+                                                 1440*tvguideConfig.minuteHeight));
+	clock = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
+                                                                tvguideConfig.osdHeight- tvguideConfig.footerHeight, 
+                                                                tvguideConfig.timeColWidth, 
+                                                                tvguideConfig.footerHeight-9)
+                                                        , cRect::Null));
 }
 
 cTimeLine::~cTimeLine(void) {

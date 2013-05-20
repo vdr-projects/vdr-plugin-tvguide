@@ -2,17 +2,15 @@
 
 cStyledPixmap::cStyledPixmap(void) {
 	pixmap = NULL;
-	caller = NULL;
 }
 
-cStyledPixmap::cStyledPixmap(cPixmap *pixmap, cString caller) {
+cStyledPixmap::cStyledPixmap(cPixmap *pixmap) {
 	this->pixmap = pixmap;
-	this->caller = caller;
 }
 
 cStyledPixmap::~cStyledPixmap(void) {
 	if (pixmap)
-		osdManager.releasePixmap(pixmap, *caller);
+		osdManager.releasePixmap(pixmap);
 }
 
 void cStyledPixmap::setPixmap(cPixmap *pixmap) {
