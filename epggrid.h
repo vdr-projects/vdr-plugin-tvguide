@@ -7,6 +7,7 @@ class cEpgGrid : public cGrid {
 private:
 	const cEvent *event;
 	cTextWrapper *extText;
+    cString timeString;
     bool hasTimer;
 	void drawText();
 	void drawRecIcon();

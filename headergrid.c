@@ -12,20 +12,21 @@ cHeaderGrid::~cHeaderGrid(void) {
 void cHeaderGrid::createBackground(int num) {
     color = theme.Color(clrHeader);
     colorBlending = theme.Color(clrHeaderBlending);
-    pixmap = osdManager.requestPixmap(2, cRect( tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 
-                                                tvguideConfig.statusHeaderHeight, 
-                                                tvguideConfig.colWidth, 
-                                                tvguideConfig.headerHeight)
-                                       , cRect::Null);
-	if (!pixmap) {
-		return;
-	}
-    pixmapLogo = osdManager.requestPixmap(3, cRect( tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 
-                                                    tvguideConfig.statusHeaderHeight, 
-                                                    tvguideConfig.colWidth, 
-                                                    tvguideConfig.headerHeight)
-                                           , cRect::Null);
-    if (!pixmapLogo) {
+    int x, y, width, height;
+    if (tvguideConfig.displayMode == eVertical) {
+        x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
+        y = tvguideConfig.statusHeaderHeight;
+        width = tvguideConfig.colWidth;
+        height = tvguideConfig.channelHeaderHeight;
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        x = 0;
+        y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
+        width = tvguideConfig.channelHeaderWidth;
+        height = tvguideConfig.rowHeight;
+    }
+    pixmap = osdManager.requestPixmap(2, cRect(x, y, width, height));
+    pixmapLogo = osdManager.requestPixmap(3, cRect(x, y, width, height));
+	if ((!pixmap) || (!pixmapLogo)){
 		return;
 	}
     pixmapLogo->Fill(clrTransparent);
@@ -33,38 +34,93 @@ void cHeaderGrid::createBackground(int num) {
 }
 
 void cHeaderGrid::drawChannel(const cChannel *channel) {
-    cTextWrapper tw;
-	cString headerText = cString::sprintf("%d - %s", channel->Number(), channel->Name());
-	tw.Set(*headerText, tvguideConfig.FontHeader, tvguideConfig.colWidth - 8);
-	int lines = tw.Lines();
-	int lineHeight = tvguideConfig.FontHeader->Height();
-	int yStart = (tvguideConfig.headerHeight - lines*lineHeight)/2 + 8;
-	if (!tvguideConfig.hideChannelLogos) {
-		cImageLoader imgLoader;
-		if (imgLoader.LoadLogo(channel->Name())) {
-				cImage logo = imgLoader.GetImage();
-				int logoX = (tvguideConfig.colWidth - tvguideConfig.logoWidth)/2;
-				pixmapLogo->DrawImage(cPoint(logoX, 5), logo);
-		}
-		yStart = tvguideConfig.logoHeight + 8;
-	}
-	for (int i=0; i<lines; i++) {
-		int textWidth = tvguideConfig.FontHeader->Width(tw.GetLine(i));
-		int xText = (tvguideConfig.colWidth - textWidth) / 2;
-		if (xText < 0) 
-			xText = 0;
-		pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontHeader);
-	}
+    if (tvguideConfig.displayMode == eVertical) {
+        drawChannelVertical(channel);
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        drawChannelHorizontal(channel);
+    }
 	drawBorder();
 }
 
+void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
+	int logoWidth = Height() * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
+    int logoX = tvguideConfig.displayChannelName?2:(Width()-logoWidth)/2;
+    int textX = 5;
+    int textY = (Height() - tvguideConfig.FontChannelHeaderHorizontal->Height())/2;
+    bool logoFound = false;
+    if (!tvguideConfig.hideChannelLogos) {
+		cImageLoader imgLoader;
+        if (imgLoader.LoadLogo(channel->Name(), logoWidth, Height())) {
+            cImage logo = imgLoader.GetImage();
+            pixmapLogo->DrawImage(cPoint(logoX, 0), logo);
+            logoFound = true;
+        }
+	}
+    bool drawText = false;
+    int textWidthMax = Width() - 10;
+    if (!logoFound) {
+        drawText = true;
+    } else  if (tvguideConfig.displayChannelName) {
+        drawText = true;
+        textX += logoWidth;
+        textWidthMax -= logoWidth;
+    }
+    if (drawText) {
+        cString strChannel = cString::sprintf("%d %s", channel->Number(), channel->Name());
+        strChannel = CutText(*strChannel, textWidthMax, tvguideConfig.FontChannelHeaderHorizontal).c_str();
+        pixmap->DrawText(cPoint(textX, textY), *strChannel, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontChannelHeaderHorizontal);
+    }
+}
+
+void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
+    int logoWidth = Width()/2 - 15;
+    int logoHeight = logoWidth * tvguideConfig.logoHeightRatio / tvguideConfig.logoWidthRatio;
+    cTextWrapper tw;
+	cString headerText = cString::sprintf("%d - %s", channel->Number(), channel->Name());
+	tw.Set(*headerText, tvguideConfig.FontChannelHeader, tvguideConfig.colWidth - 8);
+	int lines = tw.Lines();
+	int lineHeight = tvguideConfig.FontChannelHeader->Height();
+	int yStart = (tvguideConfig.channelHeaderHeight - lines*lineHeight)/2 + 8;
+	bool logoFound = false;
+    if (!tvguideConfig.hideChannelLogos) {
+		cImageLoader imgLoader;
+		if (imgLoader.LoadLogo(channel->Name(), logoWidth, logoHeight)) {
+				cImage logo = imgLoader.GetImage();
+                pixmapLogo->DrawImage(cPoint((Width() - logoWidth)/2, 4), logo);
+                logoFound = true;
+		}
+	}
+    bool drawText = false;
+    if (!logoFound) {
+        drawText = true;
+    } else if (tvguideConfig.displayChannelName) {
+        drawText = true;
+		yStart = logoHeight;
+    }
+    if (!drawText)
+        return;
+	for (int i=0; i<lines; i++) {
+		int textWidth = tvguideConfig.FontChannelHeader->Width(tw.GetLine(i));
+		int xText = (tvguideConfig.colWidth - textWidth) / 2;
+		if (xText < 0) 
+			xText = 0;
+		pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontChannelHeader);
+	}
+}
+
 void cHeaderGrid::setPosition(int num) {
-	pixmap->SetViewPort(cRect(      tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 
-                                    tvguideConfig.statusHeaderHeight, 
-                                    tvguideConfig.colWidth, 
-                                    tvguideConfig.headerHeight));
-	pixmapLogo->SetViewPort(cRect(  tvguideConfig.timeColWidth + num*tvguideConfig.colWidth, 
-                                    tvguideConfig.statusHeaderHeight, 
-                                    tvguideConfig.colWidth, 
-                                    tvguideConfig.headerHeight));
+    int x, y, width, height;
+    if (tvguideConfig.displayMode == eVertical) {
+        x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
+        y = tvguideConfig.statusHeaderHeight;
+        width = tvguideConfig.colWidth;
+        height = tvguideConfig.channelHeaderHeight;
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        x = 0;
+        y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
+        width = tvguideConfig.channelHeaderWidth;
+        height = tvguideConfig.rowHeight;
+    }
+    pixmap->SetViewPort(cRect(x, y, width, height));
+	pixmapLogo->SetViewPort(cRect(x, y, width, height));
 }

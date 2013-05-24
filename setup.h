@@ -26,6 +26,8 @@ class cMenuSetupSubMenu : public cOsdMenu {
 
 class cMenuSetupGeneral : public cMenuSetupSubMenu {
 	protected:
+        cThemes themes;
+        const char * blendingMethods[3];
 		const char * timeFormatItems[2];
 		void Set(void);
 	public:
@@ -35,10 +37,9 @@ class cMenuSetupGeneral : public cMenuSetupSubMenu {
 class cMenuSetupScreenLayout : public cMenuSetupSubMenu {
 	protected:
 		virtual eOSState ProcessKey(eKeys Key);
-		cThemes themes;
+        const char * displayModeItems[2];
 		const char * hideChannelLogosItems[2];
 		const char * logoExtensionItems[2];
-        const char * blendingMethods[3];
 		void Set(void);
 	public:
 		cMenuSetupScreenLayout(cTvguideConfig *data);

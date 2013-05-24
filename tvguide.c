@@ -14,13 +14,13 @@
 
 #include "tvguideosd.c"
 
-#if defined(APIVERSNUM) && APIVERSNUM < 10717
-#error "VDR-1.7.17 API version or greater is required!"
+#if defined(APIVERSNUM) && APIVERSNUM < 20000
+#error "VDR-2.0.0 API version or greater is required!"
 #endif
 
 
 
-static const char *VERSION        = "0.0.3";
+static const char *VERSION        = "0.0.4";
 static const char *DESCRIPTION    = "A fancy 2d EPG Viewer";
 static const char *MAINMENUENTRY  = "Tvguide";
 

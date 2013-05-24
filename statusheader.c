@@ -10,14 +10,27 @@ cStatusHeader::cStatusHeader(void) {
     } else {
         width = tvguideConfig.osdWidth;
     }
+    int tvFrameWidth = tvguideConfig.osdWidth - width;
+    int radius = tvguideConfig.statusHeaderHeight / 8;
     pixmap = osdManager.requestPixmap(1, cRect(0, 0, width, height));
     pixmapText = osdManager.requestPixmap(2, cRect(0, 0, width, height));
     pixmapText->Fill(clrTransparent);
+    
+    pixmapTVFrame = osdManager.requestPixmap(1, cRect(width, 0, tvFrameWidth, height));
+    pixmapTVFrame->Fill(clrTransparent);
+    if (tvguideConfig.decorateVideo) {
+        pixmapTVFrame->DrawEllipse(cRect(0,0,radius,radius), theme.Color(clrBackground), -2);
+        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius, 0, radius, radius), theme.Color(clrBackground), -1);
+        pixmapTVFrame->DrawEllipse(cRect(0, height - radius, radius, radius), theme.Color(clrBackground), -3);
+        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius, height - radius, radius, radius), theme.Color(clrBackground), -4);
+    }
     drawBackground();
     drawBorder();
 }
 
 cStatusHeader::~cStatusHeader(void) {
+    osdManager.releasePixmap(pixmapText);
+    osdManager.releasePixmap(pixmapTVFrame);
     if (tvguideConfig.scaleVideo) {
         cRect vidWin = cDevice::PrimaryDevice()->CanScaleVideo(cRect::Null);
         cDevice::PrimaryDevice()->ScaleVideo(vidWin);

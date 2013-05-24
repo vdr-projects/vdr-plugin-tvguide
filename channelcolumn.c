@@ -105,7 +105,11 @@ void cChannelColumn::drawGrids() {
 }
 
 int cChannelColumn::getX() {
-	return tvguideConfig.timeColWidth + num*tvguideConfig.colWidth;
+    return tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
+}
+
+int cChannelColumn::getY() {
+    return tvguideConfig.statusHeaderHeight +  tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
 }
 
 cGrid * cChannelColumn::getActive() {

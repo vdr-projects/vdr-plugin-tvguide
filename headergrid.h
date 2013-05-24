@@ -6,6 +6,8 @@
 class cHeaderGrid : public cGrid {
 private:
     cPixmap *pixmapLogo;
+    void drawChannelHorizontal(const cChannel *channel);
+    void drawChannelVertical(const cChannel *channel);
 public:
 	cHeaderGrid(void);
 	virtual ~cHeaderGrid(void);

@@ -129,7 +129,7 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
 			delete column;
 		}
 	  }
-	  if (i == tvguideConfig.channelCols)
+	  if (i == tvguideConfig.numGrids)
 	    break;
     }
 }
@@ -187,91 +187,46 @@ void cTvGuideOsd::setNextActiveGrid(cGrid *next) {
     }
 }
 
-void cTvGuideOsd::processKeyUp() {
-    if (!activeGrid) {
-        return;
-    }
-	if (detailViewActive) {
-		detailView->scrollUp();
-	} else {
-        bool actionDone = false;
-        if ( (activeGrid->StartTime() - myTime->GetStart())/60 < 30 ) {
-            ScrollBack();
-            actionDone = true;
-        }
-        cGrid *prev = activeGrid->column->getPrev(activeGrid);
-        if (prev) {
-            if (   (prev->StartTime() > myTime->GetStart())
-                || ( (prev->EndTime() - myTime->GetStart())/60 > 30 )
-                || ( prev->isFirst()) ) {
-                setNextActiveGrid(prev);
-                actionDone = true;
-            }
-        }
-        if (!actionDone) {
-            ScrollBack();
-        }
+void cTvGuideOsd::channelForward() {
+    cChannelColumn *colRight = columns.Next(activeGrid->column);
+	if (!colRight) {
+		const cChannel *channelRight = activeGrid->column->getChannel();
+		while (channelRight = Channels.Next(channelRight)) {
+			if (!channelRight->GroupSep()) {
+				colRight = new cChannelColumn(tvguideConfig.numGrids - 1, channelRight, myTime);
+				if (colRight->readGrids()) {
+					break;
+				} else {
+					delete colRight;
+					colRight = NULL;
+				}
+			}
+		}
+		if (colRight) {
+			if (columns.Count() == tvguideConfig.numGrids) {
+				cChannelColumn *cFirst = columns.First();
+				columns.Del(cFirst);
+			}
+			for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
+				column->SetNum(column->GetNum() - 1);
+				column->drawHeader();
+				column->drawGrids();
+			}
+			columns.Add(colRight);
+			colRight->createHeader();
+			colRight->drawGrids();
+		}
 	}
-	osdManager.flush();
-}
-void cTvGuideOsd::ScrollBack() {
-	bool tooFarInPast = myTime->DelStep(tvguideConfig.stepMinutes);
-	if (tooFarInPast)
-		return;
-	timeLine->drawDateViewer();
-	timeLine->drawClock();
-	timeLine->setTimeline();
-	for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
-		column->AddNewGridsAtStart();
-		column->ClearOutdatedEnd();
-		column->drawGrids();
-	}	
-}
-
-void cTvGuideOsd::processKeyDown() {
-	if (!activeGrid) {
-			return;
-    }
-    if (detailViewActive) {
-		detailView->scrollDown();
-	} else {
-        bool actionDone = false;
-        if ( (myTime->GetEnd() - activeGrid->EndTime())/60 < 30 ) {
-            ScrollForward();
-            actionDone = true;
-        }
-        cGrid *next = activeGrid->column->getNext(activeGrid);
-        if (next) {
-            if (   (next->EndTime() < myTime->GetEnd())
-                || ( (myTime->GetEnd() - next->StartTime())/60 > 30 ) ) {
-                setNextActiveGrid(next);
-                actionDone = true;
-            }
-        }
-        if (!actionDone) {
-            ScrollForward();
-        }
+	if (colRight) {
+		cGrid *right = colRight->getNeighbor(activeGrid);
+		if (right) {
+			setNextActiveGrid(right);
+		}
 	}
 	osdManager.flush();
 }
 
-void cTvGuideOsd::ScrollForward() {
-    myTime->AddStep(tvguideConfig.stepMinutes);
-	timeLine->drawDateViewer();
-	timeLine->drawClock();
-	timeLine->setTimeline();
-	for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
-		column->AddNewGridsAtEnd();
-		column->ClearOutdatedStart();
-		column->drawGrids();
-	}
-}
-
-void cTvGuideOsd::processKeyLeft() {
-	if (detailViewActive)
-		return;
-	if (activeGrid == NULL)
-		return;
+void cTvGuideOsd::channelBack() {
 	cChannelColumn *colLeft = columns.Prev(activeGrid->column);
 	if (!colLeft) {
 		const cChannel *channelLeft = activeGrid->column->getChannel();
@@ -287,7 +242,7 @@ void cTvGuideOsd::processKeyLeft() {
 			}
 		}
 		if (colLeft) {
-			if (columns.Count() == tvguideConfig.channelCols) {
+			if (columns.Count() == tvguideConfig.numGrids) {
 				cChannelColumn *cLast = columns.Last();
 				columns.Del(cLast);
 			}
@@ -311,47 +266,127 @@ void cTvGuideOsd::processKeyLeft() {
 	osdManager.flush();
 }
 
+void cTvGuideOsd::timeForward() {
+    bool actionDone = false;
+    if ( (myTime->GetEnd() - activeGrid->EndTime())/60 < 30 ) {
+        ScrollForward();
+        actionDone = true;
+    }
+    cGrid *next = activeGrid->column->getNext(activeGrid);
+    if (next) {
+        if (   (next->EndTime() < myTime->GetEnd())
+            || ( (myTime->GetEnd() - next->StartTime())/60 > 30 ) ) {
+            setNextActiveGrid(next);
+            actionDone = true;
+        }
+    }
+    if (!actionDone) {
+        ScrollForward();
+    }
+	osdManager.flush();
+}
+
+void cTvGuideOsd::ScrollForward() {
+    myTime->AddStep(tvguideConfig.stepMinutes);
+	timeLine->drawDateViewer();
+	timeLine->drawClock();
+	timeLine->setTimeline();
+	for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
+		column->AddNewGridsAtEnd();
+		column->ClearOutdatedStart();
+		column->drawGrids();
+	}
+}
+
+void cTvGuideOsd::timeBack() {
+    bool actionDone = false;
+    if ( (activeGrid->StartTime() - myTime->GetStart())/60 < 30 ) {
+        ScrollBack();
+        actionDone = true;
+    }
+    cGrid *prev = activeGrid->column->getPrev(activeGrid);
+    if (prev) {
+        if (   (prev->StartTime() > myTime->GetStart())
+            || ( (prev->EndTime() - myTime->GetStart())/60 > 30 )
+            || ( prev->isFirst()) ) {
+            setNextActiveGrid(prev);
+            actionDone = true;
+        }
+    }
+    if (!actionDone) {
+        ScrollBack();
+    }
+	osdManager.flush();
+}
+
+void cTvGuideOsd::ScrollBack() {
+	bool tooFarInPast = myTime->DelStep(tvguideConfig.stepMinutes);
+	if (tooFarInPast)
+		return;
+	timeLine->drawDateViewer();
+	timeLine->drawClock();
+	timeLine->setTimeline();
+	for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
+		column->AddNewGridsAtStart();
+		column->ClearOutdatedEnd();
+		column->drawGrids();
+	}	
+}
+
+void cTvGuideOsd::processKeyUp() {
+    if (!activeGrid) {
+        return;
+    }
+	if (detailViewActive) {
+		detailView->scrollUp();
+        osdManager.flush();
+	} else {
+        if (tvguideConfig.displayMode == eVertical) {
+            timeBack();
+        } else if (tvguideConfig.displayMode == eHorizontal) {
+            channelBack();
+        }
+    }
+}
+
+void cTvGuideOsd::processKeyDown() {
+	if (!activeGrid) {
+			return;
+    }
+    if (detailViewActive) {
+		detailView->scrollDown();
+        osdManager.flush();
+	} else {
+        if (tvguideConfig.displayMode == eVertical) {
+            timeForward();
+        } else if (tvguideConfig.displayMode == eHorizontal) {
+            channelForward();
+        }
+    }
+}
+
+void cTvGuideOsd::processKeyLeft() {
+	if (detailViewActive)
+		return;
+	if (activeGrid == NULL)
+		return;
+    if (tvguideConfig.displayMode == eVertical) {
+        channelBack();
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        timeBack();
+    }
+}
+
 void cTvGuideOsd::processKeyRight() {
 	if (detailViewActive)
 		return;
 	if (activeGrid == NULL)
 		return;
-	cChannelColumn *colRight = columns.Next(activeGrid->column);
-	if (!colRight) {
-		const cChannel *channelRight = activeGrid->column->getChannel();
-		while (channelRight = Channels.Next(channelRight)) {
-			if (!channelRight->GroupSep()) {
-				colRight = new cChannelColumn(tvguideConfig.channelCols - 1, channelRight, myTime);
-				if (colRight->readGrids()) {
-					break;
-				} else {
-					delete colRight;
-					colRight = NULL;
-				}
-			}
-		}
-		if (colRight) {
-			if (columns.Count() == tvguideConfig.channelCols) {
-				cChannelColumn *cFirst = columns.First();
-				columns.Del(cFirst);
-			}
-			for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
-				column->SetNum(column->GetNum() - 1);
-				column->drawHeader();
-				column->drawGrids();
-			}
-			columns.Add(colRight);
-			colRight->createHeader();
-			colRight->drawGrids();
-		}
-	}
-	if (colRight) {
-		cGrid *right = colRight->getNeighbor(activeGrid);
-		if (right) {
-			setNextActiveGrid(right);
-		}
-	}
-	osdManager.flush();
+    if (tvguideConfig.displayMode == eVertical) {
+        channelForward();
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        timeForward();
+    }
 }
 
 void cTvGuideOsd::processKeyOk() {
@@ -370,7 +405,7 @@ void cTvGuideOsd::processKeyOk() {
 }
 
 void cTvGuideOsd::processKeyRed() {
-	if (activeGrid == NULL)
+	if  ((activeGrid == NULL) || activeGrid->isDummy())
 		return;
     cTimer *timer = new cTimer(activeGrid->GetEvent());
     cTimer *t = Timers.GetTimer(timer);

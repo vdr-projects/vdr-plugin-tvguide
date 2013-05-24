@@ -2,13 +2,13 @@
 
 cFooter::cFooter() {
     buttonBorder = 20;
-	buttonWidth = (tvguideConfig.osdWidth - tvguideConfig.timeColWidth - 5*buttonBorder)/4;
+	buttonWidth = (tvguideConfig.osdWidth - tvguideConfig.timeLineWidth - 5*buttonBorder)/4;
 	buttonHeight= tvguideConfig.footerHeight - 2*buttonBorder;
     buttonY = (tvguideConfig.footerHeight - buttonHeight)/2;
 	
-    footer = osdManager.requestPixmap(2, cRect( tvguideConfig.timeColWidth, 
+    footer = osdManager.requestPixmap(2, cRect( tvguideConfig.timeLineWidth, 
                                                 tvguideConfig.osdHeight - tvguideConfig.footerHeight, 
-                                                tvguideConfig.osdWidth - tvguideConfig.timeColWidth, 
+                                                tvguideConfig.osdWidth - tvguideConfig.timeLineWidth, 
                                                 tvguideConfig.footerHeight),
                                          cRect::Null);
     footer->Fill(clrTransparent);

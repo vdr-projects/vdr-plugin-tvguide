@@ -24,50 +24,82 @@ void cEpgGrid::SetViewportHeight() {
 	} else {
 		viewportHeight = Duration() / 60;
 	}
-    viewportHeight *= tvguideConfig.minuteHeight;
+    viewportHeight *= tvguideConfig.minutePixel;
 	if (viewportHeight != viewportHeightOld)
 		dirty = true;
 }
 
 void cEpgGrid::PositionPixmap() {
-	int x0 = column->getX();
-	int y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.headerHeight;
-	if ( column->Start() < StartTime() ) {
-		y0 += (StartTime() - column->Start())/60*tvguideConfig.minuteHeight;
-	}
-	if (!pixmap) {
-		pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, tvguideConfig.colWidth, viewportHeight), 
-											cRect(0, 0, tvguideConfig.colWidth, Duration()/60*tvguideConfig.minuteHeight));
-	} else {
-		pixmap->SetViewPort(cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
-	}
+    int x0, y0;
+    if (tvguideConfig.displayMode == eVertical) {
+        int x0 = column->getX();
+        int y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight;
+        if ( column->Start() < StartTime() ) {
+            y0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
+        }
+        if (!pixmap) {
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, tvguideConfig.colWidth, viewportHeight), 
+                                                cRect(0, 0, tvguideConfig.colWidth, Duration()/60*tvguideConfig.minutePixel));
+        } else {
+            pixmap->SetViewPort(cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
+        }
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        int x0 = tvguideConfig.channelHeaderWidth;
+        int y0 = column->getY();
+        if ( column->Start() < StartTime() ) {
+            x0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
+        }
+        if (!pixmap) {
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, tvguideConfig.rowHeight), 
+                                                cRect(0, 0, Duration()/60*tvguideConfig.minutePixel, tvguideConfig.rowHeight));
+        } else {
+            pixmap->SetViewPort(cRect(x0, y0, viewportHeight, tvguideConfig.rowHeight ));
+        }
+   }
+
 }
 
 void cEpgGrid::setText() {
-	cString strText;
-	strText = cString::sprintf("%s - %s:\n%s", *(event->GetTimeString()), *(event->GetEndTimeString()), event->Title());
-	text->Set(*(strText), tvguideConfig.FontGrid, tvguideConfig.colWidth-2*borderWidth);
-	extText->Set(event->ShortText(), tvguideConfig.FontGridSmall, tvguideConfig.colWidth-2*borderWidth);
+    if (tvguideConfig.displayMode == eVertical) {
+        cString strText;
+        strText = cString::sprintf("%s - %s:\n%s", *(event->GetTimeString()), *(event->GetEndTimeString()), event->Title());
+        text->Set(*(strText), tvguideConfig.FontGrid, tvguideConfig.colWidth-2*borderWidth);
+        extText->Set(event->ShortText(), tvguideConfig.FontGridSmall, tvguideConfig.colWidth-2*borderWidth);
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        timeString = cString::sprintf("%s - %s", *(event->GetTimeString()), *(event->GetEndTimeString()));
+    }
 }
 
 void cEpgGrid::drawText() {
-	if (Height()/tvguideConfig.minuteHeight < 6)
-		return;
-	int textHeight = tvguideConfig.FontGrid->Height();
-	int textLines = text->Lines();
-	for (int i=0; i<textLines; i++) {
-		pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGrid);
-	}
-	int extTextLines = extText->Lines();
-	int offset = (textLines+1)*textHeight - 0.5*textHeight;
-	textHeight = tvguideConfig.FontGridSmall->Height();
-	if ((Height()-textHeight-10) > offset) {
-		for (int i=0; i<extTextLines; i++) {
-			pixmap->DrawText(cPoint(borderWidth, borderWidth + offset + i*textHeight), extText->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridSmall);
-		}
-	}
-    if (hasTimer) 
-			drawRecIcon();
+    if (tvguideConfig.displayMode == eVertical) {
+        if (Height()/tvguideConfig.minutePixel < 6)
+            return;
+        int textHeight = tvguideConfig.FontGrid->Height();
+        int textLines = text->Lines();
+        for (int i=0; i<textLines; i++) {
+            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGrid);
+        }
+        int extTextLines = extText->Lines();
+        int offset = (textLines+1)*textHeight - 0.5*textHeight;
+        textHeight = tvguideConfig.FontGridSmall->Height();
+        if ((Height()-textHeight-10) > offset) {
+            for (int i=0; i<extTextLines; i++) {
+                pixmap->DrawText(cPoint(borderWidth, borderWidth + offset + i*textHeight), extText->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridSmall);
+            }
+        }
+        if (hasTimer) 
+                drawRecIcon();
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        if (Width()/tvguideConfig.minutePixel < 10) {
+            int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
+            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
+            return;
+        }
+        pixmap->DrawText(cPoint(borderWidth, borderWidth), *timeString, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontalSmall);
+        cString strTitle = CutText(event->Title(), viewportHeight, tvguideConfig.FontGridHorizontal).c_str();
+        int titleY = tvguideConfig.FontGridHorizontalSmall->Height() + (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontalSmall->Height() - tvguideConfig.FontGridHorizontal->Height())/2;
+        pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
+    }
 }
 
 void cEpgGrid::drawRecIcon() {

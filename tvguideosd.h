@@ -33,6 +33,10 @@ private:
   void processKey7();
   void processKey9();
   void setNextActiveGrid(cGrid *next);
+  void channelForward();
+  void channelBack();
+  void timeForward();
+  void timeBack();
   void ScrollForward();
   void ScrollBack();
   void dump();

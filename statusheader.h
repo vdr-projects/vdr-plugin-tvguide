@@ -6,6 +6,7 @@
 class cStatusHeader : public cStyledPixmap {
 private:
     cPixmap *pixmapText;
+    cPixmap *pixmapTVFrame;
 public:
 	cStatusHeader(void);
 	virtual ~cStatusHeader(void);

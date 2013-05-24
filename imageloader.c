@@ -13,7 +13,8 @@ cImageLoader::cImageLoader() {
 cImageLoader::~cImageLoader() {
 }
 
-bool cImageLoader::LoadLogo(const char *logo, int width = tvguideConfig.logoWidth, int height = tvguideConfig.logoHeight) {
+bool cImageLoader::LoadLogo(const char *logo, int width, int height) {
+
     if ((width == 0)||(height==0))
         return false;
     std::string logoLower = logo;
@@ -26,9 +27,7 @@ bool cImageLoader::LoadLogo(const char *logo, int width = tvguideConfig.logoWidt
 	}
     if (!LoadImage(logoLower.c_str(), tvguideConfig.logoPath, extension))
         return false;
-    if (height != 0 || width != 0) {
-        buffer.sample( Geometry(width, height));
-    }
+    buffer.sample( Geometry(width, height));
     return true;
 }
 
@@ -46,7 +45,7 @@ bool cImageLoader::LoadEPGImage(int eventID) {
 }
 
 bool cImageLoader::DrawBackground(tColor back, tColor blend, int width, int height) {
-    if ((width == 0) || (height == 0))
+    if ((width < 1) || (height < 1))
         return false;
     Color Back = Argb2Color(back);
     Color Blend = Argb2Color(blend);

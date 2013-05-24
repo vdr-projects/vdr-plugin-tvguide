@@ -7,8 +7,8 @@ cDetailView::cDetailView(cGrid *grid) {
 	FrameTime = 40; // ms
 	FadeTime = 500; // ms
 	borderWidth = 100; //px
-	headerHeight = max (80 + tvguideConfig.logoHeight +	3 * tvguideConfig.FontDetailHeader->Height(), // border + logo + 3 Lines
-						80 + tvguideConfig.epgImageHeight);
+	headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
+						40 + tvguideConfig.epgImageHeight);
 	description.Set(event->Description(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
 	contentScrollable = setContentDrawportHeight();
 	createPixmaps();
@@ -61,19 +61,17 @@ void cDetailView::createPixmaps() {
 void cDetailView::drawHeader() {
     header->drawBackground();
 	header->drawBoldBorder();
-	
-	int lineHeight = tvguideConfig.FontDetailHeader->Height();
-	int offset = 30;
+    int logoHeight = header->Height() / 2;
+    int logoWidth = logoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
+ 	int lineHeight = tvguideConfig.FontDetailHeader->Height();
 	cImageLoader imgLoader;
-	if (tvguideConfig.hideChannelLogos) {
-		header->DrawText(cPoint(20, offset + 10), grid->column->getChannel()->Name(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailHeader);
-		offset += lineHeight + 10;
-	} else {
-		if (imgLoader.LoadLogo(grid->column->getChannel()->Name())) {
+    bool logoDrawn = false;
+	if (!tvguideConfig.hideChannelLogos) {
+		if (imgLoader.LoadLogo(grid->column->getChannel()->Name(), logoWidth, logoHeight)) {
 			cImage logo = imgLoader.GetImage();
-			headerLogo->DrawImage(cPoint(20, 20), logo);
+			headerLogo->DrawImage(cPoint(10, (header->Height() - logoHeight)/2), logo);
+            logoDrawn = true;
 		}
-		offset += tvguideConfig.logoHeight;
 	}
 	
 	if (!tvguideConfig.hideEpgImages) {
@@ -85,11 +83,12 @@ void cDetailView::drawHeader() {
 			header->DrawImage(cPoint(epgImageX, epgImageY), epgImage);
 		}
 	}
-	
-	header->DrawText(cPoint(20, offset), event->Title(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailHeader);
+	int textX = logoDrawn?(20 + logoWidth):20;
+    int textY = (header->Height() - 2*lineHeight)/2;
+	header->DrawText(cPoint(textX, textY), event->Title(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailHeader);
 	cString datetime = cString::sprintf("%s, %s - %s (%d min)", *event->GetDateString(),  *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60);
-	header->DrawText(cPoint(20, offset + lineHeight), *datetime, theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
-	header->DrawText(cPoint(20, offset + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+	header->DrawText(cPoint(textX, textY + lineHeight), *datetime, theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+	header->DrawText(cPoint(textX, textY + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
 }
 
 void cDetailView::drawContent() {

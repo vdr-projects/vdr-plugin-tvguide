@@ -26,6 +26,7 @@ public:
 	bool readGrids();
 	void drawGrids();
 	int getX();
+	int getY();
     int Start() { return myTime->GetStart(); };
     int Stop()  { return myTime->GetEnd(); };
     const char* Name() { return channel->Name(); };
