@@ -41,8 +41,8 @@ void cStatusHeader::ScaleVideo(void) {
     if (tvguideConfig.scaleVideo) {
         int height = tvguideConfig.statusHeaderHeight;
         int width = height * 16 / 9;
-        int x = tvguideConfig.osdWidth - width;
-        int y = 0;
+        int x = osdManager.Left() + tvguideConfig.osdWidth - width;
+        int y = osdManager.Top();
         cRect availableRect(x, y, width, height);
         cRect vidWin = cDevice::PrimaryDevice()->CanScaleVideo(availableRect);
         cDevice::PrimaryDevice()->ScaleVideo(vidWin);

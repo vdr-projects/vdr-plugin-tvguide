@@ -17,6 +17,8 @@ class cOsdManager {
         void deleteOsd() {delete osd;};
         int Width() { return osd->Width(); };
         int Height() { return osd->Height(); };
+        int Top() { return osd->Top(); };
+        int Left() { return osd->Left(); };
 };
 
 #endif //__TVGUIDE_OSDMANAGER_H
