@@ -5,13 +5,13 @@
 
 class cStyledPixmap {
 private:
-	void drawVerticalLine(int x, int yStart, int yStop, tColor col);
-	void drawHorizontalLine(int y, int xStart, int xStop, tColor col);
+    void drawVerticalLine(int x, int yStart, int yStop, tColor col);
+    void drawHorizontalLine(int y, int xStart, int xStop, tColor col);
 protected:
-	cPixmap *pixmap;
-	tColor color;
-	tColor colorBlending;
-	void setPixmap(cPixmap *pixmap);
+    cPixmap *pixmap;
+    tColor color;
+    tColor colorBlending;
+    void setPixmap(cPixmap *pixmap);
 public:
   cStyledPixmap(void);
   cStyledPixmap(cPixmap *pixmap);

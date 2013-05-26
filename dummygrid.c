@@ -11,10 +11,10 @@ cDummyGrid::~cDummyGrid(void) {
 }
 
 void cDummyGrid::SetViewportHeight() {
-	int viewportHeightOld = viewportHeight;
+    int viewportHeightOld = viewportHeight;
     viewportHeight = Duration() / 60 * tvguideConfig.minutePixel;
     if (viewportHeight != viewportHeightOld)
-		dirty = true;
+        dirty = true;
 }
 
 void cDummyGrid::PositionPixmap() {
@@ -57,7 +57,7 @@ void cDummyGrid::setText() {
 }
 
 void cDummyGrid::drawText() {
-	if (tvguideConfig.displayMode == eVertical) {
+    if (tvguideConfig.displayMode == eVertical) {
         if (Height()/tvguideConfig.minutePixel < 6)
             return;
         int textHeight = tvguideConfig.FontGrid->Height();
@@ -80,7 +80,7 @@ cString cDummyGrid::getTimeString(void) {
 }
 
 void cDummyGrid::debug() {
-	esyslog("tvguide dummygrid: %s: %s, %s, viewportHeight: %d px, Duration: %ld min, active: %d", 
+    esyslog("tvguide dummygrid: %s: %s, %s, viewportHeight: %d px, Duration: %ld min, active: %d", 
                 column->Name(),
                 *cMyTime::printTime(start), 
                 *cMyTime::printTime(end), 

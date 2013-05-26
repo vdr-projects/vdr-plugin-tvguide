@@ -2,31 +2,31 @@
 #include "epggrid.h"
 
 cEpgGrid::cEpgGrid(cChannelColumn *c, const cEvent *event)  : cGrid(c) {
-	this->event = event;
-	extText = new cTextWrapper();
-	hasTimer = false;
-	if (column->HasTimer())
-		hasTimer = event->HasTimer();
+    this->event = event;
+    extText = new cTextWrapper();
+    hasTimer = false;
+    if (column->HasTimer())
+        hasTimer = event->HasTimer();
     dummy = false;
 }
 
 cEpgGrid::~cEpgGrid(void) {
-	delete extText;
+    delete extText;
 }
 
 void cEpgGrid::SetViewportHeight() {
-	int viewportHeightOld = viewportHeight;
-	if ( column->Start() > StartTime() ) {
-		viewportHeight = (min((int)EndTime(), column->Stop()) - column->Start()) /60;
-	} else if ( column->Stop() < EndTime() ) {
-		viewportHeight = (column->Stop() - StartTime()) /60;
+    int viewportHeightOld = viewportHeight;
+    if ( column->Start() > StartTime() ) {
+        viewportHeight = (min((int)EndTime(), column->Stop()) - column->Start()) /60;
+    } else if ( column->Stop() < EndTime() ) {
+        viewportHeight = (column->Stop() - StartTime()) /60;
         if (viewportHeight < 0) viewportHeight = 0;
-	} else {
-		viewportHeight = Duration() / 60;
-	}
+    } else {
+        viewportHeight = Duration() / 60;
+    }
     viewportHeight *= tvguideConfig.minutePixel;
-	if (viewportHeight != viewportHeightOld)
-		dirty = true;
+    if (viewportHeight != viewportHeightOld)
+        dirty = true;
 }
 
 void cEpgGrid::PositionPixmap() {
@@ -103,11 +103,11 @@ void cEpgGrid::drawText() {
 }
 
 void cEpgGrid::drawRecIcon() {
-	cString recIconText("REC");
-	int width = tvguideConfig.FontGrid->Width(*recIconText)+2*borderWidth;
-	int height = tvguideConfig.FontGrid->Height()+10;
-	pixmap->DrawRectangle( cRect(Width() - width - borderWidth,  Height() - height - borderWidth, width, height), theme.Color(clrButtonRed));
-	pixmap->DrawText(cPoint(Width() - width, Height() - height - borderWidth/2), *recIconText, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGrid);	
+    cString recIconText("REC");
+    int width = tvguideConfig.FontGrid->Width(*recIconText)+2*borderWidth;
+    int height = tvguideConfig.FontGrid->Height()+10;
+    pixmap->DrawRectangle( cRect(Width() - width - borderWidth,  Height() - height - borderWidth, width, height), theme.Color(clrButtonRed));
+    pixmap->DrawText(cPoint(Width() - width, Height() - height - borderWidth/2), *recIconText, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGrid);   
 }
 
 cString cEpgGrid::getTimeString(void) {
@@ -115,7 +115,7 @@ cString cEpgGrid::getTimeString(void) {
 }
 
 void cEpgGrid::debug() {
-	esyslog("tvguide epggrid: %s: %s, %s, viewportHeight: %d px, Duration: %d min, active: %d", 
+    esyslog("tvguide epggrid: %s: %s, %s, viewportHeight: %d px, Duration: %d min, active: %d", 
                 column->Name(),
                 *(event->GetTimeString()), 
                 event->Title(), 

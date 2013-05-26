@@ -5,25 +5,25 @@
 
 class cMessageBoxThread : public cThread {
 private:
-	cPixmap *content;
-	int FadeTime;
-	int FrameTime;
-	int displayTime;
-	virtual void Action(void);
+    cPixmap *content;
+    int FadeTime;
+    int FrameTime;
+    int displayTime;
+    virtual void Action(void);
 public:
-	cMessageBoxThread(cPixmap *content, int displayTime);
-	virtual ~cMessageBoxThread(void);
+    cMessageBoxThread(cPixmap *content, int displayTime);
+    virtual ~cMessageBoxThread(void);
 };
 
 class cMessageBox {
 private:
-	static cMutex mutex;
-	static cMessageBoxThread *msgboxThread;
-	static cPixmap *content;
+    static cMutex mutex;
+    static cMessageBoxThread *msgboxThread;
+    static cPixmap *content;
 public:
-	static bool Start(int displayTime, cString msg);
-	static void Stop(void);
-	static void Destroy(void);
+    static bool Start(int displayTime, cString msg);
+    static void Stop(void);
+    static void Destroy(void);
 };
 
 #endif //__TVGUIDE_MESSAGEBOX_H

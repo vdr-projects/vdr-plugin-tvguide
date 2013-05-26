@@ -85,22 +85,22 @@ bool cPluginTvguide::ProcessArgs(int argc, char *argv[])
   int c;
   cString *path = NULL;
   while ((c = getopt_long(argc, argv, "i:f:l:", long_options, NULL)) != -1) {
-	switch (c) {
+    switch (c) {
       case 'i':
-		path = new cString(optarg);
+        path = new cString(optarg);
         tvguideConfig.SetImagesPath(*path);
         imagesPathSet = true;
         break;
       case 'l':
-		path = new cString(optarg);
+        path = new cString(optarg);
         tvguideConfig.SetLogoPath(*path);
         logoPathSet = true;
         break;
       default:
         return false;
     }
-	if (path) 
-		delete path;
+    if (path) 
+        delete path;
   }
   return true;
 }
@@ -113,18 +113,18 @@ bool cPluginTvguide::Initialize(void)
 
 bool cPluginTvguide::Start(void)
 {
-	if (!logoPathSet) {
-		cString path = cString::sprintf("%s/channellogos/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
-		tvguideConfig.SetLogoPath(path);
-		logoPathSet = true;
-	}
-	
-	if (!imagesPathSet) {
-		cString path = cString::sprintf("%s/epgimages/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
-		tvguideConfig.SetImagesPath(path);
-		logoPathSet = true;
-	}
-	return true;
+    if (!logoPathSet) {
+        cString path = cString::sprintf("%s/channellogos/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
+        tvguideConfig.SetLogoPath(path);
+        logoPathSet = true;
+    }
+    
+    if (!imagesPathSet) {
+        cString path = cString::sprintf("%s/epgimages/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
+        tvguideConfig.SetImagesPath(path);
+        logoPathSet = true;
+    }
+    return true;
 }
 
 void cPluginTvguide::Stop(void)

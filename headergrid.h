@@ -9,8 +9,8 @@ private:
     void drawChannelHorizontal(const cChannel *channel);
     void drawChannelVertical(const cChannel *channel);
 public:
-	cHeaderGrid(void);
-	virtual ~cHeaderGrid(void);
+    cHeaderGrid(void);
+    virtual ~cHeaderGrid(void);
     void createBackground(int num);
     void drawChannel(const cChannel *channel);
     void setPosition(int num);

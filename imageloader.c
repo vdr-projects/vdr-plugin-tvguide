@@ -21,10 +21,10 @@ bool cImageLoader::LoadLogo(const char *logo, int width, int height) {
     toLowerCase(logoLower);
     cString extension;
     if (tvguideConfig.logoExtension == 0) {
-		extension = "png";
-	} else if (tvguideConfig.logoExtension == 1) {
-		extension = "jpg";
-	}
+        extension = "png";
+    } else if (tvguideConfig.logoExtension == 1) {
+        extension = "jpg";
+    }
     if (!LoadImage(logoLower.c_str(), tvguideConfig.logoPath, extension))
         return false;
     buffer.sample( Geometry(width, height));

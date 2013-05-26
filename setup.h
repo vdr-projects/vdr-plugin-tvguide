@@ -2,55 +2,55 @@
 #define __TVGUIDE_SETUP_H
 
 class cTvguideSetup : public cMenuSetupPage {
-	public:
-		cTvguideSetup(void);
-		virtual ~cTvguideSetup();		
-	private:
-		cTvguideConfig tmpTvguideConfig;
-		void Setup(void);
-	protected:
-		virtual eOSState ProcessKey(eKeys Key);
-		virtual void Store(void);
+    public:
+        cTvguideSetup(void);
+        virtual ~cTvguideSetup();       
+    private:
+        cTvguideConfig tmpTvguideConfig;
+        void Setup(void);
+    protected:
+        virtual eOSState ProcessKey(eKeys Key);
+        virtual void Store(void);
 
 };
 
 class cMenuSetupSubMenu : public cOsdMenu {
-	protected:
-		cTvguideConfig *tmpTvguideConfig;
-		virtual eOSState ProcessKey(eKeys Key);
-		virtual void Set(void) = 0;
-		cOsdItem *InfoItem(const char *label, const char *value);
-	public:
-		cMenuSetupSubMenu(const char *Title, cTvguideConfig *data);
+    protected:
+        cTvguideConfig *tmpTvguideConfig;
+        virtual eOSState ProcessKey(eKeys Key);
+        virtual void Set(void) = 0;
+        cOsdItem *InfoItem(const char *label, const char *value);
+    public:
+        cMenuSetupSubMenu(const char *Title, cTvguideConfig *data);
 };
 
 class cMenuSetupGeneral : public cMenuSetupSubMenu {
-	protected:
+    protected:
         cThemes themes;
         const char * blendingMethods[3];
-		const char * timeFormatItems[2];
-		void Set(void);
-	public:
-		cMenuSetupGeneral(cTvguideConfig *data);
+        const char * timeFormatItems[2];
+        void Set(void);
+    public:
+        cMenuSetupGeneral(cTvguideConfig *data);
 };
 
 class cMenuSetupScreenLayout : public cMenuSetupSubMenu {
-	protected:
-		virtual eOSState ProcessKey(eKeys Key);
+    protected:
+        virtual eOSState ProcessKey(eKeys Key);
         const char * displayModeItems[2];
-		const char * hideChannelLogosItems[2];
-		const char * logoExtensionItems[2];
-		void Set(void);
-	public:
-		cMenuSetupScreenLayout(cTvguideConfig *data);
+        const char * hideChannelLogosItems[2];
+        const char * logoExtensionItems[2];
+        void Set(void);
+    public:
+        cMenuSetupScreenLayout(cTvguideConfig *data);
 };
 
 class cMenuSetupFont : public cMenuSetupSubMenu {
-	protected:
-		cStringList fontNames;
-		void Set(void);
-	public:
-		cMenuSetupFont(cTvguideConfig *data);
+    protected:
+        cStringList fontNames;
+        void Set(void);
+    public:
+        cMenuSetupFont(cTvguideConfig *data);
 };
 
 #endif //__TVGUIDE_SETUP_H

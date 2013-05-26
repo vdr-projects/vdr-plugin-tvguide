@@ -8,24 +8,24 @@ private:
     time_t start;
     time_t end;
     cString strText;
-	void drawText();
+    void drawText();
     time_t Duration(void) { return (end - start); };
 public:
-	cDummyGrid(cChannelColumn *c, time_t start, time_t end);
-	virtual ~cDummyGrid(void);
-	void SetViewportHeight();
+    cDummyGrid(cChannelColumn *c, time_t start, time_t end);
+    virtual ~cDummyGrid(void);
+    void SetViewportHeight();
     void PositionPixmap();
     void setText(void);
-	const cEvent *GetEvent() {return NULL;};
-	time_t StartTime() { return start; };
-	time_t EndTime() { return end; };
+    const cEvent *GetEvent() {return NULL;};
+    time_t StartTime() { return start; };
+    time_t EndTime() { return end; };
     void SetStartTime(time_t start) { this->start = start; };
-	void SetEndTime(time_t end) { this->end = end; };
-	int calcOverlap(cGrid *neighbor);
-	void setTimer() {};
+    void SetEndTime(time_t end) { this->end = end; };
+    int calcOverlap(cGrid *neighbor);
+    void setTimer() {};
     cString getText(void);
     cString getTimeString(void);
-	void debug();
+    void debug();
 };
 
 #endif //__TVGUIDE_DUMMYGRID_H

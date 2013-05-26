@@ -8,8 +8,8 @@ private:
     cPixmap *pixmapText;
     cPixmap *pixmapTVFrame;
 public:
-	cStatusHeader(void);
-	virtual ~cStatusHeader(void);
+    cStatusHeader(void);
+    virtual ~cStatusHeader(void);
     void ScaleVideo(void);
     void DrawInfoText(cGrid *grid);
 };
