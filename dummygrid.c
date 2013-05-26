@@ -67,6 +67,11 @@ void cDummyGrid::drawText() {
         
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
+        if (Width()/tvguideConfig.minutePixel < 10) {
+            int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
+            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
+            return;
+        }
         int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
         pixmap->DrawText(cPoint(borderWidth, titleY), *strText, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
     }
