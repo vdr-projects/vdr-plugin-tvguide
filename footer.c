@@ -42,11 +42,14 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int
     
     int left = num * buttonWidth + (num + 1) * buttonBorder;
     footer->DrawRectangle(cRect(left, buttonY, buttonWidth, buttonHeight), borderColor);
-    
-    cImageLoader imgLoader;
-    imgLoader.DrawBackground(theme.Color(clrButtonBlend), color, buttonWidth-4, buttonHeight-4);
-    footer->DrawImage(cPoint(left+2, buttonY+2), imgLoader.GetImage());    
-    
+    if (tvguideConfig.useBlending) {
+        cImageLoader imgLoader;
+        imgLoader.DrawBackground(theme.Color(clrButtonBlend), color, buttonWidth-4, buttonHeight-4);
+        footer->DrawImage(cPoint(left+2, buttonY+2), imgLoader.GetImage());    
+    } else {
+        footer->DrawRectangle(cRect(left, buttonY, buttonWidth, buttonHeight), borderColor); 
+        footer->DrawRectangle(cRect(left+2, buttonY+2, buttonWidth-4, buttonHeight-4), color); 
+    }
     int textWidth = tvguideConfig.FontButton->Width(text);
     int textHeight = tvguideConfig.FontButton->Height();
     footer->DrawText(cPoint(left + (buttonWidth-textWidth)/2, buttonY + (buttonHeight-textHeight)/2), text, theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
