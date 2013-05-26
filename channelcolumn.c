@@ -5,7 +5,7 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->num = num;
     this->myTime = myTime;
     hasTimer = channel->HasTimer();
-    schedulesLock = new cSchedulesLock(true, 100);
+    schedulesLock = new cSchedulesLock(false, 100);
 }
 
 cChannelColumn::~cChannelColumn(void) {
