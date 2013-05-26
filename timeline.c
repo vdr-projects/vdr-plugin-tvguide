@@ -48,25 +48,26 @@ void cTimeLine::drawDateViewer() {
     dateViewer->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
     dateViewer->drawBackground();
     dateViewer->drawBorder();
+    tColor colorFontBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
 
     if (tvguideConfig.displayMode == eVertical) {
         int textHeight = tvguideConfig.FontTimeLineWeekday->Height();
         int weekdayWidth = tvguideConfig.FontTimeLineWeekday->Width(*weekDay);
         int dateWidth = tvguideConfig.FontTimeLineDate->Width(*date);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-weekdayWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2), *weekDay, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontTimeLineWeekday);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-dateWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2 + textHeight + 5), *date, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontTimeLineDate);
+        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-weekdayWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2), *weekDay, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineWeekday);
+        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-dateWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2 + textHeight + 5), *date, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDate);
     } else if (tvguideConfig.displayMode == eHorizontal) {
         cString strDate = cString::sprintf("%s %s", *weekDay, *date);
         int x = (dateViewer->Width() - tvguideConfig.FontTimeLineDateHorizontal->Width(*strDate))/2;
         int y = (dateViewer->Height() - tvguideConfig.FontTimeLineDateHorizontal->Height())/2;
-        dateViewer->DrawText(cPoint(x, y), *strDate, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontTimeLineDateHorizontal);
+        dateViewer->DrawText(cPoint(x, y), *strDate, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDateHorizontal);
     }
 }
 
 void cTimeLine::drawTimeline() {
     timeline->SetTile(true);
     timeline->Fill(theme.Color(clrBackground));
-    tColor colorFont;
+    tColor colorFont, colorBackground;
     
     int imgWidth, imgHeight;
     if (tvguideConfig.displayMode == eVertical) {
@@ -87,6 +88,7 @@ void cTimeLine::drawTimeline() {
         if (i%2==0) {
             img = img1;
             colorFont = theme.Color(clrTimeline2);
+            colorBackground = (tvguideConfig.useBlending==0)?theme.Color(clrTimeline1):clrTransparent;
             if (tvguideConfig.timeFormat == e12Hours) {
                 if (i == 0)
                     sprintf(timetext, "12:00 PM");
@@ -100,6 +102,7 @@ void cTimeLine::drawTimeline() {
         } else {
             img = img2;
             colorFont = theme.Color(clrTimeline1);
+            colorBackground = (tvguideConfig.useBlending==0)?theme.Color(clrTimeline2):clrTransparent;
             if (tvguideConfig.timeFormat == e12Hours) {
                 if (i == 1)
                     sprintf(timetext, "12:30 PM");
@@ -115,11 +118,11 @@ void cTimeLine::drawTimeline() {
             posY = i*tvguideConfig.minutePixel*30;
             timeline->DrawImage(cPoint(2, posY), *img);
             textWidth = tvguideConfig.FontTimeLineTime->Width(timetext);
-            timeline->DrawText(cPoint((tvguideConfig.timeLineWidth-textWidth)/2, posY + 5), timetext, colorFont, clrTransparent, tvguideConfig.FontTimeLineTime);
+            timeline->DrawText(cPoint((tvguideConfig.timeLineWidth-textWidth)/2, posY + 5), timetext, colorFont, colorBackground, tvguideConfig.FontTimeLineTime);
         } else if (tvguideConfig.displayMode == eHorizontal) {
             posX = i*tvguideConfig.minutePixel*30;
             timeline->DrawImage(cPoint(posX, 2), *img);
-            timeline->DrawText(cPoint(posX + 2, (dateViewer->Height() - tvguideConfig.FontTimeLineTimeHorizontal->Height())/2), timetext, colorFont, clrTransparent, tvguideConfig.FontTimeLineTimeHorizontal);
+            timeline->DrawText(cPoint(posX + 2, (dateViewer->Height() - tvguideConfig.FontTimeLineTimeHorizontal->Height())/2), timetext, colorFont, colorBackground, tvguideConfig.FontTimeLineTimeHorizontal);
        }
     }
     setTimeline();
@@ -173,8 +176,9 @@ void cTimeLine::drawClock() {
     cString currentTime = myTime->GetCurrentTime();
     int textHeight = tvguideConfig.FontTimeLineTime->Height();
     int clockWidth = tvguideConfig.FontTimeLineTime->Width(*currentTime);
+    tColor colorFontBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
     clock->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
     clock->drawBackground();
     clock->drawBorder();
-    clock->DrawText(cPoint((tvguideConfig.timeLineWidth-clockWidth)/2, (tvguideConfig.footerHeight-textHeight)/2), *currentTime, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontTimeLineTime);
+    clock->DrawText(cPoint((tvguideConfig.timeLineWidth-clockWidth)/2, (tvguideConfig.footerHeight-textHeight)/2), *currentTime, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineTime);
 }

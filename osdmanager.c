@@ -38,13 +38,15 @@ bool cOsdManager::setOsd() {
 }
 
 void cOsdManager::setBackground() {
+esyslog("tvguide: %d %d", Width(), Height());
+        
     if (tvguideConfig.displayStatusHeader && tvguideConfig.scaleVideo) {
         int widthStatus = cOsd::OsdWidth() - tvguideConfig.statusHeaderHeight * 16 / 9;
         osd->DrawRectangle(0, 0, widthStatus, tvguideConfig.statusHeaderHeight, theme.Color(clrBackgroundOSD));
-        osd->DrawRectangle(0, tvguideConfig.statusHeaderHeight, cOsd::OsdWidth(), cOsd::OsdHeight() - tvguideConfig.statusHeaderHeight, theme.Color(clrBackgroundOSD));    
+        osd->DrawRectangle(0, tvguideConfig.statusHeaderHeight, Width(), Height(), theme.Color(clrBackgroundOSD));    
     }
     else
-        osd->DrawRectangle(0, 0, cOsd::OsdWidth(), cOsd::OsdHeight(), theme.Color(clrBackgroundOSD));
+        osd->DrawRectangle(0, 0, Width(), Height(), theme.Color(clrBackgroundOSD));
 }
 
 cPixmap *cOsdManager::requestPixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort) {
