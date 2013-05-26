@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-05-24 14:53+0200\n"
+"POT-Creation-Date: 2013-05-26 17:37+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -11,6 +11,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "RERUNS OF THIS SHOW"
+msgstr "Wiederholungen dieser Sendung"
 
 msgid "No EPG Information available"
 msgstr "Keine EPG Daten verfügbar"
@@ -36,6 +39,15 @@ msgstr "Anzeigeoptionen"
 msgid "Fonts and Fontsizes"
 msgstr "Schriften und Schriftgrößen"
 
+msgid "never"
+msgstr "nie"
+
+msgid "if exists"
+msgstr "falls vorhanden"
+
+msgid "always"
+msgstr "immer"
+
 msgid "Theme"
 msgstr "Theme"
 
@@ -59,6 +71,15 @@ msgstr "Sehr großer Sprung (Tasten 4 / 6) in Stunden"
 
 msgid "Time Format (12h/24h)"
 msgstr "Zeitformat (12h/24h)"
+
+msgid "Display Reruns in detailed EPG View"
+msgstr "Wiederholungen in der detailierten EPG Ansicht anzeigen"
+
+msgid "Number of reruns to display"
+msgstr "Anzahl der dargestellten Wiederholungen"
+
+msgid "Use Subtitle for reruns"
+msgstr "Untertitel für Wiederholungssuche nutzen"
 
 msgid "Display Mode"
 msgstr "Anzeigemodus"

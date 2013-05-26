@@ -1,3 +1,5 @@
+#include "services/epgsearch.h"
+#include <sstream>
 #include "detailview.h"
 
 cDetailView::cDetailView(cGrid *grid) {
@@ -10,6 +12,9 @@ cDetailView::cDetailView(cGrid *grid) {
     headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
                         40 + tvguideConfig.epgImageHeight);
     description.Set(event->Description(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+    if (tvguideConfig.displayRerunsDetailEPGView) {
+        LoadReruns();
+    }
     contentScrollable = setContentDrawportHeight();
     createPixmaps();
 }
@@ -26,6 +31,9 @@ cDetailView::~cDetailView(void){
 
 bool cDetailView::setContentDrawportHeight() {
     int linesContent = description.Lines() + 1;
+    if (tvguideConfig.displayRerunsDetailEPGView) {
+        linesContent += reruns.Lines() + 1;
+    }
     heightContent = linesContent * tvguideConfig.FontDetailView->Height();
     if (heightContent > (tvguideConfig.osdHeight - 2 * borderWidth - headerHeight))
         return true;
@@ -97,10 +105,19 @@ void cDetailView::drawContent() {
     
     int textHeight = tvguideConfig.FontDetailView->Height();
     int textLines = description.Lines();
-    
-    for (int i=0; i<textLines; i++) {
+    int i=0;
+    for (; i<textLines; i++) {
         content->DrawText(cPoint(20, 20 + i*textHeight), description.GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
     }
+    i++;
+    if (tvguideConfig.displayRerunsDetailEPGView) {
+        textLines = reruns.Lines();
+        for (int j=0; j<textLines; j++) {
+            content->DrawText(cPoint(20, 20 + i*textHeight), reruns.GetLine(j), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+            i++;
+        }
+    }
+
 }
 
 void cDetailView::drawScrollbar() {
@@ -166,6 +183,54 @@ cImage *cDetailView::createScrollbar(int width, int height, tColor clrBgr, tColo
         }
     }
     return image;
+}
+
+void cDetailView::LoadReruns(void) {
+    cPlugin *epgSearchPlugin = cPluginManager::GetPlugin("epgsearch");
+    if (epgSearchPlugin && !isempty(event->Title())) {
+        std::stringstream sstrReruns;
+        Epgsearch_searchresults_v1_0 data;
+        std::string strQuery = event->Title();
+        if (tvguideConfig.useSubtitleRerun > 0) {
+            if (tvguideConfig.useSubtitleRerun == 2 || !isempty(event->ShortText()))
+                strQuery += "~";
+            if (!isempty(event->ShortText()))
+                strQuery += event->ShortText();
+                data.useSubTitle = true;
+        } else {
+            data.useSubTitle = false;
+        }
+        data.query = (char *)strQuery.c_str();
+        data.mode = 0;
+        data.channelNr = 0;
+        data.useTitle = true;
+        data.useDescription = false;
+        
+        if (epgSearchPlugin->Service("Epgsearch-searchresults-v1.0", &data)) {
+            cList<Epgsearch_searchresults_v1_0::cServiceSearchResult>* list = data.pResultList;
+            if (list && (list->Count() > 1)) {
+                sstrReruns << tr("RERUNS OF THIS SHOW") << ':' << std::endl;
+                int i = 0;
+                for (Epgsearch_searchresults_v1_0::cServiceSearchResult *r = list->First(); r && i < tvguideConfig.numReruns; r = list->Next(r)) {
+                    if ((event->ChannelID() == r->event->ChannelID()) && (event->StartTime() == r->event->StartTime()))
+                        continue;
+                    i++;
+                    sstrReruns  << "- "
+                                << *DayDateTime(r->event->StartTime());
+                    cChannel *channel = Channels.GetByChannelID(r->event->ChannelID(), true, true);
+                    if (channel)
+                        sstrReruns << " " << channel->ShortName(true);
+                    sstrReruns << ":  " << r->event->Title();
+                    if (!isempty(r->event->ShortText()))
+                        sstrReruns << "~" << r->event->ShortText();
+                    sstrReruns << std::endl;
+                }
+                delete list;
+            }
+        }
+        reruns.Set(sstrReruns.str().c_str(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+    } else
+        reruns.Set("", tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
 }
 
 void cDetailView::Action(void) {

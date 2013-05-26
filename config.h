@@ -89,6 +89,9 @@ class cTvguideConfig {
         int themeIndex;
         int useBlending;
         int roundedCorners;
+        int displayRerunsDetailEPGView;
+        int numReruns;
+        int useSubtitleRerun;
         void setDynamicValues(int width, int height);
         bool SetupParse(const char *Name, const char *Value);
         void loadTheme();

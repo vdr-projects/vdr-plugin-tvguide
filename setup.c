@@ -93,6 +93,9 @@ void cTvguideSetup::Store(void) {
     SetupStore("FontGridHorizontalSmallDelta", tvguideConfig.FontGridHorizontalSmallDelta);
     SetupStore("FontTimeLineDateHorizontalDelta", tvguideConfig.FontTimeLineDateHorizontalDelta);
     SetupStore("FontTimeLineTimeHorizontalDelta", tvguideConfig.FontTimeLineTimeHorizontalDelta);
+    SetupStore("displayRerunsDetailEPGView", tvguideConfig.displayRerunsDetailEPGView);
+    SetupStore("numReruns", tvguideConfig.numReruns);
+    SetupStore("useSubtitleRerun", tvguideConfig.useSubtitleRerun);
 }
 
 cMenuSetupSubMenu::cMenuSetupSubMenu(const char* Title, cTvguideConfig* data) : cOsdMenu(Title, 30) {
@@ -128,10 +131,14 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
     blendingMethods[0] = "none";
     blendingMethods[1] = "classic";
     blendingMethods[2] = "nOpacity style";
+    useSubtitleRerunTexts[0] = tr("never");
+    useSubtitleRerunTexts[1] = tr("if exists");
+    useSubtitleRerunTexts[2] = tr("always");
     Set();
 }
 
 void cMenuSetupGeneral::Set(void) {
+    const char *indent = "    ";
     int currentItem = Current();
     Clear();
     if (themes.NumThemes())
@@ -145,8 +152,23 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
 
+    Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
+    if (tmpTvguideConfig->displayRerunsDetailEPGView) {
+        Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
+        Add(new cMenuEditStraItem(cString::sprintf("%s%s", indent, tr("Use Subtitle for reruns")), &tmpTvguideConfig->useSubtitleRerun, 3, useSubtitleRerunTexts));
+    }
     SetCurrent(Get(currentItem));
     Display();
+}
+
+eOSState cMenuSetupGeneral::ProcessKey(eKeys Key) {
+    eOSState state = cOsdMenu::ProcessKey(Key);
+    if (Key == kOk) {
+        state = osBack;
+    } else if (Key != kNone) {
+        Set();
+    }
+    return state;
 }
 
 //------------------------------------------------------------------------------------------------------------------

@@ -19,6 +19,7 @@ private:
     int FrameTime;
     int FadeTime;
     cTextWrapper description;
+    cTextWrapper reruns;
     int borderWidth;
     int headerHeight;
     bool setContentDrawportHeight();
@@ -26,6 +27,7 @@ private:
     int heightScrollbar;
     bool contentScrollable;
     virtual void Action(void);
+    void LoadReruns(void);
     void drawHeader();
     void drawContent();
     void drawScrollbar();

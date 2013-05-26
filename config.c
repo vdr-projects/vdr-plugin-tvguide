@@ -89,6 +89,9 @@ cTvguideConfig::cTvguideConfig() {
     themeIndex = 4;
     useBlending = 2;
     roundedCorners = 0;
+    displayRerunsDetailEPGView = 1;
+    numReruns = 5;
+    useSubtitleRerun = 1;
 }
 
 cTvguideConfig::~cTvguideConfig() {
@@ -247,6 +250,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "FontGridHorizontalSmallDelta") == 0) FontGridHorizontalSmallDelta = atoi(Value);
     else if (strcmp(Name, "FontTimeLineDateHorizontalDelta") == 0) FontTimeLineDateHorizontalDelta = atoi(Value);
     else if (strcmp(Name, "FontTimeLineTimeHorizontalDelta") == 0) FontTimeLineTimeHorizontalDelta = atoi(Value);
+    else if (strcmp(Name, "displayRerunsDetailEPGView") == 0) displayRerunsDetailEPGView = atoi(Value);
+    else if (strcmp(Name, "numReruns") == 0)                numReruns = atoi(Value);
+    else if (strcmp(Name, "useSubtitleRerun") == 0)         useSubtitleRerun = atoi(Value);
     else return false;
     return true;
 }
