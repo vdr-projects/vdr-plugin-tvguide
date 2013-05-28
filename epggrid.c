@@ -71,20 +71,21 @@ void cEpgGrid::setText() {
 }
 
 void cEpgGrid::drawText() {
+    tColor colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
     if (tvguideConfig.displayMode == eVertical) {
         if (Height()/tvguideConfig.minutePixel < 6)
             return;
         int textHeight = tvguideConfig.FontGrid->Height();
         int textLines = text->Lines();
         for (int i=0; i<textLines; i++) {
-            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGrid);
+            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), colorText, clrTransparent, tvguideConfig.FontGrid);
         }
         int extTextLines = extText->Lines();
         int offset = (textLines+1)*textHeight - 0.5*textHeight;
         textHeight = tvguideConfig.FontGridSmall->Height();
         if ((Height()-textHeight-10) > offset) {
             for (int i=0; i<extTextLines; i++) {
-                pixmap->DrawText(cPoint(borderWidth, borderWidth + offset + i*textHeight), extText->GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridSmall);
+                pixmap->DrawText(cPoint(borderWidth, borderWidth + offset + i*textHeight), extText->GetLine(i), colorText, clrTransparent, tvguideConfig.FontGridSmall);
             }
         }
         if (hasTimer) 
@@ -92,13 +93,13 @@ void cEpgGrid::drawText() {
     } else if (tvguideConfig.displayMode == eHorizontal) {
         if (Width()/tvguideConfig.minutePixel < 10) {
             int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
-            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
+            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, clrTransparent, tvguideConfig.FontGridHorizontal);
             return;
         }
-        pixmap->DrawText(cPoint(borderWidth, borderWidth), *timeString, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontalSmall);
+        pixmap->DrawText(cPoint(borderWidth, borderWidth), *timeString, colorText, clrTransparent, tvguideConfig.FontGridHorizontalSmall);
         cString strTitle = CutText(event->Title(), viewportHeight, tvguideConfig.FontGridHorizontal).c_str();
         int titleY = tvguideConfig.FontGridHorizontalSmall->Height() + (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontalSmall->Height() - tvguideConfig.FontGridHorizontal->Height())/2;
-        pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, theme.Color(clrFont), clrTransparent, tvguideConfig.FontGridHorizontal);
+        pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, colorText, clrTransparent, tvguideConfig.FontGridHorizontal);
     }
 }
 

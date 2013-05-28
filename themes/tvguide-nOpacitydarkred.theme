@@ -9,6 +9,7 @@ clrGrid2Blending = 90000000
 clrHighlight = DDBB0000
 clrHighlightBlending = DD000000
 clrFont = FFFFFFFF
+clrFontActive  = FFFFFFFF
 clrFontHeader = FFFFFFFF
 clrFontButtons = FFFFFFFF
 clrHeader = EE888888
