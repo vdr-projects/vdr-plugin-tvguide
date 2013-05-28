@@ -1,4 +1,5 @@
 Description = nOpacity IceBlue
+clrDoBlending = FFFFFFFF
 clrBackground = DDFFFFFF
 clrBackgroundOSD = DDFFFFFF
 clrGrid1 = BB555555
@@ -9,7 +10,8 @@ clrFontButtons = FFFFFFFF
 clrFontHeader = FF000000
 clrHeader = FFFFFFFF
 clrBorder = FF000000
-clrStatusHeader = DDFFFFFF
+clrStatusHeader = 00000000
+clrStatusHeaderBlending = 00000000
 clrTimeline1 = FFDDDDDD
 clrTimeline1Blending = 00000000
 clrTimeline2 = FF000000

@@ -51,7 +51,6 @@ void cTvguideSetup::Store(void) {
     SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
     SetupStore("scaleVideo", tvguideConfig.scaleVideo);
     SetupStore("decorateVideo", tvguideConfig.decorateVideo);
-    SetupStore("useBlending", tvguideConfig.useBlending);
     SetupStore("roundedCorners", tvguideConfig.roundedCorners);
     SetupStore("timeFormat", tvguideConfig.timeFormat);
     SetupStore("channelCols", tvguideConfig.channelCols);
@@ -128,9 +127,6 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
     themes.Load(*cString("tvguide"));
     timeFormatItems[0] = "12h";
     timeFormatItems[1] = "24h";
-    blendingMethods[0] = "none";
-    blendingMethods[1] = "classic";
-    blendingMethods[2] = "nOpacity style";
     useSubtitleRerunTexts[0] = tr("never");
     useSubtitleRerunTexts[1] = tr("if exists");
     useSubtitleRerunTexts[2] = tr("always");
@@ -143,7 +139,6 @@ void cMenuSetupGeneral::Set(void) {
     Clear();
     if (themes.NumThemes())
         Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
-    Add(new cMenuEditStraItem(tr("Use color gradients"), &tmpTvguideConfig->useBlending, 3, blendingMethods));
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
 
     Add(new cMenuEditIntItem(tr("Channels to Jump (Keys Green / Yellow)"), &tmpTvguideConfig->jumpChannels, 2, 30));

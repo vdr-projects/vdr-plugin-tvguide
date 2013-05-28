@@ -24,3 +24,6 @@ VDR Plugin 'tvguide' Revision History
 
 - Introduced horizontal display
 - Added Theme DarkRed
+- Fixed some Bugs (position of video, deadlock)
+- setup of usage of blending now done with clrDoBlending theme color
+  variable and not by setup

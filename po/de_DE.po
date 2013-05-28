@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-05-26 17:37+0200\n"
+"POT-Creation-Date: 2013-05-28 16:45+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -50,9 +50,6 @@ msgstr "immer"
 
 msgid "Theme"
 msgstr "Theme"
-
-msgid "Use color gradients"
-msgstr "Farbverläufe verwenden"
 
 msgid "Rounded Corners"
 msgstr "Abgerundete Ecken"
@@ -191,3 +188,6 @@ msgstr "Timer wurde nicht gesetzt! Es existiert bereits ein Timer für diese Sen
 
 msgid "Timer set"
 msgstr "Timer gesetzt"
+
+#~ msgid "Use color gradients"
+#~ msgstr "Farbverläufe verwenden"

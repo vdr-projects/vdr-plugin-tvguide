@@ -1,6 +1,12 @@
 // --- Theme -------------------------------------------------------------
 static cTheme theme;
 
+//BLENDING SETUP
+#define CLR_BLENDING_NOPACITY   0xFFFFFFFF
+#define CLR_BLENDING_DEFAULT    0xAAAAAAAA
+#define CLR_BLENDING_OFF        0x00000000
+
+THEME_CLR(theme, clrDoBlending, CLR_BLENDING_DEFAULT);
 THEME_CLR(theme, clrBackgroundOSD, clrBlack);
 THEME_CLR(theme, clrBackground, clrBlack);
 THEME_CLR(theme, clrGrid1, 0xFF404749);
@@ -83,6 +89,7 @@ void cTvGuideOsd::Show(void) {
     if (ok) {
         tvguideConfig.setDynamicValues(osdManager.Width(), osdManager.Height());
         tvguideConfig.loadTheme();
+        tvguideConfig.SetBlending();
         osdManager.setBackground();
         myTime = new cMyTime();
         myTime->Now();

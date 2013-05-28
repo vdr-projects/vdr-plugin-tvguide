@@ -1,4 +1,5 @@
 Description = Default 
+clrDoBlending = AAAAAAAA
 clrBackground = FF000000
 clrBackgroundOSD = FF000000
 clrGrid1 = FF404749
@@ -13,6 +14,8 @@ clrFontButtons = FFFFFFFF
 clrHeader = FF000000
 clrHeaderBlending = FFE0E0E0
 clrBorder = FFFFFFFF
+clrStatusHeader = 00000000
+clrStatusHeaderBlending = 00000000
 clrTimeline1 = FFFFFFFF
 clrTimeline1Blending = FF828282
 clrTimeline2 = FF000000

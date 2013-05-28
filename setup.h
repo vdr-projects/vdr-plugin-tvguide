@@ -28,7 +28,6 @@ class cMenuSetupGeneral : public cMenuSetupSubMenu {
     protected:
         virtual eOSState ProcessKey(eKeys Key);
         cThemes themes;
-        const char * blendingMethods[3];
         const char * timeFormatItems[2];
         const char *useSubtitleRerunTexts[3];
         void Set(void);

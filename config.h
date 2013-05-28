@@ -2,13 +2,15 @@
 #define __TVGUIDE_CONFIG_H
 
 class cTvguideConfig {
+    private:
+        void SetGeometry(int width, int height);
+        void SetFonts(void);
     public:
         cTvguideConfig();
         ~cTvguideConfig();
         void SetLogoPath(cString path);
         void SetImagesPath(cString path);
-        void SetGeometry(int width, int height);
-        void SetFonts(void);
+        void SetBlending(void);
         int osdWidth; 
         int osdHeight;
         int displayMode;

@@ -185,6 +185,16 @@ void cTvguideConfig::SetFonts(void){
 
 }
 
+void cTvguideConfig::SetBlending(void) {
+    if (theme.Color(clrDoBlending) == CLR_BLENDING_OFF) {
+        useBlending = 0;
+    } else if (theme.Color(clrDoBlending) == CLR_BLENDING_DEFAULT)
+        useBlending = 1;
+    else {
+        useBlending = 2;
+    }
+}
+
 void cTvguideConfig::SetLogoPath(cString path) {
     logoPath = path;
 }
@@ -210,7 +220,6 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "statusHeaderPercent") == 0)      statusHeaderPercent = atoi(Value);
     else if (strcmp(Name, "scaleVideo") == 0)               scaleVideo = atoi(Value);
     else if (strcmp(Name, "decorateVideo") == 0)            decorateVideo = atoi(Value);
-    else if (strcmp(Name, "useBlending") == 0)              useBlending = atoi(Value);
     else if (strcmp(Name, "roundedCorners") == 0)           roundedCorners = atoi(Value);
     else if (strcmp(Name, "channelCols") == 0)              channelCols = atoi(Value);
     else if (strcmp(Name, "channelRows") == 0)              channelRows = atoi(Value);
