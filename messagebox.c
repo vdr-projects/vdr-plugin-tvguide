@@ -83,7 +83,7 @@ bool cMessageBox::Start(int displayTime, cString msg) {
         int textWidth = 0;
         for (int i=0; i<textLines; i++) {
             textWidth = tvguideConfig.FontMessageBox->Width(message.GetLine(i));
-            content->DrawText(cPoint((width - textWidth)/2, 20 + i*textHeight), message.GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontMessageBox);
+            content->DrawText(cPoint((width - textWidth)/2, 20 + i*textHeight), message.GetLine(i), theme.Color(clrFont), theme.Color(clrBackground), tvguideConfig.FontMessageBox);
         }
         cPixmap::Unlock();
         msgboxThread->Start();

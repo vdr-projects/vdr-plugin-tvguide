@@ -69,6 +69,7 @@ void cDetailView::createPixmaps() {
 void cDetailView::drawHeader() {
     header->drawBackground();
     header->drawBoldBorder();
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
     int logoHeight = header->Height() / 2;
     int logoWidth = logoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
     int lineHeight = tvguideConfig.FontDetailHeader->Height();
@@ -93,27 +94,28 @@ void cDetailView::drawHeader() {
     }
     int textX = logoDrawn?(20 + logoWidth):20;
     int textY = (header->Height() - 2*lineHeight)/2;
-    header->DrawText(cPoint(textX, textY), event->Title(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailHeader);
+    header->DrawText(cPoint(textX, textY), event->Title(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailHeader);
     cString datetime = cString::sprintf("%s, %s - %s (%d min)", *event->GetDateString(),  *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60);
-    header->DrawText(cPoint(textX, textY + lineHeight), *datetime, theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
-    header->DrawText(cPoint(textX, textY + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+    header->DrawText(cPoint(textX, textY + lineHeight), *datetime, theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+    header->DrawText(cPoint(textX, textY + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
 }
 
 void cDetailView::drawContent() {
     content->Fill(theme.Color(clrBorder));
     content->DrawRectangle(cRect(2, 0, content->ViewPort().Width() - 2, content->DrawPort().Height()), theme.Color(clrBackground));
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrBackground):clrTransparent;
     
     int textHeight = tvguideConfig.FontDetailView->Height();
     int textLines = description.Lines();
     int i=0;
     for (; i<textLines; i++) {
-        content->DrawText(cPoint(20, 20 + i*textHeight), description.GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+        content->DrawText(cPoint(20, 20 + i*textHeight), description.GetLine(i), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
     }
     i++;
     if (tvguideConfig.displayRerunsDetailEPGView) {
         textLines = reruns.Lines();
         for (int j=0; j<textLines; j++) {
-            content->DrawText(cPoint(20, 20 + i*textHeight), reruns.GetLine(j), theme.Color(clrFont), clrTransparent, tvguideConfig.FontDetailView);
+            content->DrawText(cPoint(20, 20 + i*textHeight), reruns.GetLine(j), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
             i++;
         }
     }

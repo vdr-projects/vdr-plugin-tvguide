@@ -66,9 +66,10 @@ void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
         textWidthMax -= logoWidth;
     }
     if (drawText) {
+        tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
         cString strChannel = cString::sprintf("%d %s", channel->Number(), channel->Name());
         strChannel = CutText(*strChannel, textWidthMax, tvguideConfig.FontChannelHeaderHorizontal).c_str();
-        pixmap->DrawText(cPoint(textX, textY), *strChannel, theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontChannelHeaderHorizontal);
+        pixmap->DrawText(cPoint(textX, textY), *strChannel, theme.Color(clrFontHeader), colorTextBack, tvguideConfig.FontChannelHeaderHorizontal);
     }
 }
 
@@ -99,12 +100,13 @@ void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     }
     if (!drawText)
         return;
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     for (int i=0; i<lines; i++) {
         int textWidth = tvguideConfig.FontChannelHeader->Width(tw.GetLine(i));
         int xText = (tvguideConfig.colWidth - textWidth) / 2;
         if (xText < 0) 
             xText = 0;
-        pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), clrTransparent, tvguideConfig.FontChannelHeader);
+        pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), colorTextBack, tvguideConfig.FontChannelHeader);
     }
 }
 

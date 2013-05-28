@@ -51,6 +51,7 @@ void cStatusHeader::ScaleVideo(void) {
 
 void cStatusHeader::DrawInfoText(cGrid *grid) {
     int border = 5;
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     pixmapText->Fill(clrTransparent);
     int x = border;
     int y = border;
@@ -61,7 +62,7 @@ void cStatusHeader::DrawInfoText(cGrid *grid) {
         title = cString::sprintf(": %s", event->Title());
         cString header = cString::sprintf("%s%s", *time, *title);
         header = CutText(*header, pixmapText->ViewPort().Width() - 2 * border, tvguideConfig.FontStatusHeaderLarge).c_str();
-        pixmapText->DrawText(cPoint(x,y), *header, theme.Color(clrFont), clrTransparent, tvguideConfig.FontStatusHeaderLarge);
+        pixmapText->DrawText(cPoint(x,y), *header, theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeaderLarge);
         y += tvguideConfig.FontStatusHeaderLarge->Height() + border;
         int heightText = pixmapText->ViewPort().Height() - y;
         cTextWrapper description;
@@ -71,17 +72,17 @@ void cStatusHeader::DrawInfoText(cGrid *grid) {
         int maxLines = heightText / lineHeight;
         int lines = min(textLines, maxLines);
         for (int i = 0; i < lines-1; i++) {
-            pixmapText->DrawText(cPoint(x,y), description.GetLine(i), theme.Color(clrFont), clrTransparent, tvguideConfig.FontStatusHeader);
+            pixmapText->DrawText(cPoint(x,y), description.GetLine(i), theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeader);
             y += lineHeight;
         }
         cString lastLine = description.GetLine(lines-1);
         if (textLines > maxLines) {
             lastLine = cString::sprintf("%s...", *lastLine);
         }
-        pixmapText->DrawText(cPoint(x,y), *lastLine, theme.Color(clrFont), clrTransparent, tvguideConfig.FontStatusHeader);
+        pixmapText->DrawText(cPoint(x,y), *lastLine, theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeader);
     } else {
         int heightText = pixmapText->ViewPort().Height() - y;
         y += (heightText - tvguideConfig.FontStatusHeaderLarge->Height() - 2*border)/2;
-        pixmapText->DrawText(cPoint(x,y), *grid->getText(), theme.Color(clrFont), clrTransparent, tvguideConfig.FontStatusHeaderLarge);
+        pixmapText->DrawText(cPoint(x,y), *grid->getText(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeaderLarge);
     }
 }

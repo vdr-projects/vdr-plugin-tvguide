@@ -39,7 +39,7 @@ void cFooter::drawBlueButton() {
 }
 
 void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int num) {
-    
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     int left = num * buttonWidth + (num + 1) * buttonBorder;
     footer->DrawRectangle(cRect(left, buttonY, buttonWidth, buttonHeight), borderColor);
     if (tvguideConfig.useBlending) {
@@ -52,5 +52,5 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int
     }
     int textWidth = tvguideConfig.FontButton->Width(text);
     int textHeight = tvguideConfig.FontButton->Height();
-    footer->DrawText(cPoint(left + (buttonWidth-textWidth)/2, buttonY + (buttonHeight-textHeight)/2), text, theme.Color(clrFontButtons), clrTransparent, tvguideConfig.FontButton);
+    footer->DrawText(cPoint(left + (buttonWidth-textWidth)/2, buttonY + (buttonHeight-textHeight)/2), text, theme.Color(clrFontButtons), colorTextBack, tvguideConfig.FontButton);
 }

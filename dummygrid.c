@@ -58,23 +58,24 @@ void cDummyGrid::setText() {
 
 void cDummyGrid::drawText() {
     tColor colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     if (tvguideConfig.displayMode == eVertical) {
         if (Height()/tvguideConfig.minutePixel < 6)
             return;
         int textHeight = tvguideConfig.FontGrid->Height();
         int textLines = text->Lines();
         for (int i=0; i<textLines; i++) {
-            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), colorText, clrTransparent, tvguideConfig.FontGrid);
+            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), colorText, colorTextBack, tvguideConfig.FontGrid);
         
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
         if (Width()/tvguideConfig.minutePixel < 10) {
             int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
-            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, clrTransparent, tvguideConfig.FontGridHorizontal);
+            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
             return;
         }
         int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
-        pixmap->DrawText(cPoint(borderWidth, titleY), *strText, colorText, clrTransparent, tvguideConfig.FontGridHorizontal);
+        pixmap->DrawText(cPoint(borderWidth, titleY), *strText, colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
     }
 }
 cString cDummyGrid::getText(void) {
