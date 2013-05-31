@@ -15,11 +15,11 @@ void cHeaderGrid::createBackground(int num) {
     int x, y, width, height;
     if (tvguideConfig.displayMode == eVertical) {
         x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
-        y = tvguideConfig.statusHeaderHeight;
+        y = tvguideConfig.statusHeaderHeight + tvguideConfig.channelGroupsHeight;
         width = tvguideConfig.colWidth;
         height = tvguideConfig.channelHeaderHeight;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x = 0;
+        x = tvguideConfig.channelGroupsWidth;
         y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
         width = tvguideConfig.channelHeaderWidth;
         height = tvguideConfig.rowHeight;
@@ -114,11 +114,11 @@ void cHeaderGrid::setPosition(int num) {
     int x, y, width, height;
     if (tvguideConfig.displayMode == eVertical) {
         x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
-        y = tvguideConfig.statusHeaderHeight;
+        y = tvguideConfig.statusHeaderHeight + tvguideConfig.channelGroupsHeight;
         width = tvguideConfig.colWidth;
         height = tvguideConfig.channelHeaderHeight;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x = 0;
+        x = tvguideConfig.channelGroupsWidth;
         y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
         width = tvguideConfig.channelHeaderWidth;
         height = tvguideConfig.rowHeight;

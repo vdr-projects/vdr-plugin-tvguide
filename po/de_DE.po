@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-05-28 16:45+0200\n"
+"POT-Creation-Date: 2013-05-31 11:43+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -11,6 +11,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+msgid "Main Program"
+msgstr "Hauptprogramm"
 
 msgid "RERUNS OF THIS SHOW"
 msgstr "Wiederholungen dieser Sendung"
@@ -39,6 +42,12 @@ msgstr "Anzeigeoptionen"
 msgid "Fonts and Fontsizes"
 msgstr "Schriften und Schriftgrößen"
 
+msgid "x channels back / forward"
+msgstr "x Kanäle zurück / vor"
+
+msgid "previous / next channel group"
+msgstr "vorherige / nächste Kanalgruppe"
+
 msgid "never"
 msgstr "nie"
 
@@ -54,8 +63,14 @@ msgstr "Theme"
 msgid "Rounded Corners"
 msgstr "Abgerundete Ecken"
 
-msgid "Channels to Jump (Keys Green / Yellow)"
-msgstr "Kanalsprung (Tasten Grün / Gelb)"
+msgid "Channel Jump Mode (Keys Green / Yellow)"
+msgstr "Kanalsprung Modus (Tasten grün / gelb)"
+
+msgid "Channels to Jump"
+msgstr "Anzahl der Kanäle"
+
+msgid "Hide last Channel Group"
+msgstr "Letzte Kanalgruppe verstecken"
 
 msgid "Time to display in minutes"
 msgstr "Angezeigte Zeitspanne in Minuten"
@@ -114,6 +129,15 @@ msgstr "Abgerundete Ecken um Videofenster"
 msgid "Display Channel Names in Header"
 msgstr "Kanalnamen im Header anzeigen"
 
+msgid "Display channel groups"
+msgstr "Kanalgruppen anzeigen"
+
+msgid "Height of channel groups (Perc. of osd height)"
+msgstr "Höhe der Kanalgruppen (% der OSD Höhe)"
+
+msgid "Width of channel groups (Perc. of osd width)"
+msgstr "Breite der Kanalgruppen (% der OSD Breite)"
+
 msgid "Show Channel Logos"
 msgstr "Kanallogos anzeigen"
 
@@ -168,6 +192,9 @@ msgstr "Button Schriftgröße"
 msgid "Channel Header Font Size"
 msgstr "Kanal Header Schriftgröße"
 
+msgid "Channel Groups Font Size"
+msgstr "Kanalgruppen Schriftgröße"
+
 msgid "Grid Font Size"
 msgstr "Grid Schriftgröße"
 
@@ -188,6 +215,3 @@ msgstr "Timer wurde nicht gesetzt! Es existiert bereits ein Timer für diese Sen
 
 msgid "Timer set"
 msgstr "Timer gesetzt"
-
-#~ msgid "Use color gradients"
-#~ msgstr "Farbverläufe verwenden"

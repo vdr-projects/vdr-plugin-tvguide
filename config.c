@@ -10,6 +10,10 @@ enum {
     eHorizontal
 };
 
+enum {
+    eNumJump,
+    eGroupJump
+};
 
 cTvguideConfig::cTvguideConfig() {
     osdWidth = 0; 
@@ -22,8 +26,12 @@ cTvguideConfig::cTvguideConfig() {
     displayTime = 160;
     minutePixel = 0;
     displayStatusHeader = 1;
+    displayChannelGroups = 1;
     statusHeaderPercent = 20;
     statusHeaderHeight = 0;
+    channelGroupsPercent = 5;
+    channelGroupsWidth = 0;
+    channelGroupsHeight = 0;
     scaleVideo = 1;
     decorateVideo = 1;
     timeLineWidthPercent = 8;
@@ -35,7 +43,9 @@ cTvguideConfig::cTvguideConfig() {
     stepMinutes = 30;
     bigStepHours = 3;
     hugeStepHours = 24;
+    channelJumpMode = eNumJump;
     jumpChannels = 10;
+    hideLastGroup = 0;
     hideChannelLogos = 0;
     logoWidthRatio = 13;
     logoHeightRatio = 10;
@@ -53,12 +63,14 @@ cTvguideConfig::cTvguideConfig() {
     FontStatusHeaderDelta = 0;
     FontStatusHeaderLargeDelta = 0;
     FontChannelHeaderDelta = 0;
+    FontChannelGroupsDelta = 0;
     FontGridDelta = 0;
     FontGridSmallDelta = 0;
     FontTimeLineWeekdayDelta = 0;
     FontTimeLineDateDelta = 0;
     FontTimeLineTimeDelta = 0;
     FontChannelHeaderHorizontalDelta = 0;
+    FontChannelGroupsHorizontalDelta = 0;
     FontGridHorizontalDelta = 0;
     FontGridHorizontalSmallDelta = 0;
     FontTimeLineDateHorizontalDelta = 0;
@@ -103,12 +115,14 @@ cTvguideConfig::~cTvguideConfig() {
     delete FontStatusHeader;
     delete FontStatusHeaderLarge;
     delete FontChannelHeader;
+    delete FontChannelGroups;
     delete FontGrid;
     delete FontGridSmall;
     delete FontTimeLineWeekday;
     delete FontTimeLineDate;
     delete FontTimeLineTime;
     delete FontChannelHeaderHorizontal;
+    delete FontChannelGroupsHorizontal;
     delete FontGridHorizontal;
     delete FontGridHorizontalSmall;
     delete FontTimeLineDateHorizontal;
@@ -124,6 +138,8 @@ void cTvguideConfig::SetGeometry(int width, int height) {
     osdWidth = width;
     osdHeight = height;
     statusHeaderHeight = (displayStatusHeader)?(statusHeaderPercent * osdHeight / 100):0;
+    channelGroupsWidth = (displayChannelGroups)?(channelGroupsPercent * osdWidth / 100):0;
+    channelGroupsHeight = (displayChannelGroups)?(channelGroupsPercent * osdHeight / 100):0;
     channelHeaderWidth = channelHeaderWidthPercent * osdWidth / 100;
     channelHeaderHeight = channelHeaderHeightPercent * osdHeight / 100;
     timeLineWidth = timeLineWidthPercent * osdWidth / 100;
@@ -132,11 +148,11 @@ void cTvguideConfig::SetGeometry(int width, int height) {
     if (displayMode == eVertical) {
         colWidth = (osdWidth - timeLineWidth) / channelCols;
         rowHeight = 0;
-        minutePixel = (osdHeight - statusHeaderHeight - channelHeaderHeight - footerHeight) / displayTime;
+        minutePixel = (osdHeight - statusHeaderHeight - channelGroupsHeight - channelHeaderHeight - footerHeight) / displayTime;
     } else if (displayMode == eHorizontal) {
         colWidth = 0;
         rowHeight = (osdHeight - statusHeaderHeight - timeLineHeight - footerHeight) / channelRows;
-        minutePixel = (osdWidth - channelHeaderWidth) / displayTime;
+        minutePixel = (osdWidth - channelHeaderWidth - channelGroupsWidth) / displayTime;
     }
     
     numGrids = (displayMode == eVertical)?channelCols:channelRows;
@@ -171,6 +187,7 @@ void cTvguideConfig::SetFonts(void){
     FontStatusHeaderLarge = cFont::CreateFont(*fontname, statusHeaderHeight/5 + FontStatusHeaderLargeDelta);
     //Fonts for vertical Display 
     FontChannelHeader = cFont::CreateFont(*fontname, colWidth/10 + FontChannelHeaderDelta);
+    FontChannelGroups = cFont::CreateFont(*fontname, colWidth/8 + FontChannelGroupsDelta);
     FontGrid = cFont::CreateFont(*fontname, colWidth/12 + FontGridDelta);
     FontGridSmall = cFont::CreateFont(*fontname, colWidth/12 + FontGridSmallDelta);
     FontTimeLineWeekday = cFont::CreateFont(*fontname, timeLineWidth/3 + FontTimeLineWeekdayDelta);
@@ -178,6 +195,7 @@ void cTvguideConfig::SetFonts(void){
     FontTimeLineTime = cFont::CreateFont(*fontname, timeLineWidth/4 + FontTimeLineTimeDelta);
     //Fonts for horizontal Display 
     FontChannelHeaderHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + FontChannelHeaderHorizontalDelta);
+    FontChannelGroupsHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + 5 + FontChannelGroupsHorizontalDelta);
     FontGridHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + 5 + FontGridHorizontalDelta);
     FontGridHorizontalSmall = cFont::CreateFont(*fontname, rowHeight/4 + FontGridHorizontalSmallDelta);
     FontTimeLineDateHorizontal = cFont::CreateFont(*fontname, timeLineHeight/2 + 5 + FontTimeLineDateHorizontalDelta);
@@ -217,7 +235,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "themeIndex") == 0)               themeIndex = atoi(Value);
     else if (strcmp(Name, "displayMode") == 0)              displayMode = atoi(Value);
     else if (strcmp(Name, "displayStatusHeader") == 0)      displayStatusHeader = atoi(Value);
+    else if (strcmp(Name, "displayChannelGroups") == 0)     displayChannelGroups = atoi(Value);
     else if (strcmp(Name, "statusHeaderPercent") == 0)      statusHeaderPercent = atoi(Value);
+    else if (strcmp(Name, "channelGroupsPercent") == 0)     channelGroupsPercent = atoi(Value);
     else if (strcmp(Name, "scaleVideo") == 0)               scaleVideo = atoi(Value);
     else if (strcmp(Name, "decorateVideo") == 0)            decorateVideo = atoi(Value);
     else if (strcmp(Name, "roundedCorners") == 0)           roundedCorners = atoi(Value);
@@ -230,7 +250,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "logoHeightRatio") == 0)          logoHeightRatio = atoi(Value);
     else if (strcmp(Name, "bigStepHours") == 0)             bigStepHours = atoi(Value);
     else if (strcmp(Name, "hugeStepHours") == 0)            hugeStepHours = atoi(Value);
+    else if (strcmp(Name, "channelJumpMode") == 0)          channelJumpMode = atoi(Value);
     else if (strcmp(Name, "jumpChannels") == 0)             jumpChannels = atoi(Value);
+    else if (strcmp(Name, "hideLastGroup") == 0)            hideLastGroup = atoi(Value);
     else if (strcmp(Name, "hideEpgImages") == 0)            hideEpgImages = atoi(Value);
     else if (strcmp(Name, "epgImageWidth") == 0)            epgImageWidth = atoi(Value);
     else if (strcmp(Name, "epgImageHeight") == 0)           epgImageHeight = atoi(Value);
@@ -248,13 +270,15 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "FontMessageBoxLargeDelta") == 0) FontMessageBoxLargeDelta = atoi(Value); 
     else if (strcmp(Name, "FontStatusHeaderDelta") == 0)    FontStatusHeaderDelta = atoi(Value);    
     else if (strcmp(Name, "FontStatusHeaderLargeDelta") == 0) FontStatusHeaderLargeDelta = atoi(Value);
-    else if (strcmp(Name, "FontChannelHeaderDelta") == 0)   FontChannelHeaderDelta = atoi(Value);   
+    else if (strcmp(Name, "FontChannelHeaderDelta") == 0)   FontChannelHeaderDelta = atoi(Value);
+    else if (strcmp(Name, "FontChannelGroupsDelta") == 0)   FontChannelGroupsDelta = atoi(Value);
     else if (strcmp(Name, "FontGridDelta") == 0)            FontGridDelta = atoi(Value);    
     else if (strcmp(Name, "FontGridSmallDelta") == 0)       FontGridSmallDelta = atoi(Value);   
     else if (strcmp(Name, "FontTimeLineWeekdayDelta") == 0) FontTimeLineWeekdayDelta = atoi(Value); 
     else if (strcmp(Name, "FontTimeLineDateDelta") == 0)    FontTimeLineDateDelta = atoi(Value);    
     else if (strcmp(Name, "FontTimeLineTimeDelta") == 0)    FontTimeLineTimeDelta = atoi(Value);
     else if (strcmp(Name, "FontChannelHeaderHorizontalDelta") == 0) FontChannelHeaderHorizontalDelta = atoi(Value);
+    else if (strcmp(Name, "FontChannelGroupsHorizontalDelta") == 0) FontChannelGroupsHorizontalDelta = atoi(Value);
     else if (strcmp(Name, "FontGridHorizontalDelta") == 0)  FontGridHorizontalDelta = atoi(Value);
     else if (strcmp(Name, "FontGridHorizontalSmallDelta") == 0) FontGridHorizontalSmallDelta = atoi(Value);
     else if (strcmp(Name, "FontTimeLineDateHorizontalDelta") == 0) FontTimeLineDateHorizontalDelta = atoi(Value);

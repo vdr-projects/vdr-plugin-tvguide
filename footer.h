@@ -10,14 +10,19 @@ private:
     int buttonHeight;
     int buttonY;
     int buttonBorder;
+    cChannelGroups *channelGroups;
+    int currentGroup;
     void DrawButton(const char *text, tColor color, tColor borderColor, int num);
 public:
-    cFooter();
+    cFooter(cChannelGroups *channelGroups);
     virtual ~cFooter(void);
     void drawRedButton();
     void drawGreenButton();
     void drawYellowButton();
+    void drawGreenButton(const char *text);
+    void drawYellowButton(const char *text);
     void drawBlueButton();
+    void UpdateGroupButtons(const cChannel *channel);
 };
 
 #endif //__TVGUIDE_FOOTER_H

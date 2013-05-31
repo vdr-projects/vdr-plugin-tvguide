@@ -6,11 +6,11 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
                                                                          tvguideConfig.statusHeaderHeight, 
                                                                          tvguideConfig.timeLineWidth, 
-                                                                         tvguideConfig.channelHeaderHeight)));
+                                                                         tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight)));
         timeline = osdManager.requestPixmap(2, cRect(0, 
-                                                     tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight, 
+                                                     tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight, 
                                                      tvguideConfig.timeLineWidth, 
-                                                     tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.footerHeight)
+                                                     tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight)
                                              , cRect(0,
                                                      0, 
                                                      tvguideConfig.timeLineWidth, 
@@ -18,11 +18,11 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
     } else if (tvguideConfig.displayMode == eHorizontal) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
                                                                          tvguideConfig.statusHeaderHeight, 
-                                                                         tvguideConfig.channelHeaderWidth,
+                                                                         tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth,
                                                                          tvguideConfig.timeLineHeight)));
-        timeline = osdManager.requestPixmap(2, cRect(tvguideConfig.channelHeaderWidth, 
+        timeline = osdManager.requestPixmap(2, cRect(tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth, 
                                                      tvguideConfig.statusHeaderHeight, 
-                                                     tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth,
+                                                     tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth,
                                                      tvguideConfig.timeLineHeight)
                                              , cRect(0,
                                                      0, 
@@ -54,8 +54,8 @@ void cTimeLine::drawDateViewer() {
         int textHeight = tvguideConfig.FontTimeLineWeekday->Height();
         int weekdayWidth = tvguideConfig.FontTimeLineWeekday->Width(*weekDay);
         int dateWidth = tvguideConfig.FontTimeLineDate->Width(*date);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-weekdayWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2), *weekDay, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineWeekday);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-dateWidth)/2, (tvguideConfig.channelHeaderHeight-2*textHeight)/2 + textHeight + 5), *date, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDate);
+        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-weekdayWidth)/2, (tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight -2*textHeight)/2), *weekDay, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineWeekday);
+        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-dateWidth)/2, (tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight -2*textHeight)/2 + textHeight + 5), *date, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDate);
     } else if (tvguideConfig.displayMode == eHorizontal) {
         cString strDate = cString::sprintf("%s %s", *weekDay, *date);
         int x = (dateViewer->Width() - tvguideConfig.FontTimeLineDateHorizontal->Width(*strDate))/2;

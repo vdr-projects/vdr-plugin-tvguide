@@ -48,7 +48,9 @@ void cTvguideSetup::Store(void) {
     SetupStore("themeIndex", tvguideConfig.themeIndex);
     SetupStore("displayMode", tvguideConfig.displayMode);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
+    SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
     SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
+    SetupStore("channelGroupsPercent", tvguideConfig.channelGroupsPercent);
     SetupStore("scaleVideo", tvguideConfig.scaleVideo);
     SetupStore("decorateVideo", tvguideConfig.decorateVideo);
     SetupStore("roundedCorners", tvguideConfig.roundedCorners);
@@ -58,7 +60,9 @@ void cTvguideSetup::Store(void) {
     SetupStore("displayTime", tvguideConfig.displayTime);
     SetupStore("bigStepHours", tvguideConfig.bigStepHours);
     SetupStore("hugeStepHours", tvguideConfig.hugeStepHours);
+    SetupStore("channelJumpMode", tvguideConfig.channelJumpMode);
     SetupStore("jumpChannels", tvguideConfig.jumpChannels);
+    SetupStore("hideLastGroup", tvguideConfig.hideLastGroup);
     SetupStore("hideChannelLogos", tvguideConfig.hideChannelLogos);
     SetupStore("logoExtension", tvguideConfig.logoExtension);
     SetupStore("logoWidthRatio", tvguideConfig.logoWidthRatio);
@@ -82,12 +86,14 @@ void cTvguideSetup::Store(void) {
     SetupStore("FontStatusHeaderDelta", tvguideConfig.FontStatusHeaderDelta);
     SetupStore("FontStatusHeaderLargeDelta", tvguideConfig.FontStatusHeaderLargeDelta);
     SetupStore("FontChannelHeaderDelta", tvguideConfig.FontChannelHeaderDelta);
+    SetupStore("FontChannelGroupsDelta", tvguideConfig.FontChannelGroupsDelta);
     SetupStore("FontGridDelta", tvguideConfig.FontGridDelta);
     SetupStore("FontGridSmallDelta", tvguideConfig.FontGridSmallDelta);
     SetupStore("FontTimeLineWeekdayDelta", tvguideConfig.FontTimeLineWeekdayDelta);
     SetupStore("FontTimeLineDateDelta", tvguideConfig.FontTimeLineDateDelta);
     SetupStore("FontTimeLineTimeDelta", tvguideConfig.FontTimeLineTimeDelta);
     SetupStore("FontChannelHeaderHorizontalDelta", tvguideConfig.FontChannelHeaderHorizontalDelta);
+    SetupStore("FontChannelGroupsHorizontalDelta", tvguideConfig.FontChannelGroupsHorizontalDelta);
     SetupStore("FontGridHorizontalDelta", tvguideConfig.FontGridHorizontalDelta);
     SetupStore("FontGridHorizontalSmallDelta", tvguideConfig.FontGridHorizontalSmallDelta);
     SetupStore("FontTimeLineDateHorizontalDelta", tvguideConfig.FontTimeLineDateHorizontalDelta);
@@ -127,6 +133,8 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
     themes.Load(*cString("tvguide"));
     timeFormatItems[0] = "12h";
     timeFormatItems[1] = "24h";
+    jumpMode[0] = tr("x channels back / forward");
+    jumpMode[1] = tr("previous / next channel group");
     useSubtitleRerunTexts[0] = tr("never");
     useSubtitleRerunTexts[1] = tr("if exists");
     useSubtitleRerunTexts[2] = tr("always");
@@ -140,8 +148,12 @@ void cMenuSetupGeneral::Set(void) {
     if (themes.NumThemes())
         Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
-
-    Add(new cMenuEditIntItem(tr("Channels to Jump (Keys Green / Yellow)"), &tmpTvguideConfig->jumpChannels, 2, 30));
+    
+    Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
+    if (tmpTvguideConfig->channelJumpMode == eNumJump) {
+        Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Channels to Jump")), &tmpTvguideConfig->jumpChannels, 2, 30));
+    }
+    Add(new cMenuEditBoolItem(tr("Hide last Channel Group"), &tmpTvguideConfig->hideLastGroup));
     Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 120, 320));
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
@@ -203,6 +215,15 @@ void cMenuSetupScreenLayout::Set(void) {
     }
     
     Add(new cMenuEditBoolItem(tr("Display Channel Names in Header"), &tmpTvguideConfig->displayChannelName));
+    Add(new cMenuEditBoolItem(tr("Display channel groups"), &tmpTvguideConfig->displayChannelGroups));
+    if (tmpTvguideConfig->displayChannelGroups) {
+        if (tmpTvguideConfig->displayMode == eVertical) {
+            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of channel groups (Perc. of osd height)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
+        } else if (tmpTvguideConfig->displayMode == eHorizontal) {
+            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Width of channel groups (Perc. of osd width)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
+        }
+    }
+    
     Add(new cMenuEditStraItem(tr("Show Channel Logos"), &tmpTvguideConfig->hideChannelLogos, 2,  hideChannelLogosItems));   
     if (!tmpTvguideConfig->hideChannelLogos) {
         Add(InfoItem(tr("Logo Path used"), *tvguideConfig.logoPath));
@@ -257,6 +278,7 @@ void cMenuSetupFont::Set(void) {
 
     if (tmpTvguideConfig->displayMode == eVertical) {
         Add(new cMenuEditIntItem(tr("Channel Header Font Size"), &tmpTvguideConfig->FontChannelHeaderDelta, -30, 30));
+        Add(new cMenuEditIntItem(tr("Channel Groups Font Size"), &tmpTvguideConfig->FontChannelGroupsDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Grid Font Size"), &tmpTvguideConfig->FontGridDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Grid Font Small Size"), &tmpTvguideConfig->FontGridSmallDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Timeline Weekday Font Size"), &tmpTvguideConfig->FontTimeLineWeekdayDelta, -30, 30));
@@ -264,6 +286,7 @@ void cMenuSetupFont::Set(void) {
         Add(new cMenuEditIntItem(tr("Timeline Time Font Size"), &tmpTvguideConfig->FontTimeLineTimeDelta, -30, 30));
     } else if (tmpTvguideConfig->displayMode == eHorizontal) {
         Add(new cMenuEditIntItem(tr("Channel Header Font Size"), &tmpTvguideConfig->FontChannelHeaderHorizontalDelta, -30, 30));
+        Add(new cMenuEditIntItem(tr("Channel Groups Font Size"), &tmpTvguideConfig->FontChannelGroupsHorizontalDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Grid Font Size"), &tmpTvguideConfig->FontGridHorizontalDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Grid Font Small Size"), &tmpTvguideConfig->FontGridHorizontalSmallDelta, -30, 30));
         Add(new cMenuEditIntItem(tr("Timeline Date Font Size"), &tmpTvguideConfig->FontTimeLineDateHorizontalDelta, -30, 30));

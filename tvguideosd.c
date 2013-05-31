@@ -57,6 +57,8 @@ cOsdManager osdManager;
 #include "statusheader.c"
 #include "detailview.c"
 #include "channelcolumn.c"
+#include "channelgroup.c"
+#include "channelgroups.c"
 #include "footer.c"
 
 #include "tvguideosd.h"
@@ -78,6 +80,7 @@ cTvGuideOsd::~cTvGuideOsd() {
     if (detailView)
         delete detailView;
     delete timeLine;
+    delete channelGroups;
     delete footer;
     cMessageBox::Destroy();
     osdManager.deleteOsd();
@@ -110,10 +113,15 @@ void cTvGuideOsd::drawOsd() {
     timeLine->drawDateViewer();
     timeLine->drawTimeline();
     timeLine->drawClock();
-    footer = new cFooter();
+    channelGroups = new cChannelGroups();
+    channelGroups->ReadChannelGroups();
+    //channelGroups->DumpGroups();
+    footer = new cFooter(channelGroups);
     footer->drawRedButton();
-    footer->drawGreenButton();
-    footer->drawYellowButton();
+    if (tvguideConfig.channelJumpMode == eNumJump) {
+        footer->drawGreenButton();
+        footer->drawYellowButton();
+    }
     footer->drawBlueButton();
     osdManager.flush();
     readChannels(startChannel);
@@ -124,21 +132,34 @@ void cTvGuideOsd::drawOsd() {
 
 void cTvGuideOsd::readChannels(const cChannel *channelStart) {
     int i=0;
+    bool foundEnough = false;
     columns.Clear();
     if (!channelStart)
         return;
     for (const cChannel *channel = channelStart; channel; channel = Channels.Next(channel)) {
-      if (!channel->GroupSep()) {
-        cChannelColumn *column = new cChannelColumn(i, channel, myTime);
-        if (column->readGrids()) {
-            columns.Add(column);
-            i++;
-        } else {
-            delete column;
+        if (!channel->GroupSep()) {
+            if (channelGroups->IsInLastGroup(channel)) {
+                break;
+            }
+            cChannelColumn *column = new cChannelColumn(i, channel, myTime);
+            if (column->readGrids()) {
+                columns.Add(column);
+                i++;
+            } else {
+                delete column;
+            }
         }
-      }
-      if (i == tvguideConfig.numGrids)
-        break;
+        if (i == tvguideConfig.numGrids) {
+            foundEnough = true;
+            break;
+        }
+    }
+    if (!foundEnough) {
+        int numCurrent = columns.Count();
+        int numBack = tvguideConfig.numGrids - numCurrent;
+        int newChannelNumber = columns.First()->getChannel()->Number() - numBack;
+        const cChannel *newStart = Channels.GetByNumber(newChannelNumber);
+        readChannels(newStart);
     }
 }
 
@@ -150,6 +171,12 @@ void cTvGuideOsd::drawGridsChannelJump() {
         activeGrid->SetActive();
     if (tvguideConfig.displayStatusHeader) {
         statusHeader->DrawInfoText(activeGrid);
+    }
+    if (activeGrid && (tvguideConfig.channelJumpMode == eGroupJump)) {
+        footer->UpdateGroupButtons(activeGrid->column->getChannel());
+    }
+    if (tvguideConfig.displayChannelGroups) {
+        channelGroups->DrawChannelGroups(columns.First()->getChannel(), columns.Last()->getChannel());
     }
     for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
         column->createHeader();
@@ -197,10 +224,14 @@ void cTvGuideOsd::setNextActiveGrid(cGrid *next) {
 
 void cTvGuideOsd::channelForward() {
     cChannelColumn *colRight = columns.Next(activeGrid->column);
+    bool colAdded = false;
     if (!colRight) {
         const cChannel *channelRight = activeGrid->column->getChannel();
         while (channelRight = Channels.Next(channelRight)) {
             if (!channelRight->GroupSep()) {
+                if (channelGroups->IsInLastGroup(channelRight)) {
+                    break;
+                }
                 colRight = new cChannelColumn(tvguideConfig.numGrids - 1, channelRight, myTime);
                 if (colRight->readGrids()) {
                     break;
@@ -211,6 +242,7 @@ void cTvGuideOsd::channelForward() {
             }
         }
         if (colRight) {
+            colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
                 cChannelColumn *cFirst = columns.First();
                 columns.Del(cFirst);
@@ -231,11 +263,18 @@ void cTvGuideOsd::channelForward() {
             setNextActiveGrid(right);
         }
     }
+    if (tvguideConfig.displayChannelGroups && colAdded) {
+        channelGroups->DrawChannelGroups(columns.First()->getChannel(), columns.Last()->getChannel());
+    }
+    if (activeGrid && (tvguideConfig.channelJumpMode == eGroupJump)) {
+        footer->UpdateGroupButtons(activeGrid->column->getChannel());
+    }
     osdManager.flush();
 }
 
 void cTvGuideOsd::channelBack() {
     cChannelColumn *colLeft = columns.Prev(activeGrid->column);
+    bool colAdded = false;
     if (!colLeft) {
         const cChannel *channelLeft = activeGrid->column->getChannel();
         while (channelLeft = Channels.Prev(channelLeft)) {
@@ -250,6 +289,7 @@ void cTvGuideOsd::channelBack() {
             }
         }
         if (colLeft) {
+            colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
                 cChannelColumn *cLast = columns.Last();
                 columns.Del(cLast);
@@ -270,6 +310,13 @@ void cTvGuideOsd::channelBack() {
         if (left) {
             setNextActiveGrid(left);
         }
+    }
+    if (tvguideConfig.displayChannelGroups && colAdded) {
+        channelGroups->DrawChannelGroups(columns.First()->getChannel(), columns.Last()->getChannel());
+    }
+
+    if (activeGrid && (tvguideConfig.channelJumpMode == eGroupJump)) {
+        footer->UpdateGroupButtons(activeGrid->column->getChannel());
     }
     osdManager.flush();
 }
@@ -440,16 +487,25 @@ void cTvGuideOsd::processKeyRed() {
 void cTvGuideOsd::processKeyGreen() {
     if (activeGrid == NULL)
         return;
+    
     const cChannel *currentChannel = activeGrid->column->getChannel();
     const cChannel *prev = NULL;
-    int i = tvguideConfig.jumpChannels + 1;
-    for (const cChannel *channel = currentChannel; channel; channel = Channels.Prev(channel)) {
-        if (!channel->GroupSep()) {
-            prev = channel;
-            i--;
+    
+    if (tvguideConfig.channelJumpMode == eGroupJump) {
+        int prevNum = channelGroups->GetPrevGroupChannelNumber(currentChannel);
+        if (prevNum) {
+            prev = Channels.GetByNumber(prevNum);
+        }    
+    } else if (tvguideConfig.channelJumpMode == eNumJump) {
+        int i = tvguideConfig.jumpChannels + 1;
+        for (const cChannel *channel = currentChannel; channel; channel = Channels.Prev(channel)) {
+            if (!channel->GroupSep()) {
+                prev = channel;
+                i--;
+            }
+            if (i == 0)
+                break;
         }
-        if (i == 0)
-            break;
     }
     if (prev) {
         readChannels(prev);
@@ -463,16 +519,29 @@ void cTvGuideOsd::processKeyGreen() {
 void cTvGuideOsd::processKeyYellow() {
     if (activeGrid == NULL)
         return;
+    
     const cChannel *currentChannel = activeGrid->column->getChannel();
     const cChannel *next = NULL;
-    int i=0;
-    for (const cChannel *channel = currentChannel; channel; channel = Channels.Next(channel)) {
-        if (!channel->GroupSep()) {
-            next = channel;
-            i++;
+    
+    if (tvguideConfig.channelJumpMode == eGroupJump) {
+        int nextNum = channelGroups->GetNextGroupChannelNumber(currentChannel);
+        if (nextNum) {
+            next = Channels.GetByNumber(nextNum);
+        }    
+    } else if (tvguideConfig.channelJumpMode == eNumJump) {
+        int i=0;
+        for (const cChannel *channel = currentChannel; channel; channel = Channels.Next(channel)) {
+            if (channelGroups->IsInLastGroup(channel)) {
+                break;
+            }
+            if (!channel->GroupSep()) {
+                next = channel;
+                i++;
+            }
+            if (i == (tvguideConfig.jumpChannels+1)) {
+                break;
+            }
         }
-        if (i == (tvguideConfig.jumpChannels+1))
-            break;
     }
     if (next) {
         readChannels(next);

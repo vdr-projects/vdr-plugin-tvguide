@@ -27,3 +27,9 @@ VDR Plugin 'tvguide' Revision History
 - Fixed some Bugs (position of video, deadlock)
 - setup of usage of blending now done with clrDoBlending theme color
   variable and not by setup
+- font color of active grid themable
+- avoided nasty font pixelation effects with theme iceblue
+- Display of channel groups
+- Buttons green / yellow can be configured to jump to prev / next channel
+  group
+- Added setup option to hide last channel group

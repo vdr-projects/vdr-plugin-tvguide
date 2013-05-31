@@ -29,6 +29,7 @@ class cMenuSetupGeneral : public cMenuSetupSubMenu {
         virtual eOSState ProcessKey(eKeys Key);
         cThemes themes;
         const char * timeFormatItems[2];
+        const char * jumpMode[2];
         const char *useSubtitleRerunTexts[3];
         void Set(void);
     public:

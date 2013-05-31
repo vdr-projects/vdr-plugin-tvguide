@@ -11,6 +11,7 @@ private:
   cStatusHeader *statusHeader;
   cDetailView *detailView;
   cTimeLine *timeLine;
+  cChannelGroups *channelGroups;
   cFooter *footer;
   bool detailViewActive;
   void drawOsd();

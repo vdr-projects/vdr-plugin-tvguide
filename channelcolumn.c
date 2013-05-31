@@ -6,10 +6,12 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->myTime = myTime;
     hasTimer = channel->HasTimer();
     schedulesLock = new cSchedulesLock(false, 100);
+    header = NULL;
 }
 
 cChannelColumn::~cChannelColumn(void) {
-    delete header;
+    if (header)
+        delete header;
     grids.Clear();
     delete schedulesLock;
 }

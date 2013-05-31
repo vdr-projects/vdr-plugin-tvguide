@@ -33,7 +33,7 @@ void cEpgGrid::PositionPixmap() {
     int x0, y0;
     if (tvguideConfig.displayMode == eVertical) {
         int x0 = column->getX();
-        int y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight;
+        int y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight;
         if ( column->Start() < StartTime() ) {
             y0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
         }
@@ -44,7 +44,7 @@ void cEpgGrid::PositionPixmap() {
             pixmap->SetViewPort(cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        int x0 = tvguideConfig.channelHeaderWidth;
+        int x0 = tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth;
         int y0 = column->getY();
         if ( column->Start() < StartTime() ) {
             x0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;

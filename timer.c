@@ -16,9 +16,9 @@ void cMyTime::Now() {
     tStart = t;
     tStart = GetRounded();
     if (tvguideConfig.displayMode == eVertical) {
-        tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.footerHeight)/tvguideConfig.minutePixel*60;
+        tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight)/tvguideConfig.minutePixel*60;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        tEnd = tStart + (tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth)/tvguideConfig.minutePixel*60;
+        tEnd = tStart + (tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth)/tvguideConfig.minutePixel*60;
     }
 }
 
@@ -39,9 +39,9 @@ bool cMyTime::DelStep(int step) {
 void cMyTime::SetTime(time_t newTime) {
     tStart = newTime;
     if (tvguideConfig.displayMode == eVertical) {
-        tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.footerHeight)/tvguideConfig.minutePixel*60;
+        tEnd = tStart + (tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight)/tvguideConfig.minutePixel*60;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        tEnd = tStart + (tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth)/tvguideConfig.minutePixel*60;
+        tEnd = tStart + (tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth)/tvguideConfig.minutePixel*60;
     }
 }
 

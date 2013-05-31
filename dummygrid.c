@@ -21,7 +21,7 @@ void cDummyGrid::PositionPixmap() {
     int x0, y0;
     if (tvguideConfig.displayMode == eVertical) {
         x0 = column->getX();
-        y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight;
+        y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight;
         if ( column->Start() < StartTime() ) {
             y0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
         }
@@ -34,7 +34,7 @@ void cDummyGrid::PositionPixmap() {
             pixmap->SetViewPort(cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x0 = tvguideConfig.channelHeaderWidth;
+        x0 = tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth;
         y0 = column->getY();
         if ( column->Start() < StartTime() ) {
             x0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;

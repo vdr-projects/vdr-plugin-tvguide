@@ -38,8 +38,6 @@ bool cOsdManager::setOsd() {
 }
 
 void cOsdManager::setBackground() {
-esyslog("tvguide: %d %d", Width(), Height());
-        
     if (tvguideConfig.displayStatusHeader && tvguideConfig.scaleVideo) {
         int widthStatus = cOsd::OsdWidth() - tvguideConfig.statusHeaderHeight * 16 / 9;
         osd->DrawRectangle(0, 0, widthStatus, tvguideConfig.statusHeaderHeight, theme.Color(clrBackgroundOSD));
