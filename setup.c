@@ -46,6 +46,7 @@ void cTvguideSetup::Store(void) {
     tvguideConfig = tmpTvguideConfig;
 
     SetupStore("themeIndex", tvguideConfig.themeIndex);
+    SetupStore("showMainMenuEntry", tvguideConfig.showMainMenuEntry);
     SetupStore("displayMode", tvguideConfig.displayMode);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
     SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
@@ -145,6 +146,7 @@ void cMenuSetupGeneral::Set(void) {
     const char *indent = "    ";
     int currentItem = Current();
     Clear();
+    Add(new cMenuEditBoolItem(tr("Show Main Menu Entry"), &tmpTvguideConfig->showMainMenuEntry));
     if (themes.NumThemes())
         Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));

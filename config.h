@@ -11,6 +11,7 @@ class cTvguideConfig {
         void SetLogoPath(cString path);
         void SetImagesPath(cString path);
         void SetBlending(void);
+        int showMainMenuEntry;
         int osdWidth; 
         int osdHeight;
         int displayMode;

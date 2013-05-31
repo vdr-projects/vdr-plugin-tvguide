@@ -33,3 +33,4 @@ VDR Plugin 'tvguide' Revision History
 - Buttons green / yellow can be configured to jump to prev / next channel
   group
 - Added setup option to hide last channel group
+- Display of Main Menu Entry configurable
