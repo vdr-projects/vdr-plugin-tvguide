@@ -444,21 +444,6 @@ void cTvGuideOsd::processKeyRight() {
     }
 }
 
-void cTvGuideOsd::processKeyOk() {
-    if (detailViewActive) {
-        delete detailView;
-        detailView = NULL;
-        detailViewActive = false;
-        osdManager.flush();
-    } else {
-        if (!activeGrid->isDummy()) {
-            detailViewActive = true;
-            detailView = new cDetailView(activeGrid);
-            detailView->Start();
-        }
-    }
-}
-
 void cTvGuideOsd::processKeyRed() {
     if  ((activeGrid == NULL) || activeGrid->isDummy())
         return;
@@ -553,6 +538,24 @@ void cTvGuideOsd::processKeyYellow() {
 }
 
 eOSState cTvGuideOsd::processKeyBlue() {
+    if (tvguideConfig.blueKeyMode == 0) {
+        return ChannelSwitch();
+    } else if (tvguideConfig.blueKeyMode == 1) {
+        DetailedEPG();
+    }
+    return osContinue;
+}
+
+eOSState cTvGuideOsd::processKeyOk() {
+    if ((tvguideConfig.blueKeyMode == 0) || detailViewActive ) {
+        DetailedEPG();
+    } else if (tvguideConfig.blueKeyMode == 1) {
+        return ChannelSwitch();
+    }
+    return osContinue;
+}
+
+eOSState cTvGuideOsd::ChannelSwitch() {
     if (activeGrid == NULL)
         return osContinue;
     const cChannel *currentChannel = activeGrid->column->getChannel();
@@ -561,6 +564,21 @@ eOSState cTvGuideOsd::processKeyBlue() {
         return osEnd;
     }
     return osContinue;
+}
+
+void cTvGuideOsd::DetailedEPG() {
+    if (detailViewActive) {
+        delete detailView;
+        detailView = NULL;
+        detailViewActive = false;
+        osdManager.flush();
+    } else {
+        if (!activeGrid->isDummy()) {
+            detailViewActive = true;
+            detailView = new cDetailView(activeGrid);
+            detailView->Start();
+        }
+    }
 }
 
 void cTvGuideOsd::processKey1() {
@@ -642,7 +660,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             case kGreen:    processKeyGreen(); break;
             case kYellow:   processKeyYellow(); break;
             case kBlue:     state = processKeyBlue(); break;
-            case kOk:       processKeyOk(); break;
+            case kOk:       state = processKeyOk(); break;
             case kBack:     state=osEnd; break;
             case k1:        processKey1(); break;
             case k3:        processKey3(); break;

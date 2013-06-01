@@ -46,6 +46,7 @@ class cTvguideConfig {
         int hugeStepHours;
         int channelJumpMode;
         int jumpChannels;
+        int blueKeyMode;
         int hideLastGroup;
         int hideChannelLogos;
         int logoWidthRatio;

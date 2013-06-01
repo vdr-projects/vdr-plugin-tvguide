@@ -63,7 +63,11 @@ void cFooter::drawYellowButton(const char *text) {
 }
 
 void cFooter::drawBlueButton() {
-    cString text(tr("Switch to Channel"));
+    cString text;
+    if (tvguideConfig.blueKeyMode == 0)
+        text = tr("Switch to Channel");
+    else if (tvguideConfig.blueKeyMode == 1)
+        text = tr("Detailed EPG");
     DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), 3);
 }
 

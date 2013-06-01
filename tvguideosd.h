@@ -26,7 +26,7 @@ private:
   void processKeyGreen();
   void processKeyYellow();
   eOSState processKeyBlue();
-  void processKeyOk();
+  eOSState processKeyOk();
   void processKey1();
   void processKey3();
   void processKey4();
@@ -40,6 +40,8 @@ private:
   void timeBack();
   void ScrollForward();
   void ScrollBack();
+  eOSState ChannelSwitch();
+  void DetailedEPG();
   void dump();
 public:
   cTvGuideOsd(void);

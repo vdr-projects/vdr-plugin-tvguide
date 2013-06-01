@@ -30,6 +30,7 @@ class cMenuSetupGeneral : public cMenuSetupSubMenu {
         cThemes themes;
         const char * timeFormatItems[2];
         const char * jumpMode[2];
+        const char * blueMode[2];
         const char *useSubtitleRerunTexts[3];
         void Set(void);
     public:

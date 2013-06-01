@@ -40,3 +40,4 @@ VDR Plugin 'tvguide' Revision History
 - Display of Main Menu Entry configurable
 - Eliminated setup option "Number of channels to jump", directly jump 
   number of channel columns / rows with green / yellow
+- Added setup option to switch functionality of keys "Blue" and "OK"

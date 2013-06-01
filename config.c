@@ -46,6 +46,7 @@ cTvguideConfig::cTvguideConfig() {
     hugeStepHours = 24;
     channelJumpMode = eNumJump;
     jumpChannels = 0;
+    blueKeyMode = 0;
     hideLastGroup = 0;
     hideChannelLogos = 0;
     logoWidthRatio = 13;
@@ -254,6 +255,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "bigStepHours") == 0)             bigStepHours = atoi(Value);
     else if (strcmp(Name, "hugeStepHours") == 0)            hugeStepHours = atoi(Value);
     else if (strcmp(Name, "channelJumpMode") == 0)          channelJumpMode = atoi(Value);
+    else if (strcmp(Name, "blueKeyMode") == 0)              blueKeyMode = atoi(Value);
     else if (strcmp(Name, "hideLastGroup") == 0)            hideLastGroup = atoi(Value);
     else if (strcmp(Name, "hideEpgImages") == 0)            hideEpgImages = atoi(Value);
     else if (strcmp(Name, "epgImageWidth") == 0)            epgImageWidth = atoi(Value);
