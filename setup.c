@@ -62,7 +62,6 @@ void cTvguideSetup::Store(void) {
     SetupStore("bigStepHours", tvguideConfig.bigStepHours);
     SetupStore("hugeStepHours", tvguideConfig.hugeStepHours);
     SetupStore("channelJumpMode", tvguideConfig.channelJumpMode);
-    SetupStore("jumpChannels", tvguideConfig.jumpChannels);
     SetupStore("hideLastGroup", tvguideConfig.hideLastGroup);
     SetupStore("hideChannelLogos", tvguideConfig.hideChannelLogos);
     SetupStore("logoExtension", tvguideConfig.logoExtension);
@@ -152,9 +151,6 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
-    if (tmpTvguideConfig->channelJumpMode == eNumJump) {
-        Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Channels to Jump")), &tmpTvguideConfig->jumpChannels, 2, 30));
-    }
     Add(new cMenuEditBoolItem(tr("Hide last Channel Group"), &tmpTvguideConfig->hideLastGroup));
     Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 120, 320));
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));

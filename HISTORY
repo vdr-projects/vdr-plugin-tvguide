@@ -23,8 +23,12 @@ VDR Plugin 'tvguide' Revision History
 2013-05-24: Version 0.0.4
 
 - Introduced horizontal display
+
+2013-06-01: Version 0.0.5
+
 - Added Theme DarkRed
 - Fixed some Bugs (position of video, deadlock)
+- Added Theme IceBlue
 - setup of usage of blending now done with clrDoBlending theme color
   variable and not by setup
 - font color of active grid themable
@@ -34,3 +38,5 @@ VDR Plugin 'tvguide' Revision History
   group
 - Added setup option to hide last channel group
 - Display of Main Menu Entry configurable
+- Eliminated setup option "Number of channels to jump", directly jump 
+  number of channel columns / rows with green / yellow

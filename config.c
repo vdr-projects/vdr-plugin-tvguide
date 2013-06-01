@@ -45,7 +45,7 @@ cTvguideConfig::cTvguideConfig() {
     bigStepHours = 3;
     hugeStepHours = 24;
     channelJumpMode = eNumJump;
-    jumpChannels = 10;
+    jumpChannels = 0;
     hideLastGroup = 0;
     hideChannelLogos = 0;
     logoWidthRatio = 13;
@@ -157,6 +157,7 @@ void cTvguideConfig::SetGeometry(int width, int height) {
     }
     
     numGrids = (displayMode == eVertical)?channelCols:channelRows;
+    jumpChannels = numGrids;
 }
 
 void cTvguideConfig::SetFonts(void){
@@ -253,7 +254,6 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "bigStepHours") == 0)             bigStepHours = atoi(Value);
     else if (strcmp(Name, "hugeStepHours") == 0)            hugeStepHours = atoi(Value);
     else if (strcmp(Name, "channelJumpMode") == 0)          channelJumpMode = atoi(Value);
-    else if (strcmp(Name, "jumpChannels") == 0)             jumpChannels = atoi(Value);
     else if (strcmp(Name, "hideLastGroup") == 0)            hideLastGroup = atoi(Value);
     else if (strcmp(Name, "hideEpgImages") == 0)            hideEpgImages = atoi(Value);
     else if (strcmp(Name, "epgImageWidth") == 0)            epgImageWidth = atoi(Value);
