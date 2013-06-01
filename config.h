@@ -15,6 +15,7 @@ class cTvguideConfig {
         int osdWidth; 
         int osdHeight;
         int displayMode;
+        int showTimeInGrid;
         int colWidth;
         int rowHeight;
         int channelCols;

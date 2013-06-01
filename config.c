@@ -20,6 +20,7 @@ cTvguideConfig::cTvguideConfig() {
     osdWidth = 0; 
     osdHeight = 0;
     displayMode = eHorizontal;
+    showTimeInGrid = 1;
     colWidth = 0;
     rowHeight = 0;
     channelCols = 5;
@@ -238,6 +239,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "showMainMenuEntry") == 0)        showMainMenuEntry = atoi(Value);
     else if (strcmp(Name, "themeIndex") == 0)               themeIndex = atoi(Value);
     else if (strcmp(Name, "displayMode") == 0)              displayMode = atoi(Value);
+    else if (strcmp(Name, "showTimeInGrid") == 0)           showTimeInGrid = atoi(Value);
     else if (strcmp(Name, "displayStatusHeader") == 0)      displayStatusHeader = atoi(Value);
     else if (strcmp(Name, "displayChannelGroups") == 0)     displayChannelGroups = atoi(Value);
     else if (strcmp(Name, "statusHeaderPercent") == 0)      statusHeaderPercent = atoi(Value);

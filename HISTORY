@@ -41,3 +41,4 @@ VDR Plugin 'tvguide' Revision History
 - Eliminated setup option "Number of channels to jump", directly jump 
   number of channel columns / rows with green / yellow
 - Added setup option to switch functionality of keys "Blue" and "OK"
+- Setup option to hide schedules time display in horizontal EPG grids

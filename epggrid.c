@@ -97,9 +97,14 @@ void cEpgGrid::drawText() {
             pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
             return;
         }
-        pixmap->DrawText(cPoint(borderWidth, borderWidth), *timeString, colorText, colorTextBack, tvguideConfig.FontGridHorizontalSmall);
         cString strTitle = CutText(event->Title(), viewportHeight, tvguideConfig.FontGridHorizontal).c_str();
-        int titleY = tvguideConfig.FontGridHorizontalSmall->Height() + (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontalSmall->Height() - tvguideConfig.FontGridHorizontal->Height())/2;
+        int titleY = 0;
+        if (tvguideConfig.showTimeInGrid) {
+            pixmap->DrawText(cPoint(borderWidth, borderWidth), *timeString, colorText, colorTextBack, tvguideConfig.FontGridHorizontalSmall);
+            titleY = tvguideConfig.FontGridHorizontalSmall->Height() + (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontalSmall->Height() - tvguideConfig.FontGridHorizontal->Height())/2;
+        } else {
+            titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
+        }
         pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
     }
 }

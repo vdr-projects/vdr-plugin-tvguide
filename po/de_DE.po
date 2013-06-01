@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-06-01 11:02+0200\n"
+"POT-Creation-Date: 2013-06-01 11:12+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -122,6 +122,9 @@ msgstr "Breite des Kanalheaders (% der OSD Breite)"
 
 msgid "Height of Timeline (Perc. of osd height)"
 msgstr "Höhe der Zeitleiste (% der OSD Höhe)"
+
+msgid "Display time in EPG Grids"
+msgstr "Zeit in EPG Grids anzeigen"
 
 msgid "Height of Footer"
 msgstr "Höhe des Footers"

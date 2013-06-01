@@ -48,6 +48,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("themeIndex", tvguideConfig.themeIndex);
     SetupStore("showMainMenuEntry", tvguideConfig.showMainMenuEntry);
     SetupStore("displayMode", tvguideConfig.displayMode);
+    SetupStore("showTimeInGrid", tvguideConfig.showTimeInGrid);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
     SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
     SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
@@ -206,6 +207,7 @@ void cMenuSetupScreenLayout::Set(void) {
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Width of Channel Header (Perc. of osd width)")), &tmpTvguideConfig->channelHeaderWidthPercent, 5, 30));
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of Timeline (Perc. of osd height)")), &tmpTvguideConfig->timeLineHeightPercent, 5, 30));
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelRows, 3, 12));
+        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", indent, tr("Display time in EPG Grids")), &tmpTvguideConfig->showTimeInGrid));
     }
     Add(new cMenuEditIntItem(tr("Height of Footer"), &tmpTvguideConfig->footerHeight, 50, 300));
     
