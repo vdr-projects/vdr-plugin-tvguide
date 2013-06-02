@@ -42,3 +42,7 @@ VDR Plugin 'tvguide' Revision History
   number of channel columns / rows with green / yellow
 - Added setup option to switch functionality of keys "Blue" and "OK"
 - Setup option to hide schedules time display in horizontal EPG grids
+
+Version 0.0.6
+- added frame around scaled video picture
+- added theme "keep it simple" (thanks @saman)
