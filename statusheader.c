@@ -11,7 +11,6 @@ cStatusHeader::cStatusHeader(void) {
         width = tvguideConfig.osdWidth;
     }
     int tvFrameWidth = tvguideConfig.osdWidth - width;
-    int radius = tvguideConfig.statusHeaderHeight / 8;
     pixmap = osdManager.requestPixmap(1, cRect(0, 0, width, height));
     pixmapText = osdManager.requestPixmap(2, cRect(0, 0, width, height));
     pixmapText->Fill(clrTransparent);
@@ -19,10 +18,17 @@ cStatusHeader::cStatusHeader(void) {
     pixmapTVFrame = osdManager.requestPixmap(1, cRect(width, 0, tvFrameWidth, height));
     pixmapTVFrame->Fill(clrTransparent);
     if (tvguideConfig.decorateVideo) {
-        pixmapTVFrame->DrawEllipse(cRect(0,0,radius,radius), theme.Color(clrBackground), -2);
-        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius, 0, radius, radius), theme.Color(clrBackground), -1);
-        pixmapTVFrame->DrawEllipse(cRect(0, height - radius, radius, radius), theme.Color(clrBackground), -3);
-        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius, height - radius, radius, radius), theme.Color(clrBackground), -4);
+        int radius = 16;
+	int frame = 10;
+        pixmapTVFrame->DrawRectangle(cRect(0, 0, tvFrameWidth, frame), theme.Color(clrBackground));
+        pixmapTVFrame->DrawEllipse(cRect(frame,frame,radius,radius), theme.Color(clrBackground), -2);
+        pixmapTVFrame->DrawRectangle(cRect(tvFrameWidth - frame, frame, frame, height - 2*frame), theme.Color(clrBackground));		
+        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, frame, radius, radius), theme.Color(clrBackground), -1);
+        pixmapTVFrame->DrawRectangle(cRect(0, frame, frame, height - 2*frame), theme.Color(clrBackground));	
+        pixmapTVFrame->DrawEllipse(cRect(frame, height - radius - frame, radius, radius), theme.Color(clrBackground), -3);
+        pixmapTVFrame->DrawRectangle(cRect(0, height - frame, tvFrameWidth, frame), theme.Color(clrBackground));
+        pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, height - radius - frame, radius, radius), theme.Color(clrBackground), -4);
+
     }
     drawBackground();
     drawBorder();
@@ -50,7 +56,7 @@ void cStatusHeader::ScaleVideo(void) {
 }
 
 void cStatusHeader::DrawInfoText(cGrid *grid) {
-    int border = 5;
+    int border = 10;
     tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     pixmapText->Fill(clrTransparent);
     int x = border;
