@@ -114,7 +114,7 @@ void cChannelGroups::DrawChannelGroups(const cChannel *start, const cChannel *st
         line++;
         groupLast = group;
         if (channel == stop) {
-            CreateGroupGrid(channelGroups[groupLast].GetName(), group, lineStart, line);
+            CreateGroupGrid(channelGroups[groupLast].GetName(), group+1, lineStart, line);
             break;
         }
     }
