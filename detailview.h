@@ -22,16 +22,20 @@ private:
     cTextWrapper reruns;
     int borderWidth;
     int headerHeight;
+    int scrollBarWidth;
     bool setContentDrawportHeight();
     int heightContent;
     int heightScrollbar;
+    int numEPGPics;
     bool contentScrollable;
-    virtual void Action(void);
-    void LoadReruns(void);
+    void loadReruns(void);
     void drawHeader();
     void drawContent();
     void drawScrollbar();
+    int heightEPGPics(void);
+    void drawEPGPictures(int height);
     cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);
+    virtual void Action(void);
 public:
     cDetailView(cGrid *grid);
     virtual ~cDetailView(void);

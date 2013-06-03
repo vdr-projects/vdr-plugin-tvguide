@@ -46,3 +46,4 @@ VDR Plugin 'tvguide' Revision History
 Version 0.0.6
 - added frame around scaled video picture
 - added theme "keep it simple" (thanks @saman)
+- display of additional EPG pictures in detailed epg view

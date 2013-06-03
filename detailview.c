@@ -9,12 +9,14 @@ cDetailView::cDetailView(cGrid *grid) {
     FrameTime = 40; // ms
     FadeTime = 500; // ms
     borderWidth = 100; //px
+    scrollBarWidth = 40;
     headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
                         40 + tvguideConfig.epgImageHeight);
     description.Set(event->Description(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
     if (tvguideConfig.displayRerunsDetailEPGView) {
-        LoadReruns();
+        loadReruns();
     }
+    numEPGPics = 0;
     contentScrollable = setContentDrawportHeight();
     createPixmaps();
 }
@@ -35,6 +37,9 @@ bool cDetailView::setContentDrawportHeight() {
         linesContent += reruns.Lines() + 1;
     }
     heightContent = linesContent * tvguideConfig.FontDetailView->Height();
+    if (!tvguideConfig.hideEpgImages) {
+        heightContent += heightEPGPics();
+    }
     if (heightContent > (tvguideConfig.osdHeight - 2 * borderWidth - headerHeight))
         return true;
     else
@@ -42,8 +47,6 @@ bool cDetailView::setContentDrawportHeight() {
 }
 
 void cDetailView::createPixmaps() {
-    int scrollBarWidth = 50;
-    
     header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null));
     header->SetAlpha(0);
     headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
@@ -119,7 +122,9 @@ void cDetailView::drawContent() {
             i++;
         }
     }
-
+    if (!tvguideConfig.hideEpgImages) {
+        drawEPGPictures((i+1)*textHeight);
+    }
 }
 
 void cDetailView::drawScrollbar() {
@@ -187,7 +192,7 @@ cImage *cDetailView::createScrollbar(int width, int height, tColor clrBgr, tColo
     return image;
 }
 
-void cDetailView::LoadReruns(void) {
+void cDetailView::loadReruns(void) {
     cPlugin *epgSearchPlugin = cPluginManager::GetPlugin("epgsearch");
     if (epgSearchPlugin && !isempty(event->Title())) {
         std::stringstream sstrReruns;
@@ -233,6 +238,59 @@ void cDetailView::LoadReruns(void) {
         reruns.Set(sstrReruns.str().c_str(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
     } else
         reruns.Set("", tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+}
+
+int cDetailView::heightEPGPics(void) {
+    int width = tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth;
+    int border = 5;
+    int numPicsAvailable = 0;
+    for (int i=1; i <= tvguideConfig.numAdditionalEPGPictures; i++) {
+        cString epgimage = cString::sprintf("%s%d_%d.jpg", *tvguideConfig.epgImagePath, event->EventID(), i);
+        FILE *fp = fopen(*epgimage, "r");
+        if (fp) {
+            numPicsAvailable = i;
+            fclose(fp);
+        } else {
+            break;
+        }
+    }
+    numEPGPics = numPicsAvailable;
+    int picsPerLine = width / (tvguideConfig.epgImageWidthLarge + border);
+    int picLines = numPicsAvailable / picsPerLine;
+    if (numPicsAvailable%picsPerLine != 0)
+        picLines++;
+    return picLines * (tvguideConfig.epgImageHeightLarge + border) + 2*border;
+}
+
+void cDetailView::drawEPGPictures(int height) {
+    int width = content->ViewPort().Width();
+    int border = 5;
+    int picsPerLine = width / (tvguideConfig.epgImageWidthLarge + border);
+    int currentX = border;
+    int currentY = height + border;
+    int currentPicsPerLine = 1;
+    cImageLoader imgLoader;
+    for (int i=1; i <= numEPGPics; i++) {
+        cString epgimage = cString::sprintf("%d_%d", event->EventID(), i);
+        if (imgLoader.LoadAdditionalEPGImage(epgimage)) {
+            content->DrawImage(cPoint(currentX, currentY), imgLoader.GetImage());
+            int radius = 10;
+            content->DrawEllipse(cRect(currentX,currentY,radius,radius), theme.Color(clrBackground), -2);
+            content->DrawEllipse(cRect(currentX + tvguideConfig.epgImageWidthLarge - radius,currentY,radius,radius), theme.Color(clrBackground), -1);
+            content->DrawEllipse(cRect(currentX,currentY + tvguideConfig.epgImageHeightLarge - radius,radius,radius), theme.Color(clrBackground), -3);
+            content->DrawEllipse(cRect(currentX + tvguideConfig.epgImageWidthLarge - radius,currentY + tvguideConfig.epgImageHeightLarge - radius,radius,radius), theme.Color(clrBackground), -4);
+            if (currentPicsPerLine < picsPerLine) {
+                currentX += tvguideConfig.epgImageWidthLarge + border;
+                currentPicsPerLine++;
+            } else {
+                currentX = border;
+                currentY += tvguideConfig.epgImageHeightLarge + border;
+                currentPicsPerLine = 1;
+            }
+        } else {
+            break;
+        }
+    }
 }
 
 void cDetailView::Action(void) {

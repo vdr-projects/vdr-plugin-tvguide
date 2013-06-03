@@ -44,6 +44,21 @@ bool cImageLoader::LoadEPGImage(int eventID) {
     return true;
 }
 
+bool cImageLoader::LoadAdditionalEPGImage(cString name) {
+    int width = tvguideConfig.epgImageWidthLarge;
+    int height = tvguideConfig.epgImageHeightLarge;
+    if ((width == 0)||(height==0))
+        return false;
+    bool success = false;
+    success = LoadImage(name, tvguideConfig.epgImagePath, "jpg");
+    if (!success)
+        return false;
+    if (height != 0 || width != 0) {
+        buffer.sample( Geometry(width, height));
+    }
+    return true;
+}
+
 bool cImageLoader::DrawBackground(tColor back, tColor blend, int width, int height) {
     if ((width < 1) || (height < 1))
         return false;

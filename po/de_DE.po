@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-06-01 11:12+0200\n"
+"POT-Creation-Date: 2013-06-03 09:00+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -172,13 +172,22 @@ msgid "Show EPG Images"
 msgstr "EPG Bilder anzeigen"
 
 msgid "EPG Images Path used"
-msgstr "benutzer EPG Bilder Pfad"
+msgstr "Benutzer EPG Bilder Pfad"
 
 msgid "EPG Image width"
 msgstr "Breite der EPG Bilder"
 
 msgid "EPG Image height"
 msgstr "Höhe der EPG Bilder"
+
+msgid "Number of additional EPG Images"
+msgstr "Anzahl zusätzlicher EPG Bilder"
+
+msgid "Additional EPG Image width"
+msgstr "Breite der zus. EPG Bilder"
+
+msgid "Additional EPG Image height"
+msgstr "Höhe der zus. EPG Bilder"
 
 msgid "Font"
 msgstr "Schriftart"

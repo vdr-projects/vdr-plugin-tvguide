@@ -57,6 +57,9 @@ class cTvguideConfig {
         int hideEpgImages;
         int epgImageWidth;
         int epgImageHeight;
+        int numAdditionalEPGPictures;
+	int epgImageWidthLarge;
+        int epgImageHeightLarge;
         cString epgImagePath;
         int fontIndex;
         const char *fontNameDefault;

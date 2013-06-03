@@ -60,7 +60,7 @@ void cChannelGroupGrid::Draw(void) {
         int x = (Width() - textWidth) / 2;
         pixmap->DrawText(cPoint(x, textY), *text, colorText, colorTextBack, tvguideConfig.FontChannelGroups);
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        std::string nameUpper = name;
+	std::string nameUpper = name;
         std::transform(nameUpper.begin(), nameUpper.end(),nameUpper.begin(), ::toupper);
         int numChars = nameUpper.length();
         int charHeight = tvguideConfig.FontChannelGroupsHorizontal->Height();

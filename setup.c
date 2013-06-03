@@ -72,7 +72,9 @@ void cTvguideSetup::Store(void) {
     SetupStore("hideEpgImages", tvguideConfig.hideEpgImages);
     SetupStore("epgImageWidth", tvguideConfig.epgImageWidth);
     SetupStore("epgImageHeight", tvguideConfig.epgImageHeight);
-    SetupStore("epgImageHeight", tvguideConfig.epgImageHeight);
+    SetupStore("numAdditionalEPGPictures", tvguideConfig.numAdditionalEPGPictures);
+    SetupStore("epgImageWidthLarge", tvguideConfig.epgImageWidthLarge);
+    SetupStore("epgImageHeightLarge", tvguideConfig.epgImageHeightLarge);
     SetupStore("timeLineWidthPercent", tvguideConfig.timeLineWidthPercent);
     SetupStore("timeLineHeightPercent", tvguideConfig.timeLineHeightPercent);
     SetupStore("displayChannelName", tvguideConfig.displayChannelName);
@@ -161,7 +163,7 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
-
+    
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
         Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
@@ -241,6 +243,9 @@ void cMenuSetupScreenLayout::Set(void) {
         Add(InfoItem(tr("EPG Images Path used"), *tvguideConfig.epgImagePath));
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("EPG Image width")), &tmpTvguideConfig->epgImageWidth, 0, 800));
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("EPG Image height")), &tmpTvguideConfig->epgImageHeight, 0, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Number of additional EPG Images")), &tmpTvguideConfig->numAdditionalEPGPictures, 0, 20));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Additional EPG Image width")), &tmpTvguideConfig->epgImageWidthLarge, 1, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Additional EPG Image height")), &tmpTvguideConfig->epgImageHeightLarge, 0, 800));
     }
     
     SetCurrent(Get(currentItem));

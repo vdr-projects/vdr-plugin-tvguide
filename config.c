@@ -56,6 +56,9 @@ cTvguideConfig::cTvguideConfig() {
     hideEpgImages = 0;
     epgImageWidth = 315;
     epgImageHeight = 240;
+    numAdditionalEPGPictures = 9;
+    epgImageWidthLarge = 525;
+    epgImageHeightLarge = 400;
     fontIndex = 0;
     fontNameDefault = "VDRSymbols Sans:Book";
     FontButtonDelta = 0;
@@ -262,6 +265,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "hideEpgImages") == 0)            hideEpgImages = atoi(Value);
     else if (strcmp(Name, "epgImageWidth") == 0)            epgImageWidth = atoi(Value);
     else if (strcmp(Name, "epgImageHeight") == 0)           epgImageHeight = atoi(Value);
+    else if (strcmp(Name, "numAdditionalEPGPictures") == 0) numAdditionalEPGPictures = atoi(Value);
+    else if (strcmp(Name, "epgImageWidthLarge") == 0)       epgImageWidthLarge = atoi(Value);
+    else if (strcmp(Name, "epgImageHeightLarge") == 0)      epgImageHeightLarge = atoi(Value);
     else if (strcmp(Name, "timeLineWidthPercent") == 0)     timeLineWidthPercent = atoi(Value);
     else if (strcmp(Name, "timeLineHeightPercent") == 0)    timeLineHeightPercent = atoi(Value);
     else if (strcmp(Name, "displayChannelName") == 0)       displayChannelName = atoi(Value);
