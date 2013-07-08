@@ -3,11 +3,11 @@
 cTimeLine::cTimeLine(cMyTime *myTime) {
     this->myTime = myTime;
     if (tvguideConfig.displayMode == eVertical) {
-        dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
+        dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
                                                                          tvguideConfig.statusHeaderHeight, 
                                                                          tvguideConfig.timeLineWidth, 
                                                                          tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight)));
-        timeline = osdManager.requestPixmap(2, cRect(0, 
+        timeline = osdManager.requestPixmap(1, cRect(0, 
                                                      tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight, 
                                                      tvguideConfig.timeLineWidth, 
                                                      tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight)
@@ -16,11 +16,11 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                                      tvguideConfig.timeLineWidth, 
                                                      1440*tvguideConfig.minutePixel));
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        dateViewer = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
+        dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
                                                                          tvguideConfig.statusHeaderHeight, 
                                                                          tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth,
                                                                          tvguideConfig.timeLineHeight)));
-        timeline = osdManager.requestPixmap(2, cRect(tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth, 
+        timeline = osdManager.requestPixmap(1, cRect(tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth, 
                                                      tvguideConfig.statusHeaderHeight, 
                                                      tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth,
                                                      tvguideConfig.timeLineHeight)
@@ -29,7 +29,7 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                                      1440*tvguideConfig.minutePixel, 
                                                      tvguideConfig.timeLineWidth));
     }
-    clock = new cStyledPixmap(osdManager.requestPixmap(3, cRect(0, 
+    clock = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
                                                                 tvguideConfig.osdHeight- tvguideConfig.footerHeight, 
                                                                 tvguideConfig.timeLineWidth, 
                                                                 tvguideConfig.footerHeight-9)));

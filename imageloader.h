@@ -17,6 +17,7 @@ public:
     bool LoadLogo(const char *logo, int width, int height);
     bool LoadEPGImage(int eventID);
     bool LoadAdditionalEPGImage(cString name);
+    bool LoadIcon(const char *cIcon, int size);
     bool DrawBackground(tColor back, tColor blend, int width, int height);
 private:
     Image buffer;

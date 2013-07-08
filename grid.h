@@ -12,6 +12,8 @@ protected:
     bool isColor1;
     bool active;
     bool dirty;
+    bool hasTimer;
+    bool hasSwitchTimer;
     bool intersects(cGrid *neighbor);
     virtual time_t Duration(void) {};
     virtual void drawText(void) {};
@@ -37,10 +39,13 @@ public:
     virtual void SetStartTime(time_t start) {};
     virtual void SetEndTime(time_t end) {};
     int calcOverlap(cGrid *neighbor);
-    virtual void setTimer() {};
+    virtual void SetTimer() {};
+    virtual void SetSwitchTimer() {};
     virtual cString getText(void) { return cString("");};
     virtual cString getTimeString(void) { return cString("");};
     bool Active(void) { return active; };
+    bool HasTimer() {return hasTimer;};
+    bool HasSwitchTimer() {return hasSwitchTimer;};
     bool isDummy() { return dummy; };
     virtual void debug() {};
 };

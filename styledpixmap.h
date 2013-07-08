@@ -13,23 +13,26 @@ protected:
     tColor colorBlending;
     void setPixmap(cPixmap *pixmap);
 public:
-  cStyledPixmap(void);
-  cStyledPixmap(cPixmap *pixmap);
-  virtual ~cStyledPixmap(void);
-  void drawBackground();
-  void drawBlendedBackground();
-  void drawSparsedBackground();
-  void drawBorder();
-  void drawBoldBorder();
-  void drawDefaultBorder(int width, int height);
-  void drawRoundedCorners(int width, int height, int radius);
-  void setColor(tColor color, tColor colorBlending) {this->color = color; this->colorBlending = colorBlending;};
-  void SetAlpha(int alpha) {pixmap->SetAlpha(alpha);};
-  void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font);
-  void DrawImage(const cPoint &Point, const cImage &Image);
-  void DrawRectangle(const cRect &Rect, tColor Color);
-  int Width() {return pixmap->ViewPort().Width();};
-  int Height() {return pixmap->ViewPort().Height();};
+    cStyledPixmap(void);
+    cStyledPixmap(cPixmap *pixmap);
+    virtual ~cStyledPixmap(void);
+    void drawBackground();
+    void drawBlendedBackground();
+    void drawSparsedBackground();
+    void drawBorder();
+    void drawBoldBorder();
+    void drawDefaultBorder(int width, int height);
+    void drawRoundedCorners(int width, int height, int radius);
+    void setColor(tColor color, tColor colorBlending) {this->color = color; this->colorBlending = colorBlending;};
+    void SetAlpha(int alpha) {pixmap->SetAlpha(alpha);};
+    void SetLayer(int layer) {pixmap->SetLayer(layer);};
+    void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font);
+    void DrawImage(const cPoint &Point, const cImage &Image);
+    void DrawRectangle(const cRect &Rect, tColor Color);
+    void DrawEllipse(const cRect &Rect, tColor Color, int Quadrant);
+    void SetViewPort(const cRect &Rect);
+    int Width() {return pixmap->ViewPort().Width();};
+    int Height() {return pixmap->ViewPort().Height();};
 };
 
 #endif //__TVGUIDE_STYLEDPIXMAP_H

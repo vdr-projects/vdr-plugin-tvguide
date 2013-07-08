@@ -5,6 +5,7 @@ cDummyGrid::cDummyGrid(cChannelColumn *c, time_t start, time_t end) : cGrid(c) {
     this->end = end;
     strText = tr("No EPG Information available");
     dummy = true;
+    hasTimer = false;
 }
 
 cDummyGrid::~cDummyGrid(void) {

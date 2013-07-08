@@ -8,9 +8,8 @@ private:
     const cEvent *event;
     cTextWrapper *extText;
     cString timeString;
-    bool hasTimer;
     void drawText();
-    void drawRecIcon();
+    void drawIcon(cString iconText, tColor color);
     time_t Duration(void) { return event->Duration(); };
 public:
     cEpgGrid(cChannelColumn *c, const cEvent *event);
@@ -21,7 +20,8 @@ public:
     const cEvent *GetEvent() {return event;};
     time_t StartTime() { return event->StartTime(); };
     time_t EndTime() { return event->EndTime(); };
-    void setTimer() {hasTimer = true;};
+    void SetTimer() {hasTimer = event->HasTimer();};
+    void SetSwitchTimer() {hasSwitchTimer = SwitchTimers.EventInSwitchList(event);};
     cString getTimeString(void);
     void debug();
 };

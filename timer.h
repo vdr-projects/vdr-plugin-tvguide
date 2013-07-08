@@ -30,4 +30,19 @@ class cMyTime {
         void debug();
 };
 
+// --- cTimeInterval ------------------------------------------------------------- 
+
+class cTimeInterval {
+    private:
+        time_t start;
+        time_t stop;
+    public:
+        cTimeInterval(time_t start, time_t stop);
+        virtual ~cTimeInterval(void);
+        time_t Start(void) { return start; };
+        time_t Stop(void) { return stop; };
+        cTimeInterval *Intersect(cTimeInterval *interval);
+        cTimeInterval *Union(cTimeInterval *interval);
+};
+
 #endif //__TVGUIDE_TIMER_H

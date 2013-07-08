@@ -81,6 +81,8 @@ cTvguideConfig::cTvguideConfig() {
     FontGridHorizontalSmallDelta = 0;
     FontTimeLineDateHorizontalDelta = 0;
     FontTimeLineTimeHorizontalDelta = 0;
+    FontRecMenuItemDelta = 0;
+    FontRecMenuItemSmallDelta = 0;
     //Common Fonts
     FontButton = NULL;
     FontDetailView = NULL;
@@ -102,7 +104,9 @@ cTvguideConfig::cTvguideConfig() {
     FontGridHorizontalSmall = NULL;
     FontTimeLineDateHorizontal = NULL;
     FontTimeLineTimeHorizontal = NULL;
-
+    //Fonts for RecMenu
+    FontRecMenuItem = NULL;
+    FontRecMenuItemSmall = NULL;
     timeFormat = 1;
     themeIndex = 4;
     useBlending = 2;
@@ -133,6 +137,8 @@ cTvguideConfig::~cTvguideConfig() {
     delete FontGridHorizontalSmall;
     delete FontTimeLineDateHorizontal;
     delete FontTimeLineTimeHorizontal;
+    delete FontRecMenuItem;
+    delete FontRecMenuItemSmall;
 }
 
 void cTvguideConfig::setDynamicValues(int width, int height) {
@@ -207,7 +213,9 @@ void cTvguideConfig::SetFonts(void){
     FontGridHorizontalSmall = cFont::CreateFont(*fontname, rowHeight/4 + FontGridHorizontalSmallDelta);
     FontTimeLineDateHorizontal = cFont::CreateFont(*fontname, timeLineHeight/2 + 5 + FontTimeLineDateHorizontalDelta);
     FontTimeLineTimeHorizontal = cFont::CreateFont(*fontname, timeLineHeight/2 + FontTimeLineTimeHorizontalDelta);
-
+    //Fonts for RecMenu
+    FontRecMenuItem = cFont::CreateFont(*fontname, osdHeight/30 + FontRecMenuItemDelta);
+    FontRecMenuItemSmall = cFont::CreateFont(*fontname, osdHeight/40 + FontRecMenuItemSmallDelta);
 }
 
 void cTvguideConfig::SetBlending(void) {
@@ -226,6 +234,10 @@ void cTvguideConfig::SetLogoPath(cString path) {
 
 void cTvguideConfig::SetImagesPath(cString path) {
     epgImagePath = path;
+}
+
+void cTvguideConfig::SetIconsPath(cString path) {
+    iconPath = path;
 }
 
 void cTvguideConfig::loadTheme() {
@@ -295,6 +307,8 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "FontGridHorizontalSmallDelta") == 0) FontGridHorizontalSmallDelta = atoi(Value);
     else if (strcmp(Name, "FontTimeLineDateHorizontalDelta") == 0) FontTimeLineDateHorizontalDelta = atoi(Value);
     else if (strcmp(Name, "FontTimeLineTimeHorizontalDelta") == 0) FontTimeLineTimeHorizontalDelta = atoi(Value);
+    else if (strcmp(Name, "FontRecMenuItemDelta") == 0)     FontRecMenuItemDelta = atoi(Value);
+    else if (strcmp(Name, "FontRecMenuItemSmallDelta") == 0) FontRecMenuItemSmallDelta = atoi(Value);
     else if (strcmp(Name, "displayRerunsDetailEPGView") == 0) displayRerunsDetailEPGView = atoi(Value);
     else if (strcmp(Name, "numReruns") == 0)                numReruns = atoi(Value);
     else if (strcmp(Name, "useSubtitleRerun") == 0)         useSubtitleRerun = atoi(Value);

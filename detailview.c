@@ -2,12 +2,9 @@
 #include <sstream>
 #include "detailview.h"
 
-cDetailView::cDetailView(cGrid *grid) {
-    this->grid = grid;
-    this->event = grid->GetEvent();
+cDetailView::cDetailView(const cEvent *event) {
+    this->event = event;
     imgScrollBar = NULL;
-    FrameTime = 40; // ms
-    FadeTime = 500; // ms
     borderWidth = 100; //px
     scrollBarWidth = 40;
     headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
@@ -48,24 +45,18 @@ bool cDetailView::setContentDrawportHeight() {
 
 void cDetailView::createPixmaps() {
     header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null));
-    header->SetAlpha(0);
     headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
     headerLogo->Fill(clrTransparent);
-    headerLogo->SetAlpha(0);
     headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
-    headerBack->SetAlpha(0);
     headerBack->Fill(clrBlack);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
     content = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight),
                                     cRect(0,0, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, max(heightContent, tvguideConfig.osdHeight-2*borderWidth-headerHeight)));   
-    content->SetAlpha(0);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
     
     scrollBar = osdManager.requestPixmap(5, cRect(tvguideConfig.osdWidth-borderWidth-scrollBarWidth, borderWidth + headerHeight, scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight));
-    scrollBar->SetAlpha(0);
     
     footer = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight + content->ViewPort().Height(), tvguideConfig.osdWidth - 2*borderWidth, 3));
-    footer->SetAlpha(0);
     footer->Fill(theme.Color(clrBorder));
 }
 
@@ -79,7 +70,8 @@ void cDetailView::drawHeader() {
     cImageLoader imgLoader;
     bool logoDrawn = false;
     if (!tvguideConfig.hideChannelLogos) {
-        if (imgLoader.LoadLogo(grid->column->getChannel()->Name(), logoWidth, logoHeight)) {
+        cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
+        if (imgLoader.LoadLogo(*channelName, logoWidth, logoHeight)) {
             cImage logo = imgLoader.GetImage();
             headerLogo->DrawImage(cPoint(10, (header->Height() - logoHeight)/2), logo);
             logoDrawn = true;
@@ -293,28 +285,21 @@ void cDetailView::drawEPGPictures(int height) {
     }
 }
 
-void cDetailView::Action(void) {
-    drawHeader();
-    drawContent();
-    drawScrollbar();
-    uint64_t Start = cTimeMs::Now();
-    while (true) {
-        uint64_t Now = cTimeMs::Now();
-        cPixmap::Lock();
-        double t = min(double(Now - Start) / FadeTime, 1.0);
-        int Alpha = t * ALPHA_OPAQUE;
-        header->SetAlpha(Alpha);
-        headerBack->SetAlpha(Alpha);
-        headerLogo->SetAlpha(Alpha);
-        content->SetAlpha(Alpha);
-        scrollBar->SetAlpha(Alpha);
-        footer->SetAlpha(Alpha);
-        osdManager.flush();
-        cPixmap::Unlock();
-        int Delta = cTimeMs::Now() - Now;
-        if (Delta < FrameTime)
-           cCondWait::SleepMs(FrameTime - Delta);
-        if ((Now - Start) > FadeTime)
+eOSState cDetailView::ProcessKey(eKeys Key) {
+    eOSState state = osContinue;
+    switch (Key & ~k_Repeat) {
+        case kUp:
+            scrollUp();
+            osdManager.flush();
+            break;
+        case kDown:     
+            scrollDown(); 
+            osdManager.flush();
+            break;
+        case kOk:
+        case kBack:
+            state = osEnd;
             break;
     }
+    return state;
 }

@@ -16,6 +16,7 @@ private:
     cSchedulesLock *schedulesLock;
     const cSchedules *schedules;
     bool hasTimer;
+    bool hasSwitchTimer;
     cGrid *addEpgGrid(const cEvent *event, cGrid *firstGrid, bool color);
     cGrid *addDummyGrid(time_t start, time_t end, cGrid *firstGrid, bool color);
 public:
@@ -42,8 +43,11 @@ public:
     void ClearOutdatedEnd();
     int GetNum() {return num;};
     void SetNum(int num) {this->num = num;};
-    void setTimer() {hasTimer = true;};
+    void setTimer() {hasTimer = channel->HasTimer();};
     bool HasTimer() { return hasTimer; };
+    void setSwitchTimer() {hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);};
+    bool HasSwitchTimer() { return hasSwitchTimer; };
+    void SetTimers();
     void clearGrids();
     void dumpGrids();
 };

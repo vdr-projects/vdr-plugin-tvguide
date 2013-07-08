@@ -11,6 +11,7 @@
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 #include <vdr/device.h>
+#include <vdr/menu.h>
 
 #include "tvguideosd.c"
 
@@ -20,7 +21,7 @@
 
 
 
-static const char *VERSION        = "0.0.5";
+static const char *VERSION        = "0.0.6";
 static const char *DESCRIPTION    = "A fancy 2d EPG Viewer";
 static const char *MAINMENUENTRY  = "Tvguide";
 
@@ -28,6 +29,7 @@ class cPluginTvguide : public cPlugin {
 private:
   bool logoPathSet;
   bool imagesPathSet;
+  bool iconsPathSet;
 public:
   cPluginTvguide(void);
   virtual ~cPluginTvguide();
@@ -58,6 +60,7 @@ cPluginTvguide::cPluginTvguide(void)
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
   logoPathSet = false;
   imagesPathSet = false;
+  iconsPathSet = false;
 }
 
 cPluginTvguide::~cPluginTvguide()
@@ -124,6 +127,13 @@ bool cPluginTvguide::Start(void)
         tvguideConfig.SetImagesPath(path);
         logoPathSet = true;
     }
+    
+    if (!iconsPathSet) {
+        cString path = cString::sprintf("%s/icons/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
+        tvguideConfig.SetIconsPath(path);
+        iconsPathSet = true;
+    }
+
     return true;
 }
 

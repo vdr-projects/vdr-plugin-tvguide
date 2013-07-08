@@ -21,6 +21,7 @@ LIBDIR = $(call PKGCFG,libdir)
 LOCDIR = $(call PKGCFG,locdir)
 PLGCFG = $(call PKGCFG,plgcfg)
 VDRCONFDIR= $(call PKGCFG,configdir)
+PLGRESDIR = $(call PKGCFG,resdir)/plugins/$(PLUGIN)
 TMPDIR ?= /tmp
 
 ### The compiler options:
@@ -100,6 +101,7 @@ i18n: $(I18Nmo) $(I18Npot)
 install-i18n: $(I18Nmsgs)
 
 ### Targets:
+
 $(SOFILE): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared $(OBJS) $(LIBS) -o $@
 
@@ -110,7 +112,11 @@ install-themes:
 	@mkdir -p $(DESTDIR)$(VDRCONFDIR)/themes
 	cp themes/* $(DESTDIR)$(VDRCONFDIR)/themes
 
-install: install-lib install-i18n install-themes
+install-icons:
+	mkdir -p $(DESTDIR)$(PLGRESDIR)/icons
+	cp -r icons/* $(DESTDIR)$(PLGRESDIR)/icons
+		
+install: install-lib install-i18n install-themes install-icons
 
 dist: $(I18Npo) clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)

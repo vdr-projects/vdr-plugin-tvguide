@@ -7,6 +7,9 @@ cEpgGrid::cEpgGrid(cChannelColumn *c, const cEvent *event)  : cGrid(c) {
     hasTimer = false;
     if (column->HasTimer())
         hasTimer = event->HasTimer();
+    hasSwitchTimer = false;
+    if (column->HasSwitchTimer())
+        hasSwitchTimer = SwitchTimers.EventInSwitchList(event);
     dummy = false;
 }
 
@@ -89,8 +92,6 @@ void cEpgGrid::drawText() {
                 pixmap->DrawText(cPoint(borderWidth, borderWidth + offset + i*textHeight), extText->GetLine(i), colorText, colorTextBack, tvguideConfig.FontGridSmall);
             }
         }
-        if (hasTimer) 
-                drawRecIcon();
     } else if (tvguideConfig.displayMode == eHorizontal) {
         if (Width()/tvguideConfig.minutePixel < 10) {
             int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
@@ -107,14 +108,21 @@ void cEpgGrid::drawText() {
         }
         pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
     }
+    if (hasSwitchTimer) 
+        drawIcon("Switch", theme.Color(clrButtonYellow));
+    if (hasTimer) 
+        drawIcon("REC", theme.Color(clrButtonRed));
 }
 
-void cEpgGrid::drawRecIcon() {
-    cString recIconText("REC");
-    int width = tvguideConfig.FontGrid->Width(*recIconText)+2*borderWidth;
-    int height = tvguideConfig.FontGrid->Height()+10;
-    pixmap->DrawRectangle( cRect(Width() - width - borderWidth,  Height() - height - borderWidth, width, height), theme.Color(clrButtonRed));
-    pixmap->DrawText(cPoint(Width() - width, Height() - height - borderWidth/2), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), tvguideConfig.FontGrid);   
+void cEpgGrid::drawIcon(cString iconText, tColor color) {
+    
+    const cFont *font = (tvguideConfig.displayMode == eVertical)
+                        ?tvguideConfig.FontGrid
+                        :tvguideConfig.FontGridHorizontalSmall;
+    int textWidth = font->Width(*iconText)+2*borderWidth;
+    int textHeight = font->Height()+10;
+    pixmap->DrawRectangle( cRect(Width() - textWidth - borderWidth, Height() - textHeight - borderWidth, textWidth, textHeight), color);
+    pixmap->DrawText(cPoint(Width() - textWidth, Height() - textHeight - borderWidth/2), *iconText, theme.Color(clrFont), color, font);   
 }
 
 cString cEpgGrid::getTimeString(void) {

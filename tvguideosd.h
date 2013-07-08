@@ -13,6 +13,7 @@ private:
   cTimeLine *timeLine;
   cChannelGroups *channelGroups;
   cFooter *footer;
+  cRecMenuManager *recMenuManager;
   bool detailViewActive;
   void drawOsd();
   void readChannels(const cChannel *channelStart);
@@ -42,6 +43,7 @@ private:
   void ScrollBack();
   eOSState ChannelSwitch();
   void DetailedEPG();
+  void SetTimers();
   void dump();
 public:
   cTvGuideOsd(void);

@@ -37,6 +37,21 @@ THEME_CLR(theme, clrButtonYellowBorder, 0xFFBBBB00);
 THEME_CLR(theme, clrButtonBlue, 0x990000BB);
 THEME_CLR(theme, clrButtonBlueBorder, 0xFF0000BB);
 THEME_CLR(theme, clrButtonBlend, 0xDD000000);
+THEME_CLR(theme, clrRecMenuBackground, 0xB0000000);
+THEME_CLR(theme, clrRecMenuTimerConflictBackground, 0xFFCCCCCC);
+THEME_CLR(theme, clrRecMenuTimerConflictBar, 0xFF222222);
+THEME_CLR(theme, clrRecMenuTimerConflictOverlap, 0xAAFF0000);
+THEME_CLR(theme, clrRecMenuDayActive, 0xFF00FF00);
+THEME_CLR(theme, clrRecMenuDayInactive, 0xFFFF0000);
+THEME_CLR(theme, clrRecMenuDayHighlight, 0x44FFFFFF);
+THEME_CLR(theme, clrRecMenuTextBack, 0xFF000000);
+THEME_CLR(theme, clrRecMenuTextActiveBack, 0xFF404749);
+THEME_CLR(theme, clrRecMenuKeyboardBack, 0xFF000000);
+THEME_CLR(theme, clrRecMenuKeyboardBorder, clrWhite);
+THEME_CLR(theme, clrRecMenuKeyboardHigh, 0x55FFFFFF);
+THEME_CLR(theme, clrButtonRedKeyboard, 0xFFBB0000);
+THEME_CLR(theme, clrButtonGreenKeyboard, 0xFF00BB00);
+THEME_CLR(theme, clrButtonYellowKeyboard, 0xFFBBBB00);
 
 #include "config.c"
 cTvguideConfig tvguideConfig;
@@ -44,11 +59,12 @@ cTvguideConfig tvguideConfig;
 #include "osdmanager.c"
 cOsdManager osdManager;
 
+#include "tools.c"
+#include "switchtimer.c"
 #include "setup.c"
 #include "imageloader.c"
 #include "styledpixmap.c"
 #include "timer.c"
-#include "messagebox.c"
 #include "timeline.c"
 #include "grid.c"
 #include "headergrid.c"
@@ -60,6 +76,11 @@ cOsdManager osdManager;
 #include "channelgroup.c"
 #include "channelgroups.c"
 #include "footer.c"
+#include "recmenuitem.c"
+#include "recmenu.c"
+#include "recmanager.c"
+#include "recmenus.c"
+#include "recmenumanager.c"
 
 #include "tvguideosd.h"
 #include <stdlib.h>
@@ -69,6 +90,7 @@ cTvGuideOsd::cTvGuideOsd(void) {
     detailViewActive = false;
     activeGrid = NULL;
     timeLine = NULL;
+    recMenuManager = NULL;
 }
 
 cTvGuideOsd::~cTvGuideOsd() {
@@ -82,7 +104,7 @@ cTvGuideOsd::~cTvGuideOsd() {
     delete timeLine;
     delete channelGroups;
     delete footer;
-    cMessageBox::Destroy();
+    delete recMenuManager;
     osdManager.deleteOsd();
 }
 
@@ -97,6 +119,12 @@ void cTvGuideOsd::Show(void) {
         osdManager.setBackground();
         myTime = new cMyTime();
         myTime->Now();
+        SwitchTimers.Load(AddDirectory(cPlugin::ConfigDirectory("epgsearch"), "epgsearchswitchtimers.conf"));
+        cSwitchTimer *st = NULL;
+        for (st = SwitchTimers.First(); st; st = SwitchTimers.Next(st)) {
+            esyslog("tvguide: switchtimer eventID %d time %ld", st->eventID, st->startTime);
+        }
+        recMenuManager = new cRecMenuManager();
         drawOsd();
     }
     esyslog("tvguide: Rendering took %d ms", int(cTimeMs::Now()-start));
@@ -392,15 +420,10 @@ void cTvGuideOsd::processKeyUp() {
     if (!activeGrid) {
         return;
     }
-    if (detailViewActive) {
-        detailView->scrollUp();
-        osdManager.flush();
-    } else {
-        if (tvguideConfig.displayMode == eVertical) {
-            timeBack();
-        } else if (tvguideConfig.displayMode == eHorizontal) {
-            channelBack();
-        }
+    if (tvguideConfig.displayMode == eVertical) {
+        timeBack();
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        channelBack();
     }
 }
 
@@ -408,21 +431,14 @@ void cTvGuideOsd::processKeyDown() {
     if (!activeGrid) {
             return;
     }
-    if (detailViewActive) {
-        detailView->scrollDown();
-        osdManager.flush();
-    } else {
-        if (tvguideConfig.displayMode == eVertical) {
-            timeForward();
-        } else if (tvguideConfig.displayMode == eHorizontal) {
-            channelForward();
-        }
+    if (tvguideConfig.displayMode == eVertical) {
+        timeForward();
+    } else if (tvguideConfig.displayMode == eHorizontal) {
+        channelForward();
     }
 }
 
 void cTvGuideOsd::processKeyLeft() {
-    if (detailViewActive)
-        return;
     if (activeGrid == NULL)
         return;
     if (tvguideConfig.displayMode == eVertical) {
@@ -433,8 +449,6 @@ void cTvGuideOsd::processKeyLeft() {
 }
 
 void cTvGuideOsd::processKeyRight() {
-    if (detailViewActive)
-        return;
     if (activeGrid == NULL)
         return;
     if (tvguideConfig.displayMode == eVertical) {
@@ -447,26 +461,7 @@ void cTvGuideOsd::processKeyRight() {
 void cTvGuideOsd::processKeyRed() {
     if  ((activeGrid == NULL) || activeGrid->isDummy())
         return;
-    cTimer *timer = new cTimer(activeGrid->GetEvent());
-    cTimer *t = Timers.GetTimer(timer);
-    cString msg;
-    if (t) {
-        isyslog("timer %s already exists", *timer->ToDescr());
-        delete timer;
-        msg = cString::sprintf(tr("Timer not set! There is already a timer for this item."));
-    } else {
-        Timers.Add(timer);
-        Timers.SetModified();
-        msg = cString::sprintf("%s:\n%s (%s) %s - %s", tr("Timer set"), activeGrid->GetEvent()->Title(), timer->Channel()->Name(), *DayDateTime(timer->StartTime()), *TimeString(timer->StopTime()));
-        timer->SetEvent(activeGrid->GetEvent());
-        activeGrid->setTimer();
-        activeGrid->column->setTimer();
-        activeGrid->SetDirty();
-        activeGrid->Draw();
-        osdManager.flush();
-        isyslog("timer %s added (active)", *timer->ToDescr());
-    }
-    cMessageBox::Start(4000, msg);
+    recMenuManager->Start(activeGrid->GetEvent());
 }
 
 void cTvGuideOsd::processKeyGreen() {
@@ -547,7 +542,7 @@ eOSState cTvGuideOsd::processKeyBlue() {
 }
 
 eOSState cTvGuideOsd::processKeyOk() {
-    if ((tvguideConfig.blueKeyMode == 0) || detailViewActive ) {
+    if (tvguideConfig.blueKeyMode == 0) {
         DetailedEPG();
     } else if (tvguideConfig.blueKeyMode == 1) {
         return ChannelSwitch();
@@ -567,17 +562,13 @@ eOSState cTvGuideOsd::ChannelSwitch() {
 }
 
 void cTvGuideOsd::DetailedEPG() {
-    if (detailViewActive) {
-        delete detailView;
-        detailView = NULL;
-        detailViewActive = false;
+    if (!activeGrid->isDummy()) {
+        detailViewActive = true;
+        detailView = new cDetailView(activeGrid->GetEvent());
+        detailView->drawHeader();
+        detailView->drawContent();
+        detailView->drawScrollbar();
         osdManager.flush();
-    } else {
-        if (!activeGrid->isDummy()) {
-            detailViewActive = true;
-            detailView = new cDetailView(activeGrid);
-            detailView->Start();
-        }
     }
 }
 
@@ -646,11 +637,32 @@ void cTvGuideOsd::processKey9() {
     osdManager.flush();
 }
 
+void cTvGuideOsd::SetTimers() {
+    for (cChannelColumn *column = columns.First(); column; column = columns.Next(column)) {
+        column->SetTimers();
+    }
+}
+
 eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
-    eOSState state = cOsdObject::ProcessKey(Key);
-    if (state == osUnknown) {
-        cPixmap::Lock();
+    eOSState state = osContinue;
+    cPixmap::Lock();
+    if (recMenuManager->isActive()) {
+        state = recMenuManager->ProcessKey(Key);
+        if (state == osEnd) {
+            SetTimers();                
+            osdManager.flush();
+        }
         state = osContinue;
+    } else if (detailViewActive) {
+        state = detailView->ProcessKey(Key);
+        if (state == osEnd) {
+            delete detailView;
+            detailView = NULL;
+            detailViewActive = false;
+            osdManager.flush();
+            state = osContinue;
+        }
+    } else {
         switch (Key & ~k_Repeat) {
             case kUp:       processKeyUp(); break;
             case kDown:     processKeyDown(); break;
@@ -661,7 +673,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             case kYellow:   processKeyYellow(); break;
             case kBlue:     state = processKeyBlue(); break;
             case kOk:       state = processKeyOk(); break;
-            case kBack:     state=osEnd; break;
+            case kBack:     state=osEnd; break;    
             case k1:        processKey1(); break;
             case k3:        processKey3(); break;
             case k4:        processKey4(); break;
@@ -670,8 +682,8 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             case k9:        processKey9(); break;
             default:        break;
         }
-        cPixmap::Unlock();
     }
+    cPixmap::Unlock();
     return state;
 }
 

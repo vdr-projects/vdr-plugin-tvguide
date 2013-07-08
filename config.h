@@ -10,6 +10,7 @@ class cTvguideConfig {
         ~cTvguideConfig();
         void SetLogoPath(cString path);
         void SetImagesPath(cString path);
+        void SetIconsPath(cString path);
         void SetBlending(void);
         int showMainMenuEntry;
         int osdWidth; 
@@ -61,6 +62,7 @@ class cTvguideConfig {
 	int epgImageWidthLarge;
         int epgImageHeightLarge;
         cString epgImagePath;
+        cString iconPath;
         int fontIndex;
         const char *fontNameDefault;
         int FontButtonDelta;
@@ -83,6 +85,8 @@ class cTvguideConfig {
         int FontGridHorizontalSmallDelta;
         int FontTimeLineDateHorizontalDelta;
         int FontTimeLineTimeHorizontalDelta;
+        int FontRecMenuItemDelta;
+        int FontRecMenuItemSmallDelta;
         const cFont *FontChannelHeader;
         const cFont *FontChannelHeaderHorizontal;
         const cFont *FontChannelGroups;
@@ -103,6 +107,8 @@ class cTvguideConfig {
         const cFont *FontDetailHeader;
         const cFont *FontMessageBox;
         const cFont *FontMessageBoxLarge;
+        const cFont *FontRecMenuItem;
+        const cFont *FontRecMenuItemSmall;
         int timeFormat;
         int themeIndex;
         int useBlending;

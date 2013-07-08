@@ -59,8 +59,19 @@ bool cImageLoader::LoadAdditionalEPGImage(cString name) {
     return true;
 }
 
+bool cImageLoader::LoadIcon(const char *cIcon, int size) {
+    if (size==0)
+        return false;
+    bool success = false;
+    success = LoadImage(cString(cIcon), tvguideConfig.iconPath, "png");
+    if (!success)
+        return false;
+    buffer.sample(Geometry(size, size));
+    return true;
+}
+
 bool cImageLoader::DrawBackground(tColor back, tColor blend, int width, int height) {
-    if ((width < 1) || (height < 1))
+    if ((width < 1) || (height < 1) || (width > 1920) || (height > 1080))
         return false;
     Color Back = Argb2Color(back);
     Color Blend = Argb2Color(blend);

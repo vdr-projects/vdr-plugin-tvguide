@@ -1,5 +1,5 @@
-/*
-Copyright (C) 2004-2007 Christian Wieninger
+/*                                                                  -*- c++ -*-
+Copyright (C) 2004-2013 Christian Wieninger
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,10 +23,6 @@ The project's page is at http://winni.vdr-developer.org/epgsearch
 
 #ifndef EPGSEARCHSERVICES_INC
 #define EPGSEARCHSERVICES_INC
-
-// Added by Andreas Mair (mail _AT_ andreas _DOT_ vdr-developer _DOT_ org)
-#define EPGSEARCH_SEARCHRESULTS_SERVICE_STRING_ID "Epgsearch-searchresults-v1.0"
-#define EPGSEARCH_LASTCONFLICTINFO_SERVICE_STRING_ID "Epgsearch-lastconflictinfo-v1.0"
 
 #include <string>
 #include <list>
@@ -57,6 +53,13 @@ struct Epgsearch_exttimeredit_v1_0
       const cEvent* event;             // pointer to the event corresponding to this timer (may be NULL)
 // out
       cOsdMenu* pTimerMenu;   // pointer to the menu of results
+};
+
+// Data structure for service "Epgsearch-enablesearchtimers-v1.0"
+struct Epgsearch_enablesearchtimers_v1_0
+{
+// in
+      bool enable;           // enable search timer thread?
 };
 
 // Data structure for service "Epgsearch-updatesearchtimers-v1.0"
@@ -104,7 +107,7 @@ struct Epgsearch_searchresults_v1_0
       bool useDescription;       // search in description
 // out
 
-      class cServiceSearchResult : public cListObject 
+      class cServiceSearchResult : public cListObject
       {
         public:
          const cEvent* event;
@@ -119,11 +122,11 @@ struct Epgsearch_switchtimer_v1_0
 {
 // in
       const cEvent* event;
-      int mode;                  // mode (0=query existance, 1=add/modify, 2=delete)
+      int mode;                  // mode (0=query existence, 1=add/modify, 2=delete)
 // in/out
       int switchMinsBefore;
       int announceOnly;
-// out   		
+// out
       bool success;              // result
 };
 
@@ -132,7 +135,7 @@ class cServiceHandler
 {
   public:
    virtual std::list<std::string> SearchTimerList() = 0;
-   // returns a list of search timer entries in the same format as used in epgsearch.conf 
+   // returns a list of search timer entries in the same format as used in epgsearch.conf
    virtual int AddSearchTimer(const std::string&) = 0;
    // adds a new search timer and returns its ID (-1 on error)
    virtual bool ModSearchTimer(const std::string&) = 0;
@@ -140,11 +143,11 @@ class cServiceHandler
    virtual bool DelSearchTimer(int) = 0;
    // deletes search timer with given ID and returns success
    virtual std::list<std::string> QuerySearchTimer(int) = 0;
-   // returns the search result of the searchtimer with given ID in the same format as used in SVDRP command 'QRYS' (->MANUAL)        
+   // returns the search result of the searchtimer with given ID in the same format as used in SVDRP command 'QRYS' (->MANUAL)
    virtual std::list<std::string> QuerySearch(std::string) = 0;
-   // returns the search result of the searchtimer with given settings in the same format as used in SVDRP command 'QRYS' (->MANUAL)        
+   // returns the search result of the searchtimer with given settings in the same format as used in SVDRP command 'QRYS' (->MANUAL)
    virtual std::list<std::string> ExtEPGInfoList() = 0;
-   // returns a list of extended EPG categories in the same format as used in epgsearchcats.conf 
+   // returns a list of extended EPG categories in the same format as used in epgsearchcats.conf
    virtual std::list<std::string> ChanGrpList() = 0;
    // returns a list of channel groups maintained by epgsearch
    virtual std::list<std::string> BlackList() = 0;
@@ -162,6 +165,38 @@ struct Epgsearch_services_v1_0
 {
 // in/out
       std::auto_ptr<cServiceHandler> handler;
+};
+
+// Data structures for service "Epgsearch-services-v1.1"
+class cServiceHandler_v1_1 : public cServiceHandler
+{
+  public:
+   // Get timer conflicts
+   virtual std::list<std::string> TimerConflictList(bool relOnly=false) = 0;
+   // Check if a conflict check is advised
+   virtual bool IsConflictCheckAdvised() = 0;
+};
+
+struct Epgsearch_services_v1_1
+{
+// in/out
+      std::auto_ptr<cServiceHandler_v1_1> handler;
+};
+
+// Data structures for service "Epgsearch-services-v1.2"
+class cServiceHandler_v1_2 : public cServiceHandler_v1_1
+{
+  public:
+  // List of all recording directories used in recordings, timers (and optionally search timers or in epgsearchdirs.conf)
+  virtual std::set<std::string> ShortDirectoryList() = 0;
+  // Evaluate an expression against an event
+  virtual std::string Evaluate(const std::string& expr, const cEvent* event) = 0;
+};
+
+struct Epgsearch_services_v1_2
+{
+// in/out
+      std::auto_ptr<cServiceHandler_v1_2> handler;
 };
 
 #endif

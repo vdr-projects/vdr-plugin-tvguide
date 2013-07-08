@@ -132,3 +132,11 @@ void cStyledPixmap::DrawImage(const cPoint &Point, const cImage &Image) {
 void cStyledPixmap::DrawRectangle(const cRect &Rect, tColor Color) {
     pixmap->DrawRectangle(Rect,Color);
 }
+
+void cStyledPixmap::DrawEllipse(const cRect &Rect, tColor Color, int Quadrant) {
+    pixmap->DrawEllipse(Rect,Color,Quadrant);
+}
+
+void cStyledPixmap::SetViewPort(const cRect &Rect) {
+    pixmap->SetViewPort(Rect);
+}

@@ -5,9 +5,8 @@
 
 class cEpgGrid;
 
-class cDetailView : public cThread  {
+class cDetailView {
 private:
-    cGrid *grid;
     cStyledPixmap *header;
     cPixmap *headerLogo;
     cPixmap *headerBack;
@@ -16,8 +15,6 @@ private:
     cPixmap *footer;
     const cEvent *event;
     cImage *imgScrollBar;
-    int FrameTime;
-    int FadeTime;
     cTextWrapper description;
     cTextWrapper reruns;
     int borderWidth;
@@ -29,19 +26,19 @@ private:
     int numEPGPics;
     bool contentScrollable;
     void loadReruns(void);
-    void drawHeader();
-    void drawContent();
-    void drawScrollbar();
     int heightEPGPics(void);
     void drawEPGPictures(int height);
     cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);
-    virtual void Action(void);
 public:
-    cDetailView(cGrid *grid);
+    cDetailView(const cEvent *event);
     virtual ~cDetailView(void);
     void createPixmaps();
+    void drawHeader();
+    void drawContent();
+    void drawScrollbar();
     void scrollUp();
     void scrollDown();
+    eOSState ProcessKey(eKeys Key);
 };
 
 #endif //__TVGUIDE_DETAILVIEW_H

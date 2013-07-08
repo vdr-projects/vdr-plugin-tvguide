@@ -120,3 +120,49 @@ time_t cMyTime::GetRounded() {
 void cMyTime::debug() {
     esyslog("t: %s, tStart: %s, tEnd: %s", *TimeString(t), *TimeString(tStart), *TimeString(tEnd));
 }
+
+// --- cTimeInterval ------------------------------------------------------------- 
+
+cTimeInterval::cTimeInterval(time_t start, time_t stop) {
+    this->start = start;
+    this->stop = stop;
+}
+
+cTimeInterval::~cTimeInterval(void) {
+}
+
+cTimeInterval *cTimeInterval::Intersect(cTimeInterval *interval) {
+    time_t startIntersect, stopIntersect;
+    
+    if ((stop <= interval->Start()) || (interval->Stop() <= start)) {
+        return NULL;
+    }
+    
+    if (start <= interval->Start()) {
+        startIntersect = interval->Start();
+    } else {
+        startIntersect = start;
+    }
+    if (stop <= interval->Stop()) {
+        stopIntersect = stop;
+    } else {
+        stopIntersect = interval->Stop();
+    }
+    return new cTimeInterval(startIntersect, stopIntersect);
+}
+
+cTimeInterval *cTimeInterval::Union(cTimeInterval *interval) {
+    time_t startUnion, stopUnion;
+    
+    if (start <= interval->Start()) {
+        startUnion = start;
+    } else {
+        startUnion = interval->Start();
+    }
+    if (stop <= interval->Stop()) {
+        stopUnion = interval->Stop();
+    } else {
+        stopUnion = stop;
+    }
+    return new cTimeInterval(startUnion, stopUnion);
+}

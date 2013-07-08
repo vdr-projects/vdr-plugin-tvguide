@@ -24,8 +24,8 @@ void cHeaderGrid::createBackground(int num) {
         width = tvguideConfig.channelHeaderWidth;
         height = tvguideConfig.rowHeight;
     }
-    pixmap = osdManager.requestPixmap(2, cRect(x, y, width, height));
-    pixmapLogo = osdManager.requestPixmap(3, cRect(x, y, width, height));
+    pixmap = osdManager.requestPixmap(1, cRect(x, y, width, height));
+    pixmapLogo = osdManager.requestPixmap(2, cRect(x, y, width, height));
     if ((!pixmap) || (!pixmapLogo)){
         return;
     }

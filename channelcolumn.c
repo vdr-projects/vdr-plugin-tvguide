@@ -5,6 +5,7 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->num = num;
     this->myTime = myTime;
     hasTimer = channel->HasTimer();
+    hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
     schedulesLock = new cSchedulesLock(false, 100);
     header = NULL;
 }
@@ -337,6 +338,22 @@ cGrid *cChannelColumn::addDummyGrid(time_t start, time_t end, cGrid *firstGrid, 
     else
         grids.Ins(dummy, firstGrid);
     return dummy;
+}
+
+void cChannelColumn::SetTimers() {
+    hasTimer = channel->HasTimer();
+    hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
+    for (cGrid *grid = grids.First(); grid; grid = grids.Next(grid)) {
+        bool gridHadTimer = grid->HasTimer();
+        grid->SetTimer();
+        if (gridHadTimer != grid->HasTimer())
+            grid->SetDirty();
+        bool gridHadSwitchTimer = grid->HasSwitchTimer();
+        grid->SetSwitchTimer();
+        if (gridHadSwitchTimer != grid->HasSwitchTimer())
+            grid->SetDirty();
+        grid->Draw();
+    }
 }
 
 void cChannelColumn::dumpGrids() {

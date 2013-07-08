@@ -43,7 +43,8 @@ VDR Plugin 'tvguide' Revision History
 - Added setup option to switch functionality of keys "Blue" and "OK"
 - Setup option to hide schedules time display in horizontal EPG grids
 
-Version 0.0.6
+2013-07-08: Version 0.0.6
 - added frame around scaled video picture
 - added theme "keep it simple" (thanks @saman)
 - display of additional EPG pictures in detailed epg view
+- Introduction of "Search & Recording" Menu

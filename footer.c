@@ -38,7 +38,7 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int
 }
 
 void cFooter::drawRedButton() {
-    cString text(tr("Set Timer"));
+    cString text(tr("Search & Rec"));
     DrawButton(*text, theme.Color(clrButtonRed), theme.Color(clrButtonRedBorder), 0);
 }
 
