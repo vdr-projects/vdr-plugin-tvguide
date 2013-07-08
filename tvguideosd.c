@@ -120,10 +120,6 @@ void cTvGuideOsd::Show(void) {
         myTime = new cMyTime();
         myTime->Now();
         SwitchTimers.Load(AddDirectory(cPlugin::ConfigDirectory("epgsearch"), "epgsearchswitchtimers.conf"));
-        cSwitchTimer *st = NULL;
-        for (st = SwitchTimers.First(); st; st = SwitchTimers.Next(st)) {
-            esyslog("tvguide: switchtimer eventID %d time %ld", st->eventID, st->startTime);
-        }
         recMenuManager = new cRecMenuManager();
         drawOsd();
     }

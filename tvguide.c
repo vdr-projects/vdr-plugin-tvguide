@@ -72,7 +72,8 @@ const char *cPluginTvguide::CommandLineHelp(void)
 {
   // Return a string that describes all known command line options.
     return 
-         "  -i <IMAGESDIR>, --epgimages=<IMAGESDIR> Set directory where epgimages are stored\n"
+         "  -i <IMAGESDIR>, --epgimages=<IMAGESDIR> Set directory where epgimages are stored.\n"
+	 "  -c <ICONDIR>, --icons=<ICONDIR>         Set directory where icons are stored.\n"
          "  -l <LOGODIR>, --logodir=<LOGODIR>       Set directory where logos are stored.\n";
 }
 
@@ -81,19 +82,25 @@ bool cPluginTvguide::ProcessArgs(int argc, char *argv[])
   // Implement command line argument processing here if applicable.
   static const struct option long_options[] = {
     { "epgimages", required_argument, NULL, 'i' },
+    { "icons", required_argument, NULL, 'c' },
     { "logopath", required_argument, NULL, 'l' },
     { 0, 0, 0, 0 }
   };
 
   int c;
   cString *path = NULL;
-  while ((c = getopt_long(argc, argv, "i:f:l:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "i:c:l:", long_options, NULL)) != -1) {
     switch (c) {
       case 'i':
         path = new cString(optarg);
         tvguideConfig.SetImagesPath(*path);
         imagesPathSet = true;
         break;
+      case 'c':
+        path = new cString(optarg);
+	tvguideConfig.SetIconsPath(*path);
+	iconsPathSet = true;
+	break;
       case 'l':
         path = new cString(optarg);
         tvguideConfig.SetLogoPath(*path);
@@ -129,7 +136,7 @@ bool cPluginTvguide::Start(void)
     }
     
     if (!iconsPathSet) {
-        cString path = cString::sprintf("%s/icons/", cPlugin::ConfigDirectory(PLUGIN_NAME_I18N));
+        cString path = cString::sprintf("%s/icons/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
         tvguideConfig.SetIconsPath(path);
         iconsPathSet = true;
     }
