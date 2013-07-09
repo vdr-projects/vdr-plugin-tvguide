@@ -423,9 +423,9 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
         numResults = results.size();
         if (numResults > 0) {
             searchResults = new const cEvent *[numResults];
-            cSchedulesLock *schedulesLock;
+            cSchedulesLock schedulesLock;
             const cSchedules *schedules;
-            schedules = cSchedules::Schedules(*schedulesLock);
+            schedules = cSchedules::Schedules(schedulesLock);
             const cEvent *event = NULL;
             int index=0;
             for (std::list<std::string>::iterator it=results.begin(); it != results.end(); ++it) {
