@@ -11,6 +11,13 @@ cDummyGrid::cDummyGrid(cChannelColumn *c, time_t start, time_t end) : cGrid(c) {
 cDummyGrid::~cDummyGrid(void) {
 }
 
+time_t cDummyGrid::Duration(void) { 
+    //max Duration 5h
+    if (end - start > 18000)
+        return 18000;
+    return (end - start); 
+};
+
 void cDummyGrid::SetViewportHeight() {
     int viewportHeightOld = viewportHeight;
     viewportHeight = Duration() / 60 * tvguideConfig.minutePixel;

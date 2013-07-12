@@ -9,7 +9,7 @@ private:
     time_t end;
     cString strText;
     void drawText();
-    time_t Duration(void) { return (end - start); };
+    time_t Duration(void);
 public:
     cDummyGrid(cChannelColumn *c, time_t start, time_t end);
     virtual ~cDummyGrid(void);
