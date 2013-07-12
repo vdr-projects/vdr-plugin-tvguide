@@ -195,9 +195,9 @@ bool cPluginTvguide::Service(const char *Id, void *Data)
   if (strcmp(Id, "MainMenuHooksPatch-v1.0::osSchedule") == 0 && tvguideConfig.replaceOriginalSchedule != 0) {
       if (Data == NULL)
          return true;
-      cOsdMenu **menu = (cOsdMenu**) Data;
-      if (menu)
-         *menu = (cOsdMenu*) MainMenuAction();
+      cOsdObject **guide = (cOsdObject**) Data;
+      if (guide)
+         *guide = MainMenuAction();
       return true;
   }
   return false;
