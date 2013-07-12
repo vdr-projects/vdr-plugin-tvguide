@@ -47,6 +47,7 @@ void cTvguideSetup::Store(void) {
 
     SetupStore("themeIndex", tvguideConfig.themeIndex);
     SetupStore("showMainMenuEntry", tvguideConfig.showMainMenuEntry);
+    SetupStore("replaceOriginalSchedule", tvguideConfig.replaceOriginalSchedule);
     SetupStore("displayMode", tvguideConfig.displayMode);
     SetupStore("showTimeInGrid", tvguideConfig.showTimeInGrid);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
@@ -154,6 +155,7 @@ void cMenuSetupGeneral::Set(void) {
     int currentItem = Current();
     Clear();
     Add(new cMenuEditBoolItem(tr("Show Main Menu Entry"), &tmpTvguideConfig->showMainMenuEntry));
+    Add(new cMenuEditBoolItem(tr("Replace VDR Schedules Menu"), &tmpTvguideConfig->replaceOriginalSchedule));
     if (themes.NumThemes())
         Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));

@@ -13,6 +13,7 @@ class cTvguideConfig {
         void SetIconsPath(cString path);
         void SetBlending(void);
         int showMainMenuEntry;
+        int replaceOriginalSchedule;
         int osdWidth; 
         int osdHeight;
         int displayMode;

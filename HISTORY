@@ -48,3 +48,4 @@ VDR Plugin 'tvguide' Revision History
 - added theme "keep it simple" (thanks @saman)
 - display of additional EPG pictures in detailed epg view
 - Introduction of "Search & Recording" Menu
+- added possibility to replace original VDR schedules menu

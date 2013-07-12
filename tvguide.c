@@ -192,7 +192,14 @@ bool cPluginTvguide::SetupParse(const char *Name, const char *Value)
 
 bool cPluginTvguide::Service(const char *Id, void *Data)
 {
-  // Handle custom service requests from other plugins
+  if (strcmp(Id, "MainMenuHooksPatch-v1.0::osSchedule") == 0 && tvguideConfig.replaceOriginalSchedule != 0) {
+      if (Data == NULL)
+         return true;
+      cOsdMenu **menu = (cOsdMenu**) Data;
+      if (menu)
+         *menu = (cOsdMenu*) MainMenuAction();
+      return true;
+  }
   return false;
 }
 

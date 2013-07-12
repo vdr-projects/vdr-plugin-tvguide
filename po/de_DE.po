@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-07-07 13:43+0200\n"
+"POT-Creation-Date: 2013-07-12 16:08+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -398,6 +398,9 @@ msgstr "immer"
 
 msgid "Show Main Menu Entry"
 msgstr "Hauptmenüeintrag anzeigen"
+
+msgid "Replace VDR Schedules Menu"
+msgstr "VDR Programm Menü ersetzen"
 
 msgid "Theme"
 msgstr "Theme"
