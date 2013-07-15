@@ -357,7 +357,7 @@ void cChannelColumn::SetTimers() {
 }
 
 void cChannelColumn::dumpGrids() {
-    esyslog("tvguide: ------Channel %s: %d entires ---------", channel->Name(), grids.Count());
+    esyslog("tvguide: ------Channel %s %d: %d entires ---------", channel->Name(), num, grids.Count());
     int i=1;
     for (cGrid *grid = grids.First(); grid; grid = grids.Next(grid)) {
         esyslog("tvguide: grid %d: start: %s, stop: %s", i, *cMyTime::printTime(grid->StartTime()), *cMyTime::printTime(grid->EndTime()));

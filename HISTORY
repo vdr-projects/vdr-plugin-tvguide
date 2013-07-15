@@ -49,3 +49,4 @@ VDR Plugin 'tvguide' Revision History
 - display of additional EPG pictures in detailed epg view
 - Introduction of "Search & Recording" Menu
 - added possibility to replace original VDR schedules menu
+- changed channel jump logic

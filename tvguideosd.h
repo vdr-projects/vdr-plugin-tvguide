@@ -17,7 +17,7 @@ private:
   bool detailViewActive;
   void drawOsd();
   void readChannels(const cChannel *channelStart);
-  void drawGridsChannelJump();
+  void drawGridsChannelJump(int offset = 0);
   void drawGridsTimeJump();
   void processKeyUp();
   void processKeyDown();

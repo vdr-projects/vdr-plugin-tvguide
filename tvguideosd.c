@@ -187,10 +187,10 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
     }
 }
 
-void cTvGuideOsd::drawGridsChannelJump() {
+void cTvGuideOsd::drawGridsChannelJump(int offset) {
     if (columns.Count() == 0)
         return;
-    activeGrid = columns.First()->getActive();
+    activeGrid = columns.Get(offset)->getActive();
     if (activeGrid)
         activeGrid->SetActive();
     if (tvguideConfig.displayStatusHeader) {
@@ -465,6 +465,8 @@ void cTvGuideOsd::processKeyGreen() {
         return;
     
     const cChannel *currentChannel = activeGrid->column->getChannel();
+    const cChannel *firstChannel = columns.First()->getChannel();
+    int currentCol = activeGrid->column->GetNum();
     const cChannel *prev = NULL;
     
     if (tvguideConfig.channelJumpMode == eGroupJump) {
@@ -474,7 +476,7 @@ void cTvGuideOsd::processKeyGreen() {
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i = tvguideConfig.jumpChannels + 1;
-        for (const cChannel *channel = currentChannel; channel; channel = Channels.Prev(channel)) {
+        for (const cChannel *channel = firstChannel; channel; channel = Channels.Prev(channel)) {
             if (!channel->GroupSep()) {
                 prev = channel;
                 i--;
@@ -486,7 +488,7 @@ void cTvGuideOsd::processKeyGreen() {
     if (prev) {
         readChannels(prev);
         if (columns.Count() > 0) {
-            drawGridsChannelJump();
+            drawGridsChannelJump(currentCol);
         }
         osdManager.flush();
     }
@@ -495,8 +497,9 @@ void cTvGuideOsd::processKeyGreen() {
 void cTvGuideOsd::processKeyYellow() {
     if (activeGrid == NULL)
         return;
-    
     const cChannel *currentChannel = activeGrid->column->getChannel();
+    int currentCol = activeGrid->column->GetNum();
+    const cChannel *firstChannel = columns.First()->getChannel();
     const cChannel *next = NULL;
     
     if (tvguideConfig.channelJumpMode == eGroupJump) {
@@ -506,7 +509,7 @@ void cTvGuideOsd::processKeyYellow() {
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i=0;
-        for (const cChannel *channel = currentChannel; channel; channel = Channels.Next(channel)) {
+        for (const cChannel *channel = firstChannel; channel; channel = Channels.Next(channel)) {
             if (channelGroups->IsInLastGroup(channel)) {
                 break;
             }
@@ -522,7 +525,7 @@ void cTvGuideOsd::processKeyYellow() {
     if (next) {
         readChannels(next);
         if (columns.Count() > 0) {
-            drawGridsChannelJump();
+            drawGridsChannelJump(currentCol);
         }
         osdManager.flush();
     }
