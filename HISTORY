@@ -50,3 +50,4 @@ VDR Plugin 'tvguide' Revision History
 - Introduction of "Search & Recording" Menu
 - added possibility to replace original VDR schedules menu
 - changed channel jump logic
+- red button also available in detail view

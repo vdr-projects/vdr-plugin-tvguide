@@ -653,13 +653,20 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
         }
         state = osContinue;
     } else if (detailViewActive) {
-        state = detailView->ProcessKey(Key);
-        if (state == osEnd) {
+        if ((Key & ~k_Repeat) == kRed) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;
-            osdManager.flush();
-            state = osContinue;
+            processKeyRed();
+        } else {
+            state = detailView->ProcessKey(Key);
+            if (state == osEnd) {
+                delete detailView;
+                detailView = NULL;
+                detailViewActive = false;
+                osdManager.flush();
+                state = osContinue;
+            }
         }
     } else {
         switch (Key & ~k_Repeat) {
