@@ -59,6 +59,7 @@ cTvguideConfig tvguideConfig;
 #include "osdmanager.c"
 cOsdManager osdManager;
 
+#include "services/epgsearch.h"
 #include "tools.c"
 #include "switchtimer.c"
 #include "setup.c"

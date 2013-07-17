@@ -29,6 +29,10 @@ private:
     int heightEPGPics(void);
     void drawEPGPictures(int height);
     cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);
+    void scrollUp();
+    void scrollDown();
+    void pageUp();
+    void pageDown();
 public:
     cDetailView(const cEvent *event);
     virtual ~cDetailView(void);
@@ -36,8 +40,6 @@ public:
     void drawHeader();
     void drawContent();
     void drawScrollbar();
-    void scrollUp();
-    void scrollDown();
     eOSState ProcessKey(eKeys Key);
 };
 

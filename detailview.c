@@ -1,4 +1,3 @@
-#include "services/epgsearch.h"
 #include <sstream>
 #include "detailview.h"
 
@@ -154,6 +153,28 @@ void cDetailView::scrollDown() {
     }
 }
 
+void cDetailView::pageUp() {
+    if (contentScrollable) {
+        int aktHeight = (-1)*content->DrawPort().Point().Y();
+        int totalHeight = content->DrawPort().Height();
+        int screenHeight = content->ViewPort().Height();
+        int newHeight = max(aktHeight - screenHeight, 0);
+        content->SetDrawPortPoint(cPoint(0, (-1)*newHeight));
+        drawScrollbar();
+   }
+}
+
+void cDetailView::pageDown() {
+    if (contentScrollable) {
+        int aktHeight = (-1)*content->DrawPort().Point().Y();
+        int totalHeight = content->DrawPort().Height();
+        int screenHeight = content->ViewPort().Height();
+        int newHeight = min(aktHeight + screenHeight, totalHeight - screenHeight);
+        content->SetDrawPortPoint(cPoint(0, (-1)*newHeight));
+        drawScrollbar();
+    }
+}
+
 cImage *cDetailView::createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend) {
     cImage *image = new cImage(cSize(width, height));
     image->Fill(clrBgr);
@@ -294,6 +315,14 @@ eOSState cDetailView::ProcessKey(eKeys Key) {
             break;
         case kDown:     
             scrollDown(); 
+            osdManager.flush();
+            break;
+        case kLeft:
+            pageUp();
+            osdManager.flush();
+            break;
+        case kRight:
+            pageDown();
             osdManager.flush();
             break;
         case kOk:

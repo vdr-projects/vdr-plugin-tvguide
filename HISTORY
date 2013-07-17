@@ -51,3 +51,4 @@ VDR Plugin 'tvguide' Revision History
 - added possibility to replace original VDR schedules menu
 - changed channel jump logic
 - red button also available in detail view
+- page scrolling with keys left and right in detail view
