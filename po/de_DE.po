@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-07-12 16:08+0200\n"
+"POT-Creation-Date: 2013-07-18 17:18+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -89,6 +89,12 @@ msgstr "In Aufnahmen suchen"
 
 msgid "Check for Timer Conflicts"
 msgstr "Auf Timerkoflikte prüfen"
+
+msgid "Set Folder for"
+msgstr "Verzeichnis festlegen für"
+
+msgid "root video folder"
+msgstr "Video Hauptverzeichnis"
 
 msgid "Timer created"
 msgstr "Timer angelegt"
@@ -428,6 +434,9 @@ msgstr "Sehr großer Sprung (Tasten 4 / 6) in Stunden"
 
 msgid "Time Format (12h/24h)"
 msgstr "Zeitformat (12h/24h)"
+
+msgid "Use folders for instant records"
+msgstr "Bei Sofortaufnahmen Verzeichnisse benutzen"
 
 msgid "Display Reruns in detailed EPG View"
 msgstr "Wiederholungen in der detailierten EPG Ansicht anzeigen"

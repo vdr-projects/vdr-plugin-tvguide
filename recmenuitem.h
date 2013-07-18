@@ -10,6 +10,7 @@ enum eRecMenuState {
     rmsContinue,
     rmsClose,
     rmsInstantRecord,
+    rmsInstantRecordFolder,
     rmsIgnoreTimerConflict,
     rmsDeleteTimerConflictMenu,
     rmsEditTimerConflictMenu,
@@ -101,6 +102,7 @@ public:
     int GetWidth(void);
     void SetPixmaps(void);
     void Draw(void);
+    cString GetStringValue(void) { return text; };
     eRecMenuState ProcessKey(eKeys Key);
 };
 

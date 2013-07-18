@@ -5,7 +5,10 @@ class cRecMenuMain : public cRecMenu {
 public:
     cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switchTimerActive) {
         if (!timerActive) {
-            AddMenuItem(new cRecMenuItemButton(tr("Instant Record"), rmsInstantRecord, true));
+            eRecMenuState action = (tvguideConfig.recMenuAskFolder)
+                                    ?rmsInstantRecordFolder
+                                    :rmsInstantRecord;
+            AddMenuItem(new cRecMenuItemButton(tr("Instant Record"), action, true));
         } else {
             AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsDeleteTimer, true));
             AddMenuItem(new cRecMenuItemButton(tr("Edit Timer"), rmsEditTimer, false));
@@ -36,6 +39,69 @@ public:
     
     virtual ~cRecMenuMain(void) {};
 };
+
+// --- cRecMenuAskFolder  ---------------------------------------------------------
+class cRecMenuAskFolder: public cRecMenu {
+private:
+    std::vector<cString> folders;
+    void readFolders(cList<cNestedItem> *rootFolders, cString path) {
+        cList<cNestedItem> *foldersLevel = NULL;
+        if (rootFolders) {
+            foldersLevel = rootFolders;
+        } else {
+            foldersLevel = &Folders;
+        }
+        for (cNestedItem *folder = foldersLevel->First(); folder; folder = foldersLevel->Next(folder)) {
+            cString strFolder = cString::sprintf("%s%s", *path, folder->Text());
+            folders.push_back(strFolder);
+            cList<cNestedItem> *subItems = folder->SubItems();
+            if (subItems) {
+                cString newPath = cString::sprintf("%s%s/", *path, folder->Text());
+                readFolders(subItems, newPath);
+            }
+        }
+    }
+public:
+    cRecMenuAskFolder(const cEvent *event) {
+        SetWidthPercent(80);
+        cString message = tr("Set Folder for");
+        cString headerText = cString::sprintf("%s\n\"%s\"", *message, event->Title());
+        cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headerText);
+        infoItem->CalculateHeight(width - 2 * border);
+        SetHeader(infoItem);
+        
+        AddMenuItemScroll(new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, true, false));
+        
+        readFolders(NULL, "");
+        int numFolders = folders.size();
+        for (int i=0; i < numFolders; i++) {
+            AddMenuItemScroll(new cRecMenuItemButton(*folders[i], rmsInstantRecord, false, false));
+            if (!CheckHeight())
+                break;
+        }
+        
+        CalculateHeight();
+        CreatePixmap();
+        Arrange();
+    };
+    cRecMenuItem *GetMenuItem(int number) { 
+        if (number == 0) {
+            cRecMenuItem *result = new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, false, false);
+            return result;
+        } else if ((number > 0) && (number < folders.size()+1)) {
+            cRecMenuItem *result = new cRecMenuItemButton(*folders[number-1], rmsInstantRecord, false, false);
+            return result;
+        }
+        return NULL;
+    };
+
+    int GetTotalNumMenuItems(void) { 
+        return folders.size()+1;
+    };
+    
+    virtual ~cRecMenuAskFolder(void) {};
+};
+
 
 // --- cRecMenuConfirmTimer  ---------------------------------------------------------
 class cRecMenuConfirmTimer: public cRecMenu {

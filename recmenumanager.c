@@ -7,6 +7,7 @@ cRecMenuManager::cRecMenuManager(void) {
     recManager = new cRecManager();
     recManager->SetEPGSearchPlugin();
     instantRecord = false;
+    folderChoosen = false;
     currentConflict = -1;
     templateID = -1;
     timer = NULL;
@@ -27,6 +28,7 @@ void cRecMenuManager::Start(const cEvent *event) {
     active = true;
     activeMenuBuffer = NULL;
     instantRecord = false;
+    folderChoosen = false;
     currentConflict = -1;
     templateID = -1;
     timer = NULL;
@@ -76,13 +78,26 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         //Creating timer for active Event
         //if no conflict, confirm and exit
             instantRecord = true;
+            cString folder = "";
+            if (folderChoosen) {
+                int activeItem = activeMenu->GetActive(false);
+                if (activeItem > 0)
+                    folder = activeMenu->GetStringValue(activeItem);
+            }
             delete activeMenu;
-            cTimer *timer = recManager->createTimer(event);
+            cTimer *timer = recManager->createTimer(event, *folder);
             if (!displayTimerConflict(timer)) {
                 activeMenu = new cRecMenuConfirmTimer(event);
                 activeMenu->Display();
             }
             break; }
+        case rmsInstantRecordFolder:
+        //Asking for Folder
+            folderChoosen = true;
+            delete activeMenu;
+            activeMenu = new cRecMenuAskFolder(event);
+            activeMenu->Display();
+            break;
         case rmsIgnoreTimerConflict:
         //Confirming created Timer
             if (instantRecord) {
@@ -385,7 +400,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;}
         case rmsSearchRecord: {
             const cEvent *ev = activeMenu->GetEventValue(activeMenu->GetActive(false));
-            cTimer *timer = recManager->createTimer(ev);
+            cTimer *timer = recManager->createTimer(ev, "");
             activeMenuBuffer = activeMenu;
             activeMenuBuffer->Hide();
             activeMenu = new cRecMenuSearchConfirmTimer(ev);

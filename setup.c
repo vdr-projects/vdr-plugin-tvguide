@@ -82,6 +82,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("channelHeaderWidthPercent", tvguideConfig.channelHeaderWidthPercent);
     SetupStore("channelHeaderHeightPercent", tvguideConfig.channelHeaderHeightPercent);
     SetupStore("footerHeight", tvguideConfig.footerHeight);
+    SetupStore("recMenuAskFolder", tvguideConfig.recMenuAskFolder);
     SetupStore("fontIndex", tvguideConfig.fontIndex);
     SetupStore("FontButtonDelta", tvguideConfig.FontButtonDelta);
     SetupStore("FontDetailViewDelta", tvguideConfig.FontDetailViewDelta);
@@ -167,7 +168,7 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
-    
+    Add(new cMenuEditBoolItem(tr("Use folders for instant records"), &tmpTvguideConfig->recMenuAskFolder));
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
         Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));

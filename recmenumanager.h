@@ -12,6 +12,7 @@ private:
     std::vector<TVGuideTimerConflict> conflictList;
     std::vector<TVGuideEPGSearchTemplate> epgSearchTemplates;
     bool instantRecord;
+    bool folderChoosen;
     int currentConflict;
     int templateID;
     bool searchWithOptions;

@@ -30,10 +30,15 @@ void cRecManager::SetEPGSearchPlugin(void) {
 	}
 }
 
-cTimer *cRecManager::createTimer(const cEvent *event) {
+cTimer *cRecManager::createTimer(const cEvent *event, std::string path) {
     cTimer *timer = new cTimer(event);
     Timers.Add(timer);
     Timers.SetModified();
+    if (path.size() > 0) {
+        std::replace(path.begin(), path.end(), '/', '~');
+        cString newFileName = cString::sprintf("%s~%s", path.c_str(), timer->File());
+        timer->SetFile(*newFileName);
+    }
     isyslog("timer %s added (active)", *timer->ToDescr());
     return timer;
 }

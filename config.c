@@ -60,6 +60,7 @@ cTvguideConfig::cTvguideConfig() {
     numAdditionalEPGPictures = 9;
     epgImageWidthLarge = 525;
     epgImageHeightLarge = 400;
+    recMenuAskFolder = 0;
     fontIndex = 0;
     fontNameDefault = "VDRSymbols Sans:Book";
     FontButtonDelta = 0;
@@ -287,7 +288,8 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "displayChannelName") == 0)       displayChannelName = atoi(Value);
     else if (strcmp(Name, "channelHeaderWidthPercent") == 0)  channelHeaderWidthPercent = atoi(Value);
     else if (strcmp(Name, "channelHeaderHeightPercent") == 0) channelHeaderHeightPercent = atoi(Value);
-    else if (strcmp(Name, "footerHeight") == 0)             footerHeight = atoi(Value); 
+    else if (strcmp(Name, "footerHeight") == 0)             footerHeight = atoi(Value);
+    else if (strcmp(Name, "recMenuAskFolder") == 0)         recMenuAskFolder = atoi(Value);
     else if (strcmp(Name, "fontIndex") == 0)                fontIndex = atoi(Value);
     else if (strcmp(Name, "FontButtonDelta") == 0)          FontButtonDelta = atoi(Value);
     else if (strcmp(Name, "FontDetailViewDelta") == 0)      FontDetailViewDelta = atoi(Value);

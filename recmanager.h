@@ -30,7 +30,7 @@ public:
     cRecManager  (void);
     void SetEPGSearchPlugin(void);
     bool EpgSearchAvailable(void) {return epgSearchAvailable;};
-    cTimer *createTimer(const cEvent *event);
+    cTimer *createTimer(const cEvent *event, std::string path);
     void DeleteTimer(const cEvent *event);
     void DeleteTimer(int timerID);
     void SaveTimer(cTimer *timer, cRecMenu *menu);

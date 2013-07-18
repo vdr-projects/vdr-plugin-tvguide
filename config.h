@@ -64,6 +64,7 @@ class cTvguideConfig {
         int epgImageHeightLarge;
         cString epgImagePath;
         cString iconPath;
+        int recMenuAskFolder;
         int fontIndex;
         const char *fontNameDefault;
         int FontButtonDelta;
