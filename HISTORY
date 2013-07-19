@@ -54,3 +54,4 @@ VDR Plugin 'tvguide' Revision History
 - page scrolling with keys left and right in detail view
 - added possibility to choose folder for instant recording, possible
   folders are read from VDRs folders list
+- recording folder also choosable for series timers

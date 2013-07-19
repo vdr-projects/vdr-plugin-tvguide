@@ -28,6 +28,7 @@ enum eRecMenuState {
     rmsSearchRecordConfirm,
     rmsSearchNothingFoundConfirm,
     rmsSeriesTimer,
+    rmsSeriesTimerFolder,
     rmsSeriesTimerCreate,
     rmsSearchTimer,
     rmsSearchTimerOptions,

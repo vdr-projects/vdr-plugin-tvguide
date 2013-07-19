@@ -196,7 +196,7 @@ std::vector<TVGuideTimerConflict> cRecManager::CheckTimerConflict(void) {
     return results;
 }
 
-cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu) {
+cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu, std::string path) {
     bool active = menu->GetBoolValue(1);
     int channelNumber = menu->GetIntValue(2);
     int start = menu->GetIntValue(3);
@@ -209,13 +209,19 @@ cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu) {
     cChannel *channel = Channels.GetByNumber(channelNumber);
     cTimer *seriesTimer = new cTimer(false, false, channel);
     
+    cString fileName = "TITLE EPISODE";
+    if (path.size() > 0) {
+        std::replace(path.begin(), path.end(), '/', '~');
+        fileName = cString::sprintf("%s~%s", path.c_str(), *fileName);
+    }
+    
     seriesTimer->SetDay(tday);
     seriesTimer->SetStart(start);
     seriesTimer->SetStop(stop);
     seriesTimer->SetPriority(prio);
     seriesTimer->SetLifetime(lifetime);
     seriesTimer->SetWeekDays(weekdays);
-    seriesTimer->SetFile("TITLE EPISODE");
+    seriesTimer->SetFile(*fileName);
     if (active)
         seriesTimer->SetFlags(tfActive);
     else 

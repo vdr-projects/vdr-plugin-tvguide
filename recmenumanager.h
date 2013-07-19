@@ -17,6 +17,7 @@ private:
     int templateID;
     bool searchWithOptions;
     cTimer *timer;
+    cString recFolder;
     cString searchString;
     cDetailView *detailView;
     cPixmap *pixmapBackground;

@@ -11,6 +11,7 @@ cRecMenuManager::cRecMenuManager(void) {
     currentConflict = -1;
     templateID = -1;
     timer = NULL;
+    recFolder = "";
     searchWithOptions = false;
     detailViewActive = false;
 }
@@ -32,6 +33,7 @@ void cRecMenuManager::Start(const cEvent *event) {
     currentConflict = -1;
     templateID = -1;
     timer = NULL;
+    recFolder = "";
     searchWithOptions = false;
     detailViewActive = false;
     SetBackground();
@@ -95,7 +97,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         //Asking for Folder
             folderChoosen = true;
             delete activeMenu;
-            activeMenu = new cRecMenuAskFolder(event);
+            activeMenu = new cRecMenuAskFolder(event, rmsInstantRecord);
             activeMenu->Display();
             break;
         case rmsIgnoreTimerConflict:
@@ -195,13 +197,26 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
          * --------- SERIES TIMER ---------------------------------
         */
         case rmsSeriesTimer: {
+            recFolder = "";
+            if (folderChoosen) {
+                int activeItem = activeMenu->GetActive(false);
+                if (activeItem > 0)
+                    recFolder = activeMenu->GetStringValue(activeItem);
+            }
             delete activeMenu;
             cChannel *channel = Channels.GetByChannelID(event->ChannelID());
             activeMenu = new cRecMenuSeriesTimer(channel, event);
             activeMenu->Display();
             break; }
+        case rmsSeriesTimerFolder:
+        //Asking for Folder
+            folderChoosen = true;
+            delete activeMenu;
+            activeMenu = new cRecMenuAskFolder(event, rmsSeriesTimer);
+            activeMenu->Display();
+            break;
         case rmsSeriesTimerCreate: {
-            cTimer *seriesTimer = recManager->CreateSeriesTimer(activeMenu);
+            cTimer *seriesTimer = recManager->CreateSeriesTimer(activeMenu, *recFolder);
             delete activeMenu;
             activeMenu = new cRecMenuConfirmSeriesTimer(seriesTimer);
             activeMenu->Display();

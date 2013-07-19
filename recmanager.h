@@ -36,7 +36,7 @@ public:
     void SaveTimer(cTimer *timer, cRecMenu *menu);
     bool IsRecorded(const cEvent *event);
     std::vector<TVGuideTimerConflict> CheckTimerConflict(void);
-    cTimer *CreateSeriesTimer(cRecMenu *menu);
+    cTimer *CreateSeriesTimer(cRecMenu *menu, std::string path);
     std::string BuildEPGSearchString(cString searchString, cRecMenu *menu);
     std::string BuildEPGSearchString(cString searchString, std::string templValue);
     const cEvent **PerformSearchTimerSearch(std::string epgSearchString, int &numResults);
