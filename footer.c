@@ -7,6 +7,7 @@ cFooter::cFooter(cChannelGroups *channelGroups) {
     buttonWidth = (tvguideConfig.osdWidth - tvguideConfig.timeLineWidth - 5*buttonBorder)/4;
     buttonHeight= tvguideConfig.footerHeight - 2*buttonBorder;
     buttonY = (tvguideConfig.footerHeight - buttonHeight)/2;
+    SetButtonPositions();
     
     footer = osdManager.requestPixmap(2, cRect( tvguideConfig.timeLineWidth, 
                                                 tvguideConfig.osdHeight - tvguideConfig.footerHeight, 
@@ -18,6 +19,36 @@ cFooter::cFooter(cChannelGroups *channelGroups) {
 
 cFooter::~cFooter(void) {
     osdManager.releasePixmap(footer);
+}
+
+void cFooter::SetButtonPositions(void) {
+    for (int i=0; i < 4; i++) {
+        positionButtons[i] = -1;
+    }
+    /*
+    red button = 0
+    green button = 1
+    yellow button = 2
+    blue button = 3
+    */
+    for (int button=0; button<4; button++) {
+        if (Setup.ColorKey0 == button) {
+            positionButtons[button] = 0;
+            continue;
+        }
+        if (Setup.ColorKey1 == button) {
+            positionButtons[button] = 1;
+            continue;
+        }
+        if (Setup.ColorKey2 == button) {
+            positionButtons[button] = 2;
+            continue;
+        }
+        if (Setup.ColorKey3 == button) {
+            positionButtons[button] = 3;
+            continue;
+        }
+    }
 }
 
 void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int num) {
@@ -39,27 +70,27 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, int
 
 void cFooter::drawRedButton() {
     cString text(tr("Search & Rec"));
-    DrawButton(*text, theme.Color(clrButtonRed), theme.Color(clrButtonRedBorder), 0);
+    DrawButton(*text, theme.Color(clrButtonRed), theme.Color(clrButtonRedBorder), positionButtons[0]);
 }
 
 void cFooter::drawGreenButton() {
     cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels back"));
-    DrawButton(*text, theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBorder), 1);
+    DrawButton(*text, theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBorder), positionButtons[1]);
 }
 
 void cFooter::drawGreenButton(const char *text) {
     std::string cuttedText = CutText(text, buttonWidth-6, tvguideConfig.FontButton);
-    DrawButton(cuttedText.c_str(), theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBorder), 1);
+    DrawButton(cuttedText.c_str(), theme.Color(clrButtonGreen), theme.Color(clrButtonGreenBorder), positionButtons[1]);
 }
 
 void cFooter::drawYellowButton() {
     cString text = cString::sprintf("%d %s", tvguideConfig.jumpChannels, tr("Channels forward"));
-    DrawButton(*text, theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), 2);
+    DrawButton(*text, theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), positionButtons[2]);
 }
 
 void cFooter::drawYellowButton(const char *text) {
     std::string cuttedText = CutText(text, buttonWidth-6, tvguideConfig.FontButton);
-    DrawButton(cuttedText.c_str(), theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), 2);
+    DrawButton(cuttedText.c_str(), theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), positionButtons[2]);
 }
 
 void cFooter::drawBlueButton() {
@@ -68,7 +99,7 @@ void cFooter::drawBlueButton() {
         text = tr("Switch to Channel");
     else if (tvguideConfig.blueKeyMode == 1)
         text = tr("Detailed EPG");
-    DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), 3);
+    DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), positionButtons[3]);
 }
 
 void cFooter::UpdateGroupButtons(const cChannel *channel) {

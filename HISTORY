@@ -56,3 +56,4 @@ VDR Plugin 'tvguide' Revision History
   folders are read from VDRs folders list
 - recording folder also choosable for series timers
 - blue button also available in detail view
+- color buttons displayed as configured in VDR
