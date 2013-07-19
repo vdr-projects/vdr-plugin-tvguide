@@ -659,6 +659,11 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             detailView = NULL;
             detailViewActive = false;
             processKeyRed();
+        } else if (((Key & ~k_Repeat) == kBlue) && (tvguideConfig.blueKeyMode == 0)) {
+            delete detailView;
+            detailView = NULL;
+            detailViewActive = false;
+            processKeyBlue();
         } else {
             state = detailView->ProcessKey(Key);
             if (state == osEnd) {
