@@ -97,8 +97,9 @@ class cRecMenuItemButton : public cRecMenuItem {
 private:
     cString text;
     bool halfWidth;
+    bool alignLeft;
 public:
-    cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth = false);
+    cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth = false, bool alignLeft = false);
     virtual ~cRecMenuItemButton(void);
     int GetWidth(void);
     void SetPixmaps(void);

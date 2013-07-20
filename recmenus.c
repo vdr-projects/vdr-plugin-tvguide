@@ -76,12 +76,12 @@ public:
         infoItem->CalculateHeight(width - 2 * border);
         SetHeader(infoItem);
         
-        AddMenuItemScroll(new cRecMenuItemButton(tr("root video folder"), nextAction, true, false));
+        AddMenuItemScroll(new cRecMenuItemButton(tr("root video folder"), nextAction, true, false, true));
         
         readFolders(NULL, "");
         int numFolders = folders.size();
         for (int i=0; i < numFolders; i++) {
-            AddMenuItemScroll(new cRecMenuItemButton(*folders[i], nextAction, false, false));
+            AddMenuItemScroll(new cRecMenuItemButton(*folders[i], nextAction, false, false, true));
             if (!CheckHeight())
                 break;
         }
@@ -92,10 +92,10 @@ public:
     };
     cRecMenuItem *GetMenuItem(int number) { 
         if (number == 0) {
-            cRecMenuItem *result = new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, false, false);
+            cRecMenuItem *result = new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, false, false, true);
             return result;
         } else if ((number > 0) && (number < folders.size()+1)) {
-            cRecMenuItem *result = new cRecMenuItemButton(*folders[number-1], rmsInstantRecord, false, false);
+            cRecMenuItem *result = new cRecMenuItemButton(*folders[number-1], rmsInstantRecord, false, false, true);
             return result;
         }
         return NULL;

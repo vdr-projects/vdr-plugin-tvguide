@@ -46,13 +46,14 @@ void cRecMenuItem::setBackground(void) {
 
 // --- cRecMenuItemButton  -------------------------------------------------------
 
-cRecMenuItemButton::cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth) {
+cRecMenuItemButton::cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth, bool alignLeft) {
     selectable = true;
     this->text = text;
     this->action = action;
     this->active = active;
     height = 3 * font->Height() / 2;
     this->halfWidth = halfWidth;
+    this->alignLeft = alignLeft;
 }
 
 cRecMenuItemButton::~cRecMenuItemButton(void) {
@@ -75,7 +76,11 @@ void cRecMenuItemButton::SetPixmaps(void) {
 
 void cRecMenuItemButton::Draw(void) {
     int y = (height - font->Height()) / 2;
-    int x = (width - font->Width(*text)) / 2;;
+    int x;
+    if (!alignLeft)
+        x = (width - font->Width(*text)) / 2;
+    else
+        x = 10;
     pixmap->DrawText(cPoint(x, y), *text, colorText, colorTextBack, font);
 }
 
