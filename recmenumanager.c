@@ -38,7 +38,7 @@ void cRecMenuManager::Start(const cEvent *event) {
     detailViewActive = false;
     SetBackground();
     this->event = event;
-    activeMenu = new cRecMenuMain(recManager->EpgSearchAvailable(), event->HasTimer(), SwitchTimers.EventInSwitchList(event));
+    activeMenu = new cRecMenuMain(recManager->EpgSearchAvailable(), recManager->CheckEventForTimer(event), SwitchTimers.EventInSwitchList(event));
     activeMenu->Display();
     osdManager.flush();
 }
@@ -180,7 +180,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;
         case rmsEditTimer: {
         //edit timer for active event
-            timer = Timers.GetMatch(event);
+            timer = recManager->GetTimerForEvent(event);
             if (timer) {
                 delete activeMenu;
                 activeMenu = new cRecMenuEditTimer(timer, rmsSaveTimer);

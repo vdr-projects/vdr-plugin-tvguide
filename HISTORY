@@ -57,3 +57,5 @@ VDR Plugin 'tvguide' Revision History
 - recording folder also choosable for series timers
 - blue button also available in detail view
 - color buttons displayed as configured in VDR
+- Added Setup Option to define if tvguide closes after channel switching
+- Added remotetimers support (thanks @Saman for providing a patch)

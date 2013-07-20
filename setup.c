@@ -65,6 +65,8 @@ void cTvguideSetup::Store(void) {
     SetupStore("hugeStepHours", tvguideConfig.hugeStepHours);
     SetupStore("channelJumpMode", tvguideConfig.channelJumpMode);
     SetupStore("blueKeyMode", tvguideConfig.blueKeyMode);
+    SetupStore("useRemoteTimers", tvguideConfig.useRemoteTimers);
+    SetupStore("closeOnSwitch", tvguideConfig.closeOnSwitch);
     SetupStore("hideLastGroup", tvguideConfig.hideLastGroup);
     SetupStore("hideChannelLogos", tvguideConfig.hideChannelLogos);
     SetupStore("logoExtension", tvguideConfig.logoExtension);
@@ -163,12 +165,15 @@ void cMenuSetupGeneral::Set(void) {
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
     Add(new cMenuEditStraItem(tr("Keys Blue and OK"), &tmpTvguideConfig->blueKeyMode, 2,  blueMode));
+    Add(new cMenuEditBoolItem(tr("Close TVGuide after channel switch"), &tmpTvguideConfig->closeOnSwitch));
     Add(new cMenuEditBoolItem(tr("Hide last Channel Group"), &tmpTvguideConfig->hideLastGroup));
     Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 120, 320));
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
     Add(new cMenuEditBoolItem(tr("Use folders for instant records"), &tmpTvguideConfig->recMenuAskFolder));
+    if (pRemoteTimers)
+        Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
         Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));

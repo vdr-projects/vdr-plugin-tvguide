@@ -50,6 +50,8 @@ class cTvguideConfig {
         int channelJumpMode;
         int jumpChannels;
         int blueKeyMode;
+        int closeOnSwitch;
+        int useRemoteTimers;
         int hideLastGroup;
         int hideChannelLogos;
         int logoWidthRatio;
@@ -60,7 +62,7 @@ class cTvguideConfig {
         int epgImageWidth;
         int epgImageHeight;
         int numAdditionalEPGPictures;
-	int epgImageWidthLarge;
+        int epgImageWidthLarge;
         int epgImageHeightLarge;
         cString epgImagePath;
         cString iconPath;

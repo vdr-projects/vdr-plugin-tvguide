@@ -60,6 +60,9 @@ cTvguideConfig tvguideConfig;
 cOsdManager osdManager;
 
 #include "services/epgsearch.h"
+#include "services/remotetimers.h"
+cPlugin* pRemoteTimers = NULL;
+
 #include "tools.c"
 #include "switchtimer.c"
 #include "setup.c"
@@ -122,6 +125,16 @@ void cTvGuideOsd::Show(void) {
         myTime->Now();
         SwitchTimers.Load(AddDirectory(cPlugin::ConfigDirectory("epgsearch"), "epgsearchswitchtimers.conf"));
         recMenuManager = new cRecMenuManager();
+        pRemoteTimers = cPluginManager::CallFirstService("RemoteTimers::RefreshTimers-v1.0", NULL);
+        if (pRemoteTimers) {
+            isyslog("tvguide: remotetimers-plugin is available");
+        }
+        if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+            cString errorMsg;
+            if (!pRemoteTimers->Service("RemoteTimers::RefreshTimers-v1.0", &errorMsg)) {
+                esyslog("tvguide: %s", *errorMsg);
+            }
+        }
         drawOsd();
     }
     esyslog("tvguide: Rendering took %d ms", int(cTimeMs::Now()-start));
@@ -556,7 +569,8 @@ eOSState cTvGuideOsd::ChannelSwitch() {
     const cChannel *currentChannel = activeGrid->column->getChannel();
     if (currentChannel) {
         cDevice::PrimaryDevice()->SwitchChannel(currentChannel, true);
-        return osEnd;
+        if (tvguideConfig.closeOnSwitch)
+            return osEnd;
     }
     return osContinue;
 }

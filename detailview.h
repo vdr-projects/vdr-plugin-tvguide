@@ -28,6 +28,7 @@ private:
     void loadReruns(void);
     int heightEPGPics(void);
     void drawEPGPictures(int height);
+    void drawRecIcon(void);
     cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);
     void scrollUp();
     void scrollDown();

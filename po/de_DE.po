@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-07-18 17:18+0200\n"
+"POT-Creation-Date: 2013-07-20 12:02+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -420,6 +420,9 @@ msgstr "Kanalsprung Modus (Tasten grün / gelb)"
 msgid "Keys Blue and OK"
 msgstr "Tasten Blau und OK"
 
+msgid "Close TVGuide after channel switch"
+msgstr "TVGuide nach Umschalten schließen"
+
 msgid "Hide last Channel Group"
 msgstr "Letzte Kanalgruppe verstecken"
 
@@ -437,6 +440,9 @@ msgstr "Zeitformat (12h/24h)"
 
 msgid "Use folders for instant records"
 msgstr "Bei Sofortaufnahmen Verzeichnisse benutzen"
+
+msgid "Use Remotetimers"
+msgstr "RemoteTimers benutzen"
 
 msgid "Display Reruns in detailed EPG View"
 msgstr "Wiederholungen in der detailierten EPG Ansicht anzeigen"

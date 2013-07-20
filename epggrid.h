@@ -20,8 +20,8 @@ public:
     const cEvent *GetEvent() {return event;};
     time_t StartTime() { return event->StartTime(); };
     time_t EndTime() { return event->EndTime(); };
-    void SetTimer() {hasTimer = event->HasTimer();};
-    void SetSwitchTimer() {hasSwitchTimer = SwitchTimers.EventInSwitchList(event);};
+    void SetTimer();
+    void SetSwitchTimer();
     cString getTimeString(void);
     void debug();
 };

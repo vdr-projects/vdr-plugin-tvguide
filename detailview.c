@@ -92,6 +92,32 @@ void cDetailView::drawHeader() {
     cString datetime = cString::sprintf("%s, %s - %s (%d min)", *event->GetDateString(),  *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60);
     header->DrawText(cPoint(textX, textY + lineHeight), *datetime, theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
     header->DrawText(cPoint(textX, textY + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+    
+    eTimerMatch timerMatch=tmNone; 
+    cTimer *ti;
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_GetMatch_v1_0 rtMatch;
+        rtMatch.event = event;
+        pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+        timerMatch = (eTimerMatch)rtMatch.timerMatch;
+        ti = rtMatch.timer;
+    } else {
+        ti=Timers.GetMatch(event, &timerMatch);
+    }
+    if (timerMatch == tmFull) {
+        drawRecIcon();
+    }
+}
+
+void cDetailView::drawRecIcon() {
+    cString recIconText(" REC ");
+    int headerWidth = tvguideConfig.osdWidth - 2*borderWidth;
+    int width = tvguideConfig.FontDetailHeader->Width(*recIconText);
+    int height = tvguideConfig.FontDetailHeader->Height()+10;
+    int posX = headerWidth - width - 20;
+    int posY = 20;
+    header->DrawRectangle( cRect(posX, posY, width, height), theme.Color(clrButtonRed));
+    header->DrawText(cPoint(posX, posY+5), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), tvguideConfig.FontDetailHeader);
 }
 
 void cDetailView::drawContent() {

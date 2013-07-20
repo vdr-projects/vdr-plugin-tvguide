@@ -116,7 +116,18 @@ public:
         SetWidthPercent(50);
         cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
         cString message;
-        if (event->HasTimer()) {
+        bool eventHasTimer = false;
+        if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+            RemoteTimers_GetMatch_v1_0 rtMatch;
+            rtMatch.event = event;
+            pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+            if (rtMatch.timerMatch == tmFull) {
+                eventHasTimer = true;                
+            }
+        } else {
+            eventHasTimer = event->HasTimer();
+        }
+        if (eventHasTimer) {
             message = tr("Timer created");
         } else {
             message = tr("Timer NOT created");
@@ -322,7 +333,18 @@ public:
             infoItem->CalculateHeight(width - 2 * border);
             AddMenuItem(infoItem);
                         
-            bool timerActive = timer->HasFlags(tfActive);
+            bool timerActive = false;
+            if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+                RemoteTimers_GetMatch_v1_0 rtMatch;
+                rtMatch.event = timer->Event();
+                pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+                if (rtMatch.timer) {
+                    if (rtMatch.timerMatch == tmFull)
+                        timerActive = true;
+                }
+            } else
+                timerActive = timer->HasFlags(tfActive);
+
             time_t day = timer->Day();
             int start = timer->Start();
             int stop = timer->Stop();
@@ -395,8 +417,11 @@ public:
     cRecMenuConfirmSeriesTimer(cTimer *seriesTimer) {
         SetWidthPercent(50);
         cString message = tr("Series Timer created");
-        cString days = cTimer::PrintDay(seriesTimer->Day(), seriesTimer->WeekDays(), true);
-        cString infoText = cString::sprintf("%s\n%s, %s: %s, %s: %s", *message, *days, tr("Start"), *TimeString(seriesTimer->StartTime()), tr("Stop"), *TimeString(seriesTimer->StopTime()));
+        cString infoText = message;
+        if (seriesTimer) {
+            cString days = cTimer::PrintDay(seriesTimer->Day(), seriesTimer->WeekDays(), true);
+            infoText = cString::sprintf("%s\n%s, %s: %s, %s: %s", *message, *days, tr("Start"), *TimeString(seriesTimer->StartTime()), tr("Stop"), *TimeString(seriesTimer->StopTime()));
+        }
         cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
         infoItem->CalculateHeight(width - 2 * border);
         AddMenuItem(infoItem);

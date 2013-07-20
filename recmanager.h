@@ -30,9 +30,17 @@ public:
     cRecManager  (void);
     void SetEPGSearchPlugin(void);
     bool EpgSearchAvailable(void) {return epgSearchAvailable;};
+    bool RefreshRemoteTimers(void);
+    bool CheckEventForTimer(const cEvent *event);
+    cTimer *GetTimerForEvent(const cEvent *event);
     cTimer *createTimer(const cEvent *event, std::string path);
-    void DeleteTimer(const cEvent *event);
+    cTimer *createLocalTimer(const cEvent *event, std::string path);
+    cTimer *createRemoteTimer(const cEvent *event, std::string path);
+    void SetTimerPath(cTimer *timer, std::string path);
     void DeleteTimer(int timerID);
+    void DeleteTimer(const cEvent *event);
+    void DeleteLocalTimer(const cEvent *event);
+    void DeleteRemoteTimer(const cEvent *event);
     void SaveTimer(cTimer *timer, cRecMenu *menu);
     bool IsRecorded(const cEvent *event);
     std::vector<TVGuideTimerConflict> CheckTimerConflict(void);

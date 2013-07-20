@@ -5,11 +5,9 @@ cEpgGrid::cEpgGrid(cChannelColumn *c, const cEvent *event)  : cGrid(c) {
     this->event = event;
     extText = new cTextWrapper();
     hasTimer = false;
-    if (column->HasTimer())
-        hasTimer = event->HasTimer();
+    SetTimer();
     hasSwitchTimer = false;
-    if (column->HasSwitchTimer())
-        hasSwitchTimer = SwitchTimers.EventInSwitchList(event);
+    SetSwitchTimer();
     dummy = false;
 }
 
@@ -60,6 +58,27 @@ void cEpgGrid::PositionPixmap() {
         }
    }
 
+}
+
+void cEpgGrid::SetTimer() {
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_Event_v1_0 rt;
+        rt.event = event;
+        if (pRemoteTimers->Service("RemoteTimers::GetTimerByEvent-v1.0", &rt))
+            hasTimer = true;
+    } else if (column->HasTimer()) {
+        hasTimer = event->HasTimer();
+    } else {
+        hasTimer = false;
+    }
+}
+
+void cEpgGrid::SetSwitchTimer() {
+    if (column->HasSwitchTimer()) {
+        hasSwitchTimer = SwitchTimers.EventInSwitchList(event);
+    } else {
+        hasSwitchTimer = false;
+    }
 }
 
 void cEpgGrid::setText() {

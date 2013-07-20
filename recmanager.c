@@ -30,24 +30,95 @@ void cRecManager::SetEPGSearchPlugin(void) {
 	}
 }
 
+bool cRecManager::RefreshRemoteTimers(void) {
+    cString errorMsg;
+    if (!pRemoteTimers->Service("RemoteTimers::RefreshTimers-v1.0", &errorMsg)) {
+        esyslog("tvguide: %s", *errorMsg);
+        return false;
+    }
+    return true;
+}
+
+bool cRecManager::CheckEventForTimer(const cEvent *event) {
+    bool hasTimer = false;
+    
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_GetMatch_v1_0 rtMatch;
+        rtMatch.event = event;
+        pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+        if (rtMatch.timerMatch == tmFull)
+            hasTimer = true;
+    } else
+        hasTimer = event->HasTimer();
+
+    return hasTimer;
+}
+
+cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
+    cTimer *timer = NULL;
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_GetMatch_v1_0 rtMatch;
+        rtMatch.event = event;
+        pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+        timer = rtMatch.timer;
+    } else
+        timer = Timers.GetMatch(event);    
+    return timer;
+}
+
 cTimer *cRecManager::createTimer(const cEvent *event, std::string path) {
+    cTimer *timer = NULL;
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        timer = createRemoteTimer(event, path);
+    } else {
+        timer = createLocalTimer(event, path);
+    }
+    return timer;
+}
+
+cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
     cTimer *timer = new cTimer(event);
-    Timers.Add(timer);
+    cTimer *t = Timers.GetTimer(timer);
+    if (t) {
+        t->OnOff();
+        t->SetEventFromSchedule();
+        delete timer;
+        timer = t;
+        isyslog("timer %s reactivated", *t->ToDescr());
+    } else {
+        Timers.Add(timer);
+        isyslog("timer %s added (active)", *timer->ToDescr());
+    }
+    SetTimerPath(timer, path);
     Timers.SetModified();
+    return timer;
+}
+
+cTimer *cRecManager::createRemoteTimer(const cEvent *event, std::string path) {
+    cTimer *t = new cTimer(event);
+    SetTimerPath(t, path);
+    RemoteTimers_Timer_v1_0 rt;
+    rt.timer = t;
+    pRemoteTimers->Service("RemoteTimers::GetTimer-v1.0", &rt.timer);
+    if (rt.timer) {
+        rt.timer->OnOff();
+        if (!pRemoteTimers->Service("RemoteTimers::ModTimer-v1.0", &rt))
+            rt.timer = NULL;
+    } else {
+        rt.timer = t;
+        if (!pRemoteTimers->Service("RemoteTimers::NewTimer-v1.0", &rt))
+            isyslog("%s", *rt.errorMsg);
+    }
+    RefreshRemoteTimers();
+    return rt.timer;
+}
+
+void cRecManager::SetTimerPath(cTimer *timer, std::string path) {
     if (path.size() > 0) {
         std::replace(path.begin(), path.end(), '/', '~');
         cString newFileName = cString::sprintf("%s~%s", path.c_str(), timer->File());
         timer->SetFile(*newFileName);
     }
-    isyslog("timer %s added (active)", *timer->ToDescr());
-    return timer;
-}
-
-void cRecManager::DeleteTimer(const cEvent *event) {
-    cTimer *t = Timers.GetMatch(event);
-    if (!t)
-        return;
-    DeleteTimer(t);
 }
 
 void cRecManager::DeleteTimer(int timerID) {
@@ -57,6 +128,22 @@ void cRecManager::DeleteTimer(int timerID) {
     DeleteTimer(t);
 }
 
+void cRecManager::DeleteTimer(const cEvent *event) {
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        DeleteRemoteTimer(event);
+    } else {
+        DeleteLocalTimer(event);
+    }
+}
+
+void cRecManager::DeleteLocalTimer(const cEvent *event) {
+    cTimer *t = Timers.GetMatch(event);
+    if (!t)
+        return;
+    DeleteTimer(t);
+}
+
+
 void cRecManager::DeleteTimer(cTimer *timer) {
     if (timer->Recording()) {
         timer->Skip();
@@ -65,6 +152,20 @@ void cRecManager::DeleteTimer(cTimer *timer) {
     isyslog("timer %s deleted", *timer->ToDescr());
     Timers.Del(timer, true);
     Timers.SetModified();
+}
+
+void cRecManager::DeleteRemoteTimer(const cEvent *event) {
+    RemoteTimers_GetMatch_v1_0 rtMatch;
+    rtMatch.event = event;
+    pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
+    if (rtMatch.timer) {
+        RemoteTimers_Timer_v1_0 rt;
+        rt.timer = rtMatch.timer;
+        isyslog("remotetimer %s deleted", *rt.timer->ToDescr());
+        if (!pRemoteTimers->Service("RemoteTimers::DelTimer-v1.0", &rt))
+            isyslog("remotetimer error");
+        RefreshRemoteTimers();
+    }
 }
 
 void cRecManager::SaveTimer(cTimer *timer, cRecMenu *menu) {
@@ -90,7 +191,15 @@ void cRecManager::SaveTimer(cTimer *timer, cRecMenu *menu) {
         timer->SetFlags(tfActive);
     
     timer->SetEventFromSchedule();
-    Timers.SetModified();
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_Timer_v1_0 rt;
+        rt.timer = timer;
+        if (!pRemoteTimers->Service("RemoteTimers::ModTimer-v1.0", &rt))
+            rt.timer = NULL;
+        RefreshRemoteTimers();
+    } else {
+        Timers.SetModified();
+    }          
 }
 
 bool cRecManager::IsRecorded(const cEvent *event) {
@@ -227,8 +336,18 @@ cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu, std::string path) {
     else 
         seriesTimer->SetFlags(tfNone);
     seriesTimer->SetEventFromSchedule();
-    Timers.Add(seriesTimer);
-    Timers.SetModified();
+
+    if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
+        RemoteTimers_Timer_v1_0 rt;
+        rt.timer = seriesTimer;
+        if (!pRemoteTimers->Service("RemoteTimers::NewTimer-v1.0", &rt))
+            isyslog("%s", *rt.errorMsg);
+        RefreshRemoteTimers();
+        seriesTimer = NULL;
+    } else {
+        Timers.Add(seriesTimer);
+        Timers.SetModified();
+    }
     return seriesTimer;
 }
 
