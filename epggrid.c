@@ -66,6 +66,8 @@ void cEpgGrid::SetTimer() {
         rt.event = event;
         if (pRemoteTimers->Service("RemoteTimers::GetTimerByEvent-v1.0", &rt))
             hasTimer = true;
+	else
+	    hasTimer = false;
     } else if (column->HasTimer()) {
         hasTimer = event->HasTimer();
     } else {
