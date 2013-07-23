@@ -542,7 +542,7 @@ std::string cRecManager::BuildEPGSearchString(cString searchString, cRecMenu *me
     54 - compare date when testing for a repeat? (0=no, 1=same day, 2=same week, 3=same month) */
     searchTimerString << "0::::0:::0::0:::::::::0";
 
-    esyslog("tvguide: epgsearch String: %s", searchTimerString.str().c_str());
+    //esyslog("tvguide: epgsearch String: %s", searchTimerString.str().c_str());
     
     return searchTimerString.str();
 }

@@ -59,3 +59,4 @@ VDR Plugin 'tvguide' Revision History
 - color buttons displayed as configured in VDR
 - Added Setup Option to define if tvguide closes after channel switching
 - Added remotetimers support (thanks @Saman for providing a patch)
+- Pimped timeline
