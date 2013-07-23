@@ -21,7 +21,7 @@
 
 
 
-static const char *VERSION        = "0.0.6";
+static const char *VERSION        = "1.0.0";
 static const char *DESCRIPTION    = "A fancy 2d EPG Viewer";
 static const char *MAINMENUENTRY  = "Tvguide";
 

@@ -212,7 +212,7 @@ public:
         if (numConflicts == 1) {
             text = cString::sprintf("%s %s %s", tr("One"), tr("Timer Conflict"), tr("detected"));
         } else {
-            text = cString::sprintf("%d %s %s", conflicts.size(), tr("Timer Conflicts"), tr("detected"));
+            text = cString::sprintf("%d %s %s", (int)conflicts.size(), tr("Timer Conflicts"), tr("detected"));
         }
         cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
         
