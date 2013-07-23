@@ -386,14 +386,18 @@ std::vector<TVGuideEPGSearchTemplate> cRecManager::ReadEPGSearchTemplates(void) 
 }
 
 std::string cRecManager::BuildEPGSearchString(cString searchString, std::string templValue) {
+     std::string strSearchString = *searchString;
+     std::replace(strSearchString.begin(), strSearchString.end(), ':', '|');
      std::stringstream searchTimerString;
      searchTimerString << "0:";
-     searchTimerString << *searchString;
+     searchTimerString << strSearchString;
      searchTimerString << templValue;
      return searchTimerString.str();
 }
 
 std::string cRecManager::BuildEPGSearchString(cString searchString, cRecMenu *menu) {
+    std::string strSearchString = *searchString;
+    std::replace(strSearchString.begin(), strSearchString.end(), ':', '|');
     int searchMode = menu->GetIntValue(0);
     bool useTitle = menu->GetBoolValue(1);
     bool useSubTitle = menu->GetBoolValue(2);
@@ -417,7 +421,7 @@ std::string cRecManager::BuildEPGSearchString(cString searchString, cRecMenu *me
     //1 - unique search timer id
     searchTimerString << "0:";
     //2 - the search term
-    searchTimerString << *searchString;
+    searchTimerString << strSearchString;
     //3 - use time? 0/1
     //4 - start time in HHMM
     //5 - stop time in HHMM
@@ -538,7 +542,7 @@ std::string cRecManager::BuildEPGSearchString(cString searchString, cRecMenu *me
     54 - compare date when testing for a repeat? (0=no, 1=same day, 2=same week, 3=same month) */
     searchTimerString << "0::::0:::0::0:::::::::0";
 
-    //esyslog("tvguide: epgsearch String: %s", searchTimerString.str().c_str());
+    esyslog("tvguide: epgsearch String: %s", searchTimerString.str().c_str());
     
     return searchTimerString.str();
 }
@@ -609,6 +613,8 @@ const cEvent **cRecManager::PerformSearch(cRecMenu *menu, bool withOptions, int 
 
         if (epgSearchPlugin->Service("Epgsearch-searchresults-v1.0", &data)) {
             cList<Epgsearch_searchresults_v1_0::cServiceSearchResult> *list = data.pResultList;
+            if (!list)
+                return NULL;
             int numElements = list->Count();
             const cEvent **searchResults = NULL;
             if (numElements > 0) {
