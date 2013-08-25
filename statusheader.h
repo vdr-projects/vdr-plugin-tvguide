@@ -5,8 +5,10 @@
 
 class cStatusHeader : public cStyledPixmap {
 private:
+    int width, height;
     cPixmap *pixmapText;
     cPixmap *pixmapTVFrame;
+    int DrawPoster(const cEvent *event, int x, int y, int height, int border);
 public:
     cStatusHeader(void);
     virtual ~cStatusHeader(void);

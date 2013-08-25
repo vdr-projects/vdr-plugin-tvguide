@@ -71,6 +71,7 @@ class cTvguideConfig {
         const char *fontNameDefault;
         int FontButtonDelta;
         int FontDetailViewDelta;
+        int FontDetailViewSmallDelta;
         int FontDetailHeaderDelta;
         int FontMessageBoxDelta;
         int FontMessageBoxLargeDelta;
@@ -108,6 +109,7 @@ class cTvguideConfig {
         const cFont *FontTimeLineTimeHorizontal;
         const cFont *FontButton;
         const cFont *FontDetailView;
+        const cFont *FontDetailViewSmall;
         const cFont *FontDetailHeader;
         const cFont *FontMessageBox;
         const cFont *FontMessageBoxLarge;

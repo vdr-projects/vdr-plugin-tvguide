@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-07-20 12:02+0200\n"
+"POT-Creation-Date: 2013-08-25 13:08+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -17,6 +17,9 @@ msgstr "Hauptprogramm"
 
 msgid "RERUNS OF THIS SHOW"
 msgstr "Wiederholungen dieser Sendung"
+
+msgid "Actors"
+msgstr ""
 
 msgid "No EPG Information available"
 msgstr "Keine EPG Daten verfügbar"

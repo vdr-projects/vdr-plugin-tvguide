@@ -59,6 +59,14 @@ bool cImageLoader::LoadAdditionalEPGImage(cString name) {
     return true;
 }
 
+bool cImageLoader::LoadPoster(const char *poster, int width, int height) {
+    if (LoadImage(poster)) {
+        buffer.sample(Geometry(width, height));
+        return true;
+    }
+    return false;
+}
+
 bool cImageLoader::LoadIcon(const char *cIcon, int size) {
     if (size==0)
         return false;
@@ -125,6 +133,17 @@ bool cImageLoader::LoadImage(cString FileName, cString Path, cString Extension) 
         //dsyslog("tvguide: trying to load: %s", *File);
         buffer.read(*File);
         //dsyslog("tvguide: %s sucessfully loaded", *File);
+    } catch (...) {     
+        return false;
+    }
+    return true;
+}
+
+bool cImageLoader::LoadImage(const char *fullpath) {
+    try {
+        //dsyslog("tvguide: trying to load: %s", fullpath);
+        buffer.read(fullpath);
+        //dsyslog("tvguide: %s sucessfully loaded", fullpath);
     } catch (...) {     
         return false;
     }

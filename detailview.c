@@ -4,11 +4,58 @@
 cDetailView::cDetailView(const cEvent *event) {
     this->event = event;
     imgScrollBar = NULL;
-    borderWidth = 100; //px
+    borderWidth = 20; //px, border around window
+    border = 10; //px, border in view window
     scrollBarWidth = 40;
     headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
                         40 + tvguideConfig.epgImageHeight);
-    description.Set(event->Description(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+    pixmapPoster = NULL;
+    width = tvguideConfig.osdWidth-2*borderWidth;
+    contentWidth = width - scrollBarWidth;
+    contentX = borderWidth;
+    contentHeight = tvguideConfig.osdHeight-2*borderWidth-headerHeight;
+    widthPoster = 30 * contentWidth / 100;
+}
+
+cDetailView::~cDetailView(void){
+    Cancel(-1);
+    while (Active())
+        cCondWait::SleepMs(10);
+    delete header;
+    header = NULL;
+    osdManager.releasePixmap(headerLogo);
+    headerLogo = NULL;
+    osdManager.releasePixmap(headerBack);
+    headerBack = NULL;
+    osdManager.releasePixmap(content);
+    content = NULL;
+    if (pixmapPoster)
+        osdManager.releasePixmap(pixmapPoster);
+    pixmapPoster = NULL;
+    osdManager.releasePixmap(scrollBar);
+    scrollBar = NULL;
+    osdManager.releasePixmap(footer);
+    footer = NULL;
+    delete imgScrollBar;
+}
+
+void cDetailView::setContent() {
+    hasAdditionalMedia = false;
+    static cPlugin *pTVScraper = cPluginManager::GetPlugin("tvscraper");
+    if (pTVScraper) {
+        mediaInfo.event = event;
+        mediaInfo.isRecording = false;
+        if (pTVScraper->Service("TVScraperGetFullInformation", &mediaInfo)) {
+            hasAdditionalMedia = true;
+        }
+    }
+    if (hasAdditionalMedia) {
+        if (mediaInfo.posters.size() >= 1) {
+            contentWidth -=  widthPoster;
+            contentX += widthPoster;
+        }
+    }
+    description.Set(event->Description(), tvguideConfig.FontDetailView, contentWidth - scrollBarWidth - 2*border);
     if (tvguideConfig.displayRerunsDetailEPGView) {
         loadReruns();
     }
@@ -17,45 +64,72 @@ cDetailView::cDetailView(const cEvent *event) {
     createPixmaps();
 }
 
-cDetailView::~cDetailView(void){
-    delete header;
-    osdManager.releasePixmap(headerLogo);
-    osdManager.releasePixmap(headerBack);
-    osdManager.releasePixmap(content);
-    osdManager.releasePixmap(scrollBar);
-    osdManager.releasePixmap(footer);
-    delete imgScrollBar;
-}
-
 bool cDetailView::setContentDrawportHeight() {
-    int linesContent = description.Lines() + 1;
+    int lineHeight = tvguideConfig.FontDetailView->Height();
+    //Height of banner (only for series)
+    int heightBanner = 0;
+    if (hasAdditionalMedia && (mediaInfo.type == typeSeries)) {
+        heightBanner = mediaInfo.banner.height + 2*lineHeight;
+    }
+    //Height of EPG Text
+    int heightEPG = (description.Lines()+1) * lineHeight;
+    //Height of rerun information
+    int heightReruns = 0;
     if (tvguideConfig.displayRerunsDetailEPGView) {
-        linesContent += reruns.Lines() + 1;
+        heightReruns = reruns.Lines() * lineHeight;
     }
-    heightContent = linesContent * tvguideConfig.FontDetailView->Height();
+    //Height of actor pictures
+    int heightActors = 0;
+    if (hasAdditionalMedia) {
+        heightActors = heightActorPics();
+    }
+    //Height of fanart
+    int heightFanart = 0;
+    if (hasAdditionalMedia) {
+        heightFanart = heightFanartImg() + lineHeight;
+    }
+    //Height of EPG Pictures
+    int heightEpgPics = 0;
     if (!tvguideConfig.hideEpgImages) {
-        heightContent += heightEPGPics();
+        heightEpgPics = heightEPGPics();
     }
-    if (heightContent > (tvguideConfig.osdHeight - 2 * borderWidth - headerHeight))
+    
+    yBanner  = lineHeight;
+    yEPGText = heightBanner;
+    yActors  = heightBanner + heightEPG;
+    yFanart  = heightBanner + heightEPG + heightActors;
+    yAddInf  = heightBanner + heightEPG + heightActors + heightFanart;
+    yEPGPics = heightBanner + heightEPG + heightActors + heightFanart + heightReruns;
+    
+    int totalHeight = heightBanner + heightEPG + heightActors + heightFanart + heightReruns + heightEpgPics;
+    //check if pixmap content has to be scrollable
+    if (totalHeight > contentHeight) {
+        heightContent = totalHeight;
         return true;
-    else
+    } else {
+        heightContent = contentHeight;
         return false;
+    }
+    return false;
 }
 
 void cDetailView::createPixmaps() {
-    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null));
-    headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
+    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null));
+    headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null);
     headerLogo->Fill(clrTransparent);
-    headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, tvguideConfig.osdWidth - 2*borderWidth, headerHeight), cRect::Null);
+    headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null);
     headerBack->Fill(clrBlack);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
-    content = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight),
-                                    cRect(0,0, tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth, max(heightContent, tvguideConfig.osdHeight-2*borderWidth-headerHeight)));   
-    header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
+    content = osdManager.requestPixmap(5, cRect(contentX, borderWidth + headerHeight, contentWidth, contentHeight),
+                                    cRect(0,0, contentWidth, max(heightContent, contentHeight)));
+    if (hasAdditionalMedia) {
+        pixmapPoster = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth + headerHeight, widthPoster, contentHeight));
+        pixmapPoster->Fill(theme.Color(clrBorder));
+        pixmapPoster->DrawRectangle(cRect(2, 0, widthPoster - 2, content->DrawPort().Height()), theme.Color(clrBackground));
+    }
+    scrollBar = osdManager.requestPixmap(5, cRect(tvguideConfig.osdWidth-borderWidth-scrollBarWidth, borderWidth + headerHeight, scrollBarWidth, contentHeight));
     
-    scrollBar = osdManager.requestPixmap(5, cRect(tvguideConfig.osdWidth-borderWidth-scrollBarWidth, borderWidth + headerHeight, scrollBarWidth, tvguideConfig.osdHeight-2*borderWidth-headerHeight));
-    
-    footer = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight + content->ViewPort().Height(), tvguideConfig.osdWidth - 2*borderWidth, 3));
+    footer = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight + content->ViewPort().Height(), width, 3));
     footer->Fill(theme.Color(clrBorder));
 }
 
@@ -111,12 +185,12 @@ void cDetailView::drawHeader() {
 
 void cDetailView::drawRecIcon() {
     cString recIconText(" REC ");
-    int headerWidth = tvguideConfig.osdWidth - 2*borderWidth;
-    int width = tvguideConfig.FontDetailHeader->Width(*recIconText);
+    int headerWidth = width;
+    int widthIcon = tvguideConfig.FontDetailHeader->Width(*recIconText);
     int height = tvguideConfig.FontDetailHeader->Height()+10;
-    int posX = headerWidth - width - 20;
+    int posX = headerWidth - widthIcon - 20;
     int posY = 20;
-    header->DrawRectangle( cRect(posX, posY, width, height), theme.Color(clrButtonRed));
+    header->DrawRectangle( cRect(posX, posY, widthIcon, height), theme.Color(clrButtonRed));
     header->DrawText(cPoint(posX, posY+5), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), tvguideConfig.FontDetailHeader);
 }
 
@@ -127,20 +201,45 @@ void cDetailView::drawContent() {
     
     int textHeight = tvguideConfig.FontDetailView->Height();
     int textLines = description.Lines();
-    int i=0;
-    for (; i<textLines; i++) {
-        content->DrawText(cPoint(20, 20 + i*textHeight), description.GetLine(i), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+    for (int i=0; i<textLines; i++) {
+        content->DrawText(cPoint(border, yEPGText + i*textHeight), description.GetLine(i), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
     }
-    i++;
     if (tvguideConfig.displayRerunsDetailEPGView) {
         textLines = reruns.Lines();
         for (int j=0; j<textLines; j++) {
-            content->DrawText(cPoint(20, 20 + i*textHeight), reruns.GetLine(j), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
-            i++;
+            content->DrawText(cPoint(border, yAddInf+ j*textHeight), reruns.GetLine(j), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
         }
     }
-    if (!tvguideConfig.hideEpgImages) {
-        drawEPGPictures((i+1)*textHeight);
+}
+
+void cDetailView::Action(void) {
+    if (hasAdditionalMedia && Running()) {
+        drawPoster();
+        if (Running())
+            osdManager.flush();
+    }
+       //draw banner only for series
+    if (hasAdditionalMedia && (mediaInfo.type == typeSeries) && Running()) {
+        drawBanner(yBanner);
+        if (Running())
+            osdManager.flush();
+    }
+    //draw actors
+    if (hasAdditionalMedia && Running()) {
+        drawActors(yActors);
+        if (Running())
+            osdManager.flush();
+    }
+    //draw fanart
+    if (hasAdditionalMedia && Running()) {
+        drawFanart(yFanart);
+        if (Running())
+            osdManager.flush();
+    }
+    if (!tvguideConfig.hideEpgImages && Running()) {
+        drawEPGPictures(yEPGPics);
+        if (Running())
+            osdManager.flush();
     }
 }
 
@@ -149,7 +248,7 @@ void cDetailView::drawScrollbar() {
     double scrollBarOffset = 0.0;
     if (contentScrollable) {
         heightScrollbar =  ( (double)scrollBar->ViewPort().Height() ) / (double)heightContent * ( (double)scrollBar->ViewPort().Height() );
-        scrollBarOffset = (-1.0)*(double)content->DrawPort().Point().Y() / (double)(content->DrawPort().Height() - (tvguideConfig.osdHeight-2*borderWidth-headerHeight));
+        scrollBarOffset = (-1.0)*(double)content->DrawPort().Point().Y() / (double)(content->DrawPort().Height() - (contentHeight));
         scrollBarOffset *= ( (double)scrollBar->ViewPort().Height()-7.0  - heightScrollbar); 
         scrollBarOffset++;
     } else {
@@ -173,7 +272,7 @@ void cDetailView::scrollUp() {
 void cDetailView::scrollDown() {
     if (contentScrollable) {
         int newDrawportHeight = content->DrawPort().Point().Y() - tvguideConfig.FontDetailView->Height();
-        int maxDrawportHeight = (content->DrawPort().Height() - (tvguideConfig.osdHeight-2*borderWidth-headerHeight));
+        int maxDrawportHeight = (content->DrawPort().Height() - contentHeight);
         content->SetDrawPortPoint(cPoint(0, max(newDrawportHeight,(-1)*maxDrawportHeight)));
         drawScrollbar();
     }
@@ -274,13 +373,12 @@ void cDetailView::loadReruns(void) {
                 delete list;
             }
         }
-        reruns.Set(sstrReruns.str().c_str(), tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+        reruns.Set(sstrReruns.str().c_str(), tvguideConfig.FontDetailView, contentWidth - scrollBarWidth - 2*border);
     } else
-        reruns.Set("", tvguideConfig.FontDetailView, tvguideConfig.osdWidth-2*borderWidth - 50 - 40);
+        reruns.Set("", tvguideConfig.FontDetailView, contentWidth - scrollBarWidth);
 }
 
 int cDetailView::heightEPGPics(void) {
-    int width = tvguideConfig.osdWidth - 2*borderWidth - scrollBarWidth;
     int border = 5;
     int numPicsAvailable = 0;
     for (int i=1; i <= tvguideConfig.numAdditionalEPGPictures; i++) {
@@ -294,17 +392,52 @@ int cDetailView::heightEPGPics(void) {
         }
     }
     numEPGPics = numPicsAvailable;
-    int picsPerLine = width / (tvguideConfig.epgImageWidthLarge + border);
+    int picsPerLine = contentWidth / (tvguideConfig.epgImageWidthLarge + border);
     int picLines = numPicsAvailable / picsPerLine;
     if (numPicsAvailable%picsPerLine != 0)
         picLines++;
     return picLines * (tvguideConfig.epgImageHeightLarge + border) + 2*border;
 }
 
+int cDetailView::heightActorPics(void) {
+    int numActors = mediaInfo.actors.size();
+    if (numActors < 1)
+        return 0;
+    if (mediaInfo.type == typeMovie) {
+        actorThumbWidth = mediaInfo.actors[0].thumb.width/2;
+        actorThumbHeight = mediaInfo.actors[0].thumb.height/2;
+    } else if (mediaInfo.type == typeSeries) {
+        actorThumbWidth = mediaInfo.actors[0].thumb.width/2;
+        actorThumbHeight = mediaInfo.actors[0].thumb.height/2;
+    }
+    int picsPerLine = contentWidth / (actorThumbWidth + 2*border);
+    int picLines = numActors / picsPerLine;
+    if (numActors%picsPerLine != 0)
+        picLines++;
+    int actorsHeight = picLines * (actorThumbHeight + 2*tvguideConfig.FontDetailViewSmall->Height()) + tvguideConfig.FontDetailView->Height() + tvguideConfig.FontDetailHeader->Height();
+    return actorsHeight;
+}
+
+int cDetailView::heightFanartImg(void) {
+    int retVal = 0;
+    if (mediaInfo.fanart.size() >= 1) {
+        int fanartWidthOrig = mediaInfo.fanart[0].width;
+        int fanartHeightOrig = mediaInfo.fanart[0].height;
+        int fanartWidth = fanartWidthOrig;
+        int fanartHeight = fanartHeightOrig;
+        retVal = fanartHeight;
+        if (fanartWidthOrig > (contentWidth - 2*border)) {
+            fanartWidth = contentWidth - 2*border;
+            fanartHeight = fanartHeightOrig * ((double)fanartWidth / (double)fanartWidthOrig);
+            retVal = fanartHeight;
+        }
+    }
+    return retVal;
+}
+
 void cDetailView::drawEPGPictures(int height) {
-    int width = content->ViewPort().Width();
     int border = 5;
-    int picsPerLine = width / (tvguideConfig.epgImageWidthLarge + border);
+    int picsPerLine = contentWidth / (tvguideConfig.epgImageWidthLarge + border);
     int currentX = border;
     int currentY = height + border;
     int currentPicsPerLine = 1;
@@ -331,6 +464,139 @@ void cDetailView::drawEPGPictures(int height) {
         }
     }
 }
+
+void cDetailView::drawPoster(void) {
+    int border = 10;
+    if (mediaInfo.posters.size() < 1)
+        return;
+    int posterWidthOrig = mediaInfo.posters[0].width;
+    int posterHeightOrig = mediaInfo.posters[0].height;
+    if ((posterWidthOrig < 10) || (posterHeightOrig < 10))
+        return;
+    int posterWidth = posterWidthOrig;
+    int posterHeight = posterHeightOrig;
+    if ((posterWidthOrig > widthPoster) && (posterHeightOrig < contentHeight)) {
+        posterWidth = widthPoster - 2*border;
+        posterHeight = posterHeightOrig * ((double)posterWidth / (double)posterWidthOrig);
+    } else if ((posterWidthOrig < widthPoster) && (posterHeightOrig > contentHeight)) {
+        posterHeight = contentHeight - 2*border;
+        posterWidth = posterWidthOrig * ((double)posterHeight / (double)posterHeightOrig);
+    } else if ((posterWidthOrig > widthPoster) && (posterHeightOrig > contentHeight)) {
+        double ratioPoster = posterHeightOrig / posterWidthOrig;
+        double ratioWindow = contentHeight / widthPoster;
+        if (ratioPoster >= ratioWindow) {
+            posterWidth = widthPoster - 2*border;
+            posterHeight = posterHeightOrig * ((double)posterWidth / (double)posterWidthOrig);
+        } else {
+            posterHeight = contentHeight - 2*border;
+            posterWidth = posterWidthOrig * ((double)posterHeight / (double)posterHeightOrig);
+        }
+    }
+    if (!Running())
+        return;
+    cImageLoader imgLoader;
+    if (imgLoader.LoadPoster(mediaInfo.posters[0].path.c_str(), posterWidth, posterHeight)) {
+        int posterX = (widthPoster - posterWidth) / 2;
+        int posterY = (contentHeight - posterHeight) / 2;
+        if (Running() && pixmapPoster)
+            pixmapPoster->DrawImage(cPoint(posterX, posterY), imgLoader.GetImage());
+    }        
+}
+
+void cDetailView::drawBanner(int height) {
+    int bannerWidthOrig = mediaInfo.banner.width;
+    int bannerHeightOrig = mediaInfo.banner.height;
+    int bannerWidth = bannerWidthOrig;
+    int bannerHeight = bannerHeightOrig;
+    
+    if (bannerWidthOrig > contentWidth - 2*border) {
+        bannerWidth = contentWidth - 2*border;
+        bannerHeight = bannerHeightOrig * ((double)bannerWidth / (double)bannerWidthOrig);
+    }
+    if (!Running())
+        return;
+    cImageLoader imgLoader;
+    if (imgLoader.LoadPoster(mediaInfo.banner.path.c_str(), bannerWidth, bannerHeight)) {
+        int bannerX = (contentWidth - bannerWidth) / 2;
+        if (Running() && content)
+            content->DrawImage(cPoint(bannerX, height), imgLoader.GetImage());
+    }
+}
+
+void cDetailView::drawActors(int height) {
+    int numActors = mediaInfo.actors.size();
+    if (numActors < 1)
+        return;
+    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrBackground):clrTransparent;
+    
+    cString header = cString::sprintf("%s:", tr("Actors"));
+    content->DrawText(cPoint(border, height), *header, theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailHeader);
+
+    int picsPerLine = contentWidth / (actorThumbWidth + 2*border);
+    int picLines = numActors / picsPerLine;
+    if (numActors%picsPerLine != 0)
+        picLines++;
+    int x = 0;
+    int y = height + tvguideConfig.FontDetailHeader->Height();
+    if (!Running())
+        return;
+    cImageLoader imgLoader;
+    int actor = 0;
+    for (int row = 0; row < picLines; row++) {
+        for (int col = 0; col < picsPerLine; col++) {
+            if (!Running())
+                return;
+            if (actor == numActors)
+                break;
+            std::string path = mediaInfo.actors[actor].thumb.path;
+            if (imgLoader.LoadPoster(path.c_str(), actorThumbWidth, actorThumbHeight)) {
+                if (Running() && content)
+                    content->DrawImage(cPoint(x + border, y), imgLoader.GetImage());
+            }
+            std::string name = mediaInfo.actors[actor].name;
+            std::stringstream sstrRole;
+            sstrRole << "\"" << mediaInfo.actors[actor].role << "\"";
+            std::string role = sstrRole.str();
+            if (tvguideConfig.FontDetailViewSmall->Width(name.c_str()) > actorThumbWidth + 2*border)
+                name = CutText(name, actorThumbWidth + 2*border, tvguideConfig.FontDetailViewSmall);
+            if (tvguideConfig.FontDetailViewSmall->Width(role.c_str()) > actorThumbWidth + 2*border)
+                role = CutText(role, actorThumbWidth + 2*border, tvguideConfig.FontDetailViewSmall);
+            int xName = x + ((actorThumbWidth+2*border) - tvguideConfig.FontDetailViewSmall->Width(name.c_str()))/2;
+            int xRole = x + ((actorThumbWidth+2*border) - tvguideConfig.FontDetailViewSmall->Width(role.c_str()))/2;
+            if (Running() && content) {
+                content->DrawText(cPoint(xName, y + actorThumbHeight), name.c_str(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailViewSmall);
+                content->DrawText(cPoint(xRole, y + actorThumbHeight + tvguideConfig.FontDetailViewSmall->Height()), role.c_str(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailViewSmall);
+                x += actorThumbWidth + 2*border;
+            }
+            actor++;
+        }
+        x = 0;
+        y += actorThumbHeight + 2 * tvguideConfig.FontDetailViewSmall->Height();
+    }
+}
+
+void cDetailView::drawFanart(int height) {
+    if (mediaInfo.fanart.size() < 1)
+        return;
+    int fanartWidthOrig = mediaInfo.fanart[0].width;
+    int fanartHeightOrig = mediaInfo.fanart[0].height;
+    int fanartWidth = fanartWidthOrig;
+    int fanartHeight = fanartHeightOrig;
+    
+    if (fanartWidthOrig > contentWidth - 2*border) {
+        fanartWidth = contentWidth - 2*border;
+        fanartHeight = fanartHeightOrig * ((double)fanartWidth / (double)fanartWidthOrig);
+    }
+    if (!Running())
+        return;
+    cImageLoader imgLoader;
+    if (imgLoader.LoadPoster(mediaInfo.fanart[0].path.c_str(), fanartWidth, fanartHeight)) {
+        int fanartX = (contentWidth - fanartWidth) / 2;
+        if (Running() && content)
+            content->DrawImage(cPoint(fanartX, height), imgLoader.GetImage());
+    }
+}
+
 
 eOSState cDetailView::ProcessKey(eKeys Key) {
     eOSState state = osContinue;

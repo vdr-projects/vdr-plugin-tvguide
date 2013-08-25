@@ -17,6 +17,7 @@ public:
     bool LoadLogo(const char *logo, int width, int height);
     bool LoadEPGImage(int eventID);
     bool LoadAdditionalEPGImage(cString name);
+    bool LoadPoster(const char *poster, int width, int height);
     bool LoadIcon(const char *cIcon, int size);
     bool DrawBackground(tColor back, tColor blend, int width, int height);
 private:
@@ -24,6 +25,7 @@ private:
     Color Argb2Color(tColor col);
     void toLowerCase(std::string &str);
     bool LoadImage(cString FileName, cString Path, cString Extension);
+    bool LoadImage(const char *fullpath);
 };
 
 #endif //_TVGUIDE_IMAGELOADER_H

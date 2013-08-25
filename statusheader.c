@@ -3,8 +3,7 @@
 cStatusHeader::cStatusHeader(void) {
     color = theme.Color(clrStatusHeader);
     colorBlending = theme.Color(clrStatusHeaderBlending);
-    int height = tvguideConfig.statusHeaderHeight;
-    int width;
+    height = tvguideConfig.statusHeaderHeight;
     if (tvguideConfig.scaleVideo) {
         width = tvguideConfig.osdWidth - height * 16 / 9;
     } else {
@@ -45,7 +44,6 @@ cStatusHeader::~cStatusHeader(void) {
 
 void cStatusHeader::ScaleVideo(void) {
     if (tvguideConfig.scaleVideo) {
-        int height = tvguideConfig.statusHeaderHeight;
         int width = height * 16 / 9;
         int x = osdManager.Left() + tvguideConfig.osdWidth - width;
         int y = osdManager.Top();
@@ -57,22 +55,28 @@ void cStatusHeader::ScaleVideo(void) {
 
 void cStatusHeader::DrawInfoText(cGrid *grid) {
     int border = 10;
+    int textWidth = width - 2 * border;
     tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
     pixmapText->Fill(clrTransparent);
     int x = border;
     int y = border;
     if (!grid->isDummy()) {
+        const cEvent *event = grid->GetEvent();
+        int newX = DrawPoster(event, x, y, height-2*border, border);
+        if (newX > 0) {
+            textWidth -= (newX - x);
+            x += newX;
+        }
         cString time = grid->getTimeString();
         cString title("");
-        const cEvent *event = grid->GetEvent();
         title = cString::sprintf(": %s", event->Title());
         cString header = cString::sprintf("%s%s", *time, *title);
-        header = CutText(*header, pixmapText->ViewPort().Width() - 2 * border, tvguideConfig.FontStatusHeaderLarge).c_str();
+        header = CutText(*header, textWidth, tvguideConfig.FontStatusHeaderLarge).c_str();
         pixmapText->DrawText(cPoint(x,y), *header, theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeaderLarge);
         y += tvguideConfig.FontStatusHeaderLarge->Height() + border;
         int heightText = pixmapText->ViewPort().Height() - y;
         cTextWrapper description;
-        description.Set(event->Description(), tvguideConfig.FontStatusHeader, pixmapText->ViewPort().Width() - 2 * border);
+        description.Set(event->Description(), tvguideConfig.FontStatusHeader, textWidth);
         int lineHeight = tvguideConfig.FontStatusHeader->Height();
         int textLines = description.Lines();
         int maxLines = heightText / lineHeight;
@@ -91,4 +95,35 @@ void cStatusHeader::DrawInfoText(cGrid *grid) {
         y += (heightText - tvguideConfig.FontStatusHeaderLarge->Height() - 2*border)/2;
         pixmapText->DrawText(cPoint(x,y), *grid->getText(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontStatusHeaderLarge);
     }
+}
+
+int cStatusHeader::DrawPoster(const cEvent *event, int x, int y, int height, int border) {
+    bool hasPoster = false;
+    TVScraperGetPoster poster;
+    int posterWidth = 0;
+    int posterHeight = 0;
+    if (event) {
+        static cPlugin *pTVScraper = cPluginManager::GetPlugin("tvscraper");
+        if (pTVScraper) {
+            poster.event = event;
+            poster.isRecording = false;
+            if (pTVScraper->Service("TVScraperGetPoster", &poster)) {
+                hasPoster = true;
+                int posterWidthOrig = poster.media.width;
+                int posterHeightOrig = poster.media.height;
+                if ((posterWidthOrig > 10) && (posterHeightOrig > 10)) {
+                    posterHeight = height;
+                    posterWidth = posterWidthOrig * ((double)posterHeight / (double)posterHeightOrig);
+                }
+            }
+        }
+    }
+    if (hasPoster) {
+        cImageLoader imgLoader;
+        if (imgLoader.LoadPoster(poster.media.path.c_str(), posterWidth, posterHeight)) {
+            pixmapText->DrawImage(cPoint(x, y), imgLoader.GetImage());
+            return posterWidth + border;
+        }
+    }
+    return 0;
 }

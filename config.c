@@ -67,6 +67,7 @@ cTvguideConfig::cTvguideConfig() {
     fontNameDefault = "VDRSymbols Sans:Book";
     FontButtonDelta = 0;
     FontDetailViewDelta = 0;
+    FontDetailViewSmallDelta = 0;
     FontDetailHeaderDelta = 0;
     FontMessageBoxDelta = 0;
     FontMessageBoxLargeDelta = 0;
@@ -123,6 +124,7 @@ cTvguideConfig::cTvguideConfig() {
 cTvguideConfig::~cTvguideConfig() {
     delete FontButton;
     delete FontDetailView;
+    delete FontDetailViewSmall;
     delete FontDetailHeader;
     delete FontMessageBox;
     delete FontMessageBoxLarge;
@@ -197,6 +199,7 @@ void cTvguideConfig::SetFonts(void){
     //Common Fonts
     FontButton = cFont::CreateFont(*fontname, footerHeight/3 + 4 + FontButtonDelta);
     FontDetailView = cFont::CreateFont(*fontname, osdHeight/30 + FontDetailViewDelta);
+    FontDetailViewSmall = cFont::CreateFont(*fontname, osdHeight/40 + FontDetailViewSmallDelta);
     FontDetailHeader = cFont::CreateFont(*fontname, osdHeight/25 + FontDetailHeaderDelta);
     FontMessageBox = cFont::CreateFont(*fontname, osdHeight/33 + FontMessageBoxDelta);
     FontMessageBoxLarge = cFont::CreateFont(*fontname, osdHeight/30 + FontMessageBoxLargeDelta);    

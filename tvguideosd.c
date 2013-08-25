@@ -62,7 +62,8 @@ cOsdManager osdManager;
 #include "services/epgsearch.h"
 #include "services/remotetimers.h"
 cPlugin* pRemoteTimers = NULL;
-
+#include <vector>
+#include "services/tvscraper.h"
 #include "tools.c"
 #include "switchtimer.c"
 #include "setup.c"
@@ -579,9 +580,11 @@ void cTvGuideOsd::DetailedEPG() {
     if (!activeGrid->isDummy()) {
         detailViewActive = true;
         detailView = new cDetailView(activeGrid->GetEvent());
+        detailView->setContent();
         detailView->drawHeader();
         detailView->drawContent();
         detailView->drawScrollbar();
+        detailView->Start();
         osdManager.flush();
     }
 }
