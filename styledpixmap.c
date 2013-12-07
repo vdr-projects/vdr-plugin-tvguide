@@ -1,3 +1,4 @@
+#include "imageloader.h"
 #include "styledpixmap.h"
 
 cStyledPixmap::cStyledPixmap(void) {

@@ -1,6 +1,8 @@
 #ifndef __TVGUIDE_HEADERGRID_H
 #define __TVGUIDE_HEADERGRID_H
 
+#include "grid.h"
+
 // --- cHeaderGrid  -------------------------------------------------------------
 
 class cHeaderGrid : public cGrid {

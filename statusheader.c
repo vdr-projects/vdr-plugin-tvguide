@@ -1,3 +1,6 @@
+#include "tools.h"
+#include "services/tvscraper.h"
+#include "imageloader.h"
 #include "statusheader.h"
 
 cStatusHeader::cStatusHeader(void) {

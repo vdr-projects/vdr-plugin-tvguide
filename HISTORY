@@ -65,3 +65,7 @@ VDR Plugin 'tvguide' Revision History
 2013-07-23: Version 1.0.0
 
 - added tvscraper support
+
+Version 1.1.0
+
+- changed build system

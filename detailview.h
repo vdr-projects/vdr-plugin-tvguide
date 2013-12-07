@@ -1,6 +1,12 @@
 #ifndef __TVGUIDE_DETAILVIEW_H
 #define __TVGUIDE_DETAILVIEW_H
 
+#include <vdr/osd.h>
+#include <vdr/osdbase.h>
+#include <vdr/epg.h>
+#include "services/tvscraper.h"
+#include "styledpixmap.h"
+
 // --- cDetailView  -------------------------------------------------------------
 
 class cEpgGrid;

@@ -1,3 +1,10 @@
+#ifndef __TVGUIDE_TVSCRAPER_H
+#define __TVGUIDE_TVSCRAPER_H
+
+#include <string>
+#include <vector>
+#include <vdr/epg.h>
+
 enum tvMediaType {
     typeSeries,
     typeMovie,
@@ -54,3 +61,5 @@ struct TVScraperGetFullInformation
     std::vector<tvActor> actors;
     std::string description;
 };
+
+#endif //__TVGUIDE_TVSCRAPER_H

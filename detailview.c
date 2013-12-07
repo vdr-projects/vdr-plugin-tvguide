@@ -1,4 +1,10 @@
 #include <sstream>
+#include <vdr/plugin.h>
+#include "imageloader.h"
+#include "services/epgsearch.h"
+#include "services/remotetimers.h"
+#include "config.h"
+#include "tools.h"
 #include "detailview.h"
 
 cDetailView::cDetailView(const cEvent *event) {

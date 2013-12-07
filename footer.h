@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_FOOTER_H
 #define __TVGUIDE_FOOTER_H
 
+#include <vdr/osd.h>
+#include "channelgroups.h"
+
 // --- cFooter  -------------------------------------------------------------
 
 class cFooter  {

@@ -1,3 +1,6 @@
+#include "recmenu.h" 
+#include "recmenus.h"
+#include "switchtimer.h"
 #include "recmenumanager.h"
 
 cRecMenuManager::cRecMenuManager(void) {

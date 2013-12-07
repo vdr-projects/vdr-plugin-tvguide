@@ -1,11 +1,17 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "tools.h"
 
 /****************************************************************************************
 *            CUTTEXT
 ****************************************************************************************/
-static std::string CutText(std::string text, int width, const cFont *font) {
+std::string CutText(std::string text, int width, const cFont *font) {
     if (width <= font->Size())
         return text.c_str();
     if (font->Width(text.c_str()) < width)
@@ -35,13 +41,6 @@ static std::string CutText(std::string text, int width, const cFont *font) {
 /****************************************************************************************
 *            SPLTSTRING
 ****************************************************************************************/
-class splitstring : public std::string {
-    std::vector<std::string> flds;
-public:
-    splitstring(const char *s) : std::string(s) { };
-    std::vector<std::string>& split(char delim, int rep=0);
-};
-
 // split: receives a char delimiter; returns a vector of strings
 // By default ignores repeated delimiters, unless argument rep == 1.
 std::vector<std::string>& splitstring::split(char delim, int rep) {
@@ -82,53 +81,6 @@ int FindIgnoreCase(const std::string& expr, const std::string& query)
 /****************************************************************************************
 *            FUZZYSEARCH
 ****************************************************************************************/
-#include <ctype.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-#ifndef _AFUZZY_H
-#define _AFUZZY_H
-
-// source from:
-/*
-  Leonid Boitsov 2002. (itman@narod.ru)
-  C version of Stas Namin.
-  This code is a GPL software and is distributed under GNU
-  public licence without any warranty.
-*/
-
-typedef unsigned int Uint;
-
-#define MaxPatSize (sizeof(Uint) * 8)
-
-typedef struct
-{
-	Uint 		*R,
-				*R1,
-				*RP,
-				*S,
-				*RI;
-	Uint 		*FilterS;
-
-	int 		Map[256];
-	int 		FilterMap[256];
-	int			k;
-	Uint		mask_ok;
-	Uint		filter_ok;
-	Uint		filter_shift;
-	int			r_size;
-	int			FilterSet;
-} AFUZZY;
-
-void afuzzy_init(const char *p, int kerr, int UseFilter, AFUZZY *fuzzy);
-void afuzzy_free(AFUZZY *fuzzy);
-int afuzzy_checkSUB(const char *t, AFUZZY *fuzzy);
-
-#endif
-
-
-static int afuzzy_checkFLT(const char *t, AFUZZY *fuzzy);
 
 /******************************************************************************
 FUNCTION afuzzy_init() 

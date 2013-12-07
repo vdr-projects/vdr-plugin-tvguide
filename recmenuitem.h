@@ -3,6 +3,10 @@
 
 #define AUTO_ADVANCE_TIMEOUT 1500
 
+#include <string>
+#include <vdr/tools.h> 
+#include "styledpixmap.h"
+
 enum eRecMenuState {
     rmsConsumed,
     rmsNotConsumed,

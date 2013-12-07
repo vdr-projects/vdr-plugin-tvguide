@@ -1,4 +1,6 @@
+#include "services/remotetimers.h"
 #include "channelcolumn.h"
+#include "tools.h"
 #include "epggrid.h"
 
 cEpgGrid::cEpgGrid(cChannelColumn *c, const cEvent *event)  : cGrid(c) {

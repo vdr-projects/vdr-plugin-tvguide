@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_SETUP_H
 #define __TVGUIDE_SETUP_H
 
+#include <vdr/menuitems.h>
+#include "config.h"
+
 class cTvguideSetup : public cMenuSetupPage {
     public:
         cTvguideSetup(void);

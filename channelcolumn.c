@@ -1,4 +1,5 @@
 #include "channelcolumn.h"
+#include "dummygrid.h"
 
 cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime) {
     this->channel = channel;

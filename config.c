@@ -1,20 +1,5 @@
 #include "config.h"
 
-enum {
-    e12Hours,
-    e24Hours
-};
-
-enum {
-    eVertical,
-    eHorizontal
-};
-
-enum {
-    eNumJump,
-    eGroupJump
-};
-
 cTvguideConfig::cTvguideConfig() {
     showMainMenuEntry = 1;
     replaceOriginalSchedule = 0;

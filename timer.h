@@ -1,6 +1,8 @@
 #ifndef __TVGUIDE_TIMER_H
 #define __TVGUIDE_TIMER_H
 
+#include <vdr/tools.h>
+
 // --- cMyTime ------------------------------------------------------------- 
 
 class cMyTime {

@@ -1,6 +1,25 @@
 #ifndef __TVGUIDE_CONFIG_H
 #define __TVGUIDE_CONFIG_H
 
+#include <vdr/themes.h>
+#include <vdr/plugin.h>
+#include "osdmanager.h"
+
+enum {
+    e12Hours,
+    e24Hours
+};
+
+enum {
+    eVertical,
+    eHorizontal
+};
+
+enum {
+    eNumJump,
+    eGroupJump
+};
+
 class cTvguideConfig {
     private:
         void SetGeometry(int width, int height);
@@ -126,5 +145,71 @@ class cTvguideConfig {
         bool SetupParse(const char *Name, const char *Value);
         void loadTheme();
 };
+
+#ifdef DEFINE_CONFIG
+    cTvguideConfig tvguideConfig;
+    cOsdManager osdManager;
+    cTheme theme;
+    cPlugin* pRemoteTimers = NULL;
+#else
+    extern cTvguideConfig tvguideConfig;
+    extern cOsdManager osdManager;
+    extern cTheme theme;
+    extern cPlugin* pRemoteTimers;
+#endif
+
+
+// --- Theme -------------------------------------------------------------
+//BLENDING SETUP
+#define CLR_BLENDING_NOPACITY   0xFFFFFFFF
+#define CLR_BLENDING_DEFAULT    0xAAAAAAAA
+#define CLR_BLENDING_OFF        0x00000000
+
+THEME_CLR(theme, clrDoBlending, CLR_BLENDING_DEFAULT);
+THEME_CLR(theme, clrBackgroundOSD, clrBlack);
+THEME_CLR(theme, clrBackground, clrBlack);
+THEME_CLR(theme, clrGrid1, 0xFF404749);
+THEME_CLR(theme, clrGrid1Blending, 0xFF000000);
+THEME_CLR(theme, clrGrid2, 0xFF20293F);
+THEME_CLR(theme, clrGrid2Blending, 0xFF000000);
+THEME_CLR(theme, clrHighlight, 0xFFFF4D00);
+THEME_CLR(theme, clrHighlightBlending, 0xFF000000);
+THEME_CLR(theme, clrFont, clrWhite);
+THEME_CLR(theme, clrFontActive, clrWhite);
+THEME_CLR(theme, clrFontHeader, clrWhite);
+THEME_CLR(theme, clrFontButtons, clrWhite);
+THEME_CLR(theme, clrStatusHeader, clrBlack);
+THEME_CLR(theme, clrStatusHeaderBlending, clrBlack);
+THEME_CLR(theme, clrHeader, clrBlack);
+THEME_CLR(theme, clrHeaderBlending, 0xFFE0E0E0);
+THEME_CLR(theme, clrBorder, clrWhite);
+THEME_CLR(theme, clrTimeline1, clrWhite);
+THEME_CLR(theme, clrTimeline1Blending, 0xFF828282);
+THEME_CLR(theme, clrTimeline2, clrBlack);
+THEME_CLR(theme, clrTimeline2Blending, 0xFF3F3F3F);
+THEME_CLR(theme, clrButtonRed, 0x99BB0000);
+THEME_CLR(theme, clrButtonRedBorder, 0xFFBB0000);
+THEME_CLR(theme, clrButtonGreen, 0x9900BB00);
+THEME_CLR(theme, clrButtonGreenBorder, 0xFF00BB00);
+THEME_CLR(theme, clrButtonYellow, 0x99BBBB00);
+THEME_CLR(theme, clrButtonYellowBorder, 0xFFBBBB00);
+THEME_CLR(theme, clrButtonBlue, 0x990000BB);
+THEME_CLR(theme, clrButtonBlueBorder, 0xFF0000BB);
+THEME_CLR(theme, clrButtonBlend, 0xDD000000);
+THEME_CLR(theme, clrRecMenuBackground, 0xB0000000);
+THEME_CLR(theme, clrRecMenuTimerConflictBackground, 0xFFCCCCCC);
+THEME_CLR(theme, clrRecMenuTimerConflictBar, 0xFF222222);
+THEME_CLR(theme, clrRecMenuTimerConflictOverlap, 0xAAFF0000);
+THEME_CLR(theme, clrRecMenuDayActive, 0xFF00FF00);
+THEME_CLR(theme, clrRecMenuDayInactive, 0xFFFF0000);
+THEME_CLR(theme, clrRecMenuDayHighlight, 0x44FFFFFF);
+THEME_CLR(theme, clrRecMenuTextBack, 0xFF000000);
+THEME_CLR(theme, clrRecMenuTextActiveBack, 0xFF404749);
+THEME_CLR(theme, clrRecMenuKeyboardBack, 0xFF000000);
+THEME_CLR(theme, clrRecMenuKeyboardBorder, clrWhite);
+THEME_CLR(theme, clrRecMenuKeyboardHigh, 0x55FFFFFF);
+THEME_CLR(theme, clrButtonRedKeyboard, 0xFFBB0000);
+THEME_CLR(theme, clrButtonGreenKeyboard, 0xFF00BB00);
+THEME_CLR(theme, clrButtonYellowKeyboard, 0xFFBBBB00);
 
 #endif //__TVGUIDE_CONFIG_H

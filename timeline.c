@@ -1,3 +1,4 @@
+#include "imageloader.h"
 #include "timeline.h"
 
 cTimeLine::cTimeLine(cMyTime *myTime) {

@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_DUMMYGRID_H
 #define __TVGUIDE_DUMMYGRID_H
 
+#include "grid.h"
+#include "channelcolumn.h"
+
 // --- cDummyGrid  -------------------------------------------------------------
 
 class cDummyGrid : public cGrid {

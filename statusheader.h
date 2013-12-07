@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_STATUSHEADER_H
 #define __TVGUIDE_STATUSHEADER_H
 
+#include "styledpixmap.h"
+#include "grid.h"
+
 // --- cStatusHeader  -------------------------------------------------------------
 
 class cStatusHeader : public cStyledPixmap {

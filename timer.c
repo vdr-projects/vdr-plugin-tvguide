@@ -1,3 +1,6 @@
+#include <time.h>
+#include <vdr/tools.h>
+#include "config.h"
 #include "timer.h"
 
 cMyTime::~cMyTime(void) {

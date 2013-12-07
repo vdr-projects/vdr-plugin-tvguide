@@ -1,5 +1,14 @@
 #include <string>
+#include <sstream>
 #include <vector>
+#include <algorithm>
+
+#include <vdr/menu.h>
+#include "services/epgsearch.h"
+#include "services/remotetimers.h"
+#include "services/tvscraper.h"
+#include "tools.h"
+#include "switchtimer.h"
 #include "recmanager.h"
 
 static int CompareRecording(const void *p1, const void *p2) {

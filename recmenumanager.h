@@ -1,6 +1,10 @@
 #ifndef __TVGUIDE_RECMENUMANAGER_H
 #define __TVGUIDE_RECMENUMANAGER_H
 
+#include "recmenu.h"
+#include "recmanager.h"
+#include "services/epgsearch.h"
+
 // --- cRecMenuManager  -------------------------------------------------------------
 class cRecMenuManager {
 private:

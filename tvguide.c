@@ -13,13 +13,15 @@
 #include <vdr/device.h>
 #include <vdr/menu.h>
 
-#include "tvguideosd.c"
+#define DEFINE_CONFIG 1
+#include "config.h"
+#include "setup.h"
+#include "tvguideosd.h"
+
 
 #if defined(APIVERSNUM) && APIVERSNUM < 20000
 #error "VDR-2.0.0 API version or greater is required!"
 #endif
-
-
 
 static const char *VERSION        = "1.1.0";
 static const char *DESCRIPTION    = "A fancy 2d EPG Viewer";
@@ -115,10 +117,11 @@ bool cPluginTvguide::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-bool cPluginTvguide::Initialize(void)
-{
-  // Initialize any background activities the plugin shall perform.
-  return true;
+bool cPluginTvguide::Initialize(void) {
+    esyslog("tvguide: Initialize");
+    esyslog("tvguide: OSD Wwidth %d, OSD Height %d", cOsd::OsdWidth(), cOsd::OsdHeight());
+    esyslog("tvguide: numRows: %d, numCols: %d", tvguideConfig.channelRows, tvguideConfig.channelCols);
+    return true;
 }
 
 bool cPluginTvguide::Start(void)

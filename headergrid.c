@@ -1,3 +1,5 @@
+#include "imageloader.h"
+#include "tools.h"
 #include "headergrid.h"
 
 cHeaderGrid::cHeaderGrid(void) : cGrid(NULL) {

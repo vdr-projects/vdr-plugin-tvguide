@@ -1,6 +1,8 @@
 #ifndef __TVGUIDE_RECMENU_H
 #define __TVGUIDE_RECMENU_H
 
+#include "recmenuitem.h"
+
 // --- cRecMenu  -------------------------------------------------------------
 
 class cRecMenu : public cStyledPixmap {

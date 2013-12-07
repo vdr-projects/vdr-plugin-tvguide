@@ -1,6 +1,11 @@
 #ifndef __TVGUIDE_STYLEDPIXMAP_H
 #define __TVGUIDE_STYLEDPIXMAP_H
 
+#include <vdr/osd.h>
+#include <vdr/epg.h>
+#include "timer.h"
+#include "config.h"
+
 // --- cStyledPixmap -------------------------------------------------------------
 
 class cStyledPixmap {

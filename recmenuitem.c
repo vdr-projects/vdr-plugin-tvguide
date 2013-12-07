@@ -1,5 +1,7 @@
 #include <math.h>
 #include <vdr/remote.h>
+#include "imageloader.h"
+#include "tools.h"
 #include "recmenuitem.h"
 
 // --- cRecMenuItem  -------------------------------------------------------------

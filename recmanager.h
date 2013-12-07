@@ -1,6 +1,12 @@
 #ifndef __TVGUIDE_RECMMANAGER_H
 #define __TVGUIDE_RECMMANAGER_H
 
+#include <string>
+#include <vector>
+#include <vdr/plugin.h>
+#include "detailview.h"
+#include "recmenu.h"
+
 class TVGuideTimerConflict {
 public:
     time_t time;

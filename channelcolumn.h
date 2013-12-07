@@ -1,9 +1,16 @@
 #ifndef __TVGUIDE_CHANNELCOLUMN_H
 #define __TVGUIDE_CHANNELCOLUMN_H
 
+#include <vdr/tools.h>
+#include "grid.h"
+#include "epggrid.h"
+#include "headergrid.h"
+#include "switchtimer.h"
+
 class cGrid;
 class cEpgGrid;
 class cHeaderGrid;
+
 // --- cChannelColumn  -------------------------------------------------------------
 
 class cChannelColumn : public cListObject, public cStyledPixmap {

@@ -1,6 +1,11 @@
 #ifndef __TVGUIDE_GRID_H
 #define __TVGUIDE_GRID_H
 
+#include <vdr/tools.h>
+#include "styledpixmap.h"
+
+class cChannelColumn;
+
 // --- cEpgGrid  -------------------------------------------------------------
 
 class cGrid : public cListObject, public cStyledPixmap {

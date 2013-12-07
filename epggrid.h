@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_EPGGRID_H
 #define __TVGUIDE_EPGGRID_H
 
+#include <vdr/epg.h>
+#include "grid.h"
+
 // --- cEpgGrid  -------------------------------------------------------------
 
 class cEpgGrid : public cGrid {

@@ -1,6 +1,9 @@
 #ifndef __TVGUIDE_TIMELINE_H
 #define __TVGUIDE_TIMELINE_H
 
+#include "timer.h"
+#include "styledpixmap.h"
+
 // --- cTimeLine  -------------------------------------------------------------
 
 class cTimeLine  {

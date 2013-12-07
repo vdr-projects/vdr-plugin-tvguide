@@ -1,6 +1,10 @@
 #ifndef __TVGUIDE_CHANNELGROUP_H
 #define __TVGUIDE_CHANNELGROUP_H
 
+#include <vdr/tools.h>
+#include "styledpixmap.h"
+
+
 // --- cChannelGroup  -------------------------------------------------------------
 
 class cChannelGroup {

@@ -1,3 +1,6 @@
+#include <string>
+#include "imageloader.h"
+#include "tools.h"
 #include "footer.h"
 
 cFooter::cFooter(cChannelGroups *channelGroups) {

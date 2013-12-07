@@ -1,6 +1,16 @@
 #ifndef __TVGUIDE_TVGUIDEOSD_H
 #define __TVGUIDE_TVGUIDEOSD_H
 
+#include "timer.h"
+#include "grid.h"
+#include "channelcolumn.h"
+#include "statusheader.h"
+#include "detailview.h"
+#include "timeline.h"
+#include "channelgroups.h"
+#include "footer.h"
+#include "recmenumanager.h"
+
 // --- cTvGuideOsd -------------------------------------------------------------
 
 class cTvGuideOsd : public cOsdObject {

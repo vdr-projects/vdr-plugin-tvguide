@@ -1,6 +1,10 @@
 #ifndef __TVGUIDE_CHANNELGROUPS_H
 #define __TVGUIDE_CHANNELGROUPS_H
 
+#include <vector>
+#include <vdr/channels.h>
+#include "channelgroup.h"
+
 // --- cChannelGroups  -------------------------------------------------------------
 
 class cChannelGroups {

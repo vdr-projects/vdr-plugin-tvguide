@@ -1,4 +1,6 @@
+#include <algorithm>
 #include "channelgroup.h"
+#include "tools.h"
 
 cChannelGroup::cChannelGroup(const char *name) {
     channelStart = 0;
