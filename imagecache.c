@@ -542,6 +542,7 @@ bool cImageCache::LoadLogo(const cChannel *channel) {
     if (success)
         return true;
     success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+    return success;
 }
 
 void cImageCache::InsertIntoLogoCache(std::string channelID) {
