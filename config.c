@@ -1,25 +1,21 @@
+#include <string>
 #include "config.h"
 
 cTvguideConfig::cTvguideConfig() {
+    debugImageLoading = 0;
     showMainMenuEntry = 1;
     replaceOriginalSchedule = 0;
-    osdWidth = 0; 
-    osdHeight = 0;
     displayMode = eHorizontal;
     showTimeInGrid = 1;
-    colWidth = 0;
-    rowHeight = 0;
     channelCols = 5;
     channelRows = 10;
     displayTime = 160;
-    minutePixel = 0;
     displayStatusHeader = 1;
     displayChannelGroups = 1;
     statusHeaderPercent = 20;
-    statusHeaderHeight = 0;
     channelGroupsPercent = 5;
-    channelGroupsWidth = 0;
-    channelGroupsHeight = 0;
+    epgViewHeaderPercent = 25;
+    epgViewBorder = 50;
     scaleVideo = 1;
     decorateVideo = 1;
     timeLineWidthPercent = 8;
@@ -27,7 +23,7 @@ cTvguideConfig::cTvguideConfig() {
     displayChannelName = 1;
     channelHeaderWidthPercent = 20;
     channelHeaderHeightPercent = 15;
-    footerHeight = 80;
+    footerHeightPercent = 7;
     stepMinutes = 30;
     bigStepHours = 3;
     hugeStepHours = 24;
@@ -73,178 +69,147 @@ cTvguideConfig::cTvguideConfig() {
     FontTimeLineTimeHorizontalDelta = 0;
     FontRecMenuItemDelta = 0;
     FontRecMenuItemSmallDelta = 0;
-    //Common Fonts
-    FontButton = NULL;
-    FontDetailView = NULL;
-    FontDetailHeader = NULL;
-    FontMessageBox = NULL;
-    FontMessageBoxLarge = NULL;
-    FontStatusHeader = NULL;
-    FontStatusHeaderLarge = NULL;
-    //Fonts for vertical Display 
-    FontChannelHeader = NULL;
-    FontGrid = NULL;
-    FontGridSmall = NULL;
-    FontTimeLineWeekday = NULL;
-    FontTimeLineDate = NULL;
-    FontTimeLineTime = NULL;
-    //Fonts for horizontal Display 
-    FontChannelHeaderHorizontal = NULL;
-    FontGridHorizontal = NULL;
-    FontGridHorizontalSmall = NULL;
-    FontTimeLineDateHorizontal = NULL;
-    FontTimeLineTimeHorizontal = NULL;
-    //Fonts for RecMenu
-    FontRecMenuItem = NULL;
-    FontRecMenuItemSmall = NULL;
     timeFormat = 1;
-    themeIndex = 4;
-    useBlending = 2;
+    useNopacityTheme = 1;
+    themeIndex = -1;
+    themeIndexCurrent = -1;
+    themeName = "";
+    nOpacityTheme = "";
+    style = eStyleBlendingDefault;
     roundedCorners = 0;
     displayRerunsDetailEPGView = 1;
     numReruns = 5;
     useSubtitleRerun = 1;
+    numLogosInitial = 30;
+    numLogosMax = 50;
+    limitLogoCache = 1;
+    logoPathSet = false;
+    imagesPathSet = false;
+    iconsPathSet = false;
 }
 
 cTvguideConfig::~cTvguideConfig() {
-    delete FontButton;
-    delete FontDetailView;
-    delete FontDetailViewSmall;
-    delete FontDetailHeader;
-    delete FontMessageBox;
-    delete FontMessageBoxLarge;
-    delete FontStatusHeader;
-    delete FontStatusHeaderLarge;
-    delete FontChannelHeader;
-    delete FontChannelGroups;
-    delete FontGrid;
-    delete FontGridSmall;
-    delete FontTimeLineWeekday;
-    delete FontTimeLineDate;
-    delete FontTimeLineTime;
-    delete FontChannelHeaderHorizontal;
-    delete FontChannelGroupsHorizontal;
-    delete FontGridHorizontal;
-    delete FontGridHorizontalSmall;
-    delete FontTimeLineDateHorizontal;
-    delete FontTimeLineTimeHorizontal;
-    delete FontRecMenuItem;
-    delete FontRecMenuItemSmall;
 }
 
-void cTvguideConfig::setDynamicValues(int width, int height) {
-    SetGeometry(width, height);
-    SetFonts();
-}
-
-void cTvguideConfig::SetGeometry(int width, int height) {
-    osdWidth = width;
-    osdHeight = height;
-    statusHeaderHeight = (displayStatusHeader)?(statusHeaderPercent * osdHeight / 100):0;
-    channelGroupsWidth = (displayChannelGroups)?(channelGroupsPercent * osdWidth / 100):0;
-    channelGroupsHeight = (displayChannelGroups)?(channelGroupsPercent * osdHeight / 100):0;
-    channelHeaderWidth = channelHeaderWidthPercent * osdWidth / 100;
-    channelHeaderHeight = channelHeaderHeightPercent * osdHeight / 100;
-    timeLineWidth = timeLineWidthPercent * osdWidth / 100;
-    timeLineHeight = timeLineHeightPercent * osdHeight / 100;
-
-    if (displayMode == eVertical) {
-        colWidth = (osdWidth - timeLineWidth) / channelCols;
-        rowHeight = 0;
-        minutePixel = (osdHeight - statusHeaderHeight - channelGroupsHeight - channelHeaderHeight - footerHeight) / displayTime;
-    } else if (displayMode == eHorizontal) {
-        colWidth = 0;
-        rowHeight = (osdHeight - statusHeaderHeight - timeLineHeight - footerHeight) / channelRows;
-        minutePixel = (osdWidth - channelHeaderWidth - channelGroupsWidth) / displayTime;
-    }
-    
+void cTvguideConfig::setDynamicValues() {
     numGrids = (displayMode == eVertical)?channelCols:channelRows;
     jumpChannels = numGrids;
 }
 
-void cTvguideConfig::SetFonts(void){
-    cString fontname;
-    if (fontIndex == 0) {
-        fontname = fontNameDefault;
-    } else {
-        cStringList availableFonts;
-        cFont::GetAvailableFontNames(&availableFonts);
-        if (availableFonts[fontIndex-1]) {
-            fontname = availableFonts[fontIndex-1];
-        } else 
-            fontname = fontNameDefault;
+bool cTvguideConfig::LoadTheme() {
+    //is correct theme already loaded?
+    if (nOpacityTheme.size() == 0)
+        nOpacityTheme = Setup.OSDTheme;
+    if ((themeIndex > -1) && (themeIndex == themeIndexCurrent)) {
+        if (!nOpacityTheme.compare(Setup.OSDTheme)) {
+            return false;
+        } else {
+            nOpacityTheme = Setup.OSDTheme;
+        }
     }
-    cFont *test = NULL;
-    test = cFont::CreateFont(*fontname, 30);
-    if (!test) {
-        fontname = DefaultFontSml;
+    //Load available Themes
+    cThemes themes;
+    themes.Load(*cString("tvguide"));
+    int numThemesAvailable = themes.NumThemes();
+
+    //Check for nOpacity Theme
+    if (useNopacityTheme) {
+        std::string nOpacity = "nOpacity";
+        std::string currentSkin = Setup.OSDSkin;
+        std::string currentSkinTheme = Setup.OSDTheme;
+        if (!currentSkin.compare(nOpacity)) {
+            for (int curThemeIndex = 0; curThemeIndex < numThemesAvailable; curThemeIndex++) {
+                std::string curThemeName = themes.Name(curThemeIndex);
+                if (!curThemeName.compare(currentSkinTheme)) {
+                    themeIndex = curThemeIndex;
+                    break;
+                }
+            }
+        }
     }
-    delete test;
-        
-    //Common Fonts
-    FontButton = cFont::CreateFont(*fontname, footerHeight/3 + 4 + FontButtonDelta);
-    FontDetailView = cFont::CreateFont(*fontname, osdHeight/30 + FontDetailViewDelta);
-    FontDetailViewSmall = cFont::CreateFont(*fontname, osdHeight/40 + FontDetailViewSmallDelta);
-    FontDetailHeader = cFont::CreateFont(*fontname, osdHeight/25 + FontDetailHeaderDelta);
-    FontMessageBox = cFont::CreateFont(*fontname, osdHeight/33 + FontMessageBoxDelta);
-    FontMessageBoxLarge = cFont::CreateFont(*fontname, osdHeight/30 + FontMessageBoxLargeDelta);    
-    FontStatusHeader = cFont::CreateFont(*fontname, statusHeaderHeight/6 - 4 + FontStatusHeaderDelta);
-    FontStatusHeaderLarge = cFont::CreateFont(*fontname, statusHeaderHeight/5 + FontStatusHeaderLargeDelta);
-    //Fonts for vertical Display 
-    FontChannelHeader = cFont::CreateFont(*fontname, colWidth/10 + FontChannelHeaderDelta);
-    FontChannelGroups = cFont::CreateFont(*fontname, colWidth/8 + FontChannelGroupsDelta);
-    FontGrid = cFont::CreateFont(*fontname, colWidth/12 + FontGridDelta);
-    FontGridSmall = cFont::CreateFont(*fontname, colWidth/12 + FontGridSmallDelta);
-    FontTimeLineWeekday = cFont::CreateFont(*fontname, timeLineWidth/3 + FontTimeLineWeekdayDelta);
-    FontTimeLineDate = cFont::CreateFont(*fontname, timeLineWidth/4 + FontTimeLineDateDelta);
-    FontTimeLineTime = cFont::CreateFont(*fontname, timeLineWidth/4 + FontTimeLineTimeDelta);
-    //Fonts for horizontal Display 
-    FontChannelHeaderHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + FontChannelHeaderHorizontalDelta);
-    FontChannelGroupsHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + 5 + FontChannelGroupsHorizontalDelta);
-    FontGridHorizontal = cFont::CreateFont(*fontname, rowHeight/3 + 5 + FontGridHorizontalDelta);
-    FontGridHorizontalSmall = cFont::CreateFont(*fontname, rowHeight/4 + FontGridHorizontalSmallDelta);
-    FontTimeLineDateHorizontal = cFont::CreateFont(*fontname, timeLineHeight/2 + 5 + FontTimeLineDateHorizontalDelta);
-    FontTimeLineTimeHorizontal = cFont::CreateFont(*fontname, timeLineHeight/2 + FontTimeLineTimeHorizontalDelta);
-    //Fonts for RecMenu
-    FontRecMenuItem = cFont::CreateFont(*fontname, osdHeight/30 + FontRecMenuItemDelta);
-    FontRecMenuItemSmall = cFont::CreateFont(*fontname, osdHeight/40 + FontRecMenuItemSmallDelta);
+
+    if (themeIndex == -1) {
+        for (int curThemeIndex = 0; curThemeIndex < numThemesAvailable; curThemeIndex++) {
+            std::string curThemeName = themes.Name(curThemeIndex);
+            if (!curThemeName.compare("default")) {
+                themeIndex = curThemeIndex;
+                break;
+            }
+        }
+
+    }
+
+    if (themeIndex == -1)
+        themeIndex = 0;
+
+    themeIndexCurrent = themeIndex;
+
+    const char *themePath = themes.FileName(themeIndex);
+    if (access(themePath, F_OK) == 0) {
+        ::theme.Load(themePath);
+        themeName = themes.Name(themeIndex);        
+    }
+    esyslog("tvguide: set Theme to %s", *themeName);
+    return true;
 }
 
-void cTvguideConfig::SetBlending(void) {
-    if (theme.Color(clrDoBlending) == CLR_BLENDING_OFF) {
-        useBlending = 0;
-    } else if (theme.Color(clrDoBlending) == CLR_BLENDING_DEFAULT)
-        useBlending = 1;
-    else {
-        useBlending = 2;
+
+void cTvguideConfig::SetStyle(void) {
+    if (theme.Color(clrStyle) == CLR_STYLE_FLAT) {
+        style = eStyleFlat;
+        esyslog("tvguide: set flat style");
+    } else if (theme.Color(clrStyle) == CLR_STYLE_BLENDING_DEFAULT) {
+        style = eStyleBlendingDefault;
+        esyslog("tvguide: set blending style");
+    } else if (theme.Color(clrStyle) == CLR_STYLE_GRAPHICAL) {
+        style = eStyleGraphical;
+        esyslog("tvguide: set graphical style");
+    } else {
+        style = eStyleBlendingMagick;
+        esyslog("tvguide: set magick blending style");
     }
+    
 }
 
 void cTvguideConfig::SetLogoPath(cString path) {
     logoPath = path;
+    logoPathSet = true;
+    esyslog("tvguide: Logo Path set to %s", *logoPath);
 }
 
 void cTvguideConfig::SetImagesPath(cString path) {
     epgImagePath = path;
+    imagesPathSet = true;
+    esyslog("tvguide: EPG Image Path set to %s", *epgImagePath);
 }
 
 void cTvguideConfig::SetIconsPath(cString path) {
     iconPath = path;
+    iconsPathSet = true;
+    esyslog("tvguide: Icon Path set to %s", *iconPath);
 }
 
-void cTvguideConfig::loadTheme() {
-    cThemes themes;
-    themes.Load(*cString("tvguide"));
-    const char *FileName = themes.FileName(themeIndex);
-    if (access(FileName, F_OK) == 0) {
-        ::theme.Load(FileName);
+void cTvguideConfig::SetDefaultPathes(void) {
+    if (!logoPathSet) {
+        cString path = cString::sprintf("%s/channellogos/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
+        SetLogoPath(path);
+    }
+    if (!imagesPathSet) {
+        cString path = cString::sprintf("%s/epgimages/", cPlugin::CacheDirectory(PLUGIN_NAME_I18N));
+        SetImagesPath(path);
+    }
+    if (!iconsPathSet) {
+        cString path = cString::sprintf("%s/icons/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
+        SetIconsPath(path);
     }
 }
 
 bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     if      (strcmp(Name, "timeFormat") == 0)               timeFormat = atoi(Value);
+    else if (strcmp(Name, "debugImageLoading") == 0)        debugImageLoading = atoi(Value);
     else if (strcmp(Name, "showMainMenuEntry") == 0)        showMainMenuEntry = atoi(Value);
     else if (strcmp(Name, "replaceOriginalSchedule") == 0)  replaceOriginalSchedule = atoi(Value);
+    else if (strcmp(Name, "useNopacityTheme") == 0)         useNopacityTheme = atoi(Value);   
     else if (strcmp(Name, "themeIndex") == 0)               themeIndex = atoi(Value);
     else if (strcmp(Name, "displayMode") == 0)              displayMode = atoi(Value);
     else if (strcmp(Name, "showTimeInGrid") == 0)           showTimeInGrid = atoi(Value);
@@ -252,6 +217,8 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "displayChannelGroups") == 0)     displayChannelGroups = atoi(Value);
     else if (strcmp(Name, "statusHeaderPercent") == 0)      statusHeaderPercent = atoi(Value);
     else if (strcmp(Name, "channelGroupsPercent") == 0)     channelGroupsPercent = atoi(Value);
+    else if (strcmp(Name, "epgViewHeaderPercent") == 0)     epgViewHeaderPercent = atoi(Value);
+    else if (strcmp(Name, "epgViewBorder") == 0)            epgViewBorder = atoi(Value);
     else if (strcmp(Name, "scaleVideo") == 0)               scaleVideo = atoi(Value);
     else if (strcmp(Name, "decorateVideo") == 0)            decorateVideo = atoi(Value);
     else if (strcmp(Name, "roundedCorners") == 0)           roundedCorners = atoi(Value);
@@ -280,7 +247,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "displayChannelName") == 0)       displayChannelName = atoi(Value);
     else if (strcmp(Name, "channelHeaderWidthPercent") == 0)  channelHeaderWidthPercent = atoi(Value);
     else if (strcmp(Name, "channelHeaderHeightPercent") == 0) channelHeaderHeightPercent = atoi(Value);
-    else if (strcmp(Name, "footerHeight") == 0)             footerHeight = atoi(Value);
+    else if (strcmp(Name, "footerHeightPercent") == 0)      footerHeightPercent = atoi(Value);
     else if (strcmp(Name, "recMenuAskFolder") == 0)         recMenuAskFolder = atoi(Value);
     else if (strcmp(Name, "fontIndex") == 0)                fontIndex = atoi(Value);
     else if (strcmp(Name, "FontButtonDelta") == 0)          FontButtonDelta = atoi(Value);
@@ -308,6 +275,9 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "displayRerunsDetailEPGView") == 0) displayRerunsDetailEPGView = atoi(Value);
     else if (strcmp(Name, "numReruns") == 0)                numReruns = atoi(Value);
     else if (strcmp(Name, "useSubtitleRerun") == 0)         useSubtitleRerun = atoi(Value);
+    else if (strcmp(Name, "numLogosInitial") == 0)         numLogosInitial = atoi(Value);
+    else if (strcmp(Name, "numLogosMax") == 0)             numLogosMax = atoi(Value);
+    else if (strcmp(Name, "limitLogoCache") == 0)          limitLogoCache = atoi(Value);
     else return false;
     return true;
 }

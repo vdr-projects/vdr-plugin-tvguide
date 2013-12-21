@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-08-25 13:08+0200\n"
+"POT-Creation-Date: 2013-12-17 18:24+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgid "RERUNS OF THIS SHOW"
 msgstr "Wiederholungen dieser Sendung"
 
 msgid "Actors"
-msgstr ""
+msgstr "Schauspieler"
 
 msgid "No EPG Information available"
 msgstr "Keine EPG Daten verfügbar"
@@ -38,6 +38,9 @@ msgstr "Umschalten"
 
 msgid "Detailed EPG"
 msgstr "Detailiertes EPG"
+
+msgid "images"
+msgstr "Bilder"
 
 msgid "Transp."
 msgstr "Transp."
@@ -384,6 +387,9 @@ msgstr "Anzeigeoptionen"
 msgid "Fonts and Fontsizes"
 msgstr "Schriften und Schriftgrößen"
 
+msgid "Image Loading and Caching"
+msgstr "Image Loading und Caching"
+
 msgid "x channels back / forward"
 msgstr "x Kanäle zurück / vor"
 
@@ -410,6 +416,9 @@ msgstr "Hauptmenüeintrag anzeigen"
 
 msgid "Replace VDR Schedules Menu"
 msgstr "VDR Programm Menü ersetzen"
+
+msgid "Use appropriate nOpacity Theme"
+msgstr "Entsprechendes nOpacity Theme benutzen"
 
 msgid "Theme"
 msgstr "Theme"
@@ -477,8 +486,8 @@ msgstr "Höhe der Zeitleiste (% der OSD Höhe)"
 msgid "Display time in EPG Grids"
 msgstr "Zeit in EPG Grids anzeigen"
 
-msgid "Height of Footer"
-msgstr "Höhe des Footers"
+msgid "Height of Footer (Perc. of osd height)"
+msgstr "Höhe des Footers (% der OSD Höhe)"
 
 msgid "Display status header"
 msgstr "Status Header anzeigen"
@@ -518,6 +527,12 @@ msgstr "Logo Breitenverhältnis"
 
 msgid "Logo height ratio"
 msgstr "Logo Höhenverhältnis"
+
+msgid "Height of Header in Detailed View (Perc. of osd height)"
+msgstr "Höhe des Headers im detailierten EPG View (% der OSD Höhe)"
+
+msgid "Text Border in Detailed View (pixel)"
+msgstr "Rand im detailierten EPG View"
 
 msgid "Show EPG Images"
 msgstr "EPG Bilder anzeigen"
@@ -590,3 +605,30 @@ msgstr "Suchen & Aufnehmen Menu Schriftgröße"
 
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Suchen & Aufnehmen Menu kleine Schriftgröße"
+
+msgid "Create Log Messages for image loading"
+msgstr "Log Nachrichten für das Laden der Bilder erzeugen"
+
+msgid "Limit Logo Cache"
+msgstr "Logo Cash beschränken"
+
+msgid "Maximal number of logos to cache"
+msgstr "Maximale Anzahl Logos"
+
+msgid "Number of  logos to cache at start"
+msgstr "Anzahl der zu cachenden Logos beim Start"
+
+msgid "Cache Sizes"
+msgstr "Cache Größe"
+
+msgid "OSD Element Cache"
+msgstr "OSD Element Cache"
+
+msgid "Logo cache"
+msgstr "Logo Cache"
+
+msgid "EPG Grid Cache"
+msgstr "EPG Grid Cache"
+
+msgid "Channel Groups Cache"
+msgstr "Kanalgruppen Cache"

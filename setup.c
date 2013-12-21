@@ -6,6 +6,13 @@ cTvguideSetup::cTvguideSetup() {
 }
 
 cTvguideSetup::~cTvguideSetup() {
+    geoManager.SetGeometry(cOsd::OsdWidth(), cOsd::OsdHeight(), true);
+    fontManager.DeleteFonts();
+    fontManager.SetFonts();
+    tvguideConfig.LoadTheme();
+    tvguideConfig.setDynamicValues();
+    imgCache.Clear();
+    imgCache.CreateCache();
 }
 
 
@@ -16,7 +23,8 @@ void cTvguideSetup::Setup(void) {
     Add(new cOsdItem(tr("General Settings")));
     Add(new cOsdItem(tr("Screen Presentation")));
     Add(new cOsdItem(tr("Fonts and Fontsizes")));
-    
+    Add(new cOsdItem(tr("Image Loading and Caching")));
+
     SetCurrent(Get(currentItem));
     Display();
 }
@@ -35,7 +43,9 @@ eOSState cTvguideSetup::ProcessKey(eKeys Key) {
             if (strcmp(ItemText, tr("Screen Presentation")) == 0)
                 state = AddSubMenu(new cMenuSetupScreenLayout(&tmpTvguideConfig));
             if (strcmp(ItemText, tr("Fonts and Fontsizes")) == 0)
-                state = AddSubMenu(new cMenuSetupFont(&tmpTvguideConfig));  
+                state = AddSubMenu(new cMenuSetupFont(&tmpTvguideConfig));
+            if (strcmp(ItemText, tr("Image Loading and Caching")) == 0)
+                state = AddSubMenu(new cMenuSetupImageCache(&tmpTvguideConfig));  
         }
     }   
     return state;
@@ -44,7 +54,8 @@ eOSState cTvguideSetup::ProcessKey(eKeys Key) {
 void cTvguideSetup::Store(void) {
 
     tvguideConfig = tmpTvguideConfig;
-
+    SetupStore("debugImageLoading", tvguideConfig.debugImageLoading);
+    SetupStore("useNopacityTheme", tvguideConfig.useNopacityTheme);
     SetupStore("themeIndex", tvguideConfig.themeIndex);
     SetupStore("showMainMenuEntry", tvguideConfig.showMainMenuEntry);
     SetupStore("replaceOriginalSchedule", tvguideConfig.replaceOriginalSchedule);
@@ -54,6 +65,8 @@ void cTvguideSetup::Store(void) {
     SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
     SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
     SetupStore("channelGroupsPercent", tvguideConfig.channelGroupsPercent);
+    SetupStore("epgViewHeaderPercent", tvguideConfig.epgViewHeaderPercent);
+    SetupStore("epgViewBorder", tvguideConfig.epgViewBorder);
     SetupStore("scaleVideo", tvguideConfig.scaleVideo);
     SetupStore("decorateVideo", tvguideConfig.decorateVideo);
     SetupStore("roundedCorners", tvguideConfig.roundedCorners);
@@ -83,7 +96,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("displayChannelName", tvguideConfig.displayChannelName);
     SetupStore("channelHeaderWidthPercent", tvguideConfig.channelHeaderWidthPercent);
     SetupStore("channelHeaderHeightPercent", tvguideConfig.channelHeaderHeightPercent);
-    SetupStore("footerHeight", tvguideConfig.footerHeight);
+    SetupStore("footerHeightPercent", tvguideConfig.footerHeightPercent);
     SetupStore("recMenuAskFolder", tvguideConfig.recMenuAskFolder);
     SetupStore("fontIndex", tvguideConfig.fontIndex);
     SetupStore("FontButtonDelta", tvguideConfig.FontButtonDelta);
@@ -111,10 +124,14 @@ void cTvguideSetup::Store(void) {
     SetupStore("displayRerunsDetailEPGView", tvguideConfig.displayRerunsDetailEPGView);
     SetupStore("numReruns", tvguideConfig.numReruns);
     SetupStore("useSubtitleRerun", tvguideConfig.useSubtitleRerun);
+    SetupStore("numLogosInitial", tvguideConfig.numLogosInitial);
+    SetupStore("numLogosMax", tvguideConfig.numLogosMax);
+    SetupStore("limitLogoCache", tvguideConfig.limitLogoCache);
 }
 
 cMenuSetupSubMenu::cMenuSetupSubMenu(const char* Title, cTvguideConfig* data) : cOsdMenu(Title, 30) {
     tmpTvguideConfig = data;
+    indent = "    ";
 }
 
 cOsdItem *cMenuSetupSubMenu::InfoItem(const char *label, const char *value) {
@@ -154,13 +171,15 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
 }
 
 void cMenuSetupGeneral::Set(void) {
-    const char *indent = "    ";
     int currentItem = Current();
     Clear();
     Add(new cMenuEditBoolItem(tr("Show Main Menu Entry"), &tmpTvguideConfig->showMainMenuEntry));
     Add(new cMenuEditBoolItem(tr("Replace VDR Schedules Menu"), &tmpTvguideConfig->replaceOriginalSchedule));
-    if (themes.NumThemes())
-        Add(new cMenuEditStraItem(tr("Theme"), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
+    Add(new cMenuEditBoolItem(tr("Use appropriate nOpacity Theme"), &tmpTvguideConfig->useNopacityTheme));
+    if (!tmpTvguideConfig->useNopacityTheme) {
+        if (themes.NumThemes())
+            Add(new cMenuEditStraItem(cString::sprintf("%s%s", *indent, tr("Theme")), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
+    }
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
@@ -176,8 +195,8 @@ void cMenuSetupGeneral::Set(void) {
         Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
-        Add(new cMenuEditIntItem(cString::sprintf("%s%s", indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
-        Add(new cMenuEditStraItem(cString::sprintf("%s%s", indent, tr("Use Subtitle for reruns")), &tmpTvguideConfig->useSubtitleRerun, 3, useSubtitleRerunTexts));
+        Add(new cMenuEditIntItem(cString::sprintf("%s%s", *indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
+        Add(new cMenuEditStraItem(cString::sprintf("%s%s", *indent, tr("Use Subtitle for reruns")), &tmpTvguideConfig->useSubtitleRerun, 3, useSubtitleRerunTexts));
     }
     SetCurrent(Get(currentItem));
     Display();
@@ -206,56 +225,58 @@ cMenuSetupScreenLayout::cMenuSetupScreenLayout(cTvguideConfig* data)  : cMenuSet
 }
 
 void cMenuSetupScreenLayout::Set(void) {
-    const char *indent = "    ";
     int currentItem = Current();
     Clear();
     
     Add(new cMenuEditStraItem(tr("Display Mode"), &tmpTvguideConfig->displayMode, 2,  displayModeItems));
     if (tmpTvguideConfig->displayMode == eVertical) {
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of Channel Header (Perc. of osd height)")), &tmpTvguideConfig->channelHeaderHeightPercent, 5, 30));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Width of Timeline (Perc. of osd width)")), &tmpTvguideConfig->timeLineWidthPercent, 5, 30));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelCols, 3, 12));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Height of Channel Header (Perc. of osd height)")), &tmpTvguideConfig->channelHeaderHeightPercent, 5, 30));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Width of Timeline (Perc. of osd width)")), &tmpTvguideConfig->timeLineWidthPercent, 5, 30));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelCols, 3, 12));
     } else if (tmpTvguideConfig->displayMode == eHorizontal) {
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Width of Channel Header (Perc. of osd width)")), &tmpTvguideConfig->channelHeaderWidthPercent, 5, 30));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of Timeline (Perc. of osd height)")), &tmpTvguideConfig->timeLineHeightPercent, 5, 30));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelRows, 3, 12));
-        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", indent, tr("Display time in EPG Grids")), &tmpTvguideConfig->showTimeInGrid));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Width of Channel Header (Perc. of osd width)")), &tmpTvguideConfig->channelHeaderWidthPercent, 5, 30));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Height of Timeline (Perc. of osd height)")), &tmpTvguideConfig->timeLineHeightPercent, 5, 30));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelRows, 3, 12));
+        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Display time in EPG Grids")), &tmpTvguideConfig->showTimeInGrid));
     }
-    Add(new cMenuEditIntItem(tr("Height of Footer"), &tmpTvguideConfig->footerHeight, 50, 300));
+    Add(new cMenuEditIntItem(tr("Height of Footer (Perc. of osd height)"), &tmpTvguideConfig->footerHeightPercent, 3, 20));
     
     Add(new cMenuEditBoolItem(tr("Display status header"), &tmpTvguideConfig->displayStatusHeader));
     if (tmpTvguideConfig->displayStatusHeader) {
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of status header (Perc. of osd height)")), &tmpTvguideConfig->statusHeaderPercent, 5, 50));
-        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", indent, tr("Scale video to upper right corner")), &tmpTvguideConfig->scaleVideo));
-        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", indent, tr("Rounded corners around video frame")), &tmpTvguideConfig->decorateVideo));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Height of status header (Perc. of osd height)")), &tmpTvguideConfig->statusHeaderPercent, 5, 50));
+        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Scale video to upper right corner")), &tmpTvguideConfig->scaleVideo));
+        Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Rounded corners around video frame")), &tmpTvguideConfig->decorateVideo));
     }
     
     Add(new cMenuEditBoolItem(tr("Display Channel Names in Header"), &tmpTvguideConfig->displayChannelName));
     Add(new cMenuEditBoolItem(tr("Display channel groups"), &tmpTvguideConfig->displayChannelGroups));
     if (tmpTvguideConfig->displayChannelGroups) {
         if (tmpTvguideConfig->displayMode == eVertical) {
-            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Height of channel groups (Perc. of osd height)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
+            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Height of channel groups (Perc. of osd height)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
         } else if (tmpTvguideConfig->displayMode == eHorizontal) {
-            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Width of channel groups (Perc. of osd width)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
+            Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Width of channel groups (Perc. of osd width)")), &tmpTvguideConfig->channelGroupsPercent, 3, 30));
         }
     }
     
     Add(new cMenuEditStraItem(tr("Show Channel Logos"), &tmpTvguideConfig->hideChannelLogos, 2,  hideChannelLogosItems));   
     if (!tmpTvguideConfig->hideChannelLogos) {
         Add(InfoItem(tr("Logo Path used"), *tvguideConfig.logoPath));
-        Add(new cMenuEditStraItem(*cString::sprintf("%s%s", indent, tr("Logo Extension")), &tmpTvguideConfig->logoExtension, 2,  logoExtensionItems));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Logo width ratio")), &tmpTvguideConfig->logoWidthRatio, 1, 1000));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Logo height ratio")), &tmpTvguideConfig->logoHeightRatio, 1, 1000));
+        Add(new cMenuEditStraItem(*cString::sprintf("%s%s", *indent, tr("Logo Extension")), &tmpTvguideConfig->logoExtension, 2,  logoExtensionItems));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Logo width ratio")), &tmpTvguideConfig->logoWidthRatio, 1, 1000));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Logo height ratio")), &tmpTvguideConfig->logoHeightRatio, 1, 1000));
     }
+    
+    Add(new cMenuEditIntItem(tr("Height of Header in Detailed View (Perc. of osd height)"), &tmpTvguideConfig->epgViewHeaderPercent, 10, 50));
+    Add(new cMenuEditIntItem(tr("Text Border in Detailed View (pixel)"), &tmpTvguideConfig->epgViewBorder, 0, 300));
     
     Add(new cMenuEditStraItem(tr("Show EPG Images"), &tmpTvguideConfig->hideEpgImages, 2,  hideChannelLogosItems)); 
     if (!tmpTvguideConfig->hideEpgImages) {
         Add(InfoItem(tr("EPG Images Path used"), *tvguideConfig.epgImagePath));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("EPG Image width")), &tmpTvguideConfig->epgImageWidth, 0, 800));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("EPG Image height")), &tmpTvguideConfig->epgImageHeight, 0, 800));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Number of additional EPG Images")), &tmpTvguideConfig->numAdditionalEPGPictures, 0, 20));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Additional EPG Image width")), &tmpTvguideConfig->epgImageWidthLarge, 1, 800));
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", indent, tr("Additional EPG Image height")), &tmpTvguideConfig->epgImageHeightLarge, 0, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("EPG Image width")), &tmpTvguideConfig->epgImageWidth, 0, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("EPG Image height")), &tmpTvguideConfig->epgImageHeight, 0, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Number of additional EPG Images")), &tmpTvguideConfig->numAdditionalEPGPictures, 0, 20));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Additional EPG Image width")), &tmpTvguideConfig->epgImageWidthLarge, 1, 800));
+        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Additional EPG Image height")), &tmpTvguideConfig->epgImageHeightLarge, 0, 800));
     }
     
     SetCurrent(Get(currentItem));
@@ -314,6 +335,31 @@ void cMenuSetupFont::Set(void) {
     
     Add(new cMenuEditIntItem(tr("Search & Recording Menu Font Size"), &tmpTvguideConfig->FontRecMenuItemDelta, -30, 30));
     Add(new cMenuEditIntItem(tr("Search & Recording Menu Small Font Size"), &tmpTvguideConfig->FontRecMenuItemSmallDelta, -30, 30));
+
+    SetCurrent(Get(currentItem));
+    Display();
+}
+
+//-----Image Caching-------------------------------------------------------------------------------------------------------------
+cMenuSetupImageCache::cMenuSetupImageCache(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Image Loading and Caching"), data) {
+    Set();
+}
+
+void cMenuSetupImageCache::Set(void) {
+    int currentItem = Current();
+    Clear();
+    Add(new cMenuEditBoolItem(tr("Create Log Messages for image loading"), &tmpTvguideConfig->debugImageLoading));
+    Add(new cMenuEditBoolItem(tr("Limit Logo Cache"), &tmpTvguideConfig->limitLogoCache));
+    if (&tmpTvguideConfig->limitLogoCache) {
+        Add(new cMenuEditIntItem(cString::sprintf("%s%s", *indent, tr("Maximal number of logos to cache")), &tmpTvguideConfig->numLogosMax, 1, 9999));
+    }
+    Add(new cMenuEditIntItem(tr("Number of  logos to cache at start"), &tmpTvguideConfig->numLogosInitial, 0, 9999));
+
+    Add(InfoItem(tr("Cache Sizes"), ""));
+    Add(InfoItem(tr("OSD Element Cache"), (imgCache.GetCacheSize(ctOsdElement)).c_str()));
+    Add(InfoItem(tr("Logo cache"), (imgCache.GetCacheSize(ctLogo)).c_str()));
+    Add(InfoItem(tr("EPG Grid Cache"), (imgCache.GetCacheSize(ctGrid)).c_str()));
+    Add(InfoItem(tr("Channel Groups Cache"), (imgCache.GetCacheSize(ctChannelGroup)).c_str()));
 
     SetCurrent(Get(currentItem));
     Display();

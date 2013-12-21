@@ -23,6 +23,7 @@ class cMenuSetupSubMenu : public cOsdMenu {
         virtual eOSState ProcessKey(eKeys Key);
         virtual void Set(void) = 0;
         cOsdItem *InfoItem(const char *label, const char *value);
+        cString indent;
     public:
         cMenuSetupSubMenu(const char *Title, cTvguideConfig *data);
 };
@@ -57,6 +58,13 @@ class cMenuSetupFont : public cMenuSetupSubMenu {
         void Set(void);
     public:
         cMenuSetupFont(cTvguideConfig *data);
+};
+
+class cMenuSetupImageCache : public cMenuSetupSubMenu {
+    protected:
+        void Set(void);
+    public:
+        cMenuSetupImageCache(cTvguideConfig *data);
 };
 
 #endif //__TVGUIDE_SETUP_H

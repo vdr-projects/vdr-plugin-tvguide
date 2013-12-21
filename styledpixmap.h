@@ -6,12 +6,25 @@
 #include "timer.h"
 #include "config.h"
 
+enum eBackgroundType {
+    bgGrid,
+    bgStatusHeaderFull,
+    bgStatusHeaderWindowed,
+    bgChannelHeader,
+    bgChannelGroup,
+    bgClock,
+    bgEpgHeader,
+    bgButton,
+    bgRecMenuBack,
+};
+
 // --- cStyledPixmap -------------------------------------------------------------
 
 class cStyledPixmap {
 private:
     void drawVerticalLine(int x, int yStart, int yStop, tColor col);
     void drawHorizontalLine(int y, int xStart, int xStop, tColor col);
+    void drawBackgroundButton(bool active);
 protected:
     cPixmap *pixmap;
     tColor color;
@@ -22,6 +35,7 @@ public:
     cStyledPixmap(cPixmap *pixmap);
     virtual ~cStyledPixmap(void);
     void drawBackground();
+    void drawBackgroundGraphical(eBackgroundType type, bool active = false);
     void drawBlendedBackground();
     void drawSparsedBackground();
     void drawBorder();
@@ -31,6 +45,7 @@ public:
     void setColor(tColor color, tColor colorBlending) {this->color = color; this->colorBlending = colorBlending;};
     void SetAlpha(int alpha) {pixmap->SetAlpha(alpha);};
     void SetLayer(int layer) {pixmap->SetLayer(layer);};
+    void Fill(tColor clr) {pixmap->Fill(clr);};
     void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font);
     void DrawImage(const cPoint &Point, const cImage &Image);
     void DrawRectangle(const cRect &Rect, tColor Color);

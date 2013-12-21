@@ -14,25 +14,26 @@ cHeaderGrid::~cHeaderGrid(void) {
 void cHeaderGrid::createBackground(int num) {
     color = theme.Color(clrHeader);
     colorBlending = theme.Color(clrHeaderBlending);
-    int x, y, width, height;
+    int x, y;
     if (tvguideConfig.displayMode == eVertical) {
-        x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
-        y = tvguideConfig.statusHeaderHeight + tvguideConfig.channelGroupsHeight;
-        width = tvguideConfig.colWidth;
-        height = tvguideConfig.channelHeaderHeight;
+        x = geoManager.timeLineWidth + num*geoManager.colWidth;
+        y = geoManager.statusHeaderHeight + geoManager.channelGroupsHeight;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x = tvguideConfig.channelGroupsWidth;
-        y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
-        width = tvguideConfig.channelHeaderWidth;
-        height = tvguideConfig.rowHeight;
+        x = geoManager.channelGroupsWidth;
+        y = geoManager.statusHeaderHeight + geoManager.timeLineHeight + num*geoManager.rowHeight;
     }
-    pixmap = osdManager.requestPixmap(1, cRect(x, y, width, height));
-    pixmapLogo = osdManager.requestPixmap(2, cRect(x, y, width, height));
+    pixmap = osdManager.requestPixmap(1, cRect(x, y, geoManager.channelLogoWidth, geoManager.channelLogoHeight));
+    pixmapLogo = osdManager.requestPixmap(2, cRect(x, y, geoManager.channelLogoWidth, geoManager.channelLogoHeight));
     if ((!pixmap) || (!pixmapLogo)){
         return;
     }
     pixmapLogo->Fill(clrTransparent);
-    drawBackground();
+    if (tvguideConfig.style == eStyleGraphical) {
+        drawBackgroundGraphical(bgChannelHeader);
+    } else {
+        drawBackground();
+        drawBorder();
+    }
 }
 
 void cHeaderGrid::drawChannel(const cChannel *channel) {
@@ -41,20 +42,18 @@ void cHeaderGrid::drawChannel(const cChannel *channel) {
     } else if (tvguideConfig.displayMode == eHorizontal) {
         drawChannelHorizontal(channel);
     }
-    drawBorder();
 }
 
 void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
-    int logoWidth = Height() * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
+    int logoWidth = geoManager.logoWidth;
     int logoX = tvguideConfig.displayChannelName?2:(Width()-logoWidth)/2;
     int textX = 5;
-    int textY = (Height() - tvguideConfig.FontChannelHeaderHorizontal->Height())/2;
+    int textY = (Height() - fontManager.FontChannelHeaderHorizontal->Height())/2;
     bool logoFound = false;
     if (!tvguideConfig.hideChannelLogos) {
-        cImageLoader imgLoader;
-        if (imgLoader.LoadLogo(channel->Name(), logoWidth, Height())) {
-            cImage logo = imgLoader.GetImage();
-            pixmapLogo->DrawImage(cPoint(logoX, 0), logo);
+        cImage *logo = imgCache.GetLogo(channel);
+        if (logo) {
+            pixmapLogo->DrawImage(cPoint(logoX, 0), *logo);
             logoFound = true;
         }
     }
@@ -68,28 +67,27 @@ void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
         textWidthMax -= logoWidth;
     }
     if (drawText) {
-        tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
+        tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
         cString strChannel = cString::sprintf("%d %s", channel->Number(), channel->Name());
-        strChannel = CutText(*strChannel, textWidthMax, tvguideConfig.FontChannelHeaderHorizontal).c_str();
-        pixmap->DrawText(cPoint(textX, textY), *strChannel, theme.Color(clrFontHeader), colorTextBack, tvguideConfig.FontChannelHeaderHorizontal);
+        strChannel = CutText(*strChannel, textWidthMax, fontManager.FontChannelHeaderHorizontal).c_str();
+        pixmap->DrawText(cPoint(textX, textY), *strChannel, theme.Color(clrFontHeader), colorTextBack, fontManager.FontChannelHeaderHorizontal);
     }
 }
 
 void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
-    int logoWidth = Width()/2 - 15;
-    int logoHeight = logoWidth * tvguideConfig.logoHeightRatio / tvguideConfig.logoWidthRatio;
+    int logoWidth = geoManager.logoWidth;
+    int logoHeight = geoManager.logoHeight;
     cTextWrapper tw;
     cString headerText = cString::sprintf("%d - %s", channel->Number(), channel->Name());
-    tw.Set(*headerText, tvguideConfig.FontChannelHeader, tvguideConfig.colWidth - 8);
+    tw.Set(*headerText, fontManager.FontChannelHeader, geoManager.colWidth - 8);
     int lines = tw.Lines();
-    int lineHeight = tvguideConfig.FontChannelHeader->Height();
-    int yStart = (tvguideConfig.channelHeaderHeight - lines*lineHeight)/2 + 8;
+    int lineHeight = fontManager.FontChannelHeader->Height();
+    int yStart = (geoManager.channelHeaderHeight - lines*lineHeight)/2 + 8;
     bool logoFound = false;
     if (!tvguideConfig.hideChannelLogos) {
-        cImageLoader imgLoader;
-        if (imgLoader.LoadLogo(channel->Name(), logoWidth, logoHeight)) {
-                cImage logo = imgLoader.GetImage();
-                pixmapLogo->DrawImage(cPoint((Width() - logoWidth)/2, 4), logo);
+        cImage *logo = imgCache.GetLogo(channel);
+        if (logo) {
+                pixmapLogo->DrawImage(cPoint((Width() - logoWidth)/2, 4), *logo);
                 logoFound = true;
         }
     }
@@ -102,28 +100,28 @@ void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     }
     if (!drawText)
         return;
-    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
+    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
     for (int i=0; i<lines; i++) {
-        int textWidth = tvguideConfig.FontChannelHeader->Width(tw.GetLine(i));
-        int xText = (tvguideConfig.colWidth - textWidth) / 2;
+        int textWidth = fontManager.FontChannelHeader->Width(tw.GetLine(i));
+        int xText = (geoManager.colWidth - textWidth) / 2;
         if (xText < 0) 
             xText = 0;
-        pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), colorTextBack, tvguideConfig.FontChannelHeader);
+        pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), colorTextBack, fontManager.FontChannelHeader);
     }
 }
 
 void cHeaderGrid::setPosition(int num) {
     int x, y, width, height;
     if (tvguideConfig.displayMode == eVertical) {
-        x = tvguideConfig.timeLineWidth + num*tvguideConfig.colWidth;
-        y = tvguideConfig.statusHeaderHeight + tvguideConfig.channelGroupsHeight;
-        width = tvguideConfig.colWidth;
-        height = tvguideConfig.channelHeaderHeight;
+        x = geoManager.timeLineWidth + num*geoManager.colWidth;
+        y = geoManager.statusHeaderHeight + geoManager.channelGroupsHeight;
+        width = geoManager.colWidth;
+        height = geoManager.channelHeaderHeight;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x = tvguideConfig.channelGroupsWidth;
-        y = tvguideConfig.statusHeaderHeight + tvguideConfig.timeLineHeight + num*tvguideConfig.rowHeight;
-        width = tvguideConfig.channelHeaderWidth;
-        height = tvguideConfig.rowHeight;
+        x = geoManager.channelGroupsWidth;
+        y = geoManager.statusHeaderHeight + geoManager.timeLineHeight + num*geoManager.rowHeight;
+        width = geoManager.channelHeaderWidth;
+        height = geoManager.rowHeight;
     }
     pixmap->SetViewPort(cRect(x, y, width, height));
     pixmapLogo->SetViewPort(cRect(x, y, width, height));

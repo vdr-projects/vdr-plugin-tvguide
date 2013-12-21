@@ -1,5 +1,5 @@
 Description = Keep it simple
-clrDoBlending = 00000000
+clrStyle = 00000000
 clrBackground = FF111111
 clrBackgroundOSD = FF111111
 clrGrid1 = BB555555

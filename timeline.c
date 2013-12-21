@@ -5,43 +5,51 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
     this->myTime = myTime;
     if (tvguideConfig.displayMode == eVertical) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
-                                                                         tvguideConfig.statusHeaderHeight, 
-                                                                         tvguideConfig.timeLineWidth, 
-                                                                         tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight)));
+                                                                         geoManager.statusHeaderHeight, 
+                                                                         geoManager.dateVieverWidth, 
+                                                                         geoManager.dateVieverHeight)));
         timeline = osdManager.requestPixmap(2, cRect(0, 
-                                                     tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight, 
-                                                     tvguideConfig.timeLineWidth, 
-                                                     tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight)
+                                                     geoManager.statusHeaderHeight + geoManager.channelHeaderHeight + geoManager.channelGroupsHeight, 
+                                                     geoManager.timeLineWidth, 
+                                                     geoManager.osdHeight - geoManager.statusHeaderHeight - geoManager.channelHeaderHeight - geoManager.channelGroupsHeight - geoManager.footerHeight)
                                              , cRect(0,
                                                      0, 
-                                                     tvguideConfig.timeLineWidth, 
-                                                     1440*tvguideConfig.minutePixel));
+                                                     geoManager.timeLineWidth, 
+                                                     1440*geoManager.minutePixel));
         timelineBack = osdManager.requestPixmap(1, cRect(0, 
-                                                     tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight, 
-                                                     tvguideConfig.timeLineWidth, 
-                                                     tvguideConfig.osdHeight - tvguideConfig.statusHeaderHeight - tvguideConfig.channelHeaderHeight - tvguideConfig.channelGroupsHeight - tvguideConfig.footerHeight));
+                                                     geoManager.statusHeaderHeight + geoManager.channelHeaderHeight + geoManager.channelGroupsHeight, 
+                                                     geoManager.timeLineWidth, 
+                                                     geoManager.osdHeight - geoManager.statusHeaderHeight - geoManager.channelHeaderHeight - geoManager.channelGroupsHeight - geoManager.footerHeight));
     } else if (tvguideConfig.displayMode == eHorizontal) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
-                                                                         tvguideConfig.statusHeaderHeight, 
-                                                                         tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth,
-                                                                         tvguideConfig.timeLineHeight-2)));
-        timeline = osdManager.requestPixmap(2, cRect(tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth, 
-                                                     tvguideConfig.statusHeaderHeight, 
-                                                     tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth,
-                                                     tvguideConfig.timeLineHeight)
+                                                                         geoManager.statusHeaderHeight, 
+                                                                         geoManager.dateVieverWidth,
+                                                                         geoManager.dateVieverHeight)));
+        timeline = osdManager.requestPixmap(2, cRect(geoManager.channelHeaderWidth + geoManager.channelGroupsWidth, 
+                                                     geoManager.statusHeaderHeight, 
+                                                     geoManager.osdWidth - geoManager.channelHeaderWidth - geoManager.channelGroupsWidth,
+                                                     geoManager.timeLineHeight)
                                              , cRect(0,
                                                      0, 
-                                                     1440*tvguideConfig.minutePixel, 
-                                                     tvguideConfig.timeLineWidth));
-        timelineBack = osdManager.requestPixmap(1, cRect(tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth, 
-                                                     tvguideConfig.statusHeaderHeight, 
-                                                     tvguideConfig.osdWidth - tvguideConfig.channelHeaderWidth - tvguideConfig.channelGroupsWidth,
-                                                     tvguideConfig.timeLineHeight));
+                                                     1440*geoManager.minutePixel, 
+                                                     geoManager.timeLineHeight));
+        timelineBack = osdManager.requestPixmap(1, cRect(geoManager.channelHeaderWidth + geoManager.channelGroupsWidth, 
+                                                     geoManager.statusHeaderHeight, 
+                                                     geoManager.osdWidth - geoManager.channelHeaderWidth - geoManager.channelGroupsWidth,
+                                                     geoManager.timeLineHeight));
     }
-    clock = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
-                                                                tvguideConfig.osdHeight- tvguideConfig.footerHeight, 
-                                                                tvguideConfig.timeLineWidth, 
-                                                                tvguideConfig.footerHeight-9)));
+
+    int clockY = 10;
+    int clockX;
+    if (tvguideConfig.scaleVideo) {
+        clockX = geoManager.osdWidth - geoManager.tvFrameWidth - geoManager.clockWidth - 4;
+    } else {
+        clockX = geoManager.osdWidth - geoManager.clockWidth - 10;
+    }
+    clock = new cStyledPixmap(osdManager.requestPixmap(3, cRect(clockX, 
+                                                                clockY, 
+                                                                geoManager.clockWidth, 
+                                                                geoManager.clockHeight)));
 }
 
 cTimeLine::~cTimeLine(void) {
@@ -55,22 +63,32 @@ cTimeLine::~cTimeLine(void) {
 void cTimeLine::drawDateViewer() {
     cString weekDay = myTime->GetWeekday();
     cString date = myTime->GetDate();   
-    dateViewer->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
-    dateViewer->drawBackground();
-    dateViewer->drawBorder();
-    tColor colorFontBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
+    if (tvguideConfig.style != eStyleGraphical) {
+        dateViewer->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
+        dateViewer->drawBackground();
+        dateViewer->drawBorder();
+        
+    } else {
+        cImage *imgBack = imgCache.GetOsdElement(oeDateViewer);
+        if (imgBack)
+            dateViewer->DrawImage(cPoint(0,0), *imgBack);
+        else
+            dateViewer->Fill(clrTransparent);
+    }
+    tColor colorFont = theme.Color(clrTimeline1);
+    tColor colorFontBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
 
     if (tvguideConfig.displayMode == eVertical) {
-        int textHeight = tvguideConfig.FontTimeLineWeekday->Height();
-        int weekdayWidth = tvguideConfig.FontTimeLineWeekday->Width(*weekDay);
-        int dateWidth = tvguideConfig.FontTimeLineDate->Width(*date);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-weekdayWidth)/2, (tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight -2*textHeight)/2), *weekDay, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineWeekday);
-        dateViewer->DrawText(cPoint((tvguideConfig.timeLineWidth-dateWidth)/2, (tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight -2*textHeight)/2 + textHeight + 5), *date, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDate);
+        int textHeight = fontManager.FontTimeLineWeekday->Height();
+        int weekdayWidth = fontManager.FontTimeLineWeekday->Width(*weekDay);
+        int dateWidth = fontManager.FontTimeLineDate->Width(*date);
+        dateViewer->DrawText(cPoint((geoManager.timeLineWidth-weekdayWidth)/2, (geoManager.channelHeaderHeight + geoManager.channelGroupsHeight -2*textHeight)/2), *weekDay, colorFont, colorFontBack, fontManager.FontTimeLineWeekday);
+        dateViewer->DrawText(cPoint((geoManager.timeLineWidth-dateWidth)/2, (geoManager.channelHeaderHeight + geoManager.channelGroupsHeight -2*textHeight)/2 + textHeight + 5), *date, colorFont, colorFontBack, fontManager.FontTimeLineDate);
     } else if (tvguideConfig.displayMode == eHorizontal) {
         cString strDate = cString::sprintf("%s %s", *weekDay, *date);
-        int x = (dateViewer->Width() - tvguideConfig.FontTimeLineDateHorizontal->Width(*strDate))/2;
-        int y = (dateViewer->Height() - tvguideConfig.FontTimeLineDateHorizontal->Height())/2;
-        dateViewer->DrawText(cPoint(x, y), *strDate, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineDateHorizontal);
+        int x = (dateViewer->Width() - fontManager.FontTimeLineDateHorizontal->Width(*strDate))/2;
+        int y = (dateViewer->Height() - fontManager.FontTimeLineDateHorizontal->Height())/2;
+        dateViewer->DrawText(cPoint(x, y), *strDate, colorFont, colorFontBack, fontManager.FontTimeLineDateHorizontal);
     }
 }
 
@@ -80,18 +98,20 @@ void cTimeLine::drawTimeline() {
     timeline->Fill(theme.Color(clrBackground));
     tColor colorFont, colorBackground;
     
-    int imgWidth, imgHeight;
-    if (tvguideConfig.displayMode == eVertical) {
-        imgWidth = tvguideConfig.timeLineWidth-4;
-        imgHeight = tvguideConfig.minutePixel*30;
-    } else if (tvguideConfig.displayMode == eHorizontal) {
-        imgWidth = tvguideConfig.minutePixel*30;
-        imgHeight = tvguideConfig.timeLineHeight-4;
+    int imgWidth = geoManager.timeLineGridWidth;
+    int imgHeight = geoManager.timeLineGridHeight;
+    const cImage *img1 = NULL;
+    const cImage *img2 = NULL;
+    if (tvguideConfig.style == eStyleGraphical) {
+        img1 = imgCache.GetOsdElement(oeTimeline1);
+        img2 = imgCache.GetOsdElement(oeTimeline2);
+    } else {
+        img1 = createBackgroundImage(imgWidth, imgHeight, theme.Color(clrTimeline1), theme.Color(clrTimeline1Blending));
+        img2 = createBackgroundImage(imgWidth, imgHeight, theme.Color(clrTimeline2), theme.Color(clrTimeline2Blending));
     }
-    const cImage *img1 = createBackgroundImage(imgWidth, imgHeight, theme.Color(clrTimeline1), theme.Color(clrTimeline1Blending));
-    const cImage *img2 = createBackgroundImage(imgWidth, imgHeight, theme.Color(clrTimeline2), theme.Color(clrTimeline2Blending));
     const cImage *img = NULL;
-    
+    if (!img1 || !img2)
+        return;
     int textWidth, posX, posY;
     char timetext[10];
     
@@ -99,7 +119,7 @@ void cTimeLine::drawTimeline() {
         if (i%2==0) {
             img = img1;
             colorFont = theme.Color(clrTimeline2);
-            colorBackground = (tvguideConfig.useBlending==0)?theme.Color(clrTimeline1):clrTransparent;
+            colorBackground = (tvguideConfig.style == eStyleFlat)?theme.Color(clrTimeline1):clrTransparent;
             if (tvguideConfig.timeFormat == e12Hours) {
                 if (i == 0)
                     sprintf(timetext, "12:00 PM");
@@ -113,7 +133,7 @@ void cTimeLine::drawTimeline() {
         } else {
             img = img2;
             colorFont = theme.Color(clrTimeline1);
-            colorBackground = (tvguideConfig.useBlending==0)?theme.Color(clrTimeline2):clrTransparent;
+            colorBackground = (tvguideConfig.style == eStyleFlat)?theme.Color(clrTimeline2):clrTransparent;
             if (tvguideConfig.timeFormat == e12Hours) {
                 if (i == 1)
                     sprintf(timetext, "12:30 PM");
@@ -126,21 +146,27 @@ void cTimeLine::drawTimeline() {
             }
         }
         if (tvguideConfig.displayMode == eVertical) {
-            posY = i*tvguideConfig.minutePixel*30;
-            timeline->DrawImage(cPoint(2, posY), *img);
-            decorateTile(0, posY, imgWidth+2, imgHeight);
-            textWidth = tvguideConfig.FontTimeLineTime->Width(timetext);
-            timeline->DrawText(cPoint((tvguideConfig.timeLineWidth-textWidth)/2, posY + 5), timetext, colorFont, colorBackground, tvguideConfig.FontTimeLineTime);
+            posY = i*geoManager.minutePixel*30;
+            timeline->DrawImage(cPoint(0, posY), *img);
+            if (tvguideConfig.style != eStyleGraphical) {
+                decorateTile(0, posY, imgWidth+2, imgHeight);
+            }
+            textWidth = fontManager.FontTimeLineTime->Width(timetext);
+            timeline->DrawText(cPoint((geoManager.timeLineWidth-textWidth)/2, posY + 5), timetext, colorFont, colorBackground, fontManager.FontTimeLineTime);
         } else if (tvguideConfig.displayMode == eHorizontal) {
-            posX = i*tvguideConfig.minutePixel*30;
-            timeline->DrawImage(cPoint(posX, 2), *img);
-            decorateTile(posX, 0, imgWidth, imgHeight+2);
-            timeline->DrawText(cPoint(posX + 15, (dateViewer->Height() - tvguideConfig.FontTimeLineTimeHorizontal->Height())/2), timetext, colorFont, colorBackground, tvguideConfig.FontTimeLineTimeHorizontal);
+            posX = i*geoManager.minutePixel*30;
+            timeline->DrawImage(cPoint(posX, 0), *img);
+            if (tvguideConfig.style != eStyleGraphical) {
+                decorateTile(posX, 0, imgWidth, imgHeight+2);
+            }
+            timeline->DrawText(cPoint(posX + 15, (dateViewer->Height() - fontManager.FontTimeLineTimeHorizontal->Height())/2), timetext, colorFont, colorBackground, fontManager.FontTimeLineTimeHorizontal);
        }
     }
     setTimeline();
-    delete img1;
-    delete img2;
+    if (tvguideConfig.style != eStyleGraphical) {
+        delete img1;
+        delete img2;
+    }
 }
 
 void cTimeLine::decorateTile(int posX, int posY, int tileWidth, int tileHeight) {
@@ -178,7 +204,7 @@ void cTimeLine::drawRoundedCorners(int posX, int posY, int width, int height, in
 
 cImage *cTimeLine::createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend) {
     cImage *image = NULL;
-    if (tvguideConfig.useBlending == 1) {
+    if (tvguideConfig.style == eStyleBlendingDefault) {
         image = new cImage(cSize(width, height));
         image->Fill(clrBgr);
         int stepY = 0.5*height / 64;
@@ -193,7 +219,7 @@ cImage *cTimeLine::createBackgroundImage(int width, int height, tColor clrBgr, t
             }
             alpha += 0x04;
         }
-    } else  if (tvguideConfig.useBlending == 2) {
+    } else  if (tvguideConfig.style == eStyleBlendingMagick) {
         cImageLoader imgLoader;
         if (imgLoader.DrawBackground(clrBgr, clrBlend, width, height)) {
             image = new cImage(imgLoader.GetImage());
@@ -210,21 +236,26 @@ void cTimeLine::setTimeline() {
     int xNew, yNew;
     if (tvguideConfig.displayMode == eVertical) {
         xNew = 0;
-        yNew = -offset*tvguideConfig.minutePixel;
+        yNew = -offset*geoManager.minutePixel;
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        xNew = -offset*tvguideConfig.minutePixel;
+        xNew = -offset*geoManager.minutePixel;
         yNew = 0;
     }
     timeline->SetDrawPortPoint(cPoint(xNew, yNew));
 }
 
 void cTimeLine::drawClock() {
+    clock->Fill(clrTransparent);
     cString currentTime = myTime->GetCurrentTime();
-    int textHeight = tvguideConfig.FontTimeLineTime->Height();
-    int clockWidth = tvguideConfig.FontTimeLineTime->Width(*currentTime);
-    tColor colorFontBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
-    clock->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
-    clock->drawBackground();
-    clock->drawBorder();
-    clock->DrawText(cPoint((tvguideConfig.timeLineWidth-clockWidth)/2, (tvguideConfig.footerHeight-textHeight)/2), *currentTime, theme.Color(clrFontHeader), colorFontBack, tvguideConfig.FontTimeLineTime);
+    int textHeight = fontManager.FontTimeLineTime->Height();
+    int clockTextWidth = fontManager.FontTimeLineTime->Width(*currentTime);
+    tColor colorFontBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
+    if (tvguideConfig.style == eStyleGraphical) {
+        clock->drawBackgroundGraphical(bgClock);
+    } else {
+        clock->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
+        clock->drawBackground();
+        clock->drawBorder();
+    }
+    clock->DrawText(cPoint((geoManager.clockWidth-clockTextWidth)/2, (geoManager.clockHeight-textHeight)/2), *currentTime, theme.Color(clrFont), colorFontBack, fontManager.FontTimeLineTime);
 }

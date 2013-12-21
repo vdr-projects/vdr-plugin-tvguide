@@ -1,6 +1,7 @@
 #include <sstream>
 #include <vdr/plugin.h>
 #include "imageloader.h"
+#include "imagecache.h"
 #include "services/epgsearch.h"
 #include "services/remotetimers.h"
 #include "config.h"
@@ -10,16 +11,14 @@
 cDetailView::cDetailView(const cEvent *event) {
     this->event = event;
     imgScrollBar = NULL;
-    borderWidth = 20; //px, border around window
-    border = 10; //px, border in view window
+    border = tvguideConfig.epgViewBorder; //px, border in view window
     scrollBarWidth = 40;
-    headerHeight = max (40 + 3 * tvguideConfig.FontDetailHeader->Height(), // border + 3 Lines
-                        40 + tvguideConfig.epgImageHeight);
+    headerHeight = geoManager.epgViewHeaderHeight;
     pixmapPoster = NULL;
-    width = tvguideConfig.osdWidth-2*borderWidth;
+    width = geoManager.osdWidth;
     contentWidth = width - scrollBarWidth;
-    contentX = borderWidth;
-    contentHeight = tvguideConfig.osdHeight-2*borderWidth-headerHeight;
+    contentX = 0;
+    contentHeight = geoManager.osdHeight - headerHeight;
     widthPoster = 30 * contentWidth / 100;
 }
 
@@ -27,6 +26,7 @@ cDetailView::~cDetailView(void){
     Cancel(-1);
     while (Active())
         cCondWait::SleepMs(10);
+    osdManager.releasePixmap(back);
     delete header;
     header = NULL;
     osdManager.releasePixmap(headerLogo);
@@ -61,7 +61,7 @@ void cDetailView::setContent() {
             contentX += widthPoster;
         }
     }
-    description.Set(event->Description(), tvguideConfig.FontDetailView, contentWidth - scrollBarWidth - 2*border);
+    description.Set(event->Description(), fontManager.FontDetailView, contentWidth - scrollBarWidth - 2*border);
     if (tvguideConfig.displayRerunsDetailEPGView) {
         loadReruns();
     }
@@ -71,7 +71,7 @@ void cDetailView::setContent() {
 }
 
 bool cDetailView::setContentDrawportHeight() {
-    int lineHeight = tvguideConfig.FontDetailView->Height();
+    int lineHeight = fontManager.FontDetailView->Height();
     //Height of banner (only for series)
     int heightBanner = 0;
     if (hasAdditionalMedia && (mediaInfo.type == typeSeries)) {
@@ -82,7 +82,7 @@ bool cDetailView::setContentDrawportHeight() {
     //Height of rerun information
     int heightReruns = 0;
     if (tvguideConfig.displayRerunsDetailEPGView) {
-        heightReruns = reruns.Lines() * lineHeight;
+        heightReruns = (reruns.Lines()+1) * lineHeight;
     }
     //Height of actor pictures
     int heightActors = 0;
@@ -100,14 +100,14 @@ bool cDetailView::setContentDrawportHeight() {
         heightEpgPics = heightEPGPics();
     }
     
-    yBanner  = lineHeight;
-    yEPGText = heightBanner;
-    yActors  = heightBanner + heightEPG;
-    yFanart  = heightBanner + heightEPG + heightActors;
-    yAddInf  = heightBanner + heightEPG + heightActors + heightFanart;
-    yEPGPics = heightBanner + heightEPG + heightActors + heightFanart + heightReruns;
+    yBanner  = border;
+    yEPGText = yBanner + heightBanner;
+    yAddInf  = yEPGText + heightEPG;
+    yActors  = yAddInf + heightReruns;
+    yFanart  = yActors + heightActors;
+    yEPGPics = yAddInf + heightFanart;
     
-    int totalHeight = heightBanner + heightEPG + heightActors + heightFanart + heightReruns + heightEpgPics;
+    int totalHeight = heightBanner + heightEPG + heightReruns + heightActors + heightFanart +  heightEpgPics + lineHeight;
     //check if pixmap content has to be scrollable
     if (totalHeight > contentHeight) {
         heightContent = totalHeight;
@@ -120,58 +120,80 @@ bool cDetailView::setContentDrawportHeight() {
 }
 
 void cDetailView::createPixmaps() {
-    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null));
-    headerLogo = osdManager.requestPixmap(6, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null);
+    back = osdManager.requestPixmap(3, cRect(0, 0, geoManager.osdWidth, geoManager.osdHeight), cRect::Null);
+    back->Fill(clrBlack);
+    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(0, 0, width, headerHeight), cRect::Null));
+    headerLogo = osdManager.requestPixmap(6, cRect(0, 0, width, headerHeight), cRect::Null);
     headerLogo->Fill(clrTransparent);
-    headerBack = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth, width, headerHeight), cRect::Null);
+    headerBack = osdManager.requestPixmap(4, cRect(0, 0, width, headerHeight), cRect::Null);
     headerBack->Fill(clrBlack);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
-    content = osdManager.requestPixmap(5, cRect(contentX, borderWidth + headerHeight, contentWidth, contentHeight),
+    content = osdManager.requestPixmap(5, cRect(contentX, headerHeight, contentWidth, contentHeight),
                                     cRect(0,0, contentWidth, max(heightContent, contentHeight)));
     if (hasAdditionalMedia) {
-        pixmapPoster = osdManager.requestPixmap(4, cRect(borderWidth, borderWidth + headerHeight, widthPoster, contentHeight));
+        pixmapPoster = osdManager.requestPixmap(4, cRect(0, 0 + headerHeight, widthPoster, contentHeight));
         pixmapPoster->Fill(theme.Color(clrBorder));
         pixmapPoster->DrawRectangle(cRect(2, 0, widthPoster - 2, content->DrawPort().Height()), theme.Color(clrBackground));
     }
-    scrollBar = osdManager.requestPixmap(5, cRect(tvguideConfig.osdWidth-borderWidth-scrollBarWidth, borderWidth + headerHeight, scrollBarWidth, contentHeight));
+    scrollBar = osdManager.requestPixmap(5, cRect(geoManager.osdWidth - scrollBarWidth, headerHeight, scrollBarWidth, contentHeight));
     
-    footer = osdManager.requestPixmap(5, cRect(borderWidth, borderWidth + headerHeight + content->ViewPort().Height(), width, 3));
+    footer = osdManager.requestPixmap(5, cRect(0, headerHeight + content->ViewPort().Height(), width, 3));
     footer->Fill(theme.Color(clrBorder));
 }
 
 void cDetailView::drawHeader() {
-    header->drawBackground();
-    header->drawBoldBorder();
-    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrHeader):clrTransparent;
-    int logoHeight = header->Height() / 2;
+    if (tvguideConfig.style == eStyleGraphical) {
+        header->drawBackgroundGraphical(bgEpgHeader);
+    } else {
+        header->drawBackground();
+        header->drawBoldBorder();
+    }
+    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
+    int logoHeight = 2 * header->Height() / 3;
     int logoWidth = logoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
-    int lineHeight = tvguideConfig.FontDetailHeader->Height();
+    int lineHeight = fontManager.FontDetailHeader->Height();
     cImageLoader imgLoader;
     bool logoDrawn = false;
     if (!tvguideConfig.hideChannelLogos) {
-        cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
-        if (imgLoader.LoadLogo(*channelName, logoWidth, logoHeight)) {
+        const cChannel *channel = Channels.GetByChannelID(event->ChannelID());
+        if (imgLoader.LoadLogo(channel, logoWidth, logoHeight)) {
             cImage logo = imgLoader.GetImage();
             headerLogo->DrawImage(cPoint(10, (header->Height() - logoHeight)/2), logo);
             logoDrawn = true;
         }
     }
     
+    bool epgImageDrawn = false;
+    int epgImageWidth = 0;
     if (!tvguideConfig.hideEpgImages) {
-        if (imgLoader.LoadEPGImage(event->EventID())) {
+        int epgImageHeight = 3 * headerHeight / 4;
+        if (tvguideConfig.epgImageHeight > 0)
+            epgImageWidth = epgImageHeight * tvguideConfig.epgImageWidth / tvguideConfig.epgImageHeight;
+        if (imgLoader.LoadEPGImage(event->EventID(), epgImageWidth, epgImageHeight)) {
             cImage epgImage = imgLoader.GetImage();
-            int epgImageX = header->Width() - 30 - tvguideConfig.epgImageWidth;
-            int epgImageY = (header->Height() - 10 - tvguideConfig.epgImageHeight) / 2;
-            header->DrawRectangle(cRect(epgImageX-2, epgImageY-2, tvguideConfig.epgImageWidth + 4, tvguideConfig.epgImageHeight + 4), theme.Color(clrBorder));
+            int epgImageX = header->Width() - border - epgImageWidth;
+            int epgImageY = (header->Height() - epgImageHeight) / 2;
+            header->DrawRectangle(cRect(epgImageX-2, epgImageY-2, epgImageWidth + 4, epgImageHeight + 4), theme.Color(clrBorder));
             header->DrawImage(cPoint(epgImageX, epgImageY), epgImage);
+            epgImageDrawn = true;
         }
     }
-    int textX = logoDrawn?(20 + logoWidth):20;
-    int textY = (header->Height() - 2*lineHeight)/2;
-    header->DrawText(cPoint(textX, textY), event->Title(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailHeader);
-    cString datetime = cString::sprintf("%s, %s - %s (%d min)", *event->GetDateString(),  *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60);
-    header->DrawText(cPoint(textX, textY + lineHeight), *datetime, theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
-    header->DrawText(cPoint(textX, textY + 2 * lineHeight), event->ShortText(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+    int textX = logoDrawn?(border + logoWidth + 5):border;
+    int textY = (header->Height() - 7*lineHeight/2)/2;
+    int maxTextWidth = header->Width() - 2 * border;
+    if (logoDrawn)
+        maxTextWidth -= logoWidth;
+    if (epgImageDrawn)
+        maxTextWidth -= epgImageWidth;
+    std::string title = CutText((event->Title())?event->Title():"", maxTextWidth, fontManager.FontDetailHeader);
+    header->DrawText(cPoint(textX, textY), title.c_str(), theme.Color(clrFont), colorTextBack, fontManager.FontDetailHeader);
+    std::string datetime = *cString::sprintf("%s, %s - %s (%d min)", *event->GetDateString(),  *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60);
+    datetime = CutText(datetime, maxTextWidth, fontManager.FontDetailView);
+    textY += 5*lineHeight/4;
+    header->DrawText(cPoint(textX, textY), datetime.c_str(), theme.Color(clrFont), colorTextBack, fontManager.FontDetailView);
+    std::string shortText = CutText((event->ShortText())?event->ShortText():"", maxTextWidth, fontManager.FontDetailView);
+    textY += 5*lineHeight/4;
+    header->DrawText(cPoint(textX, textY), shortText.c_str(), theme.Color(clrFont), colorTextBack, fontManager.FontDetailView);
     
     eTimerMatch timerMatch=tmNone; 
     cTimer *ti;
@@ -192,28 +214,28 @@ void cDetailView::drawHeader() {
 void cDetailView::drawRecIcon() {
     cString recIconText(" REC ");
     int headerWidth = width;
-    int widthIcon = tvguideConfig.FontDetailHeader->Width(*recIconText);
-    int height = tvguideConfig.FontDetailHeader->Height()+10;
+    int widthIcon = fontManager.FontDetailHeader->Width(*recIconText);
+    int height = fontManager.FontDetailHeader->Height()+10;
     int posX = headerWidth - widthIcon - 20;
     int posY = 20;
     header->DrawRectangle( cRect(posX, posY, widthIcon, height), theme.Color(clrButtonRed));
-    header->DrawText(cPoint(posX, posY+5), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), tvguideConfig.FontDetailHeader);
+    header->DrawText(cPoint(posX, posY+5), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), fontManager.FontDetailHeader);
 }
 
 void cDetailView::drawContent() {
     content->Fill(theme.Color(clrBorder));
     content->DrawRectangle(cRect(2, 0, content->ViewPort().Width() - 2, content->DrawPort().Height()), theme.Color(clrBackground));
-    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrBackground):clrTransparent;
+    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrBackground):clrTransparent;
     
-    int textHeight = tvguideConfig.FontDetailView->Height();
+    int textHeight = fontManager.FontDetailView->Height();
     int textLines = description.Lines();
     for (int i=0; i<textLines; i++) {
-        content->DrawText(cPoint(border, yEPGText + i*textHeight), description.GetLine(i), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+        content->DrawText(cPoint(border, yEPGText + i*textHeight), description.GetLine(i), theme.Color(clrFont), colorTextBack, fontManager.FontDetailView);
     }
     if (tvguideConfig.displayRerunsDetailEPGView) {
         textLines = reruns.Lines();
         for (int j=0; j<textLines; j++) {
-            content->DrawText(cPoint(border, yAddInf+ j*textHeight), reruns.GetLine(j), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailView);
+            content->DrawText(cPoint(border, yAddInf + j*textHeight), reruns.GetLine(j), theme.Color(clrFont), colorTextBack, fontManager.FontDetailView);
         }
     }
 }
@@ -269,7 +291,7 @@ void cDetailView::drawScrollbar() {
 
 void cDetailView::scrollUp() {
     if (contentScrollable) {
-        int newDrawportHeight = content->DrawPort().Point().Y() + tvguideConfig.FontDetailView->Height();
+        int newDrawportHeight = content->DrawPort().Point().Y() + fontManager.FontDetailView->Height();
         content->SetDrawPortPoint(cPoint(0, min(newDrawportHeight,0)));
         drawScrollbar();
     }
@@ -277,7 +299,7 @@ void cDetailView::scrollUp() {
 
 void cDetailView::scrollDown() {
     if (contentScrollable) {
-        int newDrawportHeight = content->DrawPort().Point().Y() - tvguideConfig.FontDetailView->Height();
+        int newDrawportHeight = content->DrawPort().Point().Y() - fontManager.FontDetailView->Height();
         int maxDrawportHeight = (content->DrawPort().Height() - contentHeight);
         content->SetDrawPortPoint(cPoint(0, max(newDrawportHeight,(-1)*maxDrawportHeight)));
         drawScrollbar();
@@ -309,7 +331,7 @@ void cDetailView::pageDown() {
 cImage *cDetailView::createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend) {
     cImage *image = new cImage(cSize(width, height));
     image->Fill(clrBgr);
-    if (tvguideConfig.useBlending) {
+    if (tvguideConfig.style != eStyleFlat) {
         int numSteps = 64;
         int alphaStep = 0x03;
         if (height < 30)
@@ -379,9 +401,9 @@ void cDetailView::loadReruns(void) {
                 delete list;
             }
         }
-        reruns.Set(sstrReruns.str().c_str(), tvguideConfig.FontDetailView, contentWidth - scrollBarWidth - 2*border);
+        reruns.Set(sstrReruns.str().c_str(), fontManager.FontDetailView, contentWidth - scrollBarWidth - 2*border);
     } else
-        reruns.Set("", tvguideConfig.FontDetailView, contentWidth - scrollBarWidth);
+        reruns.Set("", fontManager.FontDetailView, contentWidth - scrollBarWidth);
 }
 
 int cDetailView::heightEPGPics(void) {
@@ -420,7 +442,7 @@ int cDetailView::heightActorPics(void) {
     int picLines = numActors / picsPerLine;
     if (numActors%picsPerLine != 0)
         picLines++;
-    int actorsHeight = picLines * (actorThumbHeight + 2*tvguideConfig.FontDetailViewSmall->Height()) + tvguideConfig.FontDetailView->Height() + tvguideConfig.FontDetailHeader->Height();
+    int actorsHeight = picLines * (actorThumbHeight + 2*fontManager.FontDetailViewSmall->Height()) + fontManager.FontDetailView->Height() + fontManager.FontDetailHeader->Height();
     return actorsHeight;
 }
 
@@ -533,17 +555,17 @@ void cDetailView::drawActors(int height) {
     int numActors = mediaInfo.actors.size();
     if (numActors < 1)
         return;
-    tColor colorTextBack = (tvguideConfig.useBlending==0)?theme.Color(clrBackground):clrTransparent;
+    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrBackground):clrTransparent;
     
     cString header = cString::sprintf("%s:", tr("Actors"));
-    content->DrawText(cPoint(border, height), *header, theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailHeader);
+    content->DrawText(cPoint(border, height), *header, theme.Color(clrFont), colorTextBack, fontManager.FontDetailHeader);
 
     int picsPerLine = contentWidth / (actorThumbWidth + 2*border);
     int picLines = numActors / picsPerLine;
     if (numActors%picsPerLine != 0)
         picLines++;
     int x = 0;
-    int y = height + tvguideConfig.FontDetailHeader->Height();
+    int y = height + fontManager.FontDetailHeader->Height();
     if (!Running())
         return;
     cImageLoader imgLoader;
@@ -563,21 +585,21 @@ void cDetailView::drawActors(int height) {
             std::stringstream sstrRole;
             sstrRole << "\"" << mediaInfo.actors[actor].role << "\"";
             std::string role = sstrRole.str();
-            if (tvguideConfig.FontDetailViewSmall->Width(name.c_str()) > actorThumbWidth + 2*border)
-                name = CutText(name, actorThumbWidth + 2*border, tvguideConfig.FontDetailViewSmall);
-            if (tvguideConfig.FontDetailViewSmall->Width(role.c_str()) > actorThumbWidth + 2*border)
-                role = CutText(role, actorThumbWidth + 2*border, tvguideConfig.FontDetailViewSmall);
-            int xName = x + ((actorThumbWidth+2*border) - tvguideConfig.FontDetailViewSmall->Width(name.c_str()))/2;
-            int xRole = x + ((actorThumbWidth+2*border) - tvguideConfig.FontDetailViewSmall->Width(role.c_str()))/2;
+            if (fontManager.FontDetailViewSmall->Width(name.c_str()) > actorThumbWidth + 2*border)
+                name = CutText(name, actorThumbWidth + 2*border, fontManager.FontDetailViewSmall);
+            if (fontManager.FontDetailViewSmall->Width(role.c_str()) > actorThumbWidth + 2*border)
+                role = CutText(role, actorThumbWidth + 2*border, fontManager.FontDetailViewSmall);
+            int xName = x + ((actorThumbWidth+2*border) - fontManager.FontDetailViewSmall->Width(name.c_str()))/2;
+            int xRole = x + ((actorThumbWidth+2*border) - fontManager.FontDetailViewSmall->Width(role.c_str()))/2;
             if (Running() && content) {
-                content->DrawText(cPoint(xName, y + actorThumbHeight), name.c_str(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailViewSmall);
-                content->DrawText(cPoint(xRole, y + actorThumbHeight + tvguideConfig.FontDetailViewSmall->Height()), role.c_str(), theme.Color(clrFont), colorTextBack, tvguideConfig.FontDetailViewSmall);
+                content->DrawText(cPoint(xName, y + actorThumbHeight), name.c_str(), theme.Color(clrFont), colorTextBack, fontManager.FontDetailViewSmall);
+                content->DrawText(cPoint(xRole, y + actorThumbHeight + fontManager.FontDetailViewSmall->Height()), role.c_str(), theme.Color(clrFont), colorTextBack, fontManager.FontDetailViewSmall);
                 x += actorThumbWidth + 2*border;
             }
             actor++;
         }
         x = 0;
-        y += actorThumbHeight + 2 * tvguideConfig.FontDetailViewSmall->Height();
+        y += actorThumbHeight + 2 * fontManager.FontDetailViewSmall->Height();
     }
 }
 

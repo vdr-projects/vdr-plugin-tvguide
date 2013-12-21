@@ -69,3 +69,13 @@ VDR Plugin 'tvguide' Revision History
 Version 1.1.0
 
 - changed build system
+- introduced image caching
+- introduced new "graphical" style
+- added new graphical default theme and theme darkred NG corresponding 
+  to nOpacity themes
+- using automatically configured nOpacity theme if available
+- adapted startup options to nOpacity startup options:
+  -e epgimages directory
+  -i icons directory
+  -l logo directory
+- changed detailed epg view using full screen, some further optimisations

@@ -6,6 +6,7 @@
 #include <vdr/font.h>
 
 std::string CutText(std::string text, int width, const cFont *font);
+std::string StrToLowerCase(std::string str);
 
 class splitstring : public std::string {
     std::vector<std::string> flds;

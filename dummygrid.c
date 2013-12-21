@@ -20,7 +20,7 @@ time_t cDummyGrid::Duration(void) {
 
 void cDummyGrid::SetViewportHeight() {
     int viewportHeightOld = viewportHeight;
-    viewportHeight = Duration() / 60 * tvguideConfig.minutePixel;
+    viewportHeight = Duration() / 60 * geoManager.minutePixel;
     if (viewportHeight != viewportHeightOld)
         dirty = true;
 }
@@ -29,61 +29,61 @@ void cDummyGrid::PositionPixmap() {
     int x0, y0;
     if (tvguideConfig.displayMode == eVertical) {
         x0 = column->getX();
-        y0 = tvguideConfig.statusHeaderHeight + tvguideConfig.channelHeaderHeight + tvguideConfig.channelGroupsHeight;
+        y0 = geoManager.statusHeaderHeight + geoManager.channelHeaderHeight + geoManager.channelGroupsHeight;
         if ( column->Start() < StartTime() ) {
-            y0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
+            y0 += (StartTime() - column->Start())/60*geoManager.minutePixel;
         }
         if (!pixmap) {
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, geoManager.colWidth, viewportHeight));
         } else if (dirty) {
             osdManager.releasePixmap(pixmap);
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, geoManager.colWidth, viewportHeight));
         } else {
-            pixmap->SetViewPort(cRect(x0, y0, tvguideConfig.colWidth, viewportHeight));
+            pixmap->SetViewPort(cRect(x0, y0, geoManager.colWidth, viewportHeight));
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        x0 = tvguideConfig.channelHeaderWidth + tvguideConfig.channelGroupsWidth;
+        x0 = geoManager.channelHeaderWidth + geoManager.channelGroupsWidth;
         y0 = column->getY();
         if ( column->Start() < StartTime() ) {
-            x0 += (StartTime() - column->Start())/60*tvguideConfig.minutePixel;
+            x0 += (StartTime() - column->Start())/60*geoManager.minutePixel;
         }
         if (!pixmap) {
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, tvguideConfig.rowHeight));
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, geoManager.rowHeight));
         } else if (dirty) {
             osdManager.releasePixmap(pixmap);
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, tvguideConfig.rowHeight));
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, geoManager.rowHeight));
         } else {
-            pixmap->SetViewPort(cRect(x0, y0, viewportHeight, tvguideConfig.rowHeight));
+            pixmap->SetViewPort(cRect(x0, y0, viewportHeight, geoManager.rowHeight));
         }
     }
 }
 
 void cDummyGrid::setText() {
     if (tvguideConfig.displayMode == eVertical) {
-        text->Set(*strText, tvguideConfig.FontGrid, tvguideConfig.colWidth-2*borderWidth);
+        text->Set(*strText, fontManager.FontGrid, geoManager.colWidth-2*borderWidth);
     }
 }
 
 void cDummyGrid::drawText() {
     tColor colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
-    tColor colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
+    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
     if (tvguideConfig.displayMode == eVertical) {
-        if (Height()/tvguideConfig.minutePixel < 6)
+        if (Height()/geoManager.minutePixel < 6)
             return;
-        int textHeight = tvguideConfig.FontGrid->Height();
+        int textHeight = fontManager.FontGrid->Height();
         int textLines = text->Lines();
         for (int i=0; i<textLines; i++) {
-            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), colorText, colorTextBack, tvguideConfig.FontGrid);
+            pixmap->DrawText(cPoint(borderWidth, borderWidth + i*textHeight), text->GetLine(i), colorText, colorTextBack, fontManager.FontGrid);
         
         }
     } else if (tvguideConfig.displayMode == eHorizontal) {
-        if (Width()/tvguideConfig.minutePixel < 10) {
-            int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
-            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
+        if (Width()/geoManager.minutePixel < 10) {
+            int titleY = (geoManager.rowHeight - fontManager.FontGridHorizontal->Height())/2;
+            pixmap->DrawText(cPoint(borderWidth - 2, titleY), "...", colorText, colorTextBack, fontManager.FontGridHorizontal);
             return;
         }
-        int titleY = (tvguideConfig.rowHeight - tvguideConfig.FontGridHorizontal->Height())/2;
-        pixmap->DrawText(cPoint(borderWidth, titleY), *strText, colorText, colorTextBack, tvguideConfig.FontGridHorizontal);
+        int titleY = (geoManager.rowHeight - fontManager.FontGridHorizontal->Height())/2;
+        pixmap->DrawText(cPoint(borderWidth, titleY), *strText, colorText, colorTextBack, fontManager.FontGridHorizontal);
     }
 }
 cString cDummyGrid::getText(void) {

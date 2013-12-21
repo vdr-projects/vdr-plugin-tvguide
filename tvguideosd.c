@@ -38,9 +38,16 @@ void cTvGuideOsd::Show(void) {
     bool ok = false;
     ok = osdManager.setOsd();
     if (ok) {
-        tvguideConfig.setDynamicValues(osdManager.Width(), osdManager.Height());
-        tvguideConfig.loadTheme();
-        tvguideConfig.SetBlending();
+        bool themeChanged = tvguideConfig.LoadTheme();
+        tvguideConfig.SetStyle();
+        tvguideConfig.setDynamicValues();
+        bool geoChanged = geoManager.SetGeometry(cOsd::OsdWidth(), cOsd::OsdHeight());
+        if (themeChanged || geoChanged) {
+            fontManager.DeleteFonts();
+            fontManager.SetFonts();
+            imgCache.Clear();
+            imgCache.CreateCache();
+        }
         osdManager.setBackground();
         myTime = new cMyTime();
         myTime->Now();
@@ -66,6 +73,7 @@ void cTvGuideOsd::drawOsd() {
     cChannel *startChannel = Channels.GetByNumber(cDevice::CurrentChannel());
     if (tvguideConfig.displayStatusHeader) {
         statusHeader = new cStatusHeader();
+        statusHeader->Draw();
         statusHeader->ScaleVideo();
     }
     timeLine = new cTimeLine(myTime);

@@ -57,14 +57,14 @@ void cRecMenuManager::Close(void) {
 }
 
 void cRecMenuManager::SetBackground(void) {
-    int backgroundWidth = tvguideConfig.osdWidth;
-    int backgroundHeight = tvguideConfig.osdHeight;
+    int backgroundWidth = geoManager.osdWidth;
+    int backgroundHeight = geoManager.osdHeight;
     pixmapBackground = osdManager.requestPixmap(3, cRect(0, 0, backgroundWidth, backgroundHeight));
     pixmapBackground->Fill(theme.Color(clrRecMenuBackground));
     if (tvguideConfig.scaleVideo) {
-        int tvHeight = tvguideConfig.statusHeaderHeight;
+        int tvHeight = geoManager.statusHeaderHeight;
         int tvWidth = tvHeight * 16 / 9;
-        int tvX = tvguideConfig.osdWidth - tvWidth;
+        int tvX = geoManager.osdWidth - tvWidth;
         pixmapBackground->DrawRectangle(cRect(tvX, 0, tvWidth, tvHeight), clrTransparent);
     }
 }

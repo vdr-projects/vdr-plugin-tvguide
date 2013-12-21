@@ -1,5 +1,5 @@
-Description = nOpacity IceBlue
-clrDoBlending = 00000000
+Description = IceBlue
+clrStyle = 00000000
 clrBackground = DDFFFFFF
 clrBackgroundOSD = DDFFFFFF
 clrGrid1 = BB555555

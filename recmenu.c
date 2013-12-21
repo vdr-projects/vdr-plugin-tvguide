@@ -3,7 +3,7 @@
 // --- cRecMenu  -------------------------------------------------------------
 
 cRecMenu::cRecMenu(void) {
-    border = 10;
+    border = geoManager.borderRecMenus;
     height = 2*border;
     headerHeight = 0;
     footerHeight = 0;
@@ -33,13 +33,13 @@ cRecMenu::~cRecMenu(void) {
 }
 
 void cRecMenu::SetWidthPercent(int percentOSDWidth) {
-    width = tvguideConfig.osdWidth * percentOSDWidth / 100; 
-    x = (tvguideConfig.osdWidth - width) / 2;
+    width = geoManager.osdWidth * percentOSDWidth / 100; 
+    x = (geoManager.osdWidth - width) / 2;
 }
 
 void cRecMenu::SetWidthPixel(int pixel) {
     width = pixel;
-    x = (tvguideConfig.osdWidth - width) / 2;
+    x = (geoManager.osdWidth - width) / 2;
 }
 
 int cRecMenu::CalculateOptimalWidth(void) {
@@ -71,7 +71,7 @@ void cRecMenu::AddMenuItemScroll(cRecMenuItem *item) {
 
 bool cRecMenu::CheckHeight(void) {
     int nextHeight = headerHeight + footerHeight + scrollHeight + 2*border + 150;
-    if (nextHeight > tvguideConfig.osdHeight) {
+    if (nextHeight > geoManager.osdHeight) {
         scrollable = true;
         return false;
     }
@@ -87,7 +87,7 @@ void cRecMenu::CalculateHeight(void) {
     }
     if (footer)
         height += footerHeight;
-    y = (tvguideConfig.osdHeight - height) / 2;
+    y = (geoManager.osdHeight - height) / 2;
     
     if (scrollable) {
         width += scrollbarWidth + border;
@@ -355,8 +355,12 @@ void cRecMenu::Arrange(bool scroll) {
 }
 
 void cRecMenu::Display(bool scroll) {
-    pixmap->Fill(theme.Color(clrBackground));
-    drawBorder();
+    if (tvguideConfig.style == eStyleGraphical) {
+        drawBackgroundGraphical(bgRecMenuBack);
+    } else {
+        pixmap->Fill(theme.Color(clrBackground));
+        drawBorder();
+    }
     if (header && !scroll) {
         header->setBackground();
         header->Draw();
@@ -497,7 +501,7 @@ eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
 cImage *cRecMenu::createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend) {
     cImage *image = new cImage(cSize(width, height));
     image->Fill(clrBgr);
-    if (tvguideConfig.useBlending) {
+    if (tvguideConfig.style != eStyleFlat) {
         int numSteps = 64;
         int alphaStep = 0x03;
         if (height < 30)

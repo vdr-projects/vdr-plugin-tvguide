@@ -1,5 +1,5 @@
-Description = nOpacity Dark Red
-clrDoBlending = FFFFFFFF
+Description = Dark Red
+clrStyle = FFFFFFFF
 clrBackground = FF000000
 clrBackgroundOSD = FF000000
 clrGrid1 = EE555555

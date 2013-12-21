@@ -34,10 +34,15 @@ void cGrid::Draw() {
         return;
     }
     if (dirty) {
-        setBackground();
-        drawBackground();
-        drawText();
-        drawBorder();
+        if (tvguideConfig.style == eStyleGraphical) {
+            drawBackgroundGraphical(bgGrid, active);
+            drawText();
+        } else {
+            setBackground();
+            drawBackground();
+            drawText();
+            drawBorder();
+        }
         pixmap->SetLayer(1);
         dirty = false;
     }

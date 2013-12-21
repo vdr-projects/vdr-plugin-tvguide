@@ -6,26 +6,22 @@
 #include <vdr/osd.h>
 #include <vdr/skins.h>
 #include <Magick++.h>
+#include "imagemagickwrapper.h"
 
 using namespace Magick;
  
-class cImageLoader {
+class cImageLoader  : public cImageMagickWrapper {
 public:
     cImageLoader();
     ~cImageLoader();
     cImage GetImage();
-    bool LoadLogo(const char *logo, int width, int height);
-    bool LoadEPGImage(int eventID);
+    bool LoadLogo(const cChannel *channel, int width, int height);
+    bool LoadEPGImage(int eventID, int width, int height);
     bool LoadAdditionalEPGImage(cString name);
     bool LoadPoster(const char *poster, int width, int height);
     bool LoadIcon(const char *cIcon, int size);
+    bool LoadOsdElement(cString name, int width, int height);
     bool DrawBackground(tColor back, tColor blend, int width, int height);
-private:
-    Image buffer;
-    Color Argb2Color(tColor col);
-    void toLowerCase(std::string &str);
-    bool LoadImage(cString FileName, cString Path, cString Extension);
-    bool LoadImage(const char *fullpath);
 };
 
 #endif //_TVGUIDE_IMAGELOADER_H

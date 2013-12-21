@@ -13,6 +13,7 @@ class cEpgGrid;
 
 class cDetailView : public cThread {
 private:
+    cPixmap *back;
     cStyledPixmap *header;
     cPixmap *headerLogo;
     cPixmap *headerBack;
@@ -26,7 +27,6 @@ private:
     cTextWrapper reruns;
     TVScraperGetFullInformation mediaInfo;
     bool hasAdditionalMedia;
-    int borderWidth;
     int border;
     int headerHeight;
     int width;

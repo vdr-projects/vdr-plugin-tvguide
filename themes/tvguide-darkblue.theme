@@ -1,5 +1,5 @@
-Description = DarkBlue
-clrDoBlending = AAAAAAAA
+Description = Dark Blue
+clrStyle = AAAAAAAA
 clrBackground = FF000000
 clrBackgroundOSD = FF000000
 clrGrid1 = FF0E53A7

@@ -10,8 +10,8 @@ cRecMenuItem::cRecMenuItem(void) {
     height = 0;
     action = rmsNotConsumed;
     drawn = false;
-    font = tvguideConfig.FontRecMenuItem;
-    fontSmall = tvguideConfig.FontRecMenuItemSmall;
+    font = fontManager.FontRecMenuItem;
+    fontSmall = fontManager.FontRecMenuItemSmall;
 }
 
 cRecMenuItem::~cRecMenuItem(void) {
@@ -32,18 +32,24 @@ void cRecMenuItem::SetPixmaps(void) {
 }
 
 void cRecMenuItem::setBackground(void) {
-    if (active) {
-        color = theme.Color(clrHighlight);
-        colorBlending = theme.Color(clrHighlightBlending);
-        colorText = theme.Color(clrFontActive);
+    if (tvguideConfig.style == eStyleGraphical) {
+        drawBackgroundGraphical(bgButton, active);
+        colorTextBack = clrTransparent;
+        colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
     } else {
-        color = theme.Color(clrGrid1);
-        colorBlending = theme.Color(clrGrid1Blending);
-        colorText = theme.Color(clrFont);
+        if (active) {
+            color = theme.Color(clrHighlight);
+            colorBlending = theme.Color(clrHighlightBlending);
+            colorText = theme.Color(clrFontActive);
+        } else {
+            color = theme.Color(clrGrid1);
+            colorBlending = theme.Color(clrGrid1Blending);
+            colorText = theme.Color(clrFont);
+        }
+        colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
+        drawBackground();
+        drawBorder();
     }
-    colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
-    drawBackground();
-    drawBorder();
 }
 
 // --- cRecMenuItemButton  -------------------------------------------------------
@@ -124,12 +130,13 @@ void cRecMenuItemButtonYesNo::SetPixmaps(void) {
     int buttonWidth = 44 * width / 100;
     int yesX = x + width / 25;
     int noX = x + 52 * width / 100;
+    int yPixmaps = y + geoManager.borderRecMenus / 2;
     if (!pixmap) {
-        pixmap = osdManager.requestPixmap(4, cRect(yesX, y, buttonWidth, height));
-        pixmapNo = new cStyledPixmap(osdManager.requestPixmap(4, cRect(noX, y, buttonWidth, height)));    
+        pixmap = osdManager.requestPixmap(4, cRect(yesX, yPixmaps, buttonWidth, height));
+        pixmapNo = new cStyledPixmap(osdManager.requestPixmap(4, cRect(noX, yPixmaps, buttonWidth, height)));    
     } else {
-        pixmap->SetViewPort(cRect(x, y, width, height));
-        pixmapNo->SetViewPort(cRect(x, y, width, height));
+        pixmap->SetViewPort(cRect(x, yPixmaps, width, height));
+        pixmapNo->SetViewPort(cRect(x, yPixmaps, width, height));
     }
 }
 
@@ -144,35 +151,43 @@ void cRecMenuItemButtonYesNo::Show(void) {
 }
 
 void cRecMenuItemButtonYesNo::setBackground() {
-    if (active) {
-        if (yesActive) {
-            color = theme.Color(clrHighlight);
-            colorBlending = theme.Color(clrHighlightBlending);
-            colorText = theme.Color(clrFontActive);
-            pixmapNo->setColor( theme.Color(clrGrid1),
-                                theme.Color(clrGrid1Blending));
-            colorTextNo = theme.Color(clrFont);
+    if (tvguideConfig.style == eStyleGraphical) {
+        drawBackgroundGraphical(bgButton, yesActive&&active);
+        colorTextBack = clrTransparent;
+        colorText = (active&&yesActive)?theme.Color(clrFontActive):theme.Color(clrFont);
+        colorTextNo = (active&&!yesActive)?theme.Color(clrFontActive):theme.Color(clrFont);
+        pixmapNo->drawBackgroundGraphical(bgButton, active&&!yesActive);
+    } else {
+        if (active) {
+            if (yesActive) {
+                color = theme.Color(clrHighlight);
+                colorBlending = theme.Color(clrHighlightBlending);
+                colorText = theme.Color(clrFontActive);
+                pixmapNo->setColor( theme.Color(clrGrid1),
+                                    theme.Color(clrGrid1Blending));
+                colorTextNo = theme.Color(clrFont);
+            } else {
+                color = theme.Color(clrGrid1);
+                colorBlending = theme.Color(clrGrid1Blending);
+                colorText = theme.Color(clrFont);
+                pixmapNo->setColor( theme.Color(clrHighlight),
+                                    theme.Color(clrHighlightBlending));
+                colorTextNo = theme.Color(clrFontActive);
+            }
         } else {
             color = theme.Color(clrGrid1);
             colorBlending = theme.Color(clrGrid1Blending);
             colorText = theme.Color(clrFont);
-            pixmapNo->setColor( theme.Color(clrHighlight),
-                                theme.Color(clrHighlightBlending));
-            colorTextNo = theme.Color(clrFontActive);
+            pixmapNo->setColor( theme.Color(clrGrid1),
+                                theme.Color(clrGrid1Blending));
+            colorTextNo = theme.Color(clrFont);
         }
-    } else {
-        color = theme.Color(clrGrid1);
-        colorBlending = theme.Color(clrGrid1Blending);
-        colorText = theme.Color(clrFont);
-        pixmapNo->setColor( theme.Color(clrGrid1),
-                            theme.Color(clrGrid1Blending));
-        colorTextNo = theme.Color(clrFont);
+        colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
+        drawBackground();
+        drawBorder();
+        pixmapNo->drawBackground();
+        pixmapNo->drawBorder();
     }
-    colorTextBack = (tvguideConfig.useBlending==0)?color:clrTransparent;
-    drawBackground();
-    drawBorder();
-    pixmapNo->drawBackground();
-    pixmapNo->drawBorder();
 }
 
 void cRecMenuItemButtonYesNo::Draw(void) {
@@ -1340,17 +1355,17 @@ void cRecMenuItemTimer::Show(void) {
 
 void cRecMenuItemTimer::Draw(void) {
     const cChannel *channel = timer->Channel();
-    cString channelName("");
     int channelTransponder = 0;
+    cString channelName = "";
     if (channel) {
-        channelName = channel->Name();
         channelTransponder = channel->Transponder();
+        channelName = channel->Name();
     }
     int logoX = DrawIcons();
     int logoWidth = height * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
     cImageLoader imgLoader;
     if (!tvguideConfig.hideChannelLogos) {
-        if (imgLoader.LoadLogo(*channelName, logoWidth, height)) {
+        if (imgLoader.LoadLogo(channel, logoWidth, height)) {
             cImage logo = imgLoader.GetImage();
             pixmapIcons->DrawImage(cPoint(logoX, 0), logo);
             logoX += logoWidth + 5;
@@ -1577,14 +1592,13 @@ void cRecMenuItemEvent::Draw(void) {
         return;
     int logoX = DrawIcons();
     const cChannel *channel = Channels.GetByChannelID(event->ChannelID());
-    cString channelName("");
-    if (channel) {
+    cString channelName = "";
+    if (channel)
         channelName = channel->Name();
-    }
     int logoWidth = height * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
     cImageLoader imgLoader;
     if (!tvguideConfig.hideChannelLogos) {
-        if (imgLoader.LoadLogo(*channelName, logoWidth, height)) {
+        if (imgLoader.LoadLogo(channel, logoWidth, height)) {
             cImage logo = imgLoader.GetImage();
             pixmapText->DrawImage(cPoint(logoX, 0), logo);
             logoX += logoWidth + 5;
@@ -1749,7 +1763,7 @@ void cRecMenuItemChannelChooser::DrawValue(void) {
         int logoWidth = height * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
         int logoX = textX - logoWidth - 10;
         cImageLoader imgLoader;
-        if (imgLoader.LoadLogo(channel->Name(), logoWidth, height)) {
+        if (imgLoader.LoadLogo(channel, logoWidth, height)) {
             cImage logo = imgLoader.GetImage();
             pixmapChannel->DrawImage(cPoint(logoX, 0), logo);
         }

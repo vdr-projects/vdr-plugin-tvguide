@@ -1,4 +1,5 @@
 #include "imageloader.h"
+#include "geometrymanager.h"
 #include "styledpixmap.h"
 
 cStyledPixmap::cStyledPixmap(void) {
@@ -21,14 +22,75 @@ void cStyledPixmap::setPixmap(cPixmap *pixmap) {
 }
 
 void cStyledPixmap::drawBackground() {
-    if (tvguideConfig.useBlending == 1){
+    if (tvguideConfig.style == eStyleBlendingDefault){
         drawBlendedBackground();
-    } else if (tvguideConfig.useBlending == 2){
+    } else if (tvguideConfig.style == eStyleBlendingMagick){
         drawSparsedBackground();
     } else {
         pixmap->Fill(color);
     }
 }
+
+void cStyledPixmap::drawBackgroundGraphical(eBackgroundType type, bool active) {
+    cImage *back = NULL;
+    if (type == bgGrid) {
+        back = imgCache.GetGrid(pixmap->ViewPort().Width(), pixmap->ViewPort().Height(), active);
+    } else if (type == bgChannelHeader) {
+        back = imgCache.GetOsdElement(oeLogoBack);
+    } else if (type == bgChannelGroup) {
+        back = imgCache.GetChannelGroup(pixmap->ViewPort().Width(), pixmap->ViewPort().Height());
+    } else if (type == bgStatusHeaderWindowed) {
+        back = imgCache.GetOsdElement(oeStatusHeaderContentWindowed);
+    } else if (type == bgStatusHeaderFull) {
+        back = imgCache.GetOsdElement(oeStatusHeaderContentFull);
+    }  else if (type == bgClock) {
+        back = imgCache.GetOsdElement(oeClock);
+    } else if (type == bgEpgHeader) {
+        back = imgCache.GetOsdElement(oeEpgHeader);
+    } else if (type == bgButton) {
+        drawBackgroundButton(active);
+        return;
+    } else if (type == bgRecMenuBack) {
+        cImageLoader imgLoader;
+        if (imgLoader.LoadOsdElement("recmenu_background", pixmap->ViewPort().Width(), pixmap->ViewPort().Height())) {
+            cImage background = imgLoader.GetImage();
+            pixmap->DrawImage(cPoint(0, 0), background);
+        } else {
+            pixmap->Fill(clrTransparent);
+        }
+        return;
+    }
+    if (back) {
+        pixmap->DrawImage(cPoint(0,0), *back);
+    } else {
+        pixmap->Fill(clrTransparent);
+    }
+}
+
+void cStyledPixmap::drawBackgroundButton(bool active) {
+    std::string buttonName = "";
+    int buttonWidth = pixmap->ViewPort().Width();
+    int buttonHeight = pixmap->ViewPort().Height();
+    if (buttonWidth > geoManager.osdWidth * 50 / 100) {
+        if (active)
+            buttonName = "button_active_70percent";
+        else
+            buttonName = "button_70percent";
+    } else  {
+        if (active)
+            buttonName = "button_active_30percent";
+        else
+            buttonName = "button_30percent";            
+    }
+    cImageLoader imgLoader;
+    if (imgLoader.LoadOsdElement(buttonName.c_str(), buttonWidth, buttonHeight)) {
+        cImage button = imgLoader.GetImage();
+        pixmap->DrawImage(cPoint(0, 0), button);
+    } else {
+        pixmap->Fill(clrTransparent);
+    }
+}
+
 
 void cStyledPixmap::drawBlendedBackground() {
     int width = pixmap->ViewPort().Width();

@@ -38,6 +38,19 @@ std::string CutText(std::string text, int width, const cFont *font) {
     }
     return cuttedText;
 }
+
+/****************************************************************************************
+*            StrToLowerCase
+****************************************************************************************/
+std::string StrToLowerCase(std::string str) {
+    std::string lowerCase = str;
+    const int length = lowerCase.length();
+    for(int i=0; i < length; ++i) {
+        lowerCase[i] = std::tolower(lowerCase[i]);
+    }
+    return lowerCase;
+}
+
 /****************************************************************************************
 *            SPLTSTRING
 ****************************************************************************************/

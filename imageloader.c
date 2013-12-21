@@ -2,9 +2,11 @@
 #include <string>
 #include <dirent.h>
 #include <iostream>
+#include <vdr/channels.h>
 
 #include "config.h"
 #include "imageloader.h"
+#include "tools.h"
 
 using namespace Magick;
 
@@ -15,34 +17,33 @@ cImageLoader::cImageLoader() {
 cImageLoader::~cImageLoader() {
 }
 
-bool cImageLoader::LoadLogo(const char *logo, int width, int height) {
-
-    if ((width == 0)||(height==0))
+bool cImageLoader::LoadLogo(const cChannel *channel, int width, int height) {
+    if (!channel || (width == 0)||(height==0))
         return false;
-    std::string logoLower = logo;
-    toLowerCase(logoLower);
+    std::string channelID = StrToLowerCase(*(channel->GetChannelID().ToString()));
+    std::string logoLower = StrToLowerCase(channel->Name());
     cString extension;
     if (tvguideConfig.logoExtension == 0) {
         extension = "png";
     } else if (tvguideConfig.logoExtension == 1) {
         extension = "jpg";
     }
-    if (!LoadImage(logoLower.c_str(), tvguideConfig.logoPath, extension))
-        return false;
-    buffer.sample( Geometry(width, height));
-    return true;
+    bool success = false;
+    success = LoadImage(channelID.c_str(), *tvguideConfig.logoPath, *extension);
+    if (!success) {
+        success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+    }
+    if (success)
+        buffer.sample(Geometry(width, height));
+    return success;
 }
 
-bool cImageLoader::LoadEPGImage(int eventID) {
-    int width = tvguideConfig.epgImageWidth;
-    int height = tvguideConfig.epgImageHeight;
+bool cImageLoader::LoadEPGImage(int eventID, int width, int height) {
     if ((width == 0)||(height==0))
         return false;
-    if (!LoadImage(cString::sprintf("%d", eventID), tvguideConfig.epgImagePath, "jpg"))
+    if (!LoadImage(*cString::sprintf("%d", eventID), *tvguideConfig.epgImagePath, "jpg"))
         return false;
-    if (height != 0 || width != 0) {
-        buffer.sample( Geometry(width, height));
-    }
+    buffer.sample( Geometry(width, height));
     return true;
 }
 
@@ -52,7 +53,7 @@ bool cImageLoader::LoadAdditionalEPGImage(cString name) {
     if ((width == 0)||(height==0))
         return false;
     bool success = false;
-    success = LoadImage(name, tvguideConfig.epgImagePath, "jpg");
+    success = LoadImage(*name, *tvguideConfig.epgImagePath, "jpg");
     if (!success)
         return false;
     if (height != 0 || width != 0) {
@@ -73,10 +74,23 @@ bool cImageLoader::LoadIcon(const char *cIcon, int size) {
     if (size==0)
         return false;
     bool success = false;
-    success = LoadImage(cString(cIcon), tvguideConfig.iconPath, "png");
+    success = LoadImage(cIcon, *tvguideConfig.iconPath, "png");
     if (!success)
         return false;
     buffer.sample(Geometry(size, size));
+    return true;
+}
+
+bool cImageLoader::LoadOsdElement(cString name, int width, int height) {
+    if ((width == 0)||(height==0))
+        return false;
+    bool success = false;
+    cString path = cString::sprintf("%s%s%s", *tvguideConfig.iconPath, *tvguideConfig.themeName, "/osdElements/");
+    success = LoadImage(*name, *path, "png");
+    if (!success)
+        return false;
+    cString geometry = cString::sprintf("%dx%d!", width, height);
+    buffer.resize(Geometry(*geometry));
     return true;
 }
 
@@ -111,43 +125,4 @@ cImage cImageLoader::GetImage() {
         }
     }
     return image;
-}
-
-Color cImageLoader::Argb2Color(tColor col) {
-    tIndex alpha = (col & 0xFF000000) >> 24;
-    tIndex red = (col & 0x00FF0000) >> 16;
-    tIndex green = (col & 0x0000FF00) >> 8;
-    tIndex blue = (col & 0x000000FF);
-    Color color(MaxRGB*red/255, MaxRGB*green/255, MaxRGB*blue/255, MaxRGB*(0xFF-alpha)/255);
-    return color;
-}
-
-void cImageLoader::toLowerCase(std::string &str) {
-    const int length = str.length();
-    for(int i=0; i < length; ++i) {
-        str[i] = std::tolower(str[i]);
-    }
-}
-
-bool cImageLoader::LoadImage(cString FileName, cString Path, cString Extension) {
-    try {
-        cString File = cString::sprintf("%s%s.%s", *Path, *FileName, *Extension);
-        //dsyslog("tvguide: trying to load: %s", *File);
-        buffer.read(*File);
-        //dsyslog("tvguide: %s sucessfully loaded", *File);
-    } catch (...) {     
-        return false;
-    }
-    return true;
-}
-
-bool cImageLoader::LoadImage(const char *fullpath) {
-    try {
-        //dsyslog("tvguide: trying to load: %s", fullpath);
-        buffer.read(fullpath);
-        //dsyslog("tvguide: %s sucessfully loaded", fullpath);
-    } catch (...) {     
-        return false;
-    }
-    return true;
 }

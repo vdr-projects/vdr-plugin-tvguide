@@ -29,6 +29,8 @@ class cChannelGroupGrid : public cListObject, public cStyledPixmap {
 private:
     const char *name;
     bool isColor1;
+    void DrawHorizontal(tColor colorText, tColor colorTextBack);
+    void DrawVertical(tColor colorText, tColor colorTextBack);
 public:
     cChannelGroupGrid(const char *name);
     virtual ~cChannelGroupGrid(void);

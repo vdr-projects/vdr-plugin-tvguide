@@ -9,15 +9,12 @@
 class cFooter  {
 private:
     cPixmap *footer;
-    int buttonWidth;
-    int buttonHeight;
     int buttonY;
-    int buttonBorder;
     int positionButtons[4];
     cChannelGroups *channelGroups;
     int currentGroup;
     void SetButtonPositions(void);
-    void DrawButton(const char *text, tColor color, tColor borderColor, int num);
+    void DrawButton(const char *text, tColor color, tColor borderColor, eOsdElementType buttonType, int num);
 public:
     cFooter(cChannelGroups *channelGroups);
     virtual ~cFooter(void);
