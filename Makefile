@@ -3,6 +3,9 @@
 #
 # $Id$
 
+# External image lib to use: imagemagick, graphicsmagick	
+IMAGELIB = imagemagick
+
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
 # By default the main source file also carries this name.
@@ -44,13 +47,15 @@ SOFILE = libvdr-$(PLUGIN).so
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES += $(shell pkg-config --cflags-only-I Magick++)
-
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
-DEFINES += -DMAGICKCORE_HDRI_ENABLE=0
-DEFINES += -DMAGICKCORE_QUANTUM_DEPTH=16
 
-LIBS += $(shell pkg-config --libs Magick++)
+ifeq ($(IMAGELIB), imagemagick)
+	INCLUDES += $(shell pkg-config --cflags Magick++)
+	LIBS += $(shell pkg-config --libs Magick++)
+else ifeq ($(IMAGELIB), graphicsmagick)
+	INCLUDES += $(shell pkg-config --cflags GraphicsMagick++)
+	LIBS += $(shell pkg-config --libs GraphicsMagick++)
+endif
 
 ### The object files (add further files here):
 

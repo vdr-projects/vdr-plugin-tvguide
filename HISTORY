@@ -80,3 +80,7 @@ Version 1.1.0
   -l logo directory
 - changed detailed epg view using full screen, some further optimisations
 - search for <event_id>_0.jpg beside <event_id>.jpg as epg image
+- implemented GraphicsMagick compatibility (thanks @Manuel Reimer
+  for providing the patch)
+- changed Makefile to support both ImageMagick and GraphicsMagick
+  (configurable in Makefile)

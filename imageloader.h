@@ -22,6 +22,8 @@ public:
     bool LoadIcon(const char *cIcon, int size);
     bool LoadOsdElement(cString name, int width, int height);
     bool DrawBackground(tColor back, tColor blend, int width, int height);
+private:
+    void CreateGradient(tColor back, tColor blend, int width, int height, double wfactor, double hfactor);
 };
 
 #endif //_TVGUIDE_IMAGELOADER_H
