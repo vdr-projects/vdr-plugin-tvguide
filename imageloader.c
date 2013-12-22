@@ -41,7 +41,11 @@ bool cImageLoader::LoadLogo(const cChannel *channel, int width, int height) {
 bool cImageLoader::LoadEPGImage(int eventID, int width, int height) {
     if ((width == 0)||(height==0))
         return false;
-    if (!LoadImage(*cString::sprintf("%d", eventID), *tvguideConfig.epgImagePath, "jpg"))
+    bool success = false;
+    success = LoadImage(*cString::sprintf("%d", eventID), *tvguideConfig.epgImagePath, "jpg");
+    if (!success)
+        success = LoadImage(*cString::sprintf("%d_0", eventID), *tvguideConfig.epgImagePath, "jpg");
+    if (!success)
         return false;
     buffer.sample( Geometry(width, height));
     return true;
