@@ -247,8 +247,9 @@ void cTimeLine::setTimeline() {
 void cTimeLine::drawClock() {
     clock->Fill(clrTransparent);
     cString currentTime = myTime->GetCurrentTime();
-    int textHeight = fontManager.FontTimeLineTime->Height();
-    int clockTextWidth = fontManager.FontTimeLineTime->Width(*currentTime);
+    const cFont *font = (tvguideConfig.displayMode == eVertical)?fontManager.FontTimeLineTime:fontManager.FontTimeLineTimeHorizontal;
+    int textHeight = font->Height();
+    int clockTextWidth = font->Width(*currentTime);
     tColor colorFontBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
     if (tvguideConfig.style == eStyleGraphical) {
         clock->drawBackgroundGraphical(bgClock);
@@ -257,5 +258,5 @@ void cTimeLine::drawClock() {
         clock->drawBackground();
         clock->drawBorder();
     }
-    clock->DrawText(cPoint((geoManager.clockWidth-clockTextWidth)/2, (geoManager.clockHeight-textHeight)/2), *currentTime, theme.Color(clrFont), colorFontBack, fontManager.FontTimeLineTime);
+    clock->DrawText(cPoint((geoManager.clockWidth-clockTextWidth)/2, (geoManager.clockHeight-textHeight)/2), *currentTime, theme.Color(clrFont), colorFontBack, font);
 }

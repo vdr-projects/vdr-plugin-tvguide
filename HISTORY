@@ -88,3 +88,4 @@ Version 1.1.0
 - Added slovakian translation
 - fixed channel switching with blue key if detailed epg view is opened and
   if "close tvguide on channel switch" is configured
+- fixed wrong font for clock in horizontal view
