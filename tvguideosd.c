@@ -498,8 +498,13 @@ eOSState cTvGuideOsd::ChannelSwitch() {
     const cChannel *currentChannel = activeGrid->column->getChannel();
     if (currentChannel) {
         cDevice::PrimaryDevice()->SwitchChannel(currentChannel, true);
-        if (tvguideConfig.closeOnSwitch)
+        if (tvguideConfig.closeOnSwitch) {
+            if (detailView) {
+                delete detailView;
+                detailView = NULL;
+            }
             return osEnd;
+        }
     }
     return osContinue;
 }

@@ -86,3 +86,5 @@ Version 1.1.0
   (configurable in Makefile)
 - Added russian and catalan translation
 - Added slovakian translation
+- fixed channel switching with blue key if detailed epg view is opened and
+  if "close tvguide on channel switch" is configured
