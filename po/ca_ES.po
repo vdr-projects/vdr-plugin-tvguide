@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-08-25 13:08+0200\n"
+"POT-Creation-Date: 2013-12-22 10:44+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -41,6 +41,9 @@ msgstr "Canvia al canal"
 
 msgid "Detailed EPG"
 msgstr "EPG Detallat"
+
+msgid "images"
+msgstr ""
 
 msgid "Transp."
 msgstr "Transp."
@@ -387,6 +390,9 @@ msgstr "Presentació de pantalla"
 msgid "Fonts and Fontsizes"
 msgstr "Tipus i mida de lletra"
 
+msgid "Image Loading and Caching"
+msgstr ""
+
 msgid "x channels back / forward"
 msgstr "x canals enrere / endavant"
 
@@ -413,6 +419,9 @@ msgstr "Mostra entrada del menú principal"
 
 msgid "Replace VDR Schedules Menu"
 msgstr "Canvia el menú Programació VDR"
+
+msgid "Use appropriate nOpacity Theme"
+msgstr ""
 
 msgid "Theme"
 msgstr "Plantilla"
@@ -480,8 +489,8 @@ msgstr "Alçada cronologia (% alçada OSD)"
 msgid "Display time in EPG Grids"
 msgstr "Mostra el temps a l'EPG"
 
-msgid "Height of Footer"
-msgstr "Alçada del Peu"
+msgid "Height of Footer (Perc. of osd height)"
+msgstr ""
 
 msgid "Display status header"
 msgstr "Mostra capçalera d'estat"
@@ -521,6 +530,12 @@ msgstr "Proporció amplada logotip"
 
 msgid "Logo height ratio"
 msgstr "Proporció alçada logotip"
+
+msgid "Height of Header in Detailed View (Perc. of osd height)"
+msgstr ""
+
+msgid "Text Border in Detailed View (pixel)"
+msgstr ""
 
 msgid "Show EPG Images"
 msgstr "Mostra imatges EPG"
@@ -593,3 +608,33 @@ msgstr "Mida de la Font - Menú Cerca & Enregistra"
 
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Mida de la Font petita - Menú Cerca & Enregistra"
+
+msgid "Create Log Messages for image loading"
+msgstr ""
+
+msgid "Limit Logo Cache"
+msgstr ""
+
+msgid "Maximal number of logos to cache"
+msgstr ""
+
+msgid "Number of  logos to cache at start"
+msgstr ""
+
+msgid "Cache Sizes"
+msgstr ""
+
+msgid "OSD Element Cache"
+msgstr ""
+
+msgid "Logo cache"
+msgstr ""
+
+msgid "EPG Grid Cache"
+msgstr ""
+
+msgid "Channel Groups Cache"
+msgstr ""
+
+#~ msgid "Height of Footer"
+#~ msgstr "Alçada del Peu"

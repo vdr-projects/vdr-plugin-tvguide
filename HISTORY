@@ -85,3 +85,4 @@ Version 1.1.0
 - changed Makefile to support both ImageMagick and GraphicsMagick
   (configurable in Makefile)
 - Added russian and catalan translation
+- Added slovakian translation

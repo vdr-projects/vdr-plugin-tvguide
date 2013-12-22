@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-08-25 13:08+0200\n"
+"POT-Creation-Date: 2013-12-22 10:44+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -38,6 +38,9 @@ msgstr "Переключиться"
 
 msgid "Detailed EPG"
 msgstr "Подробный EPG"
+
+msgid "images"
+msgstr ""
 
 msgid "Transp."
 msgstr "Трансп."
@@ -384,6 +387,9 @@ msgstr "Графические настройки"
 msgid "Fonts and Fontsizes"
 msgstr "Шрифты и размер шрифтов"
 
+msgid "Image Loading and Caching"
+msgstr ""
+
 msgid "x channels back / forward"
 msgstr "x Каналов Назад/Вперед"
 
@@ -410,6 +416,9 @@ msgstr "Показывать пункт в главном меню"
 
 msgid "Replace VDR Schedules Menu"
 msgstr "Заменять телегид VDR"
+
+msgid "Use appropriate nOpacity Theme"
+msgstr ""
 
 msgid "Theme"
 msgstr "Тема"
@@ -477,8 +486,8 @@ msgstr "Высота таймлинии (% от высоты OSD)"
 msgid "Display time in EPG Grids"
 msgstr "Показывать время в сетке EPG"
 
-msgid "Height of Footer"
-msgstr "Высота нижней панели (кнопкок)"
+msgid "Height of Footer (Perc. of osd height)"
+msgstr ""
 
 msgid "Display status header"
 msgstr "Показывать верхнюю панель"
@@ -518,6 +527,12 @@ msgstr "Ширина логотипов"
 
 msgid "Logo height ratio"
 msgstr "Высота логотипов"
+
+msgid "Height of Header in Detailed View (Perc. of osd height)"
+msgstr ""
+
+msgid "Text Border in Detailed View (pixel)"
+msgstr ""
 
 msgid "Show EPG Images"
 msgstr "Показывать картинки EPG"
@@ -590,3 +605,33 @@ msgstr "Размер шрифта меню Поиск & Запись"
 
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Размер маленького шрифта меню Поиск & Запись"
+
+msgid "Create Log Messages for image loading"
+msgstr ""
+
+msgid "Limit Logo Cache"
+msgstr ""
+
+msgid "Maximal number of logos to cache"
+msgstr ""
+
+msgid "Number of  logos to cache at start"
+msgstr ""
+
+msgid "Cache Sizes"
+msgstr ""
+
+msgid "OSD Element Cache"
+msgstr ""
+
+msgid "Logo cache"
+msgstr ""
+
+msgid "EPG Grid Cache"
+msgstr ""
+
+msgid "Channel Groups Cache"
+msgstr ""
+
+#~ msgid "Height of Footer"
+#~ msgstr "Высота нижней панели (кнопкок)"
