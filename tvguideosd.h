@@ -10,6 +10,7 @@
 #include "channelgroups.h"
 #include "footer.h"
 #include "recmenumanager.h"
+#include "channeljump.h"
 
 // --- cTvGuideOsd -------------------------------------------------------------
 
@@ -24,6 +25,7 @@ private:
   cChannelGroups *channelGroups;
   cFooter *footer;
   cRecMenuManager *recMenuManager;
+  cChannelJump *channelJumper;
   bool detailViewActive;
   void drawOsd();
   void readChannels(const cChannel *channelStart);
@@ -38,12 +40,10 @@ private:
   void processKeyYellow();
   eOSState processKeyBlue();
   eOSState processKeyOk();
-  void processKey1();
-  void processKey3();
-  void processKey4();
-  void processKey6();
-  void processKey7();
-  void processKey9();
+  void processNumKey(int numKey);
+  void TimeJump(int mode);
+  void ChannelJump(int num);
+  void CheckTimeout(void);
   void setNextActiveGrid(cGrid *next);
   void channelForward();
   void channelBack();

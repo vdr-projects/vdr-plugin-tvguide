@@ -89,3 +89,4 @@ Version 1.1.0
 - fixed channel switching with blue key if detailed epg view is opened and
   if "close tvguide on channel switch" is configured
 - fixed wrong font for clock in horizontal view
+- Added feature to jump to a specific channel with number keys

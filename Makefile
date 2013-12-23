@@ -59,7 +59,7 @@ endif
 
 ### The object files (add further files here):
 
-OBJS = $(PLUGIN).o channelcolumn.o channelgroup.o channelgroups.o config.o detailview.o dummygrid.o epggrid.o fontmanager.o footer.o geometrymanager.o grid.o headergrid.o imagecache.o imageloader.o imagemagickwrapper.o imagescaler.o osdmanager.o recmanager.o recmenu.o recmenuitem.o recmenumanager.o recmenus.o setup.o statusheader.o styledpixmap.o switchtimer.o timeline.o timer.o tools.o tvguideosd.o
+OBJS = $(PLUGIN).o channelcolumn.o channelgroup.o channelgroups.o channeljump.o config.o detailview.o dummygrid.o epggrid.o fontmanager.o footer.o geometrymanager.o grid.o headergrid.o imagecache.o imageloader.o imagemagickwrapper.o imagescaler.o osdmanager.o recmanager.o recmenu.o recmenuitem.o recmenumanager.o recmenus.o setup.o statusheader.o styledpixmap.o switchtimer.o timeline.o timer.o tools.o tvguideosd.o
 
 ### The main target:
 

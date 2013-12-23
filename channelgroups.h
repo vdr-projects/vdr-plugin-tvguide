@@ -23,6 +23,7 @@ public:
     bool IsInLastGroup(const cChannel *channel);
     void DrawChannelGroups(const cChannel *start, const cChannel *stop);
     void CreateGroupGrid(const char *name, int number, int start, int end);
+    int GetLastValidChannel(void);
     void DumpGroups(void);
 };
 

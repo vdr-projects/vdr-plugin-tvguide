@@ -59,6 +59,8 @@ void cStyledPixmap::drawBackgroundGraphical(eBackgroundType type, bool active) {
             pixmap->Fill(clrTransparent);
         }
         return;
+    } else if (type == bgChannelJump) {
+        back = imgCache.GetOsdElement(oeChannelJump);
     }
     if (back) {
         pixmap->DrawImage(cPoint(0,0), *back);

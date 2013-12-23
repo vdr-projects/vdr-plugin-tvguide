@@ -9,6 +9,18 @@
 
 cImageCache::cImageCache() : cImageMagickWrapper() {
     tempStaticLogo = NULL;
+    groupsHead = NULL;
+    groupsBottom = NULL;
+    groupsLeft = NULL;
+    groupsRight = NULL;
+    imgLeft = NULL;
+    imgLeftActive = NULL;
+    imgRight = NULL;
+    imgRightActive = NULL;
+    imgHead = NULL;
+    imgHeadActive = NULL;
+    imgBottom = NULL;
+    imgBottomActive = NULL;
 }
 
 cImageCache::~cImageCache() {
@@ -110,6 +122,11 @@ void cImageCache::CreateOsdIconCache(void) {
     success = LoadIcon("osdElements/epgview_header");
     if (success)
         InsertIntoOsdElementCache(oeEpgHeader, geoManager.osdWidth, geoManager.epgViewHeaderHeight);
+
+    //Channel Jump
+    success = LoadIcon("osdElements/channel_jump");
+    if (success)
+        InsertIntoOsdElementCache(oeChannelJump, geoManager.channelJumpWidth, geoManager.channelJumpHeight);
 }
 
 void cImageCache::PrepareGridIconCache(void) {

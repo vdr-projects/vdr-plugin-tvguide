@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-22 10:44+0100\n"
+"POT-Creation-Date: 2013-12-23 09:03+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -17,6 +17,9 @@ msgstr ""
 
 msgid "Main Program"
 msgstr "Programa principal"
+
+msgid "Channel"
+msgstr "Canal"
 
 msgid "RERUNS OF THIS SHOW"
 msgstr "REEMISSIONS"
@@ -182,9 +185,6 @@ msgstr "Cancel·la"
 
 msgid "Create Series Timer based on"
 msgstr "Programa enregistrament de Sèries segons"
-
-msgid "Channel"
-msgstr "Canal"
 
 msgid "Series Timer start time"
 msgstr "Inici temporitzador Sèries"
@@ -405,6 +405,12 @@ msgstr "Blau: Canvi de canal, OK: EPG detallat"
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Blau: EPG detallat, OK: Canvi de canal"
 
+msgid "Timely Jump"
+msgstr ""
+
+msgid "Jump to specific channel"
+msgstr ""
+
 msgid "never"
 msgstr "mai"
 
@@ -437,6 +443,9 @@ msgstr "Botons Blau i OK"
 
 msgid "Close TVGuide after channel switch"
 msgstr "Tanca GuiaTV després del canvi de canal"
+
+msgid "Functionality of numeric Keys"
+msgstr ""
 
 msgid "Hide last Channel Group"
 msgstr "Amaga el darrer grup de canals"
@@ -635,6 +644,3 @@ msgstr ""
 
 msgid "Channel Groups Cache"
 msgstr ""
-
-#~ msgid "Height of Footer"
-#~ msgstr "Alçada del Peu"

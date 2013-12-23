@@ -130,6 +130,12 @@ void cChannelGroups::CreateGroupGrid(const char *name, int number, int start, in
     groupGrids.Add(groupGrid);
 }
 
+int cChannelGroups::GetLastValidChannel(void) {
+    if (channelGroups.size() > 0)
+        return channelGroups[channelGroups.size()-1].StopChannel();
+    return 0;
+}
+
 void cChannelGroups::DumpGroups(void) {
     for (std::vector<cChannelGroup>::iterator group = channelGroups.begin(); group!=channelGroups.end(); ++group) {
         group->Dump();

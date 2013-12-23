@@ -16,6 +16,7 @@ cTvGuideOsd::cTvGuideOsd(void) {
     activeGrid = NULL;
     timeLine = NULL;
     recMenuManager = NULL;
+    channelJumper = NULL;
 }
 
 cTvGuideOsd::~cTvGuideOsd() {
@@ -30,6 +31,8 @@ cTvGuideOsd::~cTvGuideOsd() {
     delete channelGroups;
     delete footer;
     delete recMenuManager;
+    if (channelJumper)
+        delete channelJumper;
     osdManager.deleteOsd();
 }
 
@@ -502,6 +505,7 @@ eOSState cTvGuideOsd::ChannelSwitch() {
             if (detailView) {
                 delete detailView;
                 detailView = NULL;
+                detailViewActive = false;
             }
             return osEnd;
         }
@@ -522,69 +526,89 @@ void cTvGuideOsd::DetailedEPG() {
     }
 }
 
-void cTvGuideOsd::processKey1() {
-    bool tooFarInPast = myTime->DelStep(tvguideConfig.bigStepHours*60);
-    if (tooFarInPast)
+void cTvGuideOsd::processNumKey(int numKey) {
+    esyslog("tvguide: %d pressed", numKey);
+    if (tvguideConfig.numkeyMode == 0) {
+        //timely jumps with 1,3,4,6,7,9
+        TimeJump(numKey);
+    } else {
+        //jump to specific channel
+        ChannelJump(numKey);
+    }
+}
+
+void cTvGuideOsd::TimeJump(int mode) {
+    switch (mode) {
+        case 1: {
+            bool tooFarInPast = myTime->DelStep(tvguideConfig.bigStepHours*60);
+            if (tooFarInPast)
+                return;
+        }
+            break;
+        case 3: {
+            myTime->AddStep(tvguideConfig.bigStepHours*60);
+        }
+            break;
+        case 4: {
+            bool tooFarInPast = myTime->DelStep(tvguideConfig.hugeStepHours*60);
+            if (tooFarInPast)
+                return;
+        }
+            break;
+        case 6: {
+            myTime->AddStep(tvguideConfig.hugeStepHours*60);
+        }
+            break;
+        case 7: {
+            cMyTime primeChecker;
+            primeChecker.Now();
+            time_t prevPrime = primeChecker.getPrevPrimetime(myTime->GetStart());
+            if (primeChecker.tooFarInPast(prevPrime))
+                return;
+            myTime->SetTime(prevPrime);
+        }
+            break;
+        case 9: {
+            cMyTime primeChecker;
+            time_t nextPrime = primeChecker.getNextPrimetime(myTime->GetStart());
+            myTime->SetTime(nextPrime);
+        }
+            break;
+        default:
+            return;
+    }
+    drawGridsTimeJump();
+    timeLine->drawDateViewer();
+    timeLine->drawClock();
+    timeLine->setTimeline();
+    osdManager.flush();
+}
+
+void cTvGuideOsd::ChannelJump(int num) {
+    if (!channelJumper) {
+        channelJumper = new cChannelJump(channelGroups);
+    }
+    channelJumper->Set(num);
+    channelJumper->DrawText();
+    osdManager.flush();
+}
+
+void cTvGuideOsd::CheckTimeout(void) {
+    if (!channelJumper)
         return;
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
-}
-
-void cTvGuideOsd::processKey3() {
-    myTime->AddStep(tvguideConfig.bigStepHours*60);
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
-}
-
-void cTvGuideOsd::processKey4() {
-    bool tooFarInPast = myTime->DelStep(tvguideConfig.hugeStepHours*60);
-    if (tooFarInPast)
-        return;
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
-}
-
-void cTvGuideOsd::processKey6() {
-    myTime->AddStep(tvguideConfig.hugeStepHours*60);
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
-}
-
-void cTvGuideOsd::processKey7() {
-    cMyTime *primeChecker = new cMyTime();
-    primeChecker->Now();
-    time_t prevPrime = primeChecker->getPrevPrimetime(myTime->GetStart());
-    if (primeChecker->tooFarInPast(prevPrime))
-        return;
-    myTime->SetTime(prevPrime);
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
-}
-
-void cTvGuideOsd::processKey9() {
-    cMyTime *primeChecker = new cMyTime();
-    time_t nextPrime = primeChecker->getNextPrimetime(myTime->GetStart());
-    myTime->SetTime(nextPrime);
-    drawGridsTimeJump();
-    timeLine->drawDateViewer();
-    timeLine->drawClock();
-    timeLine->setTimeline();
-    osdManager.flush();
+    if (channelJumper->TimeOut()) {
+        int newChannelNum = channelJumper->GetChannel(); 
+        delete channelJumper;
+        channelJumper = NULL;
+        const cChannel *newChannel = Channels.GetByNumber(newChannelNum);
+        if (newChannel) {
+            readChannels(newChannel);
+            if (columns.Count() > 0) {
+                drawGridsChannelJump();
+            }
+        }
+        osdManager.flush();
+    }
 }
 
 void cTvGuideOsd::SetTimers() {
@@ -636,12 +660,8 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             case kBlue:     state = processKeyBlue(); break;
             case kOk:       state = processKeyOk(); break;
             case kBack:     state=osEnd; break;    
-            case k1:        processKey1(); break;
-            case k3:        processKey3(); break;
-            case k4:        processKey4(); break;
-            case k6:        processKey6(); break;
-            case k7:        processKey7(); break;
-            case k9:        processKey9(); break;
+            case k0 ... k9: processNumKey(Key - k0); break;
+            case kNone:     if (channelJumper) CheckTimeout(); break;
             default:        break;
         }
     }

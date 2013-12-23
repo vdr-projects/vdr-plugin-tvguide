@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-22 10:44+0100\n"
+"POT-Creation-Date: 2013-12-23 09:03+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -14,6 +14,9 @@ msgstr ""
 
 msgid "Main Program"
 msgstr "Основная программа"
+
+msgid "Channel"
+msgstr "Канал"
 
 msgid "RERUNS OF THIS SHOW"
 msgstr "ПОВТОРЫ ЭТОЙ ПЕРЕДАЧИ"
@@ -179,9 +182,6 @@ msgstr "Отменить"
 
 msgid "Create Series Timer based on"
 msgstr "Настроить циклический таймер"
-
-msgid "Channel"
-msgstr "Канал"
 
 msgid "Series Timer start time"
 msgstr "Время с"
@@ -402,6 +402,12 @@ msgstr "Синяя: Переключить канал, OK: Подробный EP
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Синяя: Подробный EPG, OK: Переключить канал"
 
+msgid "Timely Jump"
+msgstr ""
+
+msgid "Jump to specific channel"
+msgstr ""
+
 msgid "never"
 msgstr "никогда"
 
@@ -434,6 +440,9 @@ msgstr "Синяя кнопка и OK"
 
 msgid "Close TVGuide after channel switch"
 msgstr "Закрывать TVGuide при переключении канала"
+
+msgid "Functionality of numeric Keys"
+msgstr ""
 
 msgid "Hide last Channel Group"
 msgstr "Скрывать последнюю группу каналов"
@@ -632,6 +641,3 @@ msgstr ""
 
 msgid "Channel Groups Cache"
 msgstr ""
-
-#~ msgid "Height of Footer"
-#~ msgstr "Высота нижней панели (кнопкок)"

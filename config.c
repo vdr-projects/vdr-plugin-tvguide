@@ -31,6 +31,7 @@ cTvguideConfig::cTvguideConfig() {
     jumpChannels = 0;
     blueKeyMode = 0;
     closeOnSwitch = 1;
+    numkeyMode = 0;
     useRemoteTimers = 0;
     hideLastGroup = 0;
     hideChannelLogos = 0;
@@ -233,6 +234,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "hugeStepHours") == 0)            hugeStepHours = atoi(Value);
     else if (strcmp(Name, "channelJumpMode") == 0)          channelJumpMode = atoi(Value);
     else if (strcmp(Name, "blueKeyMode") == 0)              blueKeyMode = atoi(Value);
+    else if (strcmp(Name, "numkeyMode") == 0)               numkeyMode = atoi(Value);
     else if (strcmp(Name, "closeOnSwitch") == 0)            closeOnSwitch = atoi(Value);
     else if (strcmp(Name, "useRemoteTimers") == 0)          useRemoteTimers = atoi(Value);
     else if (strcmp(Name, "hideLastGroup") == 0)            hideLastGroup = atoi(Value);

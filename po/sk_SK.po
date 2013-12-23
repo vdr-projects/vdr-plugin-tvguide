@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-22 10:44+0100\n"
+"POT-Creation-Date: 2013-12-23 09:03+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -14,6 +14,9 @@ msgstr ""
 
 msgid "Main Program"
 msgstr "Hlavný program"
+
+msgid "Channel"
+msgstr "Kanál"
 
 msgid "RERUNS OF THIS SHOW"
 msgstr "Repríza tohto programu"
@@ -179,9 +182,6 @@ msgstr "Zru¹i»"
 
 msgid "Create Series Timer based on"
 msgstr "Vytvorenie plánu na základe série"
-
-msgid "Channel"
-msgstr "Kanál"
 
 msgid "Series Timer start time"
 msgstr "Sériový plán zaèína"
@@ -402,6 +402,12 @@ msgstr "Modré: Prepnú» kanál, OK: Podrobné EPG"
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Modré: podrobné EPG, OK: prepnú» kanál"
 
+msgid "Timely Jump"
+msgstr ""
+
+msgid "Jump to specific channel"
+msgstr ""
+
 msgid "never"
 msgstr "nikdy"
 
@@ -434,6 +440,9 @@ msgstr "Tlaèidlá modré a OK"
 
 msgid "Close TVGuide after channel switch"
 msgstr "Zavrie» TVGuide po prepnutí kanálu"
+
+msgid "Functionality of numeric Keys"
+msgstr ""
 
 msgid "Hide last Channel Group"
 msgstr "Skry» poslednú skupinu kanálov"
@@ -632,6 +641,3 @@ msgstr ""
 
 msgid "Channel Groups Cache"
 msgstr ""
-
-#~ msgid "Height of Footer"
-#~ msgstr "Vý¹ka zápätia"

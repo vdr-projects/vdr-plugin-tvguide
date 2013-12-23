@@ -78,6 +78,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("hugeStepHours", tvguideConfig.hugeStepHours);
     SetupStore("channelJumpMode", tvguideConfig.channelJumpMode);
     SetupStore("blueKeyMode", tvguideConfig.blueKeyMode);
+    SetupStore("numkeyMode", tvguideConfig.numkeyMode);
     SetupStore("useRemoteTimers", tvguideConfig.useRemoteTimers);
     SetupStore("closeOnSwitch", tvguideConfig.closeOnSwitch);
     SetupStore("hideLastGroup", tvguideConfig.hideLastGroup);
@@ -164,6 +165,8 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
     jumpMode[1] = tr("previous / next channel group");
     blueMode[0] = tr("Blue: Channel Switch, Ok: Detailed EPG");
     blueMode[1] = tr("Blue: Detailed EPG, Ok: Channel Switch");
+    numMode[0] = tr("Timely Jump");
+    numMode[1] = tr("Jump to specific channel");
     useSubtitleRerunTexts[0] = tr("never");
     useSubtitleRerunTexts[1] = tr("if exists");
     useSubtitleRerunTexts[2] = tr("always");
@@ -185,6 +188,7 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
     Add(new cMenuEditStraItem(tr("Keys Blue and OK"), &tmpTvguideConfig->blueKeyMode, 2,  blueMode));
     Add(new cMenuEditBoolItem(tr("Close TVGuide after channel switch"), &tmpTvguideConfig->closeOnSwitch));
+    Add(new cMenuEditStraItem(tr("Functionality of numeric Keys"), &tmpTvguideConfig->numkeyMode, 2,  numMode));
     Add(new cMenuEditBoolItem(tr("Hide last Channel Group"), &tmpTvguideConfig->hideLastGroup));
     Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 120, 320));
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));

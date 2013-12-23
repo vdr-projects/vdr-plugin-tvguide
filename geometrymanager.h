@@ -45,6 +45,9 @@ public:
     int epgViewHeaderHeight;
     //Recording Menus
     int borderRecMenus;
+    //Channel Jump
+    int channelJumpWidth;
+    int channelJumpHeight;
 };
 
 #endif //__TVGUIDE_GEOMETRYMANAGER_H

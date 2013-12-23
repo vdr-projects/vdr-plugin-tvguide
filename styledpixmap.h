@@ -16,6 +16,7 @@ enum eBackgroundType {
     bgEpgHeader,
     bgButton,
     bgRecMenuBack,
+    bgChannelJump,
 };
 
 // --- cStyledPixmap -------------------------------------------------------------

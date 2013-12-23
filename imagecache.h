@@ -29,6 +29,7 @@ enum eOsdElementType {
     oeDateViewer,
     oeClock,
     oeEpgHeader,
+    oeChannelJump,
 };
 
 class cImageCache : public cImageMagickWrapper {

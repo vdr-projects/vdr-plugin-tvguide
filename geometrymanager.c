@@ -66,5 +66,9 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
     epgViewHeaderHeight = tvguideConfig.epgViewHeaderPercent * osdHeight / 100;
 
     borderRecMenus = 10;
+
+    channelJumpWidth = osdWidth * 30 / 100;
+    channelJumpHeight = osdHeight * 20 / 100;
+
     return true;
 }

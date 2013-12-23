@@ -65,6 +65,7 @@ class cTvguideConfig {
         int jumpChannels;
         int blueKeyMode;
         int closeOnSwitch;
+        int numkeyMode;
         int useRemoteTimers;
         int hideLastGroup;
         int hideChannelLogos;
@@ -161,7 +162,7 @@ class cTvguideConfig {
 
 THEME_CLR(theme, clrStyle, CLR_STYLE_BLENDING_DEFAULT);
 THEME_CLR(theme, clrBackgroundOSD, 0xB012273f);
-THEME_CLR(theme, clrBackground, 0xB012273f);
+THEME_CLR(theme, clrBackground, 0xFF12273f);
 THEME_CLR(theme, clrGrid1, 0x00000000);
 THEME_CLR(theme, clrGrid1Blending, 0x00000000);
 THEME_CLR(theme, clrGrid2, 0x00000000);
