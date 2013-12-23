@@ -17,7 +17,8 @@ Requirements
 
 - Clone Git Repository: git clone git://projects.vdr-developer.org/vdr-plugin-tvguide.git
 - VDR version >= 2.0.0
-- Installed ImageMagick for showing png/jpg Channel Logos, EPG Images and menu icons
+- Installed ImageMagick or GraphiksMagick for showing png/jpg Channel Logos, EPG Images 
+  and menu icons
 - for scaling the video picture to fit into the VDR menu window please use
   softhddevice plugin revision 87c1c7be (2013-01-01) or newer.
 - Installed epgsearch Plugin for extended search & recording features.
@@ -38,15 +39,16 @@ used Icons, the channel logos and epg images. The following paths can be set
 at startup:
 
 -l path, --logodir=path
-    Path to the logos (Default: <vdrconfdir>/plugins/tvguide/channellogos/).
+    Path to the logos (Default: <ResourceDirectory>/plugins/tvguide/channellogos/).
 
--i path, --epgimages=path
-    Path to the epgimages (Default: <vdrconfdir>/plugins/tvguide/epgimages/).
+-e path, --epgimages=path
+    Path to the epgimages (Default: <CacheDirectory>/plugins/tvguide/epgimages/).
 
--c path, --icons=path
-    Path to the icons directory (Default: <ressourcedir>/plugins/tvguide/epgimages/).
+-i path, --icons=path
+    Path to the icons directory (Default: <ResourceDirectory>/plugins/tvguide/epgimages/).
 
-ResourceDirectory is taken from your VDR configuration (make.config or vdr.pc).
+<ResourceDirectory> and <CacheDirectory> is taken from your VDR configuration 
+(make.config or vdr.pc).
 
 During a "make install" the Icons are automatically copied from <PlgSourceDirectory>/icons/
 to the default path. Included Theme files are also copied from <PlgSourceDirectory>/themes/
@@ -80,9 +82,15 @@ Ok:                    Detailed EPG View of the selected grid
 Red:                   Search & Recording Menu
 Green / Yellow:	       Jump (default) five channels back / forward
 Blue:                  Switch to currently selected channel
+
+Numeric Keys: If Setup Option "Functionality of numeric Keys" is configured
+to "Jump to specific channel", the numeric keys are used for channel number
+input. If "Timely Jump" is configured, the keys are used as follows:
+
 1 / 3:                 Big jump (default 3h) back / forward in time
 4 / 6:                 huge jump (default 24h) back / forward in time
 7 / 9:                 jump to previous / next prime time (8pm)
+
 Exit:                  closes plugin
 
 In Search & Recording menu the following options are available:
@@ -131,7 +139,13 @@ Setup Options
   Display "tvguide" in main menu
 - Replace VDR Schedules Menu
   If set to "yes", the original VDR schedules menu will be replaced by tvguide
-- Theme
+- Use appropriate nOpacity Theme: if nOpacity is configured as VDR skin, you can 
+  configure TVGuide to select the choosen nOpacity theme automatically also as 
+  TVGuide theme. If the appropriate theme is not avaiable, the default theme
+  will be used. If set to "no", you can configure the theme independend of
+  nOpacity
+  - Theme: nOpacity independent theme to use
+- Time to display in minutes: period of time to display in main EPG view
 - Rounded Corners
   Use rounded corners for displayed boxes
 - Channel Jump Mode (Keys Green / Yellow)
@@ -143,6 +157,7 @@ Setup Options
   Blue: Detailed EPG, Ok: Channel Switch
 - Close TVGuide after channel switch: If set to "no", tvguide will not be closed
   after a channel switch.
+- Functionality of numeric Keys: see chapter Usage / Remote Control Keys
 - Hide last Channel Group
   If set to yes, the channels of the last channel group will not be displayed
 - Big Step (Keys 1 / 3) in hours
@@ -176,16 +191,16 @@ Setup Options
   show / hide channel logos, if logos are shown:
   - Logo Extension
     jpg / png
-  - Logo width
-    in Pixel
-  - Logo height
-    in Pixel
+  - Logo width ratio
+  - Logo height ratio
 - Show EPG Images
   show / hide EPG images, if images are shown:
-  - EPG Image width
-    in Pixel
-  - EPG Image height
-    in Pixel
+  - EPG Image width ratio
+  - EPG Image height ratio
+  - Number of additional EPG Images: number of additional EPG
+    images displayed at the bottom of the detailed EPG view.
+  - Additional EPG Image width (in Pixel)
+  - Additional EPG Image height (in Pixel)
 	
 * Fonts and Fontsizes:
 
