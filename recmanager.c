@@ -98,14 +98,14 @@ cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
         Timers.Add(timer);
         isyslog("timer %s added (active)", *timer->ToDescr());
     }
-    SetTimerPath(timer, path);
+    SetTimerPath(timer, event, path);
     Timers.SetModified();
     return timer;
 }
 
 cTimer *cRecManager::createRemoteTimer(const cEvent *event, std::string path) {
     cTimer *t = new cTimer(event);
-    SetTimerPath(t, path);
+    SetTimerPath(t, event, path);
     RemoteTimers_Timer_v1_0 rt;
     rt.timer = t;
     pRemoteTimers->Service("RemoteTimers::GetTimer-v1.0", &rt.timer);
@@ -122,12 +122,19 @@ cTimer *cRecManager::createRemoteTimer(const cEvent *event, std::string path) {
     return rt.timer;
 }
 
-void cRecManager::SetTimerPath(cTimer *timer, std::string path) {
+void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string path) {
+    cString newFileName;
     if (path.size() > 0) {
         std::replace(path.begin(), path.end(), '/', '~');
-        cString newFileName = cString::sprintf("%s~%s", path.c_str(), timer->File());
-        timer->SetFile(*newFileName);
+        newFileName = cString::sprintf("%s~%s", path.c_str(), timer->File());
+    } else {
+        newFileName = event->Title();
     }
+    
+    if(!isempty(event->ShortText()))
+        newFileName = cString::sprintf("%s~%s", *newFileName, event->ShortText());
+    
+    timer->SetFile(*newFileName);
 }
 
 void cRecManager::DeleteTimer(int timerID) {

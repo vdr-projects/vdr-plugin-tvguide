@@ -42,7 +42,7 @@ public:
     cTimer *createTimer(const cEvent *event, std::string path);
     cTimer *createLocalTimer(const cEvent *event, std::string path);
     cTimer *createRemoteTimer(const cEvent *event, std::string path);
-    void SetTimerPath(cTimer *timer, std::string path);
+    void SetTimerPath(cTimer *timer, const cEvent *event, std::string path);
     void DeleteTimer(int timerID);
     void DeleteTimer(const cEvent *event);
     void DeleteLocalTimer(const cEvent *event);
