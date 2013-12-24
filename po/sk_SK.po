@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-23 09:03+0100\n"
+"POT-Creation-Date: 2013-12-24 11:13+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -429,6 +429,9 @@ msgstr ""
 msgid "Theme"
 msgstr "Téma"
 
+msgid "Time to display in minutes"
+msgstr "Zobrazený èas v minútach"
+
 msgid "Rounded Corners"
 msgstr "Zaoblené rohy"
 
@@ -446,9 +449,6 @@ msgstr ""
 
 msgid "Hide last Channel Group"
 msgstr "Skry» poslednú skupinu kanálov"
-
-msgid "Time to display in minutes"
-msgstr "Zobrazený èas v minútach"
 
 msgid "Big Step (Keys 1 / 3) in hours"
 msgstr "Veµké skoky (tlaèidlá 1 / 3) v hodinách"

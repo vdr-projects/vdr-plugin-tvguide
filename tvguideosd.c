@@ -434,7 +434,10 @@ void cTvGuideOsd::processKeyGreen() {
     if (prev) {
         readChannels(prev);
         if (columns.Count() > 0) {
-            drawGridsChannelJump(currentCol);
+            if (tvguideConfig.channelJumpMode == eGroupJump)
+                drawGridsChannelJump();
+            else
+                drawGridsChannelJump(currentCol);
         }
         osdManager.flush();
     }
@@ -471,7 +474,10 @@ void cTvGuideOsd::processKeyYellow() {
     if (next) {
         readChannels(next);
         if (columns.Count() > 0) {
-            drawGridsChannelJump(currentCol);
+            if (tvguideConfig.channelJumpMode == eGroupJump)
+                drawGridsChannelJump();
+            else
+                drawGridsChannelJump(currentCol);
         }
         osdManager.flush();
     }

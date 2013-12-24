@@ -7,23 +7,23 @@
 #include "channeljump.h"
 
 cChannelJump::cChannelJump(cChannelGroups *channelGroups) {
-	this->channelGroups = channelGroups;
-	pixmapText = NULL;
-	channel = 0;
+    this->channelGroups = channelGroups;
+    pixmapText = NULL;
+    channel = 0;
 	if (!tvguideConfig.hideLastGroup) {
-		maxChannels = Channels.MaxNumber();
+        maxChannels = Channels.MaxNumber();
 	} else {
-		maxChannels = channelGroups->GetLastValidChannel();
-	}
-	timeout = Setup.ChannelEntryTimeout;
-	startTime = cTimeMs::Now();
-	SetPixmaps();
-	Draw();
+        maxChannels = channelGroups->GetLastValidChannel();
+    }
+    timeout = Setup.ChannelEntryTimeout;
+    startTime = cTimeMs::Now();
+    SetPixmaps();
+    Draw();
 }
 
 cChannelJump::~cChannelJump(void) {
-	osdManager.releasePixmap(pixmapBack);
-	osdManager.releasePixmap(pixmapText);
+    osdManager.releasePixmap(pixmapBack);
+    osdManager.releasePixmap(pixmapText);
 }
 
 void cChannelJump::SetPixmaps(void) {
@@ -37,7 +37,7 @@ void cChannelJump::SetPixmaps(void) {
 
 void cChannelJump::Draw(void) {
 	if (tvguideConfig.style == eStyleGraphical) {
-		drawBackgroundGraphical(bgChannelJump);
+        drawBackgroundGraphical(bgChannelJump);
 	} else {
         pixmap->Fill(theme.Color(clrBackground));
         drawBorder();
@@ -47,9 +47,9 @@ void cChannelJump::Draw(void) {
 }
 
 void cChannelJump::DrawText(void) {
-	pixmapText->Fill(clrTransparent);
+    pixmapText->Fill(clrTransparent);
 
-	cString header = cString::sprintf("%s:", tr("Channel"));
+    cString header = cString::sprintf("%s:", tr("Channel"));
 
 	const cFont *font = fontManager.FontMessageBox;
 	const cFont *fontHeader = fontManager.FontMessageBoxLarge;
