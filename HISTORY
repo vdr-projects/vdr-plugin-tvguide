@@ -93,3 +93,4 @@ Version 1.1.0
 - Fixed Bug 1484
 - Added Event Short Text (if available) to RecName (Closes Ticket 1490)
 - Fixed OSD Background Color (Closes Ticket 1474)
+- Rounded Corners for color buttons (Closes Ticket 1475)

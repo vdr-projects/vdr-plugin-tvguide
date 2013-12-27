@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <vdr/osd.h>
 
 #include "tools.h"
 
@@ -50,6 +51,23 @@ std::string StrToLowerCase(std::string str) {
     }
     return lowerCase;
 }
+
+void DrawRoundedCorners(cPixmap *p, int posX, int posY, int width, int height, int radius, int borderWidth, tColor borderColor) {
+    if( height > 2*radius) {
+        p->DrawEllipse(cRect(posX, posY, radius, radius), borderColor, -2);
+        p->DrawEllipse(cRect(posX - borderWidth, posY - borderWidth, radius, radius), clrTransparent, -2);
+
+        p->DrawEllipse(cRect(posX+width - radius, posY, radius, radius), borderColor, -1);
+        p->DrawEllipse(cRect(posX+width - radius + borderWidth, posY - borderWidth, radius, radius), clrTransparent, -1);
+        
+        p->DrawEllipse(cRect(posX, posY + height - radius, radius, radius), borderColor, -3);
+        p->DrawEllipse(cRect(posX - borderWidth, posY + height - radius + borderWidth, radius, radius), clrTransparent, -3);
+        
+        p->DrawEllipse(cRect(posX + width - radius, posY + height - radius, radius, radius), borderColor, -4);
+        p->DrawEllipse(cRect(posX + width - radius + borderWidth, posY + height - radius + borderWidth, radius, radius), clrTransparent, -4);
+    }
+}
+
 
 /****************************************************************************************
 *            SPLTSTRING

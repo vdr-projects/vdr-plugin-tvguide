@@ -102,6 +102,11 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, eOs
         imgLoader.DrawBackground(theme.Color(clrButtonBlend), color, geoManager.buttonWidth-4, geoManager.buttonHeight-4);
         footer->DrawRectangle(cRect(left, buttonY, geoManager.buttonWidth, geoManager.buttonHeight), borderColor);
         footer->DrawImage(cPoint(left+2, buttonY+2), imgLoader.GetImage());    
+        if (tvguideConfig.roundedCorners) {
+            int borderRadius = 12;
+            int borderWidth = 2;
+            DrawRoundedCorners(footer, left, buttonY, geoManager.buttonWidth, geoManager.buttonHeight, borderRadius, borderWidth, borderColor);
+        }
     } else if (tvguideConfig.style == eStyleGraphical) {
         cImage *button = imgCache.GetOsdElement(buttonType);
         if (button) {
@@ -109,7 +114,12 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, eOs
         }
     } else {
         footer->DrawRectangle(cRect(left, buttonY, geoManager.buttonWidth, geoManager.buttonHeight), borderColor); 
-        footer->DrawRectangle(cRect(left+2, buttonY+2, geoManager.buttonWidth-4, geoManager.buttonHeight-4), color); 
+        footer->DrawRectangle(cRect(left+1, buttonY+1, geoManager.buttonWidth-2, geoManager.buttonHeight-2), color);
+        if (tvguideConfig.roundedCorners) {
+            int borderRadius = 12;
+            int borderWidth = 1;
+            DrawRoundedCorners(footer, left, buttonY, geoManager.buttonWidth, geoManager.buttonHeight, borderRadius, borderWidth, borderColor);
+        }
     }
     
     int textWidth = fontManager.FontButton->Width(text);
