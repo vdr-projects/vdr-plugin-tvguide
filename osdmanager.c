@@ -16,6 +16,7 @@ bool cOsdManager::setOsd() {
 }
 
 void cOsdManager::setBackground() {
+    
     if (tvguideConfig.displayStatusHeader && tvguideConfig.scaleVideo) {
         int widthStatus = cOsd::OsdWidth() - geoManager.statusHeaderHeight * 16 / 9;
         osd->DrawRectangle(0, 0, widthStatus, geoManager.statusHeaderHeight, theme.Color(clrBackgroundOSD));
@@ -23,6 +24,7 @@ void cOsdManager::setBackground() {
     }
     else
         osd->DrawRectangle(0, 0, Width(), Height(), theme.Color(clrBackgroundOSD));
+    
 }
 
 cPixmap *cOsdManager::requestPixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort) {

@@ -133,13 +133,13 @@ int cStatusHeader::DrawPoster(const cEvent *event, int x, int y, int height, int
 
 void cStatusHeader::DecorateVideoFrame(void) {
     int radius = 16;
-    int frame = 10;
-    pixmapTVFrame->DrawRectangle(cRect(0, 0, tvFrameWidth, frame), theme.Color(clrBackground));
-    pixmapTVFrame->DrawEllipse(cRect(frame,frame,radius,radius), theme.Color(clrBackground), -2);
-    pixmapTVFrame->DrawRectangle(cRect(tvFrameWidth - frame, frame, frame, height - 2*frame), theme.Color(clrBackground));      
-    pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, frame, radius, radius), theme.Color(clrBackground), -1);
-    pixmapTVFrame->DrawRectangle(cRect(0, frame, frame, height - 2*frame), theme.Color(clrBackground)); 
-    pixmapTVFrame->DrawEllipse(cRect(frame, height - radius - frame, radius, radius), theme.Color(clrBackground), -3);
-    pixmapTVFrame->DrawRectangle(cRect(0, height - frame, tvFrameWidth, frame), theme.Color(clrBackground));
-    pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, height - radius - frame, radius, radius), theme.Color(clrBackground), -4);
+    int frame = 2;
+    pixmapTVFrame->DrawRectangle(cRect(0, 0, tvFrameWidth, frame), theme.Color(clrBackgroundOSD));
+    pixmapTVFrame->DrawEllipse(cRect(frame,frame,radius,radius), theme.Color(clrBackgroundOSD), -2);
+    pixmapTVFrame->DrawRectangle(cRect(tvFrameWidth - frame, frame, frame, height - 2*frame), theme.Color(clrBackgroundOSD));      
+    pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, frame, radius, radius), theme.Color(clrBackgroundOSD), -1);
+    pixmapTVFrame->DrawRectangle(cRect(0, frame, frame, height - 2*frame), theme.Color(clrBackgroundOSD)); 
+    pixmapTVFrame->DrawEllipse(cRect(frame, height - radius - frame, radius, radius), theme.Color(clrBackgroundOSD), -3);
+    pixmapTVFrame->DrawRectangle(cRect(0, height - frame, tvFrameWidth, frame), theme.Color(clrBackgroundOSD));
+    pixmapTVFrame->DrawEllipse(cRect(tvFrameWidth - radius - frame, height - radius - frame, radius, radius), theme.Color(clrBackgroundOSD), -4);
 }

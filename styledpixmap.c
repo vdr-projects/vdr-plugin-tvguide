@@ -138,10 +138,10 @@ void cStyledPixmap::drawBorder() {
 }
 
 void cStyledPixmap::drawDefaultBorder(int width, int height) {
-    pixmap->DrawRectangle(cRect(0,0,width,2), theme.Color(clrBackground));          //top
-    pixmap->DrawRectangle(cRect(0,0,2,height), theme.Color(clrBackground));         //left
-    pixmap->DrawRectangle(cRect(0,height-2,width,2), theme.Color(clrBackground));   //bottom
-    pixmap->DrawRectangle(cRect(width-2,0,2,height), theme.Color(clrBackground));   //right
+    pixmap->DrawRectangle(cRect(0,0,width,2), clrTransparent);          //top
+    pixmap->DrawRectangle(cRect(0,0,2,height), clrTransparent);         //left
+    pixmap->DrawRectangle(cRect(0,height-2,width,2), clrTransparent);   //bottom
+    pixmap->DrawRectangle(cRect(width-2,0,2,height), clrTransparent);   //right
     
     pixmap->DrawRectangle(cRect(2,2,width-4,1), theme.Color(clrBorder));            //top
     pixmap->DrawRectangle(cRect(2,2,1,height-4), theme.Color(clrBorder));           //left
@@ -160,17 +160,17 @@ void cStyledPixmap::drawBoldBorder() {
 
 void cStyledPixmap::drawRoundedCorners(int width, int height, int radius) {
     pixmap->DrawEllipse(cRect(2,2,radius,radius), theme.Color(clrBorder), -2);
-    pixmap->DrawEllipse(cRect(1,1,radius,radius), theme.Color(clrBackground), -2);
+    pixmap->DrawEllipse(cRect(1,1,radius,radius), clrTransparent, -2);
 
     pixmap->DrawEllipse(cRect(width-radius - 2,2,radius,radius), theme.Color(clrBorder), -1);
-    pixmap->DrawEllipse(cRect(width-radius - 1,1,radius,radius), theme.Color(clrBackground), -1);
+    pixmap->DrawEllipse(cRect(width-radius - 1,1,radius,radius), clrTransparent, -1);
     
     if( height > 2*radius) {
         pixmap->DrawEllipse(cRect(2,height-radius - 2,radius,radius), theme.Color(clrBorder), -3);
-        pixmap->DrawEllipse(cRect(1,height-radius - 1,radius,radius), theme.Color(clrBackground), -3);
+        pixmap->DrawEllipse(cRect(1,height-radius - 1,radius,radius), clrTransparent, -3);
         
         pixmap->DrawEllipse(cRect(width-radius - 2,height-radius - 2,radius,radius), theme.Color(clrBorder), -4);
-        pixmap->DrawEllipse(cRect(width-radius - 1,height-radius - 1,radius,radius), theme.Color(clrBackground), -4);
+        pixmap->DrawEllipse(cRect(width-radius - 1,height-radius - 1,radius,radius), clrTransparent, -4);
     }
 }
 

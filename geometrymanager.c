@@ -32,6 +32,7 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
     clockWidth = tvFrameWidth / 3;
     clockHeight = timeLineHeight;
     footerHeight = tvguideConfig.footerHeightPercent * osdHeight / 100;
+    footerY = osdHeight - footerHeight;
 
     if (tvguideConfig.displayMode == eVertical) {
         colWidth = (osdWidth - timeLineWidth) / tvguideConfig.channelCols;
@@ -58,7 +59,6 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
         dateVieverWidth = channelHeaderWidth + channelGroupsWidth;
         dateVieverHeight = timeLineHeight;
     }
-
     buttonBorder = footerHeight / 6;
     buttonWidth = osdWidth / 4 - 2 * buttonBorder;
     buttonHeight = footerHeight - 3 * buttonBorder;

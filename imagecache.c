@@ -623,11 +623,8 @@ void cImageCache::Clear(void) {
     }
     logoCache.clear();
     
-    if (tempStaticLogo) {
+    if (tempStaticLogo)
         delete tempStaticLogo;
-        tempStaticLogo = NULL;
-    }
-    
     if (groupsHead)
         delete groupsHead;
     if (groupsBottom)
@@ -636,7 +633,6 @@ void cImageCache::Clear(void) {
         delete groupsLeft;
     if (groupsRight)
         delete groupsRight;
-
     if (imgLeft)
         delete imgLeft;
     if (imgLeftActive)
@@ -653,4 +649,18 @@ void cImageCache::Clear(void) {
         delete imgBottom;
     if (imgBottomActive)
         delete imgBottomActive;
+    
+    tempStaticLogo = NULL;
+    groupsHead = NULL;
+    groupsBottom = NULL;
+    groupsLeft = NULL;
+    groupsRight = NULL;
+    imgLeft = NULL;
+    imgLeftActive = NULL;
+    imgRight = NULL;
+    imgRightActive = NULL;
+    imgHead = NULL;
+    imgHeadActive = NULL;
+    imgBottom = NULL;
+    imgBottomActive = NULL;
 }

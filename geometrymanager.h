@@ -37,6 +37,7 @@ public:
     int clockWidth;
     int clockHeight;
     //Footer
+    int footerY;
     int footerHeight;
     int buttonWidth;
     int buttonHeight;

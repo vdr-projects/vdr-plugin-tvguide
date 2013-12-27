@@ -533,7 +533,6 @@ void cTvGuideOsd::DetailedEPG() {
 }
 
 void cTvGuideOsd::processNumKey(int numKey) {
-    esyslog("tvguide: %d pressed", numKey);
     if (tvguideConfig.numkeyMode == 0) {
         //timely jumps with 1,3,4,6,7,9
         TimeJump(numKey);

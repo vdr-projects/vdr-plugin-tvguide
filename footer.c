@@ -8,9 +8,8 @@ cFooter::cFooter(cChannelGroups *channelGroups) {
     currentGroup = -1;
     buttonY = (geoManager.footerHeight - geoManager.buttonHeight)/2;
     SetButtonPositions();
-    
     footer = osdManager.requestPixmap(2, cRect( 0, 
-                                                geoManager.osdHeight - geoManager.footerHeight, 
+                                                geoManager.footerY, 
                                                 geoManager.osdWidth, 
                                                 geoManager.footerHeight),
                                          cRect::Null);

@@ -1,7 +1,7 @@
 Description = IceBlue
 clrStyle = 00000000
 clrBackground = DDFFFFFF
-clrBackgroundOSD = DDFFFFFF
+clrBackgroundOSD = FFFFFFFF
 clrGrid1 = BB555555
 clrGrid2 = BB888888
 clrHighlight = FF000044

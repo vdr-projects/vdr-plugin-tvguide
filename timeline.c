@@ -16,10 +16,6 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                                      0, 
                                                      geoManager.timeLineWidth, 
                                                      1440*geoManager.minutePixel));
-        timelineBack = osdManager.requestPixmap(1, cRect(0, 
-                                                     geoManager.statusHeaderHeight + geoManager.channelHeaderHeight + geoManager.channelGroupsHeight, 
-                                                     geoManager.timeLineWidth, 
-                                                     geoManager.osdHeight - geoManager.statusHeaderHeight - geoManager.channelHeaderHeight - geoManager.channelGroupsHeight - geoManager.footerHeight));
     } else if (tvguideConfig.displayMode == eHorizontal) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
                                                                          geoManager.statusHeaderHeight, 
@@ -32,10 +28,6 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                              , cRect(0,
                                                      0, 
                                                      1440*geoManager.minutePixel, 
-                                                     geoManager.timeLineHeight));
-        timelineBack = osdManager.requestPixmap(1, cRect(geoManager.channelHeaderWidth + geoManager.channelGroupsWidth, 
-                                                     geoManager.statusHeaderHeight, 
-                                                     geoManager.osdWidth - geoManager.channelHeaderWidth - geoManager.channelGroupsWidth,
                                                      geoManager.timeLineHeight));
     }
 
@@ -55,7 +47,6 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
 cTimeLine::~cTimeLine(void) {
     delete dateViewer;
     osdManager.releasePixmap(timeline);
-    osdManager.releasePixmap(timelineBack);
     if (clock)
         delete clock;
 }
@@ -75,7 +66,7 @@ void cTimeLine::drawDateViewer() {
         else
             dateViewer->Fill(clrTransparent);
     }
-    tColor colorFont = theme.Color(clrTimeline1);
+    tColor colorFont = theme.Color(clrFont);
     tColor colorFontBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
 
     if (tvguideConfig.displayMode == eVertical) {
@@ -93,9 +84,8 @@ void cTimeLine::drawDateViewer() {
 }
 
 void cTimeLine::drawTimeline() {
-    timelineBack->Fill(clrBlack);
     timeline->SetTile(true);
-    timeline->Fill(theme.Color(clrBackground));
+    timeline->Fill(clrTransparent);
     tColor colorFont, colorBackground;
     
     int imgWidth = geoManager.timeLineGridWidth;
@@ -170,10 +160,10 @@ void cTimeLine::drawTimeline() {
 }
 
 void cTimeLine::decorateTile(int posX, int posY, int tileWidth, int tileHeight) {
-    timeline->DrawRectangle(cRect(posX,posY,tileWidth,2), theme.Color(clrBackground));          //top
-    timeline->DrawRectangle(cRect(posX,posY,2,tileHeight), theme.Color(clrBackground));         //left
-    timeline->DrawRectangle(cRect(posX,posY + tileHeight-2,tileWidth,2), theme.Color(clrBackground));   //bottom
-    timeline->DrawRectangle(cRect(posX + tileWidth-2,posY,2,tileHeight), theme.Color(clrBackground));   //right
+    timeline->DrawRectangle(cRect(posX,posY,tileWidth,2), clrTransparent);          //top
+    timeline->DrawRectangle(cRect(posX,posY,2,tileHeight), clrTransparent);         //left
+    timeline->DrawRectangle(cRect(posX,posY + tileHeight-2,tileWidth,2), clrTransparent);   //bottom
+    timeline->DrawRectangle(cRect(posX + tileWidth-2,posY,2,tileHeight), clrTransparent);   //right
 
     timeline->DrawRectangle(cRect(2+posX,posY+2,tileWidth-4,1), theme.Color(clrBorder));            //top
     timeline->DrawRectangle(cRect(2+posX,posY+2,1,tileHeight-4), theme.Color(clrBorder));           //left
@@ -188,17 +178,17 @@ void cTimeLine::decorateTile(int posX, int posY, int tileWidth, int tileHeight) 
 
 void cTimeLine::drawRoundedCorners(int posX, int posY, int width, int height, int radius) {
     timeline->DrawEllipse(cRect(posX+2,posY+2,radius,radius), theme.Color(clrBorder), -2);
-    timeline->DrawEllipse(cRect(posX+1,posY+1,radius,radius), theme.Color(clrBackground), -2);
+    timeline->DrawEllipse(cRect(posX+1,posY+1,radius,radius), clrTransparent, -2);
 
     timeline->DrawEllipse(cRect(posX+width-radius - 2,posY+2,radius,radius), theme.Color(clrBorder), -1);
-    timeline->DrawEllipse(cRect(posX+width-radius - 1,posY+1,radius,radius), theme.Color(clrBackground), -1);
+    timeline->DrawEllipse(cRect(posX+width-radius - 1,posY+1,radius,radius), clrTransparent, -1);
     
     if( height > 2*radius) {
         timeline->DrawEllipse(cRect(posX+2,posY+height-radius - 2,radius,radius), theme.Color(clrBorder), -3);
-        timeline->DrawEllipse(cRect(posX+1,posY+height-radius - 1,radius,radius), theme.Color(clrBackground), -3);
+        timeline->DrawEllipse(cRect(posX+1,posY+height-radius - 1,radius,radius), clrTransparent, -3);
         
         timeline->DrawEllipse(cRect(posX+width-radius - 2,posY+height-radius - 2,radius,radius), theme.Color(clrBorder), -4);
-        timeline->DrawEllipse(cRect(posX+width-radius - 1,posY+height-radius - 1,radius,radius), theme.Color(clrBackground), -4);
+        timeline->DrawEllipse(cRect(posX+width-radius - 1,posY+height-radius - 1,radius,radius), clrTransparent, -4);
     }
 }
 

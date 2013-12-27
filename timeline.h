@@ -11,7 +11,6 @@ private:
     cMyTime *myTime;
     cStyledPixmap *dateViewer;
     cPixmap *timeline;
-    cPixmap *timelineBack;
     cStyledPixmap *clock;
     cImage *createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend);
     void decorateTile(int posX, int posY, int tileWidth, int tileHeight);
