@@ -123,6 +123,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 if (ev) {
                     activeMenu->Hide();
                     detailView = new cDetailView(ev);
+                    detailView->setContent();
                     detailView->drawHeader();
                     detailView->drawContent();
                     detailView->drawScrollbar();
@@ -410,6 +411,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (ev) {
                 activeMenu->Hide();
                 detailView = new cDetailView(ev);
+                detailView->setContent();
                 detailView->drawHeader();
                 detailView->drawContent();
                 detailView->drawScrollbar();

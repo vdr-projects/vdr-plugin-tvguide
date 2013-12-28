@@ -154,23 +154,27 @@ void cRecMenuItemButtonYesNo::setBackground() {
     if (tvguideConfig.style == eStyleGraphical) {
         drawBackgroundGraphical(bgButton, yesActive&&active);
         colorTextBack = clrTransparent;
+        colorTextNoBack = clrTransparent;
         colorText = (active&&yesActive)?theme.Color(clrFontActive):theme.Color(clrFont);
         colorTextNo = (active&&!yesActive)?theme.Color(clrFontActive):theme.Color(clrFont);
         pixmapNo->drawBackgroundGraphical(bgButton, active&&!yesActive);
     } else {
+        tColor colorNoBack;
         if (active) {
             if (yesActive) {
                 color = theme.Color(clrHighlight);
                 colorBlending = theme.Color(clrHighlightBlending);
                 colorText = theme.Color(clrFontActive);
-                pixmapNo->setColor( theme.Color(clrGrid1),
+                colorNoBack = theme.Color(clrGrid1);
+                pixmapNo->setColor( colorNoBack,
                                     theme.Color(clrGrid1Blending));
                 colorTextNo = theme.Color(clrFont);
             } else {
                 color = theme.Color(clrGrid1);
                 colorBlending = theme.Color(clrGrid1Blending);
                 colorText = theme.Color(clrFont);
-                pixmapNo->setColor( theme.Color(clrHighlight),
+                colorNoBack = theme.Color(clrHighlight);
+                pixmapNo->setColor( colorNoBack,
                                     theme.Color(clrHighlightBlending));
                 colorTextNo = theme.Color(clrFontActive);
             }
@@ -178,11 +182,13 @@ void cRecMenuItemButtonYesNo::setBackground() {
             color = theme.Color(clrGrid1);
             colorBlending = theme.Color(clrGrid1Blending);
             colorText = theme.Color(clrFont);
-            pixmapNo->setColor( theme.Color(clrGrid1),
+            colorNoBack = theme.Color(clrGrid1);
+            pixmapNo->setColor( colorNoBack,
                                 theme.Color(clrGrid1Blending));
             colorTextNo = theme.Color(clrFont);
         }
         colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
+        colorTextNoBack = (tvguideConfig.style == eStyleFlat)?colorNoBack:clrTransparent;
         drawBackground();
         drawBorder();
         pixmapNo->drawBackground();
@@ -194,8 +200,8 @@ void cRecMenuItemButtonYesNo::Draw(void) {
     int textYesX = (pixmap->ViewPort().Width() - font->Width(*textYes)) / 2;
     int textNoX = (pixmapNo->Width() - font->Width(*textNo)) / 2;
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(textYesX, textY), *textYes, colorText, clrTransparent, font);
-    pixmapNo->DrawText(cPoint(textNoX, textY), *textNo, colorTextNo, clrTransparent, font);
+    pixmap->DrawText(cPoint(textYesX, textY), *textYes, colorText, colorTextBack, font);
+    pixmapNo->DrawText(cPoint(textNoX, textY), *textNo, colorTextNo, colorTextNoBack, font);
 }
 
 eRecMenuState cRecMenuItemButtonYesNo::ProcessKey(eKeys Key) {
@@ -1383,9 +1389,9 @@ void cRecMenuItemTimer::Draw(void) {
     cString timeEnd = TimeString(timer->StopTime());
     cString timerTime = cString::sprintf("%s - %s", *timeStart, *timeEnd);
     cString channelInfo = cString::sprintf("%s, %s %d", *channelName, tr("Transp."), channelTransponder); 
-    pixmap->DrawText(cPoint(textX, textHeightLine1), *timerTitle, theme.Color(clrFont), clrTransparent, font);
-    pixmap->DrawText(cPoint(textX, textHeightLine2), *timerTime, theme.Color(clrFont), clrTransparent, fontSmall);
-    pixmap->DrawText(cPoint(textX, textHeightLine3), *channelInfo, theme.Color(clrFont), clrTransparent, fontSmall);
+    pixmap->DrawText(cPoint(textX, textHeightLine1), *timerTitle, theme.Color(clrFont), colorTextBack, font);
+    pixmap->DrawText(cPoint(textX, textHeightLine2), *timerTime, theme.Color(clrFont), colorTextBack, fontSmall);
+    pixmap->DrawText(cPoint(textX, textHeightLine3), *channelInfo, theme.Color(clrFont), colorTextBack, fontSmall);
 
     DrawTimerConflict();
 }
@@ -1523,7 +1529,7 @@ void cRecMenuItemTimerConflictHeader::Draw(void) {
     cString headerText = tr("Timer Conflict");
     int xHeader = (xConfl - font->Width(*headerText)) / 2;
     int yHeader = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(xHeader, yHeader), *headerText, theme.Color(clrFont), clrTransparent, font);
+    pixmap->DrawText(cPoint(xHeader, yHeader), *headerText, theme.Color(clrFont), colorTextBack, font);
     
     pixmap->DrawRectangle(cRect(xConfl, 0, widthConfl, height), theme.Color(clrRecMenuTimerConflictBackground));
     
@@ -1544,10 +1550,10 @@ void cRecMenuItemTimerConflictHeader::Draw(void) {
     int xConflStop = width - fontSmall->Width(*strConflStop) - 2;
     int xOverlapStart = xOverlap - fontSmall->Width(*strOverlapStart) - 2;
     int xOverlapStop = xOverlap + widthOverlap + 2;
-    pixmap->DrawText(cPoint(xConflStart, y1), *strConflStart, theme.Color(clrRecMenuTimerConflictBar), clrTransparent, fontSmall);
-    pixmap->DrawText(cPoint(xConflStop, y1), *strConflStop, theme.Color(clrRecMenuTimerConflictBar), clrTransparent, fontSmall);
-    pixmap->DrawText(cPoint(xOverlapStart, y2), *strOverlapStart, theme.Color(clrRecMenuTimerConflictOverlap), clrTransparent, fontSmall);
-    pixmap->DrawText(cPoint(xOverlapStop, y2), *strOverlapStop, theme.Color(clrRecMenuTimerConflictOverlap), clrTransparent, fontSmall);
+    pixmap->DrawText(cPoint(xConflStart, y1), *strConflStart, theme.Color(clrRecMenuTimerConflictBar), colorTextBack, fontSmall);
+    pixmap->DrawText(cPoint(xConflStop, y1), *strConflStop, theme.Color(clrRecMenuTimerConflictBar), colorTextBack, fontSmall);
+    pixmap->DrawText(cPoint(xOverlapStart, y2), *strOverlapStart, theme.Color(clrRecMenuTimerConflictOverlap), colorTextBack, fontSmall);
+    pixmap->DrawText(cPoint(xOverlapStop, y2), *strOverlapStop, theme.Color(clrRecMenuTimerConflictOverlap), colorTextBack, fontSmall);
 }
 
 // --- cRecMenuItemEvent  -------------------------------------------------------

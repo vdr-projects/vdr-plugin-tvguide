@@ -121,6 +121,7 @@ private:
     bool yesActive;
     cStyledPixmap *pixmapNo;
     tColor colorTextNo;
+    tColor colorTextNoBack;
 public:
     cRecMenuItemButtonYesNo(cString textYes,
                             cString textNo,
