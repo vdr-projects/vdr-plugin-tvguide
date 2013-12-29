@@ -2,10 +2,10 @@
 #include <sstream>
 #include <map>
 #include <vdr/channels.h>
-#include "imagecache.h"
 #include "config.h"
 #include "imagescaler.h"
 #include "tools.h"
+#include "imagecache.h"
 
 cImageCache::cImageCache() : cImageMagickWrapper() {
     tempStaticLogo = NULL;
@@ -372,6 +372,27 @@ cImage *cImageCache::GetLogo(const cChannel *channel) {
     return NULL;
 }
 
+cImage *cImageCache::GetIcon(std::string name, int width, int height) {
+    std::stringstream iconName;
+    iconName << name << width << "x" << height;
+    std::map<std::string, cImage*>::iterator hit = iconCache.find(iconName.str());
+    if (hit != iconCache.end()) {
+        return (cImage*)hit->second;
+    } else {
+        std::stringstream iconPath;
+        iconPath << "recmenuicons/" << name;
+        bool success = LoadIcon(iconPath.str());
+        if (success) {
+            cImage *image = CreateImage(width, height);
+            iconCache.insert(std::pair<std::string, cImage*>(iconName.str(), image));
+            hit = iconCache.find(iconName.str());
+            if (hit != iconCache.end()) {
+                return (cImage*)hit->second;
+            }
+        }
+    }
+    return NULL;
+}
 
 void cImageCache::InsertIntoOsdElementCache(eOsdElementType type, int width, int height) {
     cImage *image = CreateImage(width, height, false);
@@ -578,7 +599,7 @@ std::string cImageCache::GetCacheSize(eCacheType type) {
                 sizeByte += img->Width() * img->Height() * sizeof(tColor);
         }
         numImages = osdElementCache.size();
-    } else if ((type == ctGrid) || (type == ctLogo) || (type == ctChannelGroup)) {
+    } else if ((type == ctGrid) || (type == ctLogo) || (type == ctChannelGroup) || (type == ctIcon)) {
         std::map<std::string, cImage*> *cache;
         if (type == ctGrid)
             cache = &gridCache;
@@ -586,6 +607,8 @@ std::string cImageCache::GetCacheSize(eCacheType type) {
             cache = &logoCache;
         else if (type == ctChannelGroup)
             cache = &groupsCache;
+        else if (type == ctIcon)
+            cache = &iconCache;
 
         for(std::map<std::string, cImage*>::const_iterator it = cache->begin(); it != cache->end(); it++) {
             cImage *img = (cImage*)it->second;
@@ -622,6 +645,12 @@ void cImageCache::Clear(void) {
         delete img;
     }
     logoCache.clear();
+
+    for(std::map<std::string, cImage*>::const_iterator it = iconCache.begin(); it != iconCache.end(); it++) {
+        cImage *img = (cImage*)it->second;
+        delete img;
+    }
+    iconCache.clear();
     
     if (tempStaticLogo)
         delete tempStaticLogo;

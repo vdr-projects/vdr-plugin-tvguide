@@ -77,8 +77,13 @@ bool cImageLoader::LoadPoster(const char *poster, int width, int height) {
 bool cImageLoader::LoadIcon(const char *cIcon, int size) {
     if (size==0)
         return false;
+    cString iconPathTheme = cString::sprintf("%s%s/recmenuicons/", *tvguideConfig.iconPath, *tvguideConfig.themeName);
     bool success = false;
-    success = LoadImage(cIcon, *tvguideConfig.iconPath, "png");
+    success = LoadImage(cIcon, *iconPathTheme, "png");
+    if (!success) {
+        cString iconPathdefault = cString::sprintf("%s/recmenuicons/", *tvguideConfig.iconPath);
+        success = LoadImage(cIcon, *iconPathdefault, "png");
+    }
     if (!success)
         return false;
     buffer.sample(Geometry(size, size));

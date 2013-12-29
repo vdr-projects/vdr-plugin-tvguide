@@ -177,20 +177,23 @@ cRecMenuAskDeleteTimer::cRecMenuAskDeleteTimer(const cEvent *event) {
 }
 
 // --- cRecMenuTimerConflicts  ---------------------------------------------------------
-cRecMenuTimerConflicts::cRecMenuTimerConflicts(std::vector<TVGuideTimerConflict> conflicts) {
-    int numConflicts = conflicts.size();
+cRecMenuTimerConflicts::cRecMenuTimerConflicts(cTVGuideTimerConflicts *conflicts) {
+    int numConflicts = conflicts->NumConflicts();
     
     cString text;
     if (numConflicts == 1) {
         text = cString::sprintf("%s %s %s", tr("One"), tr("Timer Conflict"), tr("detected"));
     } else {
-        text = cString::sprintf("%d %s %s", (int)conflicts.size(), tr("Timer Conflicts"), tr("detected"));
+        text = cString::sprintf("%d %s %s", conflicts->NumConflicts(), tr("Timer Conflicts"), tr("detected"));
     }
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
     
     for (int i=0; i<numConflicts; i++) {
-        cString dateTime = DayDateTime(conflicts[i].time);
-        int numTimers = conflicts[i].timerIDs.size();
+        cTVGuideTimerConflict *conflict = conflicts->GetConflict(i);
+        if (!conflict)
+            continue;
+        cString dateTime = DayDateTime(conflict->time);
+        int numTimers = conflict->timerIDs.size();
         cString textConflict = cString::sprintf("%s: %s (%d %s)", tr("Show conflict"), *dateTime, numTimers, tr("timers involved"));
         bool isActive = (i==0)?true:false;
         AddMenuItem(new cRecMenuItemButton(*textConflict, rmsTimerConflict, isActive));
@@ -207,26 +210,27 @@ cRecMenuTimerConflicts::cRecMenuTimerConflicts(std::vector<TVGuideTimerConflict>
 }
 
 // --- cRecMenuTimerConflict  ---------------------------------------------------------
-cRecMenuTimerConflict::cRecMenuTimerConflict(TVGuideTimerConflict conflict) {
-    SetWidthPercent(80);
+cRecMenuTimerConflict::cRecMenuTimerConflict(cTVGuideTimerConflict *conflict) {
+    SetWidthPercent(95);
     this->conflict = conflict;
-    SetHeader(new cRecMenuItemTimerConflictHeader(conflict.timeStart, 
-                                                  conflict.timeStop, 
-                                                  conflict.overlapStart, 
-                                                  conflict.overlapStop));
+    SetHeader(new cRecMenuItemTimerConflictHeader(conflict->timeStart, 
+                                                  conflict->timeStop, 
+                                                  conflict->overlapStart, 
+                                                  conflict->overlapStop));
     SetFooter(new cRecMenuItemButton(tr("Ignore Conflict"), rmsIgnoreTimerConflict, false, true));
     int i=0;
-    for(std::vector<int>::iterator it = conflict.timerIDs.begin(); it != conflict.timerIDs.end(); it++) {
+    for(std::vector<int>::iterator it = conflict->timerIDs.begin(); it != conflict->timerIDs.end(); it++) {
         const cTimer *timer = Timers.Get(*it);
         if (timer) {
             AddMenuItemScroll(new cRecMenuItemTimer(  timer,
                                                       rmsTimerConflictShowInfo,
                                                       rmsDeleteTimerConflictMenu, 
-                                                      rmsEditTimerConflictMenu, 
-                                                      conflict.timeStart, 
-                                                      conflict.timeStop, 
-                                                      conflict.overlapStart, 
-                                                      conflict.overlapStop, 
+                                                      rmsEditTimerConflictMenu,
+                                                      rmsSearchRerunsTimerConflictMenu,
+                                                      conflict->timeStart, 
+                                                      conflict->timeStop, 
+                                                      conflict->overlapStart, 
+                                                      conflict->overlapStop, 
                                                       (!i)?true:false)
             );
             i++;
@@ -240,16 +244,17 @@ cRecMenuTimerConflict::cRecMenuTimerConflict(TVGuideTimerConflict conflict) {
 }
     
 cRecMenuItem *cRecMenuTimerConflict::GetMenuItem(int number) { 
-    if ((number >= 0) && (number < conflict.timerIDs.size())) {
-        const cTimer *timer = Timers.Get(conflict.timerIDs[number]);
+    if ((number >= 0) && (number < conflict->timerIDs.size())) {
+        const cTimer *timer = Timers.Get(conflict->timerIDs[number]);
         cRecMenuItem *result = new cRecMenuItemTimer( timer,
                                                       rmsTimerConflictShowInfo,
                                                       rmsDeleteTimerConflictMenu, 
-                                                      rmsEditTimerConflictMenu, 
-                                                      conflict.timeStart, 
-                                                      conflict.timeStop, 
-                                                      conflict.overlapStart, 
-                                                      conflict.overlapStop, 
+                                                      rmsEditTimerConflictMenu,
+                                                      rmsSearchRerunsTimerConflictMenu,
+                                                      conflict->timeStart, 
+                                                      conflict->timeStop, 
+                                                      conflict->overlapStart, 
+                                                      conflict->overlapStop, 
                                                       false);
         return result;
     }
@@ -257,7 +262,7 @@ cRecMenuItem *cRecMenuTimerConflict::GetMenuItem(int number) {
 }
 
 int cRecMenuTimerConflict::GetTotalNumMenuItems(void) { 
-    return conflict.timerIDs.size(); 
+    return conflict->timerIDs.size(); 
 }
 
 // --- cRecMenuNoTimerConflict ---------------------------------------------------------
@@ -268,6 +273,90 @@ cRecMenuNoTimerConflict::cRecMenuNoTimerConflict(void) {
     infoItem->CalculateHeight(width - 4 * border);
     AddMenuItem(infoItem);
     AddMenuItem(new cRecMenuItemButton(tr("Close"), rmsClose, true));
+    CalculateHeight();
+    CreatePixmap();
+    Arrange();
+}
+
+// --- cRecMenuRerunResults ---------------------------------------------------------
+cRecMenuRerunResults::cRecMenuRerunResults(const cEvent *original, const cEvent **reruns, int numReruns) {
+    this->reruns = reruns;
+    this->numReruns = numReruns;
+    SetWidthPercent(70);
+    this->numReruns = numReruns;
+    cString message1 = tr("reruns for");
+    cString message2 = tr("rerun for");
+    cString message3 = tr("found");
+    cString infoText = cString::sprintf("%d %s:\n\"%s\" %s", numReruns, (numReruns>1)?(*message1):(*message2), original->Title(), *message3);
+    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText);
+    infoItem->CalculateHeight(width - 2 * border);
+    SetHeader(infoItem);
+    
+    cRecMenuItem *button = new cRecMenuItemButton(tr("Ignore reruns"), rmsTimerConflictIgnoreReruns, false);
+    SetFooter(button);
+    
+    if (reruns && (numReruns > 0)) {
+        for (int i=0; i<numReruns; i++) {
+            AddMenuItemScroll(new cRecMenuItemEvent(reruns[i], rmsSearchShowInfo, rmsTimerConflictRecordRerun, (i==0)?true:false));
+            if (!CheckHeight())
+                break;
+        }
+    }
+    CalculateHeight();
+    CreatePixmap();
+    Arrange();
+}
+
+cRecMenuItem *cRecMenuRerunResults::GetMenuItem(int number) {
+   if ((number >= 0) && (number < numReruns)) {
+        cRecMenuItem *result = new cRecMenuItemEvent(reruns[number], rmsSearchShowInfo, rmsTimerConflictRecordRerun, false);
+        return result;
+    }
+    return NULL;
+}
+
+int cRecMenuRerunResults::GetTotalNumMenuItems(void) {
+    return numReruns;
+}
+
+// --- cRecMenuNoRerunsFound  ---------------------------------------------------------
+cRecMenuNoRerunsFound::cRecMenuNoRerunsFound(cString searchString) {
+    SetWidthPercent(50);
+    cString message = tr("No reruns found for Event");
+    cString text = cString::sprintf("%s\n\"%s\"", 
+                                    *message, 
+                                    *searchString);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
+    infoItem->CalculateHeight(width - 2 * border);
+    AddMenuItem(infoItem);
+    AddMenuItem(new cRecMenuItemButton(tr("OK"), rmsTimerConflictIgnoreReruns, true, true));
+    CalculateHeight();
+    CreatePixmap();
+    Arrange();
+}
+
+// --- cRecMenuConfirmRerunUsed  ---------------------------------------------------------
+cRecMenuConfirmRerunUsed::cRecMenuConfirmRerunUsed(const cEvent *original, const cEvent *replace) {
+    SetWidthPercent(70);
+    cString channelOrig = Channels.GetByChannelID(original->ChannelID())->Name();
+    cString channelReplace = Channels.GetByChannelID(replace->ChannelID())->Name();
+    cString message1 = tr("Timer for");
+    cString message2 = tr("replaced by rerun");
+    cString text = cString::sprintf("%s\n\"%s\", %s %s, %s\n%s\n\"%s\", %s %s, %s", 
+                                    *message1, 
+                                    original->Title(),
+                                    *original->GetDateString(),
+                                    *original->GetTimeString(),
+                                    *channelOrig,
+                                    *message2,
+                                    replace->Title(),
+                                    *replace->GetDateString(),
+                                    *replace->GetTimeString(),
+                                    *channelReplace);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
+    infoItem->CalculateHeight(width - 2 * border);
+    AddMenuItem(infoItem);
+    AddMenuItem(new cRecMenuItemButton(tr("OK"), rmsTimerConflicts, true, true));
     CalculateHeight();
     CreatePixmap();
     Arrange();

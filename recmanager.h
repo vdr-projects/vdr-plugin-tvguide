@@ -6,19 +6,7 @@
 #include <vdr/plugin.h>
 #include "detailview.h"
 #include "recmenu.h"
-
-class TVGuideTimerConflict {
-public:
-    time_t time;
-    time_t timeStart;
-    time_t timeStop;
-    time_t overlapStart;
-    time_t overlapStop;
-    int percentPossible;
-    int timerID;
-    std::vector<int> timerIDs;
-    bool timerInvolved(int involvedID);
-};
+#include "timerconflict.h"
 
 struct TVGuideEPGSearchTemplate {
 public:
@@ -49,7 +37,7 @@ public:
     void DeleteRemoteTimer(const cEvent *event);
     void SaveTimer(cTimer *timer, cRecMenu *menu);
     bool IsRecorded(const cEvent *event);
-    std::vector<TVGuideTimerConflict> CheckTimerConflict(void);
+    cTVGuideTimerConflicts *CheckTimerConflict(void);
     cTimer *CreateSeriesTimer(cRecMenu *menu, std::string path);
     std::string BuildEPGSearchString(cString searchString, cRecMenu *menu);
     std::string BuildEPGSearchString(cString searchString, std::string templValue);
@@ -61,6 +49,7 @@ public:
     bool CreateSwitchTimer(const cEvent *event, cRecMenu *menu);
     void DeleteSwitchTimer(const cEvent *event);
     cRecording **SearchForRecordings(cString searchString, int &numResults);
+    const cEvent **LoadReruns(const cEvent *event, int &numResults);
     virtual ~cRecManager  (void);
 };
 

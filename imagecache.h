@@ -12,6 +12,7 @@ enum eCacheType {
     ctGrid,
     ctLogo,
     ctChannelGroup,
+    ctIcon,
 };
 
 enum eOsdElementType {
@@ -41,6 +42,7 @@ public:
     cImage *GetGrid(int width, int height, bool active);
     cImage *GetChannelGroup(int width, int height);
     cImage *GetLogo(const cChannel *channel);
+    cImage *GetIcon(std::string name, int width, int height);
     std::string GetCacheSize(eCacheType type);
     void Clear(void);
 private:
@@ -68,6 +70,7 @@ private:
     std::map<std::string, cImage*> gridCache;
     std::map<std::string, cImage*> groupsCache;
     std::map<std::string, cImage*> logoCache;
+    std::map<std::string, cImage*> iconCache;
     void CreateOsdIconCache(void);
     void PrepareGridIconCache(void);
     void CreateGridIconCache(void);

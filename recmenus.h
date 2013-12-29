@@ -51,16 +51,16 @@ public:
 // --- cRecMenuTimerConflicts  ---------------------------------------------------------
 class cRecMenuTimerConflicts: public cRecMenu {
 public:
-    cRecMenuTimerConflicts(std::vector<TVGuideTimerConflict> conflicts);    
+    cRecMenuTimerConflicts(cTVGuideTimerConflicts *conflicts);    
     virtual ~cRecMenuTimerConflicts(void) {};
 };
 
 // --- cRecMenuTimerConflict  ---------------------------------------------------------
 class cRecMenuTimerConflict: public cRecMenu {
 private:
-    TVGuideTimerConflict conflict;
+    cTVGuideTimerConflict *conflict;
 public:
-    cRecMenuTimerConflict(TVGuideTimerConflict conflict);
+    cRecMenuTimerConflict(cTVGuideTimerConflict *conflict);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuTimerConflict(void) {};
@@ -71,6 +71,34 @@ class cRecMenuNoTimerConflict: public cRecMenu {
 public:
     cRecMenuNoTimerConflict(void);   
     virtual ~cRecMenuNoTimerConflict(void) {};
+};
+
+// --- cRecMenuRerunResults  ---------------------------------------------------------
+class cRecMenuRerunResults: public cRecMenu {
+private:
+    const cEvent **reruns;
+    int numReruns;
+public:
+    cRecMenuRerunResults(const cEvent *original, const cEvent **reruns, int numReruns);
+    cRecMenuItem *GetMenuItem(int number);
+    int GetTotalNumMenuItems(void);
+    virtual ~cRecMenuRerunResults(void) {
+        delete[] reruns;
+    };
+};
+
+// --- cRecMenuNoRerunsFound  ---------------------------------------------------------
+class cRecMenuNoRerunsFound: public cRecMenu {
+public:
+    cRecMenuNoRerunsFound(cString searchString);
+    virtual ~cRecMenuNoRerunsFound(void) {};
+};
+
+// --- cRecMenuConfirmRerunUsed  ---------------------------------------------------------
+class cRecMenuConfirmRerunUsed: public cRecMenu {
+public:
+    cRecMenuConfirmRerunUsed(const cEvent *original, const cEvent *replace);
+    virtual ~cRecMenuConfirmRerunUsed(void) {};
 };
 
 // --- cRecMenuEditTimer  ---------------------------------------------------------
@@ -228,8 +256,6 @@ public:
     cRecMenuSearchNothingFound(cString searchString);
     virtual ~cRecMenuSearchNothingFound(void) {};
 };
-
-
 
 // --- cRecMenuRecordingSearch  ---------------------------------------------------------
 class cRecMenuRecordingSearch: public cRecMenu {

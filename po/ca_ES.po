@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-24 11:13+0100\n"
+"POT-Creation-Date: 2013-12-29 17:53+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -158,6 +158,27 @@ msgstr "No s'han trobat conflictes"
 
 msgid "Close"
 msgstr "Tanca"
+
+msgid "reruns for"
+msgstr ""
+
+msgid "rerun for"
+msgstr ""
+
+msgid "found"
+msgstr ""
+
+msgid "Ignore reruns"
+msgstr ""
+
+msgid "No reruns found for Event"
+msgstr ""
+
+msgid "Timer for"
+msgstr ""
+
+msgid "replaced by rerun"
+msgstr ""
 
 msgid "Timer Active"
 msgstr "Temporitzador actiu"
@@ -643,4 +664,7 @@ msgid "EPG Grid Cache"
 msgstr ""
 
 msgid "Channel Groups Cache"
+msgstr ""
+
+msgid "Recording Menus Icon Cache"
 msgstr ""

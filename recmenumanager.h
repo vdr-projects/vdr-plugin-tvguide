@@ -13,15 +13,15 @@ private:
     cRecMenu *activeMenuBuffer;
     const cEvent *event;
     cRecManager *recManager;
-    std::vector<TVGuideTimerConflict> conflictList;
+    cTVGuideTimerConflicts *timerConflicts;
     std::vector<TVGuideEPGSearchTemplate> epgSearchTemplates;
     bool instantRecord;
     bool folderChoosen;
-    int currentConflict;
+    cString recFolderInstantTimer;
     int templateID;
     bool searchWithOptions;
     cTimer *timer;
-    cString recFolder;
+    cString recFolderSeriesTimer;
     cString searchString;
     cDetailView *detailView;
     cPixmap *pixmapBackground;

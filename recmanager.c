@@ -9,19 +9,11 @@
 #include "services/tvscraper.h"
 #include "tools.h"
 #include "switchtimer.h"
+#include "timerconflict.h"
 #include "recmanager.h"
 
 static int CompareRecording(const void *p1, const void *p2) {
    return (int)((*(cRecording **)p1)->Start() - (*(cRecording **)p2)->Start());
-}
-
-bool TVGuideTimerConflict::timerInvolved(int involvedID) {
-    int numConflicts = timerIDs.size();
-    for (int i=0; i<numConflicts; i++) {
-        if (timerIDs[i] == involvedID)
-            return true;
-    }
-    return false;
 }
 
 cRecManager::cRecManager(void) {
@@ -225,100 +217,23 @@ bool cRecManager::IsRecorded(const cEvent *event) {
     return timer->Recording();
 }
 
-std::vector<TVGuideTimerConflict> cRecManager::CheckTimerConflict(void) {
-    /* TIMERCONFLICT FORMAT:
-    The result list looks like this for example when we have 2 timer conflicts at one time:
-    1190232780:152|30|50#152#45:45|10|50#152#45
-    '1190232780' is the time of the conflict in seconds since 1970-01-01. 
-    It's followed by list of timers that have a conflict at this time:
-    '152|30|50#1    int editTimer(cTimer *timer, bool active, int prio, int start, int stop);
-    52#45' is the description of the first conflicting timer. Here:
-    '152' is VDR's timer id of this timer as returned from VDR's LSTT command
-    '30' is the percentage of recording that would be done (0...100)
-    '50#152#45' is the list of concurrent timers at this conflict
-    '45|10|50#152#45' describes the next conflict
-    */
-    std::vector<TVGuideTimerConflict> results;
+cTVGuideTimerConflicts *cRecManager::CheckTimerConflict(void) {
+    cTVGuideTimerConflicts *conflictList = new cTVGuideTimerConflicts();
     if (!epgSearchAvailable)
-        return results;
+        return conflictList;
     Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
     if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
         std::list<std::string> conflicts = epgSearch->handler->TimerConflictList();
         int numConflicts = conflicts.size();
-        if (numConflicts > 0) {
-            for (std::list<std::string>::iterator it=conflicts.begin(); it != conflicts.end(); ++it) {
-                TVGuideTimerConflict sConflict;
-                splitstring s(it->c_str());
-                std::vector<std::string> flds = s.split(':');
-                if (flds.size() < 2)
-                    continue;
-                sConflict.time = atoi(flds[0].c_str());
-                splitstring s2(flds[1].c_str());
-                std::vector<std::string> flds2 = s2.split('|');
-                if (flds2.size() < 3)
-                    continue;
-                sConflict.timerID = atoi(flds2[0].c_str());
-                sConflict.percentPossible = atoi(flds2[1].c_str());
-                splitstring s3(flds2[2].c_str());
-                std::vector<std::string> flds3 = s3.split('#');
-                std::vector<int> timerIDs;
-                for (int k = 0; k < flds3.size(); k++) {
-                    timerIDs.push_back(atoi(flds3[k].c_str()) - 1);
-                }
-                sConflict.timerIDs = timerIDs;
-                results.push_back(sConflict);
-            }
+        if (numConflicts == 0)
+            return conflictList;
+        for (std::list<std::string>::iterator it=conflicts.begin(); it != conflicts.end(); ++it) {
+            conflictList->AddConflict(*it);
         }
     }
     delete epgSearch;
-    
-    int numConflicts = results.size();
-    time_t startTime = 0;
-    time_t endTime = 0;
-    for (int i=0; i < numConflicts; i++) {
-        cTimeInterval *unionSet = NULL;
-        int numTimers = results[i].timerIDs.size();
-        for (int j=0; j < numTimers; j++) {
-            const cTimer *timer = Timers.Get(results[i].timerIDs[j]);
-            if (timer) {
-                if (!unionSet) {
-                    unionSet = new cTimeInterval(timer->StartTime(), timer->StopTime());
-                } else {
-                    cTimeInterval *timerInterval = new cTimeInterval(timer->StartTime(), timer->StopTime());
-                    cTimeInterval *newUnion = unionSet->Union(timerInterval);
-                    delete unionSet;
-                    delete timerInterval;
-                    unionSet = newUnion;
-                }
-            }
-        }
-        results[i].timeStart = unionSet->Start();
-        results[i].timeStop = unionSet->Stop();
-        delete unionSet;
-        
-        cTimeInterval *intersect = NULL;
-        for (int j=0; j < numTimers; j++) {
-            const cTimer *timer = Timers.Get(results[i].timerIDs[j]);
-            if (timer) {
-                if (!intersect) {
-                    intersect = new cTimeInterval(timer->StartTime(), timer->StopTime());
-                } else {
-                    cTimeInterval *timerInterval = new cTimeInterval(timer->StartTime(), timer->StopTime());
-                    cTimeInterval *newIntersect = intersect->Intersect(timerInterval);
-                    if (newIntersect) {
-                        delete intersect;
-                        intersect = newIntersect;
-                    }
-                    delete timerInterval;
-                }
-            }
-        }
-        results[i].overlapStart = intersect->Start();
-        results[i].overlapStop = intersect->Stop();
-        delete intersect;
-    }
-    
-    return results;
+    conflictList->CalculateConflicts();
+    return conflictList;
 }
 
 cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu, std::string path) {
@@ -745,6 +660,49 @@ cRecording **cRecManager::SearchForRecordings(cString searchString, int &numResu
         qsort(matchingRecordings, num, sizeof(cRecording *), CompareRecording);
         numResults = num;
         return matchingRecordings;
+    }
+    return NULL;
+}
+
+const cEvent **cRecManager::LoadReruns(const cEvent *event, int &numResults) {
+    if (epgSearchAvailable && !isempty(event->Title())) {
+        Epgsearch_searchresults_v1_0 data;
+        std::string strQuery = event->Title();
+        if (tvguideConfig.useSubtitleRerun > 0) {
+            if (tvguideConfig.useSubtitleRerun == 2 || !isempty(event->ShortText()))
+                strQuery += "~";
+            if (!isempty(event->ShortText()))
+                strQuery += event->ShortText();
+                data.useSubTitle = true;
+        } else {
+            data.useSubTitle = false;
+        }
+        data.query = (char *)strQuery.c_str();
+        data.mode = 0;
+        data.channelNr = 0;
+        data.useTitle = true;
+        data.useDescription = false;
+        
+        if (epgSearchPlugin->Service("Epgsearch-searchresults-v1.0", &data)) {
+            cList<Epgsearch_searchresults_v1_0::cServiceSearchResult>* list = data.pResultList;
+            if (!list)
+                return NULL;
+            const cEvent **searchResults = NULL;
+            int numElements = list->Count();
+            if (numElements > 0) {
+                searchResults = new const cEvent *[numElements];
+                int index = 0;
+                for (Epgsearch_searchresults_v1_0::cServiceSearchResult *r = list->First(); r; r = list->Next(r)) {
+                    if ((event->ChannelID() == r->event->ChannelID()) && (event->StartTime() == r->event->StartTime()))
+                        continue;
+                    searchResults[index] = r->event;
+                    index++;
+                }
+                delete list;
+                numResults = index;
+                return searchResults;
+            }
+        }
     }
     return NULL;
 }

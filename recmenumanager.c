@@ -1,6 +1,7 @@
 #include "recmenu.h" 
 #include "recmenus.h"
 #include "switchtimer.h"
+#include "timerconflict.h"
 #include "recmenumanager.h"
 
 cRecMenuManager::cRecMenuManager(void) {
@@ -11,10 +12,11 @@ cRecMenuManager::cRecMenuManager(void) {
     recManager->SetEPGSearchPlugin();
     instantRecord = false;
     folderChoosen = false;
-    currentConflict = -1;
+    timerConflicts = NULL;
     templateID = -1;
     timer = NULL;
-    recFolder = "";
+    recFolderSeriesTimer = "";
+    recFolderInstantTimer = "";
     searchWithOptions = false;
     detailViewActive = false;
 }
@@ -25,6 +27,10 @@ cRecMenuManager::~cRecMenuManager(void) {
         delete activeMenu;
         activeMenu = NULL;
     }
+    if (timerConflicts) {
+        delete timerConflicts;
+        timerConflicts = NULL;
+    }
     delete recManager;
 }
 
@@ -33,10 +39,11 @@ void cRecMenuManager::Start(const cEvent *event) {
     activeMenuBuffer = NULL;
     instantRecord = false;
     folderChoosen = false;
-    currentConflict = -1;
+    timerConflicts = NULL;
     templateID = -1;
     timer = NULL;
-    recFolder = "";
+    recFolderSeriesTimer = "";
+    recFolderInstantTimer = "";
     searchWithOptions = false;
     detailViewActive = false;
     SetBackground();
@@ -52,6 +59,10 @@ void cRecMenuManager::Close(void) {
     if (activeMenu) {
         delete activeMenu;
         activeMenu = NULL;
+    }
+    if (timerConflicts) {
+        delete timerConflicts;
+        timerConflicts = NULL;
     }
     DeleteBackground();
 }
@@ -83,14 +94,14 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         //Creating timer for active Event
         //if no conflict, confirm and exit
             instantRecord = true;
-            cString folder = "";
+            recFolderInstantTimer = "";
             if (folderChoosen) {
                 int activeItem = activeMenu->GetActive(false);
                 if (activeItem > 0)
-                    folder = activeMenu->GetStringValue(activeItem);
+                    recFolderInstantTimer = activeMenu->GetStringValue(activeItem);
             }
             delete activeMenu;
-            cTimer *timer = recManager->createTimer(event, *folder);
+            cTimer *timer = recManager->createTimer(event, *recFolderInstantTimer);
             if (!displayTimerConflict(timer)) {
                 activeMenu = new cRecMenuConfirmTimer(event);
                 activeMenu->Display();
@@ -116,7 +127,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;
         case rmsTimerConflictShowInfo: {
             int timerIndex = activeMenu->GetActive(true);
-            int timerID = conflictList[currentConflict].timerIDs[timerIndex];
+            int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
             cTimer *t = Timers.Get(timerID);
             if (t) {
                 const cEvent *ev = t->Event();
@@ -135,7 +146,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         //delete timer out of current timer conflict
         //active menu: cRecMenuTimerConflict
             int timerIndex = activeMenu->GetActive(true);
-            int timerID = conflictList[currentConflict].timerIDs[timerIndex];
+            int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
             recManager->DeleteTimer(timerID);
             delete activeMenu;
             if (!displayTimerConflict(timerID)) {
@@ -146,8 +157,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsEditTimerConflictMenu: {
         //edit timer out of current timer conflict
         //active menu: cRecMenuTimerConflict
-            int activeItem = activeMenu->GetActive(true);
-            int timerID = conflictList[currentConflict].timerIDs[activeItem];
+            int timerIndex = activeMenu->GetActive(true);
+            int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
             timer = Timers.Get(timerID);
             if (timer) {
                 delete activeMenu;
@@ -201,11 +212,11 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
          * --------- SERIES TIMER ---------------------------------
         */
         case rmsSeriesTimer: {
-            recFolder = "";
+            recFolderSeriesTimer = "";
             if (folderChoosen) {
                 int activeItem = activeMenu->GetActive(false);
                 if (activeItem > 0)
-                    recFolder = activeMenu->GetStringValue(activeItem);
+                    recFolderSeriesTimer = activeMenu->GetStringValue(activeItem);
             }
             delete activeMenu;
             cChannel *channel = Channels.GetByChannelID(event->ChannelID());
@@ -220,7 +231,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break;
         case rmsSeriesTimerCreate: {
-            cTimer *seriesTimer = recManager->CreateSeriesTimer(activeMenu, *recFolder);
+            cTimer *seriesTimer = recManager->CreateSeriesTimer(activeMenu, *recFolderSeriesTimer);
             delete activeMenu;
             activeMenu = new cRecMenuConfirmSeriesTimer(seriesTimer);
             activeMenu->Display();
@@ -438,25 +449,79 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsTimerConflicts: {
         //Show timer conflict
         //active menu: cRecMenuTimerConflicts
-            conflictList = recManager->CheckTimerConflict();
+            if (timerConflicts) {
+                delete timerConflicts;
+            }
+            timerConflicts = recManager->CheckTimerConflict();
             delete activeMenu;
-            int numConflicts = conflictList.size();
+            int numConflicts = timerConflicts->NumConflicts();
             if (numConflicts > 0) {
-                activeMenu = new cRecMenuTimerConflicts(conflictList);
+                activeMenu = new cRecMenuTimerConflicts(timerConflicts);
             } else {
                 activeMenu = new cRecMenuNoTimerConflict();
             }
             activeMenu->Display();
             break; }
-        case rmsTimerConflict:
+        case rmsTimerConflict: {
         //Show timer conflict
         //active menu: cRecMenuTimerConflicts
-            currentConflict = activeMenu->GetActive(true);
+            if (!timerConflicts)
+                break;
+            timerConflicts->SetCurrentConflict(activeMenu->GetActive(true));
             delete activeMenu;
-            activeMenu = new cRecMenuTimerConflict(conflictList[currentConflict]);
+            activeMenu = new cRecMenuTimerConflict(timerConflicts->GetCurrentConflict());
             activeMenu->Display();
-            break;
-
+            break; }
+        case rmsSearchRerunsTimerConflictMenu: {
+        //Show reruns for timer from timer conflict
+        //active menu: cRecMenuTimerConflict
+            if (!timerConflicts)
+                break;
+            int activeItem = activeMenu->GetActive(true);
+            int timerID = timerConflicts->GetCurrentConflictTimerID(activeItem);
+            timer = Timers.Get(timerID);
+            if (timer) {
+                const cEvent *event = timer->Event();
+                if (event) {
+                    int numReruns = 0;
+                    const cEvent **reruns = recManager->LoadReruns(event, numReruns);
+                    if (reruns && (numReruns > 0)) {
+                        activeMenuBuffer = activeMenu;
+                        activeMenuBuffer->Hide();
+                        activeMenu = new cRecMenuRerunResults(event, reruns, numReruns);
+                        activeMenu->Display();
+                    } else {
+                        activeMenuBuffer = activeMenu;
+                        activeMenuBuffer->Hide();
+                        activeMenu = new cRecMenuNoRerunsFound((event->Title())?event->Title():"");
+                        activeMenu->Display();
+                    }
+                }
+            }
+            break; }
+        case rmsTimerConflictIgnoreReruns: {
+            delete activeMenu;
+            activeMenu = activeMenuBuffer;
+            activeMenuBuffer = NULL;
+            activeMenu->Show();
+            break; }
+        case rmsTimerConflictRecordRerun: {
+            const cEvent *replace = activeMenu->GetEventValue(activeMenu->GetActive(false));
+            int originalConflictIndex = activeMenuBuffer->GetActive(false);
+            int originalTimerID = timerConflicts->GetCurrentConflictTimerID(originalConflictIndex);
+            cTimer *timerOriginal = Timers.Get(originalTimerID);
+            if (replace && timerOriginal) {
+                recManager->DeleteTimer(timerOriginal->Event());
+                recManager->createTimer(replace, *recFolderInstantTimer);
+                delete activeMenu;
+                if (activeMenuBuffer) {
+                    delete activeMenuBuffer;
+                    activeMenuBuffer = NULL;
+                }
+                activeMenu = new cRecMenuConfirmRerunUsed(timerOriginal->Event(), replace);
+                activeMenu->Display();
+            }
+            break; }
         /* 
          * --------- COMMON ---------------------------------
         */
@@ -489,20 +554,18 @@ bool cRecMenuManager::displayTimerConflict(cTimer *timer) {
 }
 
 bool cRecMenuManager::displayTimerConflict(int timerID) {
-    conflictList = recManager->CheckTimerConflict();
-    int numConflicts = conflictList.size();
-    int showTimerConflict = -1;
-    if (numConflicts > 0) {
-        for (int i=0; i<numConflicts; i++) {
-            if (conflictList[i].timerInvolved(timerID)) {
-                showTimerConflict = i;
-                break;
-            }
-        }
-    }
+    if (timerConflicts)
+        delete timerConflicts;
+    timerConflicts = recManager->CheckTimerConflict();
+    if (!timerConflicts)
+        return false;
+    int showTimerConflict = timerConflicts->GetCorrespondingConflict(timerID);
     if (showTimerConflict > -1) {
-        currentConflict = showTimerConflict;
-        activeMenu = new cRecMenuTimerConflict(conflictList[currentConflict]);
+        timerConflicts->SetCurrentConflict(showTimerConflict);
+        cTVGuideTimerConflict *conflict = timerConflicts->GetCurrentConflict();
+        if (!conflict)
+            return false;
+        activeMenu = new cRecMenuTimerConflict(conflict);
         activeMenu->Display();
         return true;
     }

@@ -1,6 +1,7 @@
 #include <math.h>
 #include <vdr/remote.h>
 #include "imageloader.h"
+#include "imagecache.h"
 #include "tools.h"
 #include "recmenuitem.h"
 
@@ -253,6 +254,7 @@ void cRecMenuItemInfo::CalculateHeight(int textWidth) {
 
 void cRecMenuItemInfo::setBackground(void) {
     pixmap->Fill(clrTransparent);
+    cRecMenuItem::setBackground();
 }
 
 void cRecMenuItemInfo::Draw(void) {
@@ -411,14 +413,14 @@ void cRecMenuItemBool::Draw(void) {
 
 void cRecMenuItemBool::DrawValue(void) {
     pixmapVal->Fill(clrTransparent);
-    cString strIcon = yes?"yes":"no";
+    std::string strIcon = yes?"yes":"no";
     int iconSize = height - 8;
     int iconX = width - iconSize - 10;
     int iconY = (height - iconSize) / 2;
-    cImageLoader imgLoader;
-    if (imgLoader.LoadIcon(strIcon, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapVal->DrawImage(cPoint(iconX, iconY), icon);
+    
+    cImage *imgYesNo = imgCache.GetIcon(strIcon, iconSize, iconSize);
+    if (imgYesNo) {
+        pixmapVal->DrawImage(cPoint(iconX, iconY), *imgYesNo);
     }
 }
 
@@ -499,14 +501,14 @@ void cRecMenuItemSelect::DrawValue(void) {
     int iconLeftX = textX - iconSize;
     int iconRightX = width - iconSize;
     int iconY = (height - iconSize) / 2;
-    cImageLoader imgLoader;
-    if (imgLoader.LoadIcon("arrow_left", iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapVal->DrawImage(cPoint(iconLeftX, iconY), icon);
+    
+    cImage *imgLeft = imgCache.GetIcon("arrow_left", iconSize, iconSize);
+    if (imgLeft) {
+        pixmapVal->DrawImage(cPoint(iconLeftX, iconY), *imgLeft);
     }
-    if (imgLoader.LoadIcon("arrow_right", iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapVal->DrawImage(cPoint(iconRightX, iconY), icon);
+    cImage *imgRight = imgCache.GetIcon("arrow_right", iconSize, iconSize);
+    if (imgRight) {
+        pixmapVal->DrawImage(cPoint(iconRightX, iconY), *imgRight);
     }
 }
 
@@ -671,8 +673,7 @@ void cRecMenuItemText::ActivateKeyboard(void) {
             bool draw = false;
             bool drawIcon = false;
             cString strNum;
-            cString strIcon;
-            cImageLoader imgLoader;
+            std::string strIcon;
             if (num<10) {
                 strNum = *cString::sprintf("%d", num);
                 draw = true;
@@ -701,10 +702,10 @@ void cRecMenuItemText::ActivateKeyboard(void) {
             }
             if (drawIcon) {
                 int iconSize = gridHeight - 10;
-                if (imgLoader.LoadIcon(strIcon, iconSize)) {
-                    cImage icon = imgLoader.GetImage();
+                cImage *imgIcon = imgCache.GetIcon(strIcon, iconSize, iconSize);
+                if (imgIcon) {
                     int iconX = X + (gridWidth - iconSize) / 2;
-                    pixmapKeyboardIcons->DrawImage(cPoint(iconX, Y + 5), icon);
+                    pixmapKeyboardIcons->DrawImage(cPoint(iconX, Y + 5), *imgIcon);
                 }
             }
             num++;
@@ -1306,6 +1307,7 @@ cRecMenuItemTimer::cRecMenuItemTimer(const cTimer *timer,
                                      eRecMenuState action1, 
                                      eRecMenuState action2,
                                      eRecMenuState action3,
+                                     eRecMenuState action4,
                                      time_t conflictStart,
                                      time_t conflictStop,
                                      time_t overlapStart,
@@ -1316,6 +1318,7 @@ cRecMenuItemTimer::cRecMenuItemTimer(const cTimer *timer,
     this->action = action1;
     this->action2 = action2;
     this->action3 = action3;
+    this->action4 = action4;
     iconActive = 0;
     this->conflictStart = conflictStart;
     this->conflictStop = conflictStop;
@@ -1382,48 +1385,57 @@ void cRecMenuItemTimer::Draw(void) {
     int textHeightLine2 = height/2 - 5 + (height/4 - fontSmall->Height()) / 2;
     int textHeightLine3 = 3*height/4 - 5 + (height/4 - fontSmall->Height()) / 2;
     const cEvent *event = timer->Event();
-    cString timerTitle("");
-    if (event)
+    std::string timerTitle = "";
+    if (event) {
         timerTitle = event->Title();
+        timerTitle = CutText(timerTitle, (70 * width / 100) - textX, font);
+    }
     cString timeStart = DayDateTime(timer->StartTime());
     cString timeEnd = TimeString(timer->StopTime());
     cString timerTime = cString::sprintf("%s - %s", *timeStart, *timeEnd);
     cString channelInfo = cString::sprintf("%s, %s %d", *channelName, tr("Transp."), channelTransponder); 
-    pixmap->DrawText(cPoint(textX, textHeightLine1), *timerTitle, theme.Color(clrFont), colorTextBack, font);
-    pixmap->DrawText(cPoint(textX, textHeightLine2), *timerTime, theme.Color(clrFont), colorTextBack, fontSmall);
-    pixmap->DrawText(cPoint(textX, textHeightLine3), *channelInfo, theme.Color(clrFont), colorTextBack, fontSmall);
+    pixmapIcons->DrawText(cPoint(textX, textHeightLine1), timerTitle.c_str(), colorText, colorTextBack, font);
+    pixmapIcons->DrawText(cPoint(textX, textHeightLine2), *timerTime, colorText, colorTextBack, fontSmall);
+    pixmapIcons->DrawText(cPoint(textX, textHeightLine3), *channelInfo, colorText, colorTextBack, fontSmall);
 
     DrawTimerConflict();
 }
 
 int cRecMenuItemTimer::DrawIcons(void) {
     int iconsX = 10;
-    int iconSize = 64;
+    int iconSize = height/2;
     int iconY = (height - iconSize) / 2;
-    cString iconInfo, iconDelete, iconEdit;
+    std::string iconInfo, iconDelete, iconEdit, iconSearch;
     if (active) {
         iconInfo = (iconActive==0)?"info_active":"info_inactive";
         iconDelete = (iconActive==1)?"delete_active":"delete_inactive";
         iconEdit = (iconActive==2)?"edit_active":"edit_inactive";
+        iconSearch = (iconActive==3)?"search_active":"search_inactive";
     } else {
         iconInfo = "info_inactive";
         iconDelete = "delete_inactive";
         iconEdit = "edit_inactive";
+        iconSearch = "search_inactive";
     }
-    cImageLoader imgLoader;
-    if (imgLoader.LoadIcon(iconInfo, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), icon);
+    
+    cImage *imgInfo = imgCache.GetIcon(iconInfo, iconSize, iconSize);
+    if (imgInfo) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgInfo);
         iconsX += iconSize + 5;
     }
-    if (imgLoader.LoadIcon(iconDelete, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), icon);
+    cImage *imgDelete = imgCache.GetIcon(iconDelete, iconSize, iconSize);
+    if (imgDelete) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgDelete);
         iconsX += iconSize + 5;
     }
-    if (imgLoader.LoadIcon(iconEdit, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), icon);
+    cImage *imgEdit = imgCache.GetIcon(iconEdit, iconSize, iconSize);
+    if (imgEdit) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgEdit);
+        iconsX += iconSize + 5;
+    }
+    cImage *imgSearch = imgCache.GetIcon(iconSearch, iconSize, iconSize);
+    if (imgSearch) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgSearch);
         iconsX += iconSize + 5;
     }
     return iconsX;
@@ -1461,7 +1473,7 @@ eRecMenuState cRecMenuItemTimer::ProcessKey(eKeys Key) {
                 return rmsNotConsumed;
             break;
         case kRight:
-            if (iconActive < 2) {
+            if (iconActive < 3) {
                 iconActive++;
                 DrawIcons();
                 return rmsConsumed;
@@ -1475,6 +1487,8 @@ eRecMenuState cRecMenuItemTimer::ProcessKey(eKeys Key) {
                 return action2;
             else if (iconActive == 2)
                 return action3;
+            else if (iconActive == 3)
+                return action4;
             break;
         default:
             break;
@@ -1521,6 +1535,7 @@ void cRecMenuItemTimerConflictHeader::Show(void) {
 
 void cRecMenuItemTimerConflictHeader::setBackground(void) {
     pixmap->Fill(clrTransparent);
+    cRecMenuItem::setBackground();
 }
 
 void cRecMenuItemTimerConflictHeader::Draw(void) {
@@ -1550,10 +1565,10 @@ void cRecMenuItemTimerConflictHeader::Draw(void) {
     int xConflStop = width - fontSmall->Width(*strConflStop) - 2;
     int xOverlapStart = xOverlap - fontSmall->Width(*strOverlapStart) - 2;
     int xOverlapStop = xOverlap + widthOverlap + 2;
-    pixmap->DrawText(cPoint(xConflStart, y1), *strConflStart, theme.Color(clrRecMenuTimerConflictBar), colorTextBack, fontSmall);
-    pixmap->DrawText(cPoint(xConflStop, y1), *strConflStop, theme.Color(clrRecMenuTimerConflictBar), colorTextBack, fontSmall);
-    pixmap->DrawText(cPoint(xOverlapStart, y2), *strOverlapStart, theme.Color(clrRecMenuTimerConflictOverlap), colorTextBack, fontSmall);
-    pixmap->DrawText(cPoint(xOverlapStop, y2), *strOverlapStop, theme.Color(clrRecMenuTimerConflictOverlap), colorTextBack, fontSmall);
+    pixmap->DrawText(cPoint(xConflStart, y1), *strConflStart, theme.Color(clrRecMenuTimerConflictBar), theme.Color(clrRecMenuTimerConflictBackground), fontSmall);
+    pixmap->DrawText(cPoint(xConflStop, y1), *strConflStop, theme.Color(clrRecMenuTimerConflictBar), theme.Color(clrRecMenuTimerConflictBackground), fontSmall);
+    pixmap->DrawText(cPoint(xOverlapStart, y2), *strOverlapStart, theme.Color(clrRecMenuTimerConflictOverlap), theme.Color(clrRecMenuTimerConflictBackground), fontSmall);
+    pixmap->DrawText(cPoint(xOverlapStop, y2), *strOverlapStop, theme.Color(clrRecMenuTimerConflictOverlap), theme.Color(clrRecMenuTimerConflictBackground), fontSmall);
 }
 
 // --- cRecMenuItemEvent  -------------------------------------------------------
@@ -1631,9 +1646,9 @@ void cRecMenuItemEvent::Draw(void) {
 int cRecMenuItemEvent::DrawIcons(void) {
     pixmapIcons->Fill(clrTransparent);
     int iconsX = 10;
-    int iconSize = 64;
+    int iconSize = height / 2;
     int iconY = (height - iconSize) / 2;
-    cString iconInfo, iconRecord;
+    std::string iconInfo, iconRecord;
     if (active) {
         iconInfo = (iconActive==0)?"info_active":"info_inactive";
         if (action2 != rmsDisabled)
@@ -1643,17 +1658,18 @@ int cRecMenuItemEvent::DrawIcons(void) {
         if (action2 != rmsDisabled)
             iconRecord = "record_inactive";
     }
-    cImageLoader imgLoader;
-    if (imgLoader.LoadIcon(iconInfo, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), icon);
+    cImage *imgInfo = imgCache.GetIcon(iconInfo, iconSize, iconSize);
+    if (imgInfo) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgInfo);
         iconsX += iconSize + 5;
     }
-    if ((action2 != rmsDisabled) && imgLoader.LoadIcon(iconRecord, iconSize)) {
-        cImage icon = imgLoader.GetImage();
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), icon);
-        iconsX += iconSize + 5;
-    }
+    if (action2 != rmsDisabled) {
+        cImage *imgRec = imgCache.GetIcon(iconRecord, iconSize, iconSize);
+        if (imgRec) {
+            pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgRec);
+            iconsX += iconSize + 5;
+        }
+    }    
     return iconsX;
 }
 

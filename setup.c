@@ -364,6 +364,7 @@ void cMenuSetupImageCache::Set(void) {
     Add(InfoItem(tr("Logo cache"), (imgCache.GetCacheSize(ctLogo)).c_str()));
     Add(InfoItem(tr("EPG Grid Cache"), (imgCache.GetCacheSize(ctGrid)).c_str()));
     Add(InfoItem(tr("Channel Groups Cache"), (imgCache.GetCacheSize(ctChannelGroup)).c_str()));
+    Add(InfoItem(tr("Recording Menus Icon Cache"), (imgCache.GetCacheSize(ctIcon)).c_str()));
 
     SetCurrent(Get(currentItem));
     Display();

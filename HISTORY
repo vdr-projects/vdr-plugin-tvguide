@@ -96,3 +96,4 @@ Version 1.1.0
 - Rounded Corners for color buttons (Closes Ticket 1475)
 - Fixed some issues with text backgrounds in flat themes (closes 
   Tickets 1480 and 1486)
+- Added possibility to search for reruns in case of a timer conflict

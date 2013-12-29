@@ -340,6 +340,7 @@ void cRecMenu::Arrange(bool scroll) {
         if (!scroll) {
             header->SetGeometry(xElement, yElement, widthElement);
             header->SetPixmaps();
+            header->setBackground();
         }
         yElement += header->GetHeight();
     }
@@ -351,6 +352,7 @@ void cRecMenu::Arrange(bool scroll) {
     if (footer && !scroll) {
         footer->SetGeometry(xElement, yElement, widthElement);
         footer->SetPixmaps();
+        footer->setBackground();
     }
 }
 

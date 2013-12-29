@@ -18,6 +18,7 @@ enum eRecMenuState {
     rmsIgnoreTimerConflict,
     rmsDeleteTimerConflictMenu,
     rmsEditTimerConflictMenu,
+    rmsSearchRerunsTimerConflictMenu,
     rmsSaveTimerConflictMenu,
     rmsTimerConflictShowInfo,
     rmsDeleteTimer,
@@ -51,6 +52,8 @@ enum eRecMenuState {
     rmsRecordingSearchResult,
     rmsTimerConflict,
     rmsTimerConflicts,
+    rmsTimerConflictIgnoreReruns,
+    rmsTimerConflictRecordRerun,
     rmsDisabled,
 };
 
@@ -331,6 +334,7 @@ private:
     const cTimer *timer;
     eRecMenuState action2;
     eRecMenuState action3;
+    eRecMenuState action4;
     int iconActive;
     cPixmap *pixmapIcons;
     cPixmap *pixmapStatus;
@@ -345,6 +349,7 @@ public:
                       eRecMenuState action1, 
                       eRecMenuState action2,
                       eRecMenuState action3,
+                      eRecMenuState action4,
                       time_t conflictStart,
                       time_t conflictStop,
                       time_t overlapStart,
