@@ -106,7 +106,7 @@ msgid "Timer Timeline"
 msgstr "Timer Zeitleiste"
 
 msgid "Check for Timer Conflicts"
-msgstr "Auf Timerkoflikte prüfen"
+msgstr "Auf Timerkonflikte prüfen"
 
 msgid "Search in Recordings"
 msgstr "In Aufnahmen suchen"

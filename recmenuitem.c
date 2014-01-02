@@ -2125,15 +2125,15 @@ void cRecMenuItemTimelineHeader::Draw(void) {
     int xText = (width - font->Width(*header)) / 2;
     int yText = (height/4 - font->Height())/2;
     pixmap->DrawText(cPoint(xText, yText), *header, colorText, clrTransparent, font);
-    
-    if (timer) {
-        DrawCurrentTimer();
-    }
+
+    DrawCurrentTimer();
 }
 
 void cRecMenuItemTimelineHeader::DrawCurrentTimer(void) {
-    int infoHeight = pixmapTimerInfo->ViewPort().Height();
     pixmapTimerInfo->Fill(clrTransparent);
+    if (!timer)
+        return;
+    int infoHeight = pixmapTimerInfo->ViewPort().Height();
     const cEvent *event = timer->Event();
     const cChannel *channel = timer->Channel();
     int x = 0;
