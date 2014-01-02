@@ -74,6 +74,22 @@ void cTvGuideOsd::Show(void) {
 void cTvGuideOsd::drawOsd() {
     cPixmap::Lock();
     cChannel *startChannel = Channels.GetByNumber(cDevice::CurrentChannel());
+    int numBack = tvguideConfig.numGrids / 2;
+    int offset = 0;
+    const cChannel *newStartChannel = startChannel;
+    for (; newStartChannel ; newStartChannel = Channels.Prev(newStartChannel)) {
+        if (newStartChannel && !newStartChannel->GroupSep()) {
+            offset++;
+        }
+        if (offset == numBack)
+            break;
+    }
+    if (!newStartChannel)
+        newStartChannel = Channels.First();
+    offset--;
+    if (offset < 0)
+        offset = 0;
+    
     if (tvguideConfig.displayStatusHeader) {
         statusHeader = new cStatusHeader();
         statusHeader->Draw();
@@ -94,8 +110,8 @@ void cTvGuideOsd::drawOsd() {
     }
     footer->drawBlueButton();
     osdManager.flush();
-    readChannels(startChannel);
-    drawGridsChannelJump();
+    readChannels(newStartChannel);
+    drawGridsChannelJump(offset);
     osdManager.flush();
     cPixmap::Unlock();
 }
