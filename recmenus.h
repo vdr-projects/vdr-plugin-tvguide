@@ -267,7 +267,6 @@ public:
 };
 
 // --- cRecMenuRecordingSearchResults  ---------------------------------------------------------
-
 class cRecMenuRecordingSearchResults: public cRecMenu {
 private:
     cRecording **searchResults;
@@ -288,5 +287,30 @@ public:
     virtual ~cRecMenuRecordingSearchNotFound(void) {};
 };
 
+// --- cRecMenuTimeline  ---------------------------------------------------------
+class cRecMenuTimeline: public cRecMenu {
+private:
+    std::vector<cTimer*> timersToday;
+    int numTimersToday;
+    time_t today;
+    time_t timeStart;
+    time_t timeStop;
+    cTVGuideTimerConflicts *timerConflicts;
+    std::vector<cTVGuideTimerConflict*> conflictsToday;
+    cRecMenuItemTimelineHeader *header;
+    void SetStartStop(void);
+    void GetTimersForDay(void);
+    void SetTimers(void);
+    void PrevDay(void);
+    void NextDay(void);
+    void ClearMenuItems(void);
+public:
+    cRecMenuTimeline(cTVGuideTimerConflicts *timerConflicts);
+    cRecMenuItem *GetMenuItem(int number);
+    int GetTotalNumMenuItems(void);
+    virtual ~cRecMenuTimeline(void) {
+    };
+    eRecMenuState ProcessKey(eKeys Key);
+};
 
 #endif //__TVGUIDE_RECMENUS_H

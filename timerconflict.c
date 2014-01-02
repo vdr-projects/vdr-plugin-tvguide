@@ -165,3 +165,13 @@ cTVGuideTimerConflict *cTVGuideTimerConflicts::GetConflict(int conflictIndex) {
         return NULL;
     return conflicts[conflictIndex];
 }
+
+std::vector<cTVGuideTimerConflict*> cTVGuideTimerConflicts::GetConflictsBetween(time_t start, time_t stop) {
+    std::vector<cTVGuideTimerConflict*> conflictsFound;
+    for (int i=0; i < numConflicts; i++) {
+        if ((conflicts[i]->timeStart > start) && (conflicts[i]->timeStart < stop)||
+            (conflicts[i]->timeStop  > start) && (conflicts[i]->timeStop < stop))
+            conflictsFound.push_back(conflicts[i]);
+    }
+    return conflictsFound;
+}

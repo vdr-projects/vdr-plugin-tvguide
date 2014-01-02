@@ -6,6 +6,7 @@
 #include <string>
 #include <vdr/tools.h> 
 #include "styledpixmap.h"
+#include "timerconflict.h"
 
 enum eRecMenuState {
     rmsConsumed,
@@ -54,6 +55,8 @@ enum eRecMenuState {
     rmsTimerConflicts,
     rmsTimerConflictIgnoreReruns,
     rmsTimerConflictRecordRerun,
+    rmsTimeline,
+    rmsTimelineInfo,
     rmsDisabled,
 };
 
@@ -68,6 +71,7 @@ protected:
     int width, height;
     bool selectable;
     bool active;
+    bool defaultBackground;
     bool drawn;
     eRecMenuState action;
     tColor colorText;
@@ -82,8 +86,8 @@ public:
     virtual int GetHeight(void) { return height; };
     virtual int GetWidth(void) { return 0; };
     virtual void CalculateHeight(int textWidth) {};
-    void setActive(void) { this->active = true; }
-    void setInactive(void) { this->active = false; }
+    virtual void setActive(void) { this->active = true; }
+    virtual void setInactive(void) { this->active = false; }
     bool isSelectable(void) { return selectable; }
     bool isActive(void) { return active; }
     virtual void setBackground(void);
@@ -474,6 +478,64 @@ public:
     void Hide(void);
     void Show(void); 
     void Draw(void);
+};
+
+// --- cRecMenuItemTimelineHeader  -------------------------------------------------------
+class cRecMenuItemTimelineHeader : public cRecMenuItem {
+private:
+    time_t day;
+    cTimer *timer;
+    std::vector<cTVGuideTimerConflict*> conflicts;
+    cPixmap *pixmapTimeline;
+    cPixmap *pixmapTimerInfo;
+    cPixmap *pixmapTimerConflicts;
+    int width5Mins;
+    int x0;
+    bool timelineDrawn;
+    void DrawTimeline(void);
+    void DrawTimerConflicts(void);
+    void DrawCurrentTimer(void);
+public:
+    cRecMenuItemTimelineHeader(time_t day, std::vector<cTVGuideTimerConflict*> conflictsToday);
+    virtual ~cRecMenuItemTimelineHeader(void);
+    void SetDay(time_t day) { this->day = day; };
+    void SetPixmaps(void);
+    void SetCurrentTimer(cTimer *timer) { this->timer = timer; };
+    void UnsetCurrentTimer(void) { timer = NULL; };
+    void RefreshTimerDisplay(void);
+    void Hide(void);
+    void Show(void); 
+    void Draw(void);
+};
+
+// --- cRecMenuItemTimelineTimer  -------------------------------------------------------
+class cRecMenuItemTimelineTimer : public cRecMenuItem {
+private:
+    cTimer *timer;
+    std::vector<cTVGuideTimerConflict*> conflicts;
+    cPixmap *pixmapBack;
+    cPixmap *pixmapTimerConflicts;
+    cRecMenuItemTimelineHeader *header;
+    int x0;
+    int width5Mins;
+    time_t start;
+    time_t stop;
+    void DrawBackground(void);
+    void DrawTimerBar(void);
+    void DrawTimeScale(void);
+    void DrawTimerConflicts(void);
+    void DrawNoTimerInfo(void);
+public:
+    cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop, std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active);
+    virtual ~cRecMenuItemTimelineTimer(void);
+    void setActive(void);
+    void setInactive(void);
+    void SetPixmaps(void);
+    void Hide(void);
+    void Show(void); 
+    void Draw(void);
+    const cEvent *GetEventValue(void);
+    eRecMenuState ProcessKey(eKeys Key);
 };
 
 #endif //__TVGUIDE_RECMENUITEM_H

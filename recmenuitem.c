@@ -10,6 +10,7 @@
 cRecMenuItem::cRecMenuItem(void) {
     height = 0;
     action = rmsNotConsumed;
+    defaultBackground = true;
     drawn = false;
     font = fontManager.FontRecMenuItem;
     fontSmall = fontManager.FontRecMenuItemSmall;
@@ -34,7 +35,9 @@ void cRecMenuItem::SetPixmaps(void) {
 
 void cRecMenuItem::setBackground(void) {
     if (tvguideConfig.style == eStyleGraphical) {
-        drawBackgroundGraphical(bgButton, active);
+        if (defaultBackground) {
+            drawBackgroundGraphical(bgButton, active);
+        }
         colorTextBack = clrTransparent;
         colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
     } else {
@@ -48,8 +51,10 @@ void cRecMenuItem::setBackground(void) {
             colorText = theme.Color(clrFont);
         }
         colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
-        drawBackground();
-        drawBorder();
+        if (defaultBackground) {
+            drawBackground();
+            drawBorder();
+        }
     }
 }
 
@@ -2056,4 +2061,356 @@ void cRecMenuItemRecording::Hide(void) {
 void cRecMenuItemRecording::Show(void) { 
     pixmap->SetLayer(4);
     pixmapText->SetLayer(5);
+}
+
+// --- cRecMenuItemTimelineHeader  -------------------------------------------------------
+cRecMenuItemTimelineHeader::cRecMenuItemTimelineHeader(time_t day, std::vector<cTVGuideTimerConflict*> conflictsToday) {
+    conflicts = conflictsToday;
+    pixmapTimeline = NULL;
+    pixmapTimerInfo = NULL;
+    pixmapTimerConflicts = NULL;
+    timer = NULL;
+    this->day = day;
+    selectable = false;
+    active = false;
+    height = 5 * font->Height();
+    timelineDrawn = false;
+}
+
+cRecMenuItemTimelineHeader::~cRecMenuItemTimelineHeader(void) {
+    if (pixmapTimeline)
+        osdManager.releasePixmap(pixmapTimeline);
+    if (pixmapTimerInfo)
+        osdManager.releasePixmap(pixmapTimerInfo);
+    if (pixmapTimerConflicts)
+        osdManager.releasePixmap(pixmapTimerConflicts);
+}
+
+void cRecMenuItemTimelineHeader::SetPixmaps(void) {
+    if (!pixmap) {
+        pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
+        pixmapTimeline = osdManager.requestPixmap(5, cRect(x, y, width, height));
+        pixmapTimerInfo = osdManager.requestPixmap(6, cRect(x, y + 3 * font->Height() / 2, width, 2 * font->Height()));
+        if (conflicts.size() > 0) {
+            pixmapTimerConflicts = osdManager.requestPixmap(6, cRect(x, y, width, height));
+        }
+    } else {
+        pixmap->SetViewPort(cRect(x, y, width, height));
+        pixmapTimeline->SetViewPort(cRect(x, y, width, height));
+        pixmapTimerInfo->SetViewPort(cRect(x, y + 3 * font->Height() / 2, width, 2 * font->Height()));
+        if (pixmapTimerConflicts)
+            pixmapTimerConflicts->SetViewPort(cRect(x, y, width, height));
+    }
+}
+
+void cRecMenuItemTimelineHeader::RefreshTimerDisplay(void) {
+    if (!pixmapTimerInfo)
+        return;
+    if (timer)
+        DrawCurrentTimer();
+    else
+        pixmapTimerInfo->Fill(clrTransparent);
+}
+
+void cRecMenuItemTimelineHeader::Draw(void) {
+    if (!timelineDrawn) {
+        DrawTimeline();
+        timelineDrawn = true;
+    }
+    DrawTimerConflicts();
+    pixmap->Fill(clrTransparent);
+    cString headerText = tr("Timers for");
+    cString dateText = DateString(day);
+    cString header = cString::sprintf("%s: %s", *headerText, *dateText);
+    int xText = (width - font->Width(*header)) / 2;
+    int yText = (height/4 - font->Height())/2;
+    pixmap->DrawText(cPoint(xText, yText), *header, colorText, clrTransparent, font);
+    
+    if (timer) {
+        DrawCurrentTimer();
+    }
+}
+
+void cRecMenuItemTimelineHeader::DrawCurrentTimer(void) {
+    int infoHeight = pixmapTimerInfo->ViewPort().Height();
+    pixmapTimerInfo->Fill(clrTransparent);
+    const cEvent *event = timer->Event();
+    const cChannel *channel = timer->Channel();
+    int x = 0;
+    if (channel) {
+        int logoWidth = infoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
+        bool logoDrawn = false;
+        cImageLoader imgLoader;
+        if (!tvguideConfig.hideChannelLogos) {
+            if (imgLoader.LoadLogo(channel, logoWidth, infoHeight)) {
+                cImage logo = imgLoader.GetImage();
+                pixmapTimerInfo->DrawImage(cPoint(0, 0), logo);
+                x += logoWidth + 10;
+                logoDrawn = true;
+            }
+        }
+        if (tvguideConfig.hideChannelLogos || !logoDrawn) {
+            int channelNameWidth = fontSmall->Width(channel->Name());
+            pixmapTimerInfo->DrawText(cPoint(10, (infoHeight - fontSmall->Height())/2), channel->Name(), colorText, clrTransparent, fontSmall);
+            x += channelNameWidth + 20;
+        }
+    }
+
+    cString timerStartTime = TimeString(timer->StartTime());
+    cString timerStopTime = TimeString(timer->StopTime());
+    cString channelInfo = cString::sprintf("%s %d", tr("Transp."), timer->Channel()->Transponder());
+
+    if (event) {
+        cString title;
+        if (event->ShortText()) {
+            title = cString::sprintf("%s - %s", event->Title(), event->ShortText());
+        } else {
+            title = event->Title();
+        }
+        std::string titleCut = CutText(*title, width - x, font);
+        cString infoString = cString::sprintf("%s: %s - %s (%s. %s - %s), %s", *event->GetDateString(), *event->GetTimeString(), *event->GetEndTimeString(), tr("Rec"), *timerStartTime, *timerStopTime, *channelInfo);
+        pixmapTimerInfo->DrawText(cPoint(x, 0), *infoString, colorText, clrTransparent, font);
+        pixmapTimerInfo->DrawText(cPoint(x, font->Height()), titleCut.c_str(), colorText, clrTransparent, font);
+    } else {
+        cString infoString = cString::sprintf("%s. %s - %s, %s", tr("Rec"), *timerStartTime, *timerStopTime, *channelInfo);
+        pixmapTimerInfo->DrawText(cPoint(x, 0), *infoString, colorText, clrTransparent, font);
+    }
+}
+
+void cRecMenuItemTimelineHeader::DrawTimeline(void) {
+    pixmapTimeline->Fill(clrTransparent);
+    width5Mins = (float)width * 5.0 / 24.0 / 60.0;
+    int widthHour = 12 * width5Mins;
+    x0 = (width - 24*widthHour)/2;
+    int barHeight = fontSmall->Height();
+    int y = height - barHeight;
+    tColor col1 = theme.Color(clrTimeline1);
+    tColor col2 = theme.Color(clrTimeline2);
+    tColor colCurText = col1;
+    tColor colCurBack = col2;
+    int x = x0;
+    for (int hour = 0; hour < 24; hour++) {
+        pixmapTimeline->DrawRectangle(cRect(x, y, widthHour, barHeight), colCurBack);
+        cString hourText = cString::sprintf("%d", hour);
+        int xDelta = (widthHour - fontSmall->Width(*hourText)) / 2;
+        pixmapTimeline->DrawText(cPoint(x + xDelta, y), *hourText, colCurText, colCurBack, fontSmall);
+        x += widthHour;
+        colCurText = (colCurText==col1)?col2:col1;
+        colCurBack = (colCurBack==col1)?col2:col1;
+    }
+    pixmapTimeline->DrawRectangle(cRect(x0, height-2, width - 2*x0, 2), col2);
+}
+
+void cRecMenuItemTimelineHeader::DrawTimerConflicts(void) {
+    if (!pixmapTimerConflicts)
+        return;
+    pixmapTimerConflicts->Fill(clrTransparent);
+    int numConflicts = conflicts.size();
+    int barHeight = fontSmall->Height();
+    int y = height - barHeight;
+    for (int conflict = 0; conflict < numConflicts; conflict++) {
+        int confStart = conflicts[conflict]->timeStart - day;
+        int confStop = conflicts[conflict]->timeStop - day;
+        int overlapStart = conflicts[conflict]->overlapStart - day;
+        int overlapStop = conflicts[conflict]->overlapStop - day;
+        if (confStart < 0)
+            confStart = 0;
+        if (confStop > 24*60*60)
+            confStop = 24 * 60 * 60;
+        if (overlapStart < 0)
+            overlapStart  = 0;
+        if (overlapStop > 24*60*60)
+            overlapStop  = 24 * 60 * 60;
+        confStart = confStart / 60;
+        confStop = confStop / 60;
+        overlapStart = overlapStart / 60;
+        overlapStop = overlapStop / 60;
+        int xStartConflict = x0 + confStart * width5Mins / 5;
+        int xStopConflict = x0 + confStop * width5Mins / 5;
+        int xStartOverlap = x0 + overlapStart * width5Mins / 5;
+        int xStopOverlap = x0 + overlapStop * width5Mins / 5;
+        pixmapTimerConflicts->DrawRectangle(cRect(xStartConflict, y, xStopConflict - xStartConflict, barHeight), theme.Color(clrRecMenuTimelineConflict));
+        pixmapTimerConflicts->DrawRectangle(cRect(xStartOverlap, y, xStopOverlap - xStartOverlap, barHeight), theme.Color(clrRecMenuTimelineConflictOverlap));
+    }
+}
+
+void cRecMenuItemTimelineHeader::Hide(void) { 
+    pixmap->SetLayer(-1);
+    pixmapTimeline->SetLayer(-1);
+    pixmapTimerInfo->SetLayer(-1);
+    if (pixmapTimerConflicts)
+        pixmapTimerConflicts->SetLayer(-1);
+}
+
+void cRecMenuItemTimelineHeader::Show(void) { 
+    pixmap->SetLayer(4);
+    pixmapTimeline->SetLayer(5);
+    pixmapTimerInfo->SetLayer(6);
+    if (pixmapTimerConflicts)
+        pixmapTimerConflicts->SetLayer(6);
+}
+
+
+// --- cRecMenuItemTimelineTimer  -------------------------------------------------------
+cRecMenuItemTimelineTimer::cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop,  std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active) {
+    conflicts = conflictsToday;
+    defaultBackground = false;
+    pixmapBack = NULL;
+    pixmapTimerConflicts = NULL;
+    this->timer = timer;
+    this->start = start;
+    this->stop = stop;
+    this->header = header;
+    selectable = true;
+    this->active = active;
+    height = geoManager.osdHeight / 16;
+}
+
+cRecMenuItemTimelineTimer::~cRecMenuItemTimelineTimer(void) {
+    if (pixmapBack)
+        osdManager.releasePixmap(pixmapBack);
+    if (pixmapTimerConflicts)
+        osdManager.releasePixmap(pixmapTimerConflicts);
+}
+
+void cRecMenuItemTimelineTimer::SetPixmaps(void) {
+    if (!pixmap) {
+        pixmapBack = osdManager.requestPixmap(4, cRect(x, y, width, height)); 
+        pixmap = osdManager.requestPixmap(5, cRect(x, y, width, height));
+        if (conflicts.size() > 0) {
+            pixmapTimerConflicts = osdManager.requestPixmap(6, cRect(x, y, width, height));
+        }        
+    } else {
+        pixmapBack->SetViewPort(cRect(x, y, width, height));
+        pixmap->SetViewPort(cRect(x, y, width, height));
+        if (pixmapTimerConflicts)
+            pixmapTimerConflicts->SetViewPort(cRect(x, y, width, height));
+            
+    }
+    width5Mins = (float)width * 5.0 / 24.0 / 60.0;
+    x0 = (width - 24*12*width5Mins)/2;
+}
+
+void cRecMenuItemTimelineTimer::Draw(void) {
+    DrawBackground();
+    if (!timer) {
+        DrawNoTimerInfo();
+        return;
+    }
+    if (!drawn) {
+        pixmap->Fill(clrTransparent);
+        DrawTimeScale();
+        DrawTimerBar();
+        DrawTimerConflicts();
+        drawn = true;
+    }
+}
+
+void cRecMenuItemTimelineTimer::DrawBackground(void) {
+    tColor backgroundColor = (active)?theme.Color(clrRecMenuTimelineActive):theme.Color(clrRecMenuTimelineBack);
+    pixmapBack->Fill(clrTransparent);
+    pixmapBack->DrawRectangle(cRect(x0, 0, width - 2 * x0, height), backgroundColor);
+}
+
+void cRecMenuItemTimelineTimer::DrawTimeScale(void) {
+    int x = x0;
+    for (int hour = 0; hour < 25; hour++) {
+        int xModified = (hour%2) ? x - 1 : x ;
+        pixmap->DrawRectangle(cRect(xModified,0,1,height), theme.Color(clrTimeline2));
+        x += width5Mins*12;
+    }
+}
+
+void cRecMenuItemTimelineTimer::DrawTimerBar(void) {
+    time_t timerStart = timer->StartTime() - start;
+    time_t timerStop = timer->StopTime() - start;
+    if (timerStart < 0)
+        timerStart = 0;
+    if (timerStop > 24*60*60)
+        timerStop = 24 * 60 * 60;
+    timerStart = timerStart / 60;
+    timerStop = timerStop / 60;
+    int xStart = x0 + timerStart * width5Mins / 5;
+    int xStop = x0 + timerStop * width5Mins / 5;
+    pixmap->DrawRectangle(cRect(xStart, height / 4, xStop - xStart, height / 2), theme.Color(clrRecMenuTimelineTimer));
+}
+
+void cRecMenuItemTimelineTimer::DrawTimerConflicts(void) {
+    if (!pixmapTimerConflicts)
+        return;
+    pixmapTimerConflicts->Fill(clrTransparent);
+    int numConflicts = conflicts.size();
+    for (int conflict = 0; conflict < numConflicts; conflict++) {
+        int confStart = conflicts[conflict]->timeStart - start;
+        int confStop = conflicts[conflict]->timeStop - start;
+        int overlapStart = conflicts[conflict]->overlapStart - start;
+        int overlapStop = conflicts[conflict]->overlapStop - start;
+        if (confStart < 0)
+            confStart = 0;
+        if (confStop > 24*60*60)
+            confStop = 24 * 60 * 60;
+        if (overlapStart < 0)
+            overlapStart  = 0;
+        if (overlapStop > 24*60*60)
+            overlapStop  = 24 * 60 * 60;
+        confStart = confStart / 60;
+        confStop = confStop / 60;
+        overlapStart = overlapStart / 60;
+        overlapStop = overlapStop / 60;
+        int xStartConflict = x0 + confStart * width5Mins / 5;
+        int xStopConflict = x0 + confStop * width5Mins / 5;
+        int xStartOverlap = x0 + overlapStart * width5Mins / 5;
+        int xStopOverlap = x0 + overlapStop * width5Mins / 5;
+        pixmapTimerConflicts->DrawRectangle(cRect(xStartConflict, 0, xStopConflict - xStartConflict, height), theme.Color(clrRecMenuTimelineConflict));
+        pixmapTimerConflicts->DrawRectangle(cRect(xStartOverlap, 0, xStopOverlap - xStartOverlap, height), theme.Color(clrRecMenuTimelineConflictOverlap));
+    }
+}
+
+void cRecMenuItemTimelineTimer::DrawNoTimerInfo(void) {
+    pixmap->Fill(clrTransparent);
+    cString noTimersText = tr("No Timers active");
+    int widthText = font->Width(*noTimersText);
+    int x = (width - widthText) / 2;
+    int y = (height - font->Height()) / 2;
+    pixmap->DrawText(cPoint(x, y), *noTimersText, colorText, clrTransparent, font);
+}
+
+void cRecMenuItemTimelineTimer::setActive(void) {
+    active = true;
+    header->SetCurrentTimer(timer);
+    header->RefreshTimerDisplay();
+}
+
+void cRecMenuItemTimelineTimer::setInactive(void) {
+    active = false;
+    header->UnsetCurrentTimer();
+    header->RefreshTimerDisplay();
+}
+
+void cRecMenuItemTimelineTimer::Hide(void) { 
+    pixmap->SetLayer(-1);
+    pixmapBack->SetLayer(-1);
+    if (pixmapTimerConflicts)
+        pixmapTimerConflicts->SetLayer(-1);
+}
+
+void cRecMenuItemTimelineTimer::Show(void) { 
+    pixmap->SetLayer(5);
+    pixmapBack->SetLayer(4);
+    if (pixmapTimerConflicts)
+        pixmapTimerConflicts->SetLayer(6);
+}
+
+const cEvent *cRecMenuItemTimelineTimer::GetEventValue(void) {
+    return timer->Event();    
+}
+
+eRecMenuState cRecMenuItemTimelineTimer::ProcessKey(eKeys Key) {
+    switch (Key & ~k_Repeat) {
+        case kOk:
+            return rmsTimelineInfo;
+        default:
+            break;
+    }
+    return rmsNotConsumed;
 }

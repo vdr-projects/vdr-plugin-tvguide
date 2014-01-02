@@ -206,5 +206,9 @@ THEME_CLR(theme, clrRecMenuKeyboardHigh, 0x40BB0000);
 THEME_CLR(theme, clrButtonRedKeyboard, 0xFFBB0000);
 THEME_CLR(theme, clrButtonGreenKeyboard, 0xFF00BB00);
 THEME_CLR(theme, clrButtonYellowKeyboard, 0xFFBBBB00);
-
+THEME_CLR(theme, clrRecMenuTimelineTimer, 0xB012273f);
+THEME_CLR(theme, clrRecMenuTimelineBack, 0xFF828282);
+THEME_CLR(theme, clrRecMenuTimelineActive, 0xFF3F3F3F);
+THEME_CLR(theme, clrRecMenuTimelineConflict, 0x30FF0000);
+THEME_CLR(theme, clrRecMenuTimelineConflictOverlap, 0x90FF0000);
 #endif //__TVGUIDE_CONFIG_H

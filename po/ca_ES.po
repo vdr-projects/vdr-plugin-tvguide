@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-29 17:53+0100\n"
+"POT-Creation-Date: 2013-12-31 14:31+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -72,6 +72,15 @@ msgstr "enregistrat a"
 msgid "from"
 msgstr "des de"
 
+msgid "Timers for"
+msgstr ""
+
+msgid "Rec"
+msgstr ""
+
+msgid "No Timers active"
+msgstr ""
+
 msgid "Instant Record"
 msgstr "Enregistra a l'instant"
 
@@ -96,11 +105,14 @@ msgstr "Esborra canvis de temporitzadors"
 msgid "Search"
 msgstr "Cerca"
 
-msgid "Search in Recordings"
-msgstr "Cerca a les gravacions"
+msgid "Timer Timeline"
+msgstr ""
 
 msgid "Check for Timer Conflicts"
 msgstr "Comprova conflictes de temporitzadors"
+
+msgid "Search in Recordings"
+msgstr "Cerca a les gravacions"
 
 msgid "Set Folder for"
 msgstr "Programa carpeta per"

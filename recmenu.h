@@ -58,6 +58,6 @@ public:
     bool GetBoolValue(int itemNumber);
     cString GetStringValue(int itemNumber);
     const cEvent *GetEventValue(int itemNumber);
-    eRecMenuState ProcessKey(eKeys Key);
+    virtual eRecMenuState ProcessKey(eKeys Key);
 };
 #endif //__TVGUIDE_RECMENU_H

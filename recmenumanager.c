@@ -138,6 +138,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                     detailView->drawHeader();
                     detailView->drawContent();
                     detailView->drawScrollbar();
+                    detailView->Start();
                     detailViewActive = true;
                 }
             }
@@ -426,6 +427,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 detailView->drawHeader();
                 detailView->drawContent();
                 detailView->drawScrollbar();
+                detailView->Start();
                 detailViewActive = true;
             }
             break;}
@@ -522,6 +524,32 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 activeMenu->Display();
             }
             break; }
+        /* 
+         * --------- TIMELINE ---------------------------------
+        */
+        case rmsTimeline: {
+            if (timerConflicts) {
+                delete timerConflicts;
+            }
+            timerConflicts = recManager->CheckTimerConflict();
+            delete activeMenu;
+            activeMenu = new cRecMenuTimeline(timerConflicts);
+            activeMenu->Display();
+            break; } 
+        case rmsTimelineInfo: {
+            const cEvent *ev = activeMenu->GetEventValue(activeMenu->GetActive(true));
+            if (ev) {
+                activeMenu->Hide();
+                detailView = new cDetailView(ev);
+                detailView->setContent();
+                detailView->drawHeader();
+                detailView->drawContent();
+                detailView->drawScrollbar();
+                detailView->Start();
+                detailViewActive = true;
+            }
+            break;}
+
         /* 
          * --------- COMMON ---------------------------------
         */

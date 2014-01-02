@@ -28,10 +28,12 @@ cRecMenuMain::cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switc
     if (epgSearchAvailable) {
         AddMenuItem(new cRecMenuItemButton(tr("Search"), rmsSearch, false));
     }
-    AddMenuItem(new cRecMenuItemButton(tr("Search in Recordings"), rmsRecordingSearch, false));
+
+    AddMenuItem(new cRecMenuItemButton(tr("Timer Timeline"), rmsTimeline, false));
     if (epgSearchAvailable) {
         AddMenuItem(new cRecMenuItemButton(tr("Check for Timer Conflicts"), rmsTimerConflicts, false));
     }
+    AddMenuItem(new cRecMenuItemButton(tr("Search in Recordings"), rmsRecordingSearch, false));
     int menuWidth = CalculateOptimalWidth() + 4 * border;
     SetWidthPixel(menuWidth);
             
@@ -935,4 +937,140 @@ cRecMenuRecordingSearchNotFound::cRecMenuRecordingSearchNotFound(cString searchS
     CalculateHeight();
     CreatePixmap();
     Arrange();
+}
+
+// --- cRecMenuTimeline  ---------------------------------------------------------
+cRecMenuTimeline::cRecMenuTimeline(cTVGuideTimerConflicts *timerConflicts) {
+    this->timerConflicts = timerConflicts;
+    SetStartStop();
+    conflictsToday = timerConflicts->GetConflictsBetween(timeStart, timeStop);
+    GetTimersForDay();
+    SetWidthPercent(95);
+    header = new cRecMenuItemTimelineHeader(timeStart, conflictsToday);
+    SetHeader(header);
+    cRecMenuItem *footer = new cRecMenuItemButton(tr("Close"), rmsClose, false, true);
+    SetFooter(footer);
+    SetTimers();
+}
+
+void cRecMenuTimeline::SetStartStop(void) {
+    time_t now = time(0);
+    tm *timeStruct = localtime(&now);
+    timeStart = now - timeStruct->tm_hour * 3600 - timeStruct->tm_min * 60 - timeStruct->tm_sec;
+    today = timeStart;
+    timeStop = timeStart + 24*3600 - 1;
+}
+
+
+void cRecMenuTimeline::GetTimersForDay(void) {
+    timersToday.clear();
+    for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
+        if (((t->StartTime() > timeStart) && (t->StartTime() <= timeStop)) || ((t->StopTime() > timeStart) && (t->StopTime() <= timeStop))) {
+            timersToday.push_back(t);
+        }
+    }
+    numTimersToday = timersToday.size();
+}
+
+void cRecMenuTimeline::SetTimers(void) {
+    ClearMenuItems();
+    if (numTimersToday == 0) {
+        AddMenuItem(new cRecMenuItemTimelineTimer(NULL, 0, 0, conflictsToday, header, false));
+        header->UnsetCurrentTimer();
+        footer->setActive();
+    } else {
+        for (int i=0; i<numTimersToday; i++) {
+            cRecMenuItemTimelineTimer *item = new cRecMenuItemTimelineTimer(timersToday[i], timeStart, timeStop, conflictsToday, header, false);
+            if (i==0)
+                item->setActive();
+            AddMenuItemScroll(item);
+            if (!CheckHeight())
+                break;
+        }
+        footer->setInactive();
+    }
+    CalculateHeight();
+    CreatePixmap();
+    Arrange();
+}
+
+void cRecMenuTimeline::PrevDay(void) {
+    if ((timeStart - 3600*24) < today)
+        return;
+    timeStart -= 3600*24;
+    timeStop -= 3600*24;
+    conflictsToday = timerConflicts->GetConflictsBetween(timeStart, timeStop);
+    SetWidthPercent(95);
+    header->SetDay(timeStart);
+    header->UnsetCurrentTimer();
+    header->RefreshTimerDisplay();
+    GetTimersForDay();
+    SetTimers();
+    Display();
+}
+
+void cRecMenuTimeline::NextDay(void) {
+    timeStart += 3600*24;
+    timeStop += 3600*24;
+    conflictsToday = timerConflicts->GetConflictsBetween(timeStart, timeStop);
+    SetWidthPercent(95);
+    header->SetDay(timeStart);
+    header->UnsetCurrentTimer();
+    header->RefreshTimerDisplay();
+    GetTimersForDay();
+    SetTimers();
+    Display();
+}
+
+cRecMenuItem *cRecMenuTimeline::GetMenuItem(int number) { 
+    if (number < 0)
+        return NULL;
+    if (number >= numTimersToday)
+        return NULL;
+    return new cRecMenuItemTimelineTimer(timersToday[number], timeStart, timeStop, conflictsToday, header, false);
+}
+
+int cRecMenuTimeline::GetTotalNumMenuItems(void) { 
+    return numTimersToday;
+}
+
+void cRecMenuTimeline::ClearMenuItems(void) {
+    if (pixmap)
+        osdManager.releasePixmap(pixmap);
+    pixmap = NULL;
+    menuItems.Clear();
+    if (pixmapScrollBar)
+        osdManager.releasePixmap(pixmapScrollBar);
+    if (imgScrollBar)
+        delete imgScrollBar; 
+    header->UnsetCurrentTimer();
+    height = 2*border + headerHeight + footerHeight;
+    scrollHeight = 0;
+    scrollItemHeight = 0;
+    scrollable = false;
+    pixmapScrollBar = NULL;
+    imgScrollBar = NULL;
+    startIndex = 0;
+    stopIndex = 0;
+    numItems = 0;
+}
+
+eRecMenuState cRecMenuTimeline::ProcessKey(eKeys Key) {
+    eRecMenuState state = rmsContinue;
+    switch (Key & ~k_Repeat) {
+        case kLeft:
+            PrevDay();
+            state = rmsConsumed;
+            break;
+        case kRight:
+            NextDay();
+            state = rmsConsumed;
+            break;
+        default:
+            break;
+    }
+    if (state != rmsConsumed) {
+        state = cRecMenu::ProcessKey(Key);
+    }
+    return state;
 }

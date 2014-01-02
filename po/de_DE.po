@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-29 17:53+0100\n"
+"POT-Creation-Date: 2013-12-31 14:31+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -69,6 +69,15 @@ msgstr "aufgenommen am"
 msgid "from"
 msgstr "von"
 
+msgid "Timers for"
+msgstr "Timer für"
+
+msgid "Rec"
+msgstr "Aufn"
+
+msgid "No Timers active"
+msgstr "Keine Timer aktiv"
+
 msgid "Instant Record"
 msgstr "Sofortaufnahme"
 
@@ -93,11 +102,14 @@ msgstr "Umschalttimer löschen"
 msgid "Search"
 msgstr "Suchen"
 
-msgid "Search in Recordings"
-msgstr "In Aufnahmen suchen"
+msgid "Timer Timeline"
+msgstr "Timer Zeitleiste"
 
 msgid "Check for Timer Conflicts"
 msgstr "Auf Timerkoflikte prüfen"
+
+msgid "Search in Recordings"
+msgstr "In Aufnahmen suchen"
 
 msgid "Set Folder for"
 msgstr "Verzeichnis festlegen für"
@@ -157,25 +169,25 @@ msgid "Close"
 msgstr "Schließen"
 
 msgid "reruns for"
-msgstr ""
+msgstr "Wiederholungen für"
 
 msgid "rerun for"
-msgstr ""
+msgstr "Wiederholung für"
 
 msgid "found"
-msgstr ""
+msgstr "gefunden"
 
 msgid "Ignore reruns"
-msgstr ""
+msgstr "Wiederholungen ignorieren"
 
 msgid "No reruns found for Event"
-msgstr ""
+msgstr "Keine Wiederholungen gefunden für"
 
 msgid "Timer for"
-msgstr ""
+msgstr "Timer für"
 
 msgid "replaced by rerun"
-msgstr ""
+msgstr "ersetzt durch Wiederholung"
 
 msgid "Timer Active"
 msgstr "Timer aktiv"
@@ -664,4 +676,4 @@ msgid "Channel Groups Cache"
 msgstr "Kanalgruppen Cache"
 
 msgid "Recording Menus Icon Cache"
-msgstr ""
+msgstr "Recording Menüs Icon Cache"

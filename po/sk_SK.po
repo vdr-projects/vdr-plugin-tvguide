@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-29 17:53+0100\n"
+"POT-Creation-Date: 2013-12-31 14:31+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -69,6 +69,15 @@ msgstr "Zaznamenané"
 msgid "from"
 msgstr "z"
 
+msgid "Timers for"
+msgstr ""
+
+msgid "Rec"
+msgstr ""
+
+msgid "No Timers active"
+msgstr ""
+
 msgid "Instant Record"
 msgstr "Okam¾ite nahra»"
 
@@ -93,11 +102,14 @@ msgstr "Vymaza» prepínací plán"
 msgid "Search"
 msgstr "Hµada»"
 
-msgid "Search in Recordings"
-msgstr "Vyhµada» v nahrávkach"
+msgid "Timer Timeline"
+msgstr ""
 
 msgid "Check for Timer Conflicts"
 msgstr "Skontrolova» konflikty plánu"
+
+msgid "Search in Recordings"
+msgstr "Vyhµada» v nahrávkach"
 
 msgid "Set Folder for"
 msgstr "Nastavi» adresár pre"
