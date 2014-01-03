@@ -2401,14 +2401,14 @@ void cRecMenuItemTimelineTimer::Show(void) {
         pixmapTimerConflicts->SetLayer(6);
 }
 
-const cEvent *cRecMenuItemTimelineTimer::GetEventValue(void) {
-    return timer->Event();    
+cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
+    return timer;    
 }
 
 eRecMenuState cRecMenuItemTimelineTimer::ProcessKey(eKeys Key) {
     switch (Key & ~k_Repeat) {
         case kOk:
-            return rmsTimelineInfo;
+            return rmsTimelineTimerEdit;
         default:
             break;
     }

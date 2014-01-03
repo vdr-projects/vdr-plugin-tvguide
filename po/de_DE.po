@@ -79,7 +79,7 @@ msgid "No Timers active"
 msgstr "Keine Timer aktiv"
 
 msgid "Instant Record"
-msgstr "Sofortaufnahme"
+msgstr "Aufnahme"
 
 msgid "Delete Timer"
 msgstr "Timer löschen"

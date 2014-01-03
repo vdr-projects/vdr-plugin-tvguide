@@ -403,7 +403,12 @@ cRecMenuEditTimer::cRecMenuEditTimer(const cTimer *timer, eRecMenuState nextStat
         AddMenuItem(new cRecMenuItemDay(tr("Day"), day, false));
         AddMenuItem(new cRecMenuItemTime(tr("Timer start time"), start, false));
         AddMenuItem(new cRecMenuItemTime(tr("Timer stop time"), stop, false));
-        AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsClose, false));
+        if (nextState == rmsTimelineTimerSave) {
+            AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsTimelineTimerDelete, false, false));
+            AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsTimeline, false));
+        } else {
+            AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsClose, false));
+        }
         CalculateHeight();
         CreatePixmap();
         Arrange();

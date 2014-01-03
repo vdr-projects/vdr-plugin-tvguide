@@ -56,7 +56,9 @@ enum eRecMenuState {
     rmsTimerConflictIgnoreReruns,
     rmsTimerConflictRecordRerun,
     rmsTimeline,
-    rmsTimelineInfo,
+    rmsTimelineTimerEdit,
+    rmsTimelineTimerSave,
+    rmsTimelineTimerDelete,
     rmsDisabled,
 };
 
@@ -99,6 +101,7 @@ public:
     virtual bool GetBoolValue(void) { return false; };
     virtual cString GetStringValue(void) { return cString(""); };
     virtual const cEvent *GetEventValue(void) { return NULL; };
+    virtual cTimer *GetTimerValue(void) { return NULL; };
     virtual eRecMenuState ProcessKey(eKeys Key) { return rmsNotConsumed; };
 
 };
@@ -534,7 +537,7 @@ public:
     void Hide(void);
     void Show(void); 
     void Draw(void);
-    const cEvent *GetEventValue(void);
+    cTimer *GetTimerValue(void);
     eRecMenuState ProcessKey(eKeys Key);
 };
 

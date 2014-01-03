@@ -536,20 +536,34 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuTimeline(timerConflicts);
             activeMenu->Display();
             break; } 
-        case rmsTimelineInfo: {
-            const cEvent *ev = activeMenu->GetEventValue(activeMenu->GetActive(true));
-            if (ev) {
-                activeMenu->Hide();
-                detailView = new cDetailView(ev);
-                detailView->setContent();
-                detailView->drawHeader();
-                detailView->drawContent();
-                detailView->drawScrollbar();
-                detailView->Start();
-                detailViewActive = true;
+        case rmsTimelineTimerEdit: {
+            timer = activeMenu->GetTimerValue(activeMenu->GetActive(true));
+            if (timer) {
+                delete activeMenu;
+                activeMenu = new cRecMenuEditTimer(timer, rmsTimelineTimerSave);
+                activeMenu->Display();
             }
             break;}
-
+        case rmsTimelineTimerSave: {
+            recManager->SaveTimer(timer, activeMenu);
+            delete activeMenu;
+            if (timerConflicts) {
+                delete timerConflicts;
+            }
+            timerConflicts = recManager->CheckTimerConflict();
+            activeMenu = new cRecMenuTimeline(timerConflicts);
+            activeMenu->Display();
+            break; }
+        case rmsTimelineTimerDelete: {
+            recManager->DeleteTimer(timer->Event());
+            delete activeMenu;
+            if (timerConflicts) {
+                delete timerConflicts;
+            }
+            timerConflicts = recManager->CheckTimerConflict();
+            activeMenu = new cRecMenuTimeline(timerConflicts);
+            activeMenu->Display();
+            break; }
         /* 
          * --------- COMMON ---------------------------------
         */

@@ -463,6 +463,15 @@ const cEvent *cRecMenu::GetEventValue(int itemNumber) {
     return NULL;
 }
 
+cTimer *cRecMenu::GetTimerValue(int itemNumber) {
+    cRecMenuItem *item = NULL;
+    item = menuItems.Get(itemNumber);
+    if (item) {
+        return item->GetTimerValue();
+    }
+    return NULL;
+}
+
 eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
     cRecMenuItem *activeItem = GetActiveMenuItem();
     eRecMenuState state = rmsContinue;
