@@ -658,7 +658,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;
-            processKeyBlue();
+            state = processKeyBlue();
         } else {
             state = detailView->ProcessKey(Key);
             if (state == osEnd) {

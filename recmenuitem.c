@@ -71,9 +71,12 @@ cRecMenuItemButton::cRecMenuItemButton(const char *text, eRecMenuState action, b
     height = 3 * fontButtons->Height() / 2;
     this->halfWidth = halfWidth;
     this->alignLeft = alignLeft;
+    pixmapText = NULL;
 }
 
 cRecMenuItemButton::~cRecMenuItemButton(void) {
+    if (pixmapText)
+        osdManager.releasePixmap(pixmapText);
 }
 
 int cRecMenuItemButton::GetWidth(void) {
@@ -85,20 +88,34 @@ void cRecMenuItemButton::SetPixmaps(void) {
         x += width / 4;
         width = width / 2;
     }
-    if (!pixmap)
+    if (!pixmap) {
         pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
-    else
+        pixmapText = osdManager.requestPixmap(5, cRect(x, y, width, height));
+    } else {
         pixmap->SetViewPort(cRect(x, y, width, height));
+        pixmapText->SetViewPort(cRect(x, y, width, height));
+    }
 }
 
 void cRecMenuItemButton::Draw(void) {
+    pixmapText->Fill(clrTransparent);
     int y = (height - fontButtons->Height()) / 2;
     int x;
     if (!alignLeft)
         x = (width - fontButtons->Width(*text)) / 2;
     else
         x = 10;
-    pixmap->DrawText(cPoint(x, y), *text, colorText, colorTextBack, fontButtons);
+    pixmapText->DrawText(cPoint(x, y), *text, colorText, colorTextBack, fontButtons);
+}
+
+void cRecMenuItemButton::Hide(void) { 
+    pixmap->SetLayer(-1);
+    pixmapText->SetLayer(-1);
+}
+
+void cRecMenuItemButton::Show(void) { 
+    pixmap->SetLayer(4);
+    pixmapText->SetLayer(5);
 }
 
 eRecMenuState cRecMenuItemButton::ProcessKey(eKeys Key) {
@@ -673,7 +690,7 @@ void cRecMenuItemText::DrawValue(char *newValue) {
     pixmapVal->Fill(clrBack);
     int textX = pixmapVal->DrawPort().Width() - font->Width(newValue) - 10;
     int textY = (pixmapVal->DrawPort().Height() - font->Height()) / 2;
-    pixmapVal->DrawText(cPoint(textX, textY), newValue, colorText, clrTransparent, font);
+    pixmapVal->DrawText(cPoint(textX, textY), newValue, colorText, clrBack, font);
 }
 
 void cRecMenuItemText::ActivateKeyboard(void) {
@@ -736,7 +753,7 @@ void cRecMenuItemText::ActivateKeyboard(void) {
                 char *smsKeys = GetSMSKeys(num);
                 int smsKeysX = X + (gridWidth - fontSmall->Width(smsKeys))/2;
                 int smsKeysY = Y + gridHeight - fontSmall->Height() - 10;
-                pixmapKeyboard->DrawText(cPoint(smsKeysX, smsKeysY), smsKeys, theme.Color(clrRecMenuKeyboardBorder), colorTextBack, fontSmall);
+                pixmapKeyboard->DrawText(cPoint(smsKeysX, smsKeysY), smsKeys, theme.Color(clrRecMenuKeyboardBorder), theme.Color(clrRecMenuKeyboardBack), fontSmall);
                 delete[] smsKeys;
             }
             if (drawIcon) {

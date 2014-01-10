@@ -200,7 +200,7 @@ THEME_CLR(theme, clrRecMenuDayActive, 0xFF00FF00);
 THEME_CLR(theme, clrRecMenuDayInactive, 0xFFFF0000);
 THEME_CLR(theme, clrRecMenuDayHighlight, 0x44FFFFFF);
 THEME_CLR(theme, clrRecMenuTextBack, 0xFF000000);
-THEME_CLR(theme, clrRecMenuTextActiveBack, 0xFF404749);
+THEME_CLR(theme, clrRecMenuTextActiveBack, 0xFF939376);
 THEME_CLR(theme, clrRecMenuKeyboardBack, 0xFF000000);
 THEME_CLR(theme, clrRecMenuKeyboardBorder, clrWhite);
 THEME_CLR(theme, clrRecMenuKeyboardHigh, 0x40BB0000);

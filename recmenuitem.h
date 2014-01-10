@@ -124,12 +124,15 @@ private:
     bool halfWidth;
     bool alignLeft;
     const cFont *fontButtons;
+    cPixmap *pixmapText;
 public:
     cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth = false, bool alignLeft = false, bool largeFont = false);
     virtual ~cRecMenuItemButton(void);
     int GetWidth(void);
     void SetPixmaps(void);
     void Draw(void);
+    void Hide(void);
+    void Show(void);
     cString GetStringValue(void) { return text; };
     eRecMenuState ProcessKey(eKeys Key);
 };
