@@ -122,6 +122,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("FontTimeLineTimeHorizontalDelta", tvguideConfig.FontTimeLineTimeHorizontalDelta);
     SetupStore("FontRecMenuItemDelta", tvguideConfig.FontRecMenuItemDelta);
     SetupStore("FontRecMenuItemSmallDelta", tvguideConfig.FontRecMenuItemSmallDelta);
+    SetupStore("FontRecMenuItemLargeDelta", tvguideConfig.FontRecMenuItemLargeDelta);
     SetupStore("displayRerunsDetailEPGView", tvguideConfig.displayRerunsDetailEPGView);
     SetupStore("numReruns", tvguideConfig.numReruns);
     SetupStore("useSubtitleRerun", tvguideConfig.useSubtitleRerun);
@@ -339,6 +340,7 @@ void cMenuSetupFont::Set(void) {
     
     Add(new cMenuEditIntItem(tr("Search & Recording Menu Font Size"), &tmpTvguideConfig->FontRecMenuItemDelta, -30, 30));
     Add(new cMenuEditIntItem(tr("Search & Recording Menu Small Font Size"), &tmpTvguideConfig->FontRecMenuItemSmallDelta, -30, 30));
+    Add(new cMenuEditIntItem(tr("Search & Recording Main Menu Font Size"), &tmpTvguideConfig->FontRecMenuItemLargeDelta, -30, 30));
 
     SetCurrent(Get(currentItem));
     Display();

@@ -100,3 +100,6 @@ Version 1.1.0
 - Added timer Timeline view in red button recording menu
 - Current channel positioned in middle of channellist when tvguide is 
   opened
+- Added possibility to manage EPG Search Timers in red button recording 
+  menu
+- completely refactored recording menu

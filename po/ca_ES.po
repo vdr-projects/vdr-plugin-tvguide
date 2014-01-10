@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-31 14:31+0100\n"
+"POT-Creation-Date: 2014-01-10 11:54+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -81,6 +81,15 @@ msgstr ""
 msgid "No Timers active"
 msgstr ""
 
+msgid "inactive"
+msgstr ""
+
+msgid "active timers"
+msgstr ""
+
+msgid "recordings done"
+msgstr ""
+
 msgid "Instant Record"
 msgstr "Enregistra a l'instant"
 
@@ -90,11 +99,17 @@ msgstr "Esborra temporitzador"
 msgid "Edit Timer"
 msgstr "Edita temporitzador"
 
-msgid "Create Series Timer"
-msgstr "Programa enregistrament de Sèries"
+msgid "Timer Timeline"
+msgstr ""
 
 msgid "Create Search Timer"
 msgstr "Cerca temporitzadors"
+
+msgid "Manage Search Timers"
+msgstr ""
+
+msgid "Create Series Timer"
+msgstr "Programa enregistrament de Sèries"
 
 msgid "Create Switch Timer"
 msgstr "Canvia temporitzadors"
@@ -104,9 +119,6 @@ msgstr "Esborra canvis de temporitzadors"
 
 msgid "Search"
 msgstr "Cerca"
-
-msgid "Timer Timeline"
-msgstr ""
 
 msgid "Check for Timer Conflicts"
 msgstr "Comprova conflictes de temporitzadors"
@@ -261,38 +273,23 @@ msgstr "Opcions de configuració manual"
 msgid "Use Template"
 msgstr "Utilitza plantilla"
 
-msgid "Creating Search Timer"
-msgstr "Creant cerca de temporitzador"
+msgid "Manage EPGSearch Search Timers"
+msgstr ""
 
-msgid "Search Term"
-msgstr "Cercant terme"
+msgid "No Search Timers Configured"
+msgstr ""
 
-msgid "Using Template"
-msgstr "Utilitzant plantilla"
+msgid "Configure Search Timer Options"
+msgstr ""
 
-msgid "Display Results for Search Timer"
-msgstr "Mostra resultats de la cerca"
+msgid "Save Search Timer"
+msgstr ""
 
-msgid "Use other Template"
-msgstr "Utilitza una altra plantilla"
+msgid "Search String"
+msgstr ""
 
-msgid "Configure Search Timer Options for Search String"
-msgstr "Configura opcions de cerca de temporitzadors amb text"
-
-msgid "whole term must appear"
-msgstr "expressió completa"
-
-msgid "all terms must exist"
-msgstr "totes les paraules"
-
-msgid "one term must exist"
-msgstr "alguna paraula"
-
-msgid "exact match"
-msgstr "coincidència exacta"
-
-msgid "regular expression"
-msgstr "expressió regular"
+msgid "Active"
+msgstr ""
 
 msgid "Search Mode"
 msgstr "Mode de cerca"
@@ -309,14 +306,38 @@ msgstr "Utilitza descripció"
 msgid "Limit Channels"
 msgstr "Canals restringits"
 
+msgid "Use Time"
+msgstr "Utilitza temps"
+
+msgid "Display advanced Options"
+msgstr ""
+
+msgid "Limit Days of the Week"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Hide advanced Options"
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Mostra resultats de la cerca"
+
 msgid "Start Channel"
 msgstr "Inicia canal"
 
 msgid "Stop Channel"
 msgstr "Atura canal"
-
-msgid "Use Time"
-msgstr "Utilitza temps"
 
 msgid "Start after"
 msgstr "Comença després"
@@ -324,14 +345,29 @@ msgstr "Comença després"
 msgid "Start before"
 msgstr "Comença abans"
 
-msgid "search results for Search Timer"
-msgstr "cerca resultats per temporitzador"
+msgid "Select Days"
+msgstr ""
 
-msgid "search result for Search Timer"
-msgstr "cerca resultat per temporitzador"
+msgid "Number of allowed repeats"
+msgstr ""
 
-msgid "Nothing found for Search String"
-msgstr "No s'ha trobat la cadena de text"
+msgid "Compare Title"
+msgstr ""
+
+msgid "Compare Subtitle"
+msgstr ""
+
+msgid "Compare Description"
+msgstr ""
+
+msgid "Really delete Search Timer"
+msgstr ""
+
+msgid "Delete only Search Timer"
+msgstr ""
+
+msgid "Delete Search Timer and created Timers"
+msgstr ""
 
 msgid "Search Timer sucessfully created."
 msgstr "S'ha creat cerca de temporitzador"
@@ -341,6 +377,27 @@ msgstr "Actualització de temporitzador iniciada"
 
 msgid "Search Timer NOT sucessfully created"
 msgstr "No s'ha creat cerca de temporitzador"
+
+msgid "Creating Search Timer"
+msgstr "Creant cerca de temporitzador"
+
+msgid "Search Term"
+msgstr "Cercant terme"
+
+msgid "Using Template"
+msgstr "Utilitzant plantilla"
+
+msgid "Use other Template"
+msgstr "Utilitza una altra plantilla"
+
+msgid "search results for Search Timer"
+msgstr "cerca resultats per temporitzador"
+
+msgid "search result for Search Timer"
+msgstr "cerca resultat per temporitzador"
+
+msgid "Nothing found for Search String"
+msgstr "No s'ha trobat la cadena de text"
 
 msgid "Configure Options for Switchtimer"
 msgstr "Opcions de configuració de canvi de temporitzador"
@@ -372,12 +429,6 @@ msgstr "No s'ha creat el canvi de temporitzador"
 msgid "Switch Timer deleted"
 msgstr "Canvi de temporitzador esborrat"
 
-msgid "Show Search Options"
-msgstr "Mostra opcions de cerca"
-
-msgid "Perform Search"
-msgstr "Realitza la cerca"
-
 msgid "Channel to Search"
 msgstr "Canal a cercar"
 
@@ -389,6 +440,12 @@ msgstr "Cerca al subtítol"
 
 msgid "Search in Description"
 msgstr "Cerca a la descripció"
+
+msgid "Show Search Options"
+msgstr "Mostra opcions de cerca"
+
+msgid "Perform Search"
+msgstr "Realitza la cerca"
 
 msgid "search results for"
 msgstr "resultats de cerca per"
@@ -413,6 +470,21 @@ msgstr "per"
 
 msgid "No recordings found for"
 msgstr "No s'han trobat gravacions per"
+
+msgid "whole term must appear"
+msgstr "expressió completa"
+
+msgid "all terms must exist"
+msgstr "totes les paraules"
+
+msgid "one term must exist"
+msgstr "alguna paraula"
+
+msgid "exact match"
+msgstr "coincidència exacta"
+
+msgid "regular expression"
+msgstr "expressió regular"
 
 msgid "General Settings"
 msgstr "Preferències"
@@ -651,6 +723,9 @@ msgstr "Mida de la Font - Menú Cerca & Enregistra"
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Mida de la Font petita - Menú Cerca & Enregistra"
 
+msgid "Search & Recording Main Menu Font Size"
+msgstr ""
+
 msgid "Create Log Messages for image loading"
 msgstr ""
 
@@ -680,3 +755,6 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Configure Search Timer Options for Search String"
+#~ msgstr "Configura opcions de cerca de temporitzadors amb text"

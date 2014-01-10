@@ -1,10 +1,13 @@
 #ifndef __TVGUIDE_RECMENUS_H
 #define __TVGUIDE_RECMENUS_H
 
-#define TEXTINPUTLENGTH 80
+#define TEXTINPUTLENGTH 256
 
 #include <vector>
+#include <functional>
 #include <vdr/epg.h>
+#include "services/epgsearch.h"
+#include "switchtimer.h"
 #include "recmanager.h"
 
 // --- cRecMenuMain  ---------------------------------------------------------
@@ -13,6 +16,11 @@ public:
     cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switchTimerActive);
     virtual ~cRecMenuMain(void) {};
 };
+
+/******************************************************************************************
+*   Instant Timer Menus
+******************************************************************************************/
+
 
 // --- cRecMenuAskFolder  ---------------------------------------------------------
 class cRecMenuAskFolder: public cRecMenu {
@@ -25,6 +33,7 @@ public:
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuAskFolder(void) {};
+    std::string GetFolder(void);
 };
 
 // --- cRecMenuConfirmTimer  ---------------------------------------------------------
@@ -53,6 +62,7 @@ class cRecMenuTimerConflicts: public cRecMenu {
 public:
     cRecMenuTimerConflicts(cTVGuideTimerConflicts *conflicts);    
     virtual ~cRecMenuTimerConflicts(void) {};
+    int GetTimerConflict(void);
 };
 
 // --- cRecMenuTimerConflict  ---------------------------------------------------------
@@ -64,6 +74,7 @@ public:
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuTimerConflict(void) {};
+    int GetTimerConflictIndex(void);
 };
 
 // --- cRecMenuNoTimerConflict ---------------------------------------------------------
@@ -85,6 +96,7 @@ public:
     virtual ~cRecMenuRerunResults(void) {
         delete[] reruns;
     };
+    const cEvent *GetRerunEvent(void);
 };
 
 // --- cRecMenuNoRerunsFound  ---------------------------------------------------------
@@ -103,17 +115,42 @@ public:
 
 // --- cRecMenuEditTimer  ---------------------------------------------------------
 class cRecMenuEditTimer: public cRecMenu {
+private:
+    cTimer *originalTimer;
+    bool timerActive;
+    time_t day;
+    int start;
+    int stop;
+    int prio;
+    int lifetime;
 public:
-    cRecMenuEditTimer(const cTimer *timer, eRecMenuState nextState);
+    cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState);
     virtual ~cRecMenuEditTimer(void) {};
+    cTimer GetTimer(void);
+    cTimer *GetOriginalTimer(void);
 };
+
+/******************************************************************************************
+*   Series Timer Menus
+******************************************************************************************/
 
 
 // --- cRecMenuSeriesTimer ---------------------------------------------------------
 class cRecMenuSeriesTimer: public cRecMenu {
+    std::string folder;
+    bool timerActive;
+    int channel;
+    time_t tstart;
+    int start;
+    int stop;
+    int dayOfWeek;
+    int priority;
+    int lifetime;
+    void CalculateTimes(const cEvent *event);
 public:
-    cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent *event);
+    cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent *event, std::string folder);
     virtual ~cRecMenuSeriesTimer(void) {};
+    cTimer *GetTimer(void);
 };
 
 // --- cRecMenuConfirmSeriesTimer  ---------------------------------------------------------
@@ -123,65 +160,109 @@ public:
     virtual ~cRecMenuConfirmSeriesTimer(void) {};
 };
 
+/******************************************************************************************
+*   SearchTimer Menus
+******************************************************************************************/
+
 // --- cRecMenuSearchTimer  ---------------------------------------------------------
 class cRecMenuSearchTimer: public cRecMenu {
 private:
-    char initialText[TEXTINPUTLENGTH];
+    char searchString[TEXTINPUTLENGTH];
 public:
     cRecMenuSearchTimer(const cEvent *event);
     virtual ~cRecMenuSearchTimer(void) {};
+    std::string GetSearchString(void) { return searchString; };
 };
 
 // --- cRecMenuSearchTimerTemplates  ---------------------------------------------------------
 class cRecMenuSearchTimerTemplates: public cRecMenu {
 private:
     int numTemplates;
+    cTVGuideSearchTimer searchTimer;
     std::vector<TVGuideEPGSearchTemplate> templates;
 public:
-    cRecMenuSearchTimerTemplates(cString searchString, std::vector<TVGuideEPGSearchTemplate> templates);
+    cRecMenuSearchTimerTemplates(cTVGuideSearchTimer searchTimer, std::vector<TVGuideEPGSearchTemplate> templates);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuSearchTimerTemplates(void) {};
+    cTVGuideSearchTimer GetSearchTimer(void) { return searchTimer; };
+    TVGuideEPGSearchTemplate GetTemplate(void);
 };
 
-// --- cRecMenuSearchTimerTemplatesCreate  ---------------------------------------------------------
-class cRecMenuSearchTimerTemplatesCreate: public cRecMenu {
-private:
-public:
-    cRecMenuSearchTimerTemplatesCreate(cString searchString, cString tmplName);
-    virtual ~cRecMenuSearchTimerTemplatesCreate(void) {};
-};
 
-// --- cRecMenuSearchTimerOptions  ---------------------------------------------------------
-class cRecMenuSearchTimerOptions: public cRecMenu {
+// --- cRecMenuSearchTimers  ---------------------------------------------------------
+class cRecMenuSearchTimers: public cRecMenu {
 private:
-    const char * searchModes[5];
-    cString searchString;
+    int numSearchTimers;
+    std::vector<cTVGuideSearchTimer> searchTimers;
+    void SetMenuItems(void);
 public:
-    cRecMenuSearchTimerOptions(cString searchString);
-    void CreateMenuItems(void);
-    virtual ~cRecMenuSearchTimerOptions(void) {};
-};
-
-// --- cRecMenuSearchTimerResults ---------------------------------------------------------
-class cRecMenuSearchTimerResults: public cRecMenu {
-private:
-    const cEvent **searchResults;
-    int numResults;
-public:
-    cRecMenuSearchTimerResults(cString searchString, const cEvent **searchResults, int numResults, std::string templateName);
+    cRecMenuSearchTimers(std::vector<cTVGuideSearchTimer> searchTimers);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
-    virtual ~cRecMenuSearchTimerResults(void) {
-        delete[] searchResults;
-    };
+    cTVGuideSearchTimer GetSearchTimer(void);
+    virtual ~cRecMenuSearchTimers(void);
 };
 
-// --- cRecMenuSearchTimerNothingFound  ---------------------------------------------------------
-class cRecMenuSearchTimerNothingFound: public cRecMenu {
+// --- cRecMenuSearchTimerEdit  ---------------------------------------------------------
+class cRecMenuSearchTimerEdit: public cRecMenu {
+private:
+    bool advancedOptions;
+    cTVGuideSearchTimer searchTimer;
+    std::vector<cRecMenuItem*> mainMenuItems;
+    std::vector<cRecMenuItem*> useChannelSubMenu;
+    std::vector<cRecMenuItem*> useTimeSubMenu;
+    std::vector<cRecMenuItem*> useDayOfWeekSubMenu;
+    std::vector<cRecMenuItem*> avoidRepeatSubMenu;
+    std::vector<cRecMenuItem*> currentMenuItems;
+    int numMenuItems;
+    int useChannelPos;
+    int useTimePos;
+    int useDayOfWeekPos;
+    int avoidRepeatsPos;
+    char searchString[TEXTINPUTLENGTH];
+    bool timerActive;
+    int mode;
+    bool useTitle;
+    bool useSubtitle;
+    bool useDescription;
+    bool useChannel;
+    int startChannel;
+    int stopChannel;
+    bool useTime;
+    int startTime;
+    int stopTime;
+    bool useDayOfWeek;
+    int dayOfWeek;
+    int priority;
+    int lifetime;
+    int marginStart;
+    int marginStop;
+    bool useVPS;
+    bool avoidRepeats;
+    int allowedRepeats;
+    bool compareTitle;
+    bool compareSubtitle;
+    bool compareSummary;
+    void InitMenuItems(void);
+    void AddSubMenu(std::vector<cRecMenuItem*> *subMenu);
 public:
-    cRecMenuSearchTimerNothingFound(cString searchString, std::string templateName);
-    virtual ~cRecMenuSearchTimerNothingFound(void) {};
+    cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions);
+    void CreateMenuItems(void);
+    virtual ~cRecMenuSearchTimerEdit(void);
+    cTVGuideSearchTimer GetSearchTimer(void);
+    cRecMenuItem *GetMenuItem(int number);
+    int GetTotalNumMenuItems(void);
+};
+
+// --- cRecMenuSearchTimerDeleteConfirm ---------------------------------------------
+class cRecMenuSearchTimerDeleteConfirm: public cRecMenu {
+private:
+    cTVGuideSearchTimer searchTimer;
+public:
+    cRecMenuSearchTimerDeleteConfirm(cTVGuideSearchTimer searchTimer);
+    virtual ~cRecMenuSearchTimerDeleteConfirm(void);
+    cTVGuideSearchTimer GetSearchTimer(void);
 };
 
 // --- cRecMenuSearchTimerCreateConfirm  ---------------------------------------------------------
@@ -192,13 +273,53 @@ public:
     virtual ~cRecMenuSearchTimerCreateConfirm(void) {};
 };
 
+// --- cRecMenuSearchTimerTemplatesCreate  ---------------------------------------------------------
+class cRecMenuSearchTimerTemplatesCreate: public cRecMenu {
+private:
+    TVGuideEPGSearchTemplate templ;
+    cTVGuideSearchTimer searchTimer;
+public:
+    cRecMenuSearchTimerTemplatesCreate(TVGuideEPGSearchTemplate templ, cTVGuideSearchTimer searchTimer);
+    virtual ~cRecMenuSearchTimerTemplatesCreate(void) {};
+    cTVGuideSearchTimer GetSearchTimer(void) { return searchTimer; };
+    TVGuideEPGSearchTemplate GetTemplate(void) { return templ; };
+};
+
+// --- cRecMenuSearchTimerResults ---------------------------------------------------------
+class cRecMenuSearchTimerResults: public cRecMenu {
+private:
+    const cEvent **searchResults;
+    int numResults;
+public:
+    cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName = "");
+    cRecMenuItem *GetMenuItem(int number);
+    int GetTotalNumMenuItems(void);
+    virtual ~cRecMenuSearchTimerResults(void) {
+        delete[] searchResults;
+    };
+    const cEvent *GetEvent(void);
+};
+
+// --- cRecMenuSearchTimerNothingFound  ---------------------------------------------------------
+class cRecMenuSearchTimerNothingFound: public cRecMenu {
+public:
+    cRecMenuSearchTimerNothingFound(std::string searchString);
+    virtual ~cRecMenuSearchTimerNothingFound(void) {};
+};
+
+/******************************************************************************************
+*   SwitchTimer Menus
+******************************************************************************************/
+
 // --- cRecMenuSwitchTimer  ---------------------------------------------------------
 class cRecMenuSwitchTimer: public cRecMenu {
 private:
-    const char *switchModes[3];
+    int switchMinsBefore;
+    int announceOnly;
 public:
     cRecMenuSwitchTimer(void);
     virtual ~cRecMenuSwitchTimer(void) {};
+    cSwitchTimer GetSwitchTimer(void);
 };
 
 // --- cRecMenuSwitchTimerConfirm  ---------------------------------------------------------
@@ -217,16 +338,24 @@ public:
     virtual ~cRecMenuSwitchTimerDelete(void) {};
 };
 
+/******************************************************************************************
+*   Search Menus
+******************************************************************************************/
 
 // --- cRecMenuSearch  ---------------------------------------------------------
 class cRecMenuSearch: public cRecMenu {
 private:
-    char initialText[TEXTINPUTLENGTH];
-    const char * searchModes[5];
+    char searchString[TEXTINPUTLENGTH];
+    int mode;
+    int channelNr;
+    bool useTitle;
+    bool useSubTitle;
+    bool useDescription;
 public:
-    cRecMenuSearch(const cEvent *event);
-    cRecMenuSearch(const cEvent *event, const char *searchString);
+    cRecMenuSearch(std::string searchString, bool withOptions);
     virtual ~cRecMenuSearch(void) {};
+    Epgsearch_searchresults_v1_0 GetEPGSearchStruct(void);
+    std::string GetSearchString(void) { return searchString; };
 };
 
 // --- cRecMenuSearchResults  ---------------------------------------------------------
@@ -235,12 +364,13 @@ private:
     const cEvent **searchResults;
     int numResults;
 public:
-    cRecMenuSearchResults(cString searchString, const cEvent **searchResults, int numResults);
+    cRecMenuSearchResults(std::string searchString, const cEvent **searchResults, int numResults);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuSearchResults(void) {
         delete[] searchResults;
     };
+    const cEvent *GetEvent(void);
 };
 
 // --- cRecMenuSearchConfirmTimer  ---------------------------------------------------------
@@ -253,39 +383,51 @@ public:
 // --- cRecMenuSearchNothingFound  ---------------------------------------------------------
 class cRecMenuSearchNothingFound: public cRecMenu {
 public:
-    cRecMenuSearchNothingFound(cString searchString);
+    cRecMenuSearchNothingFound(std::string searchString);
     virtual ~cRecMenuSearchNothingFound(void) {};
 };
+
+/******************************************************************************************
+*   Recording Search Menus
+******************************************************************************************/
+
 
 // --- cRecMenuRecordingSearch  ---------------------------------------------------------
 class cRecMenuRecordingSearch: public cRecMenu {
 private:
-    char initialText[TEXTINPUTLENGTH];
+    char searchString[TEXTINPUTLENGTH];
 public:
-    cRecMenuRecordingSearch(const cEvent *event);
+    cRecMenuRecordingSearch(std::string search);
     virtual ~cRecMenuRecordingSearch(void) {};
+    std::string GetSearchString(void) { return searchString; };
 };
 
 // --- cRecMenuRecordingSearchResults  ---------------------------------------------------------
 class cRecMenuRecordingSearchResults: public cRecMenu {
 private:
+    std::string searchString;
     cRecording **searchResults;
     int numResults;
 public:
-    cRecMenuRecordingSearchResults(cString searchString, cRecording **searchResults, int numResults);
+    cRecMenuRecordingSearchResults(std::string searchString, cRecording **searchResults, int numResults);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuRecordingSearchResults(void) {
         delete[] searchResults;
     };
+    std::string GetSearchString(void) { return searchString; };
 };
 
 // --- cRecMenuRecordingSearchNotFound  ---------------------------------------------------------
 class cRecMenuRecordingSearchNotFound: public cRecMenu {
 public:
-    cRecMenuRecordingSearchNotFound(cString searchString);
+    cRecMenuRecordingSearchNotFound(std::string searchString);
     virtual ~cRecMenuRecordingSearchNotFound(void) {};
 };
+
+/******************************************************************************************
+*   Timeline
+******************************************************************************************/
 
 // --- cRecMenuTimeline  ---------------------------------------------------------
 class cRecMenuTimeline: public cRecMenu {
@@ -303,7 +445,7 @@ private:
     void SetTimers(void);
     void PrevDay(void);
     void NextDay(void);
-    void ClearMenuItems(void);
+    void ClearMenu(void);
 public:
     cRecMenuTimeline(cTVGuideTimerConflicts *timerConflicts);
     cRecMenuItem *GetMenuItem(int number);
@@ -311,6 +453,7 @@ public:
     virtual ~cRecMenuTimeline(void) {
     };
     eRecMenuState ProcessKey(eKeys Key);
+    cTimer *GetTimer(void);
 };
 
 #endif //__TVGUIDE_RECMENUS_H

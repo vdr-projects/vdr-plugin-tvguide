@@ -107,6 +107,7 @@ class cTvguideConfig {
         int FontTimeLineTimeHorizontalDelta;
         int FontRecMenuItemDelta;
         int FontRecMenuItemSmallDelta;
+        int FontRecMenuItemLargeDelta;
         int timeFormat;
         int useNopacityTheme;
         int themeIndex;

@@ -4,7 +4,6 @@
 #include <algorithm>
 
 #include <vdr/menu.h>
-#include "services/epgsearch.h"
 #include "services/remotetimers.h"
 #include "services/tvscraper.h"
 #include "tools.h"
@@ -137,6 +136,8 @@ void cRecManager::DeleteTimer(int timerID) {
 }
 
 void cRecManager::DeleteTimer(const cEvent *event) {
+    if (!event)
+        return;
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         DeleteRemoteTimer(event);
     } else {
@@ -176,16 +177,16 @@ void cRecManager::DeleteRemoteTimer(const cEvent *event) {
     }
 }
 
-void cRecManager::SaveTimer(cTimer *timer, cRecMenu *menu) {
+void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
     if (!timer)
         return;
     
-    bool active = menu->GetBoolValue(1);
-    int prio = menu->GetIntValue(2);
-    int lifetime = menu->GetIntValue(3);
-    time_t day = menu->GetTimeValue(4);
-    int start = menu->GetIntValue(5);
-    int stop = menu->GetIntValue(6);
+    bool active = newTimerSettings.HasFlags(tfActive);
+    int prio = newTimerSettings.Priority();
+    int lifetime = newTimerSettings.Lifetime();
+    time_t day = newTimerSettings.Day();
+    int start = newTimerSettings.Start();
+    int stop = newTimerSettings.Stop();
 
     timer->SetDay(day);
     timer->SetStart(start);
@@ -209,6 +210,7 @@ void cRecManager::SaveTimer(cTimer *timer, cRecMenu *menu) {
         Timers.SetModified();
     }          
 }
+
 
 bool cRecManager::IsRecorded(const cEvent *event) {
     cTimer *timer = Timers.GetMatch(event);
@@ -236,57 +238,25 @@ cTVGuideTimerConflicts *cRecManager::CheckTimerConflict(void) {
     return conflictList;
 }
 
-cTimer *cRecManager::CreateSeriesTimer(cRecMenu *menu, std::string path) {
-    bool active = menu->GetBoolValue(1);
-    int channelNumber = menu->GetIntValue(2);
-    int start = menu->GetIntValue(3);
-    int stop = menu->GetIntValue(4);
-    int weekdays = menu->GetIntValue(5);
-    time_t tday = menu->GetTimeValue(6);
-    int prio = menu->GetIntValue(7);
-    int lifetime = menu->GetIntValue(8);
-
-    cChannel *channel = Channels.GetByNumber(channelNumber);
-    cTimer *seriesTimer = new cTimer(false, false, channel);
-    
-    cString fileName = "TITLE EPISODE";
-    if (path.size() > 0) {
-        std::replace(path.begin(), path.end(), '/', '~');
-        fileName = cString::sprintf("%s~%s", path.c_str(), *fileName);
-    }
-    
-    seriesTimer->SetDay(tday);
-    seriesTimer->SetStart(start);
-    seriesTimer->SetStop(stop);
-    seriesTimer->SetPriority(prio);
-    seriesTimer->SetLifetime(lifetime);
-    seriesTimer->SetWeekDays(weekdays);
-    seriesTimer->SetFile(*fileName);
-    if (active)
-        seriesTimer->SetFlags(tfActive);
-    else 
-        seriesTimer->SetFlags(tfNone);
+void cRecManager::CreateSeriesTimer(cTimer *seriesTimer) {
     seriesTimer->SetEventFromSchedule();
-
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_Timer_v1_0 rt;
         rt.timer = seriesTimer;
         if (!pRemoteTimers->Service("RemoteTimers::NewTimer-v1.0", &rt))
             isyslog("%s", *rt.errorMsg);
         RefreshRemoteTimers();
-        seriesTimer = NULL;
     } else {
         Timers.Add(seriesTimer);
         Timers.SetModified();
     }
-    return seriesTimer;
 }
 
-std::vector<TVGuideEPGSearchTemplate> cRecManager::ReadEPGSearchTemplates(void) {
+
+void cRecManager::ReadEPGSearchTemplates(std::vector<TVGuideEPGSearchTemplate> *epgTemplates) {
     cString ConfigDir = cPlugin::ConfigDirectory("epgsearch");
     cString epgsearchConf = "epgsearchtemplates.conf";
     cString fileName = AddDirectory(*ConfigDir,  *epgsearchConf);
-    std::vector<TVGuideEPGSearchTemplate> epgTemplates;
     if (access(fileName, F_OK) == 0) {
         FILE *f = fopen(fileName, "r");
         if (f) {
@@ -307,175 +277,12 @@ std::vector<TVGuideEPGSearchTemplate> cRecManager::ReadEPGSearchTemplates(void) 
                         TVGuideEPGSearchTemplate tmp;
                         tmp.name = name;
                         tmp.templValue = templValue;
-                        epgTemplates.push_back(tmp);
+                        epgTemplates->push_back(tmp);
                     }
                 } catch (...){}
             }
         }
     }
-    return epgTemplates;
-}
-
-std::string cRecManager::BuildEPGSearchString(cString searchString, std::string templValue) {
-     std::string strSearchString = *searchString;
-     std::replace(strSearchString.begin(), strSearchString.end(), ':', '|');
-     std::stringstream searchTimerString;
-     searchTimerString << "0:";
-     searchTimerString << strSearchString;
-     searchTimerString << templValue;
-     return searchTimerString.str();
-}
-
-std::string cRecManager::BuildEPGSearchString(cString searchString, cRecMenu *menu) {
-    std::string strSearchString = *searchString;
-    std::replace(strSearchString.begin(), strSearchString.end(), ':', '|');
-    int searchMode = menu->GetIntValue(0);
-    bool useTitle = menu->GetBoolValue(1);
-    bool useSubTitle = menu->GetBoolValue(2);
-    bool useDescription = menu->GetBoolValue(3);
-    bool limitChannels = menu->GetBoolValue(4);
-    int startChannel = -1;
-    int stopChannel = -1;
-    if (limitChannels) {
-        startChannel = menu->GetIntValue(5);
-        stopChannel = menu->GetIntValue(6);
-    }
-    int after = 0;
-    int before = 0;
-    bool limitTime = (limitChannels)?menu->GetBoolValue(7):menu->GetBoolValue(5);
-    if (limitTime) {
-        after = (limitChannels)?menu->GetIntValue(8):menu->GetIntValue(6);
-        before = (limitChannels)?menu->GetIntValue(9):menu->GetIntValue(7);
-    }
-
-    std::stringstream searchTimerString;
-    //1 - unique search timer id
-    searchTimerString << "0:";
-    //2 - the search term
-    searchTimerString << strSearchString;
-    //3 - use time? 0/1
-    //4 - start time in HHMM
-    //5 - stop time in HHMM
-    if (limitTime) {
-        searchTimerString << ":1:" << after << ":" << before << ":";
-    } else {
-        searchTimerString << ":0:::";
-    }
-    //6 - use channel? 0 = no,  1 = Interval, 2 = Channel group, 3 = FTA only
-    //7 - if 'use channel' = 1 then channel id[|channel id] in VDR format,
-    //    one entry or min/max entry separated with |, if 'use channel' = 2
-    //    then the channel group name
-    if (limitChannels) {
-        searchTimerString << "1:";
-        cChannel *startChan = Channels.GetByNumber(startChannel);
-        cChannel *stopChan = Channels.GetByNumber(stopChannel);
-        searchTimerString << *(startChan->GetChannelID().ToString());
-        searchTimerString << "|";
-        searchTimerString << *(stopChan->GetChannelID().ToString()) << ":";
-    } else {
-        searchTimerString << "0::";
-    }
-    //8 - match case? 0/1
-    searchTimerString << ":0";    
-    /*9 - search mode:
-        0 - the whole term must appear as substring
-        1 - all single terms (delimiters are blank,',', ';', '|' or '~')
-            must exist as substrings.
-        2 - at least one term (delimiters are blank, ',', ';', '|' or '~')
-            must exist as substring.
-        3 - matches exactly
-        4 - regular expression */   
-    searchTimerString << searchMode << ":";
-    //10 - use title? 0/1
-    if (useTitle)
-        searchTimerString << "1:";
-    else
-        searchTimerString << "0:";
-    //11 - use subtitle? 0/1
-    if (useSubTitle)
-        searchTimerString << "1:";
-    else
-        searchTimerString << "0:";
-    // 12 - use description? 0/1
-    if (useDescription)
-        searchTimerString << "1:";
-    else
-        searchTimerString << "0:";
-    //13 - use duration? 0/1
-    //14 - min duration in hhmm
-    //15 - max duration in hhmm
-    searchTimerString << "0:::";
-    //16 - use as search timer? 0/1
-    searchTimerString << "1:";
-    //17 - use day of week? 0/1
-    //18 - day of week (0 = Sunday, 1 = Monday...;
-    //     -1 Sunday, -2 Monday, -4 Tuesday, ...; -7 Sun, Mon, Tue)
-    searchTimerString << "0::";
-    //19 - use series recording? 0/1
-    searchTimerString << "1:";
-    //20 - directory for recording
-    searchTimerString << ":";
-    //21 - priority of recording
-    //22 - lifetime of recording
-    searchTimerString << "99:99:";
-    //23 - time margin for start in minutes
-    //24 - time margin for stop in minutes
-    searchTimerString << "5:5:";
-    //25 - use VPS? 0/1
-    searchTimerString << "0:";
-    /*26 - action:
-         0 = create a timer
-         1 = announce only via OSD (no timer)
-         2 = switch only (no timer)
-         3 = announce via OSD and switch (no timer)
-         4 = announce via mail*/
-    searchTimerString << "0:";
-    /*27 - use extended EPG info? 0/1
-    28 - extended EPG info values. This entry has the following format
-         (delimiter is '|' for each category, '#' separates id and value):
-         1 - the id of the extended EPG info category as specified in
-             epgsearchcats.conf
-         2 - the value of the extended EPG info category
-             (a ':' will be translated to "!^colon^!", e.g. in "16:9") */
-    searchTimerString << "0::";
-    /*29 - avoid repeats? 0/1
-    30 - allowed repeats
-    31 - compare title when testing for a repeat? 0/1
-    32 - compare subtitle when testing for a repeat? 0/1/2
-         0 - no
-         1 - yes
-         2 - yes, if present
-    33 - compare description when testing for a repeat? 0/1
-    34 - compare extended EPG info when testing for a repeat?
-         This entry is a bit field of the category IDs.
-    35 - accepts repeats only within x days */
-    searchTimerString << "1:1:1:2:1:::";
-    /*36 - delete a recording automatically after x days
-    37 - but keep this number of recordings anyway
-    38 - minutes before switch (if action = 2)
-    39 - pause if x recordings already exist
-    40 - blacklist usage mode (0 none, 1 selection, 2 all)
-    41 - selected blacklist IDs separated with '|'
-    42 - fuzzy tolerance value for fuzzy searching
-    43 - use this search in favorites menu (0 no, 1 yes)
-    44 - id of a menu search template
-    45 - auto deletion mode (0 don't delete search timer, 1 delete after given
-         count of recordings, 2 delete after given days after first recording)
-    46 - count of recordings after which to delete the search timer
-    47 - count of days after the first recording after which to delete the search
-         timer
-    48 - first day where the search timer is active (see parameter 16)
-    49 - last day where the search timer is active (see parameter 16)
-    50 - ignore missing EPG categories? 0/1
-    51 - unmute sound if off when used as switch timer
-    52 - percentage of match when comparing the summary of two events (with 'avoid repeats')
-    53 - HEX representation of the content descriptors, each descriptor ID is represented with 2 chars
-    54 - compare date when testing for a repeat? (0=no, 1=same day, 2=same week, 3=same month) */
-    searchTimerString << "0::::0:::0::0:::::::::0";
-
-    //esyslog("tvguide: epgsearch String: %s", searchTimerString.str().c_str());
-    
-    return searchTimerString.str();
 }
 
 const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString, int &numResults) {
@@ -519,29 +326,8 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
     return searchResults;
 }
 
-const cEvent **cRecManager::PerformSearch(cRecMenu *menu, bool withOptions, int &numResults) {
+const cEvent **cRecManager::PerformSearch(Epgsearch_searchresults_v1_0 data, int &numResults) {
     if (epgSearchAvailable) {
-        cString searchString = menu->GetStringValue(1);
-        Epgsearch_searchresults_v1_0 data;
-        data.query = (char *)*searchString;
-        int mode = 0;
-        int channelNr = 0;
-        bool useTitle = true;
-        bool useSubTitle = true;
-        bool useDescription = false;
-        if (withOptions) {
-            mode = menu->GetIntValue(2);
-            channelNr = menu->GetIntValue(3);
-            useTitle = menu->GetBoolValue(4);
-            useSubTitle = menu->GetBoolValue(5);
-            useDescription = menu->GetBoolValue(6);
-        }
-        data.mode = mode;
-        data.channelNr = channelNr;
-        data.useTitle = useTitle;
-        data.useSubTitle = useSubTitle;
-        data.useDescription = useDescription;
-
         if (epgSearchPlugin->Service("Epgsearch-searchresults-v1.0", &data)) {
             cList<Epgsearch_searchresults_v1_0::cServiceSearchResult> *list = data.pResultList;
             if (!list)
@@ -564,6 +350,23 @@ const cEvent **cRecManager::PerformSearch(cRecMenu *menu, bool withOptions, int 
     return NULL;
 }
 
+void cRecManager::GetSearchTimers(std::vector<cTVGuideSearchTimer> *searchTimer) {
+    if (!epgSearchAvailable) {
+            return;
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        std::list<std::string> searchTimerList;
+        searchTimerList = epgSearch->handler->SearchTimerList();
+        for(std::list<std::string>::iterator it = searchTimerList.begin(); it != searchTimerList.end(); it++) {
+            cTVGuideSearchTimer timer;
+            timer.SetEPGSearchString(it->c_str());
+            if (timer.Parse())
+                searchTimer->push_back(timer);
+        }
+    }
+}
+
 int cRecManager::CreateSearchTimer(std::string epgSearchString) {
     int timerID = -1;
     if (!epgSearchAvailable)
@@ -575,6 +378,73 @@ int cRecManager::CreateSearchTimer(std::string epgSearchString) {
     return timerID;
 }
 
+bool cRecManager::SaveSearchTimer(cTVGuideSearchTimer *searchTimer) {
+    if (!epgSearchAvailable)
+        return false;
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (searchTimer->GetID() > -1) {
+        if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+            bool success = epgSearch->handler->ModSearchTimer(searchTimer->BuildSearchString());
+            if (success) {
+                esyslog("tvguide: search timer with id %d sucessfully modified", searchTimer->GetID());
+                return true;
+            } else {
+                esyslog("tvguide: error modifying search timer with id %d, build string %s", searchTimer->GetID(), searchTimer->BuildSearchString().c_str());
+                return false;
+            }
+        }
+    } else {
+        if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+            int timerID = epgSearch->handler->AddSearchTimer(searchTimer->BuildSearchString());
+            if (timerID >=0) {
+                esyslog("tvguide: search timer with id %d sucessfully created", timerID);
+                return true;
+            } else {
+                esyslog("tvguide: error creating search timer, build string %s", searchTimer->BuildSearchString().c_str());
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
+void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTimers) {
+    if (!epgSearchAvailable)
+        return;
+    int searchTimerID = searchTimer->GetID();
+    if (delTimers) {
+        cTimer *timer = Timers.First();
+        while(timer) {
+            if (!timer->Recording()) {
+                char* searchID = GetAuxValue(timer, "s-id");
+                if (searchID) {
+                    if (searchTimerID == atoi(searchID)) {
+                        cTimer* timerNext = Timers.Next(timer);
+                        DeleteTimer(timer);
+                        timer = timerNext;
+                    } else {
+                        timer = Timers.Next(timer);
+                    }
+                    free(searchID);
+                } else {
+                    timer = Timers.Next(timer);
+                }
+            } else {
+                timer = Timers.Next(timer);
+            }
+        }
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        bool success = epgSearch->handler->DelSearchTimer(searchTimerID);
+        if (success) {
+            esyslog("tvguide: search timer \"%s\" sucessfully deleted", searchTimer->SearchString().c_str());
+        } else {
+            esyslog("tvguide: error deleting search timer \"%s\"", searchTimer->SearchString().c_str());
+        }
+    }   
+}
+
 void cRecManager::UpdateSearchTimers(void) {
     if (epgSearchAvailable) {
         Epgsearch_updatesearchtimers_v1_0 data;
@@ -584,15 +454,13 @@ void cRecManager::UpdateSearchTimers(void) {
 }
 
 // announceOnly: 0 = switch, 1 = announce only, 2 = ask for switch
-bool cRecManager::CreateSwitchTimer(const cEvent *event, cRecMenu *menu) {
-    int switchMinsBefore = menu->GetIntValue(1);
-    int announceOnly = menu->GetIntValue(2);
-    if (epgSearchAvailable) {
+bool cRecManager::CreateSwitchTimer(const cEvent *event, cSwitchTimer switchTimer) {
+    if (epgSearchAvailable && event) {
         Epgsearch_switchtimer_v1_0 data;
         data.event = event;
         data.mode = 1;
-        data.switchMinsBefore = switchMinsBefore;
-        data.announceOnly = announceOnly;
+        data.switchMinsBefore = switchTimer.switchMinsBefore;
+        data.announceOnly = switchTimer.switchMinsBefore;
         data.success = false;
         epgSearchPlugin->Service("Epgsearch-switchtimer-v1.0", &data);
         cSwitchTimer *t = new cSwitchTimer(event);
@@ -615,7 +483,7 @@ void cRecManager::DeleteSwitchTimer(const cEvent *event) {
     }
 }
 
-cRecording **cRecManager::SearchForRecordings(cString searchString, int &numResults) {
+cRecording **cRecManager::SearchForRecordings(std::string searchString, int &numResults) {
     
     cRecording **matchingRecordings = NULL;
     int num = 0;
@@ -623,7 +491,7 @@ cRecording **cRecManager::SearchForRecordings(cString searchString, int &numResu
     
     for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
         std::string s1 = recording->Name();
-        std::string s2 = *searchString;
+        std::string s2 = searchString;
         if (s1.empty() || s2.empty()) continue;
         
         // tolerance for fuzzy searching: 90% of the shorter text length, but at least 1

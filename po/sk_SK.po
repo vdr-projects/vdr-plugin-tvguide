@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-31 14:31+0100\n"
+"POT-Creation-Date: 2014-01-10 11:54+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -78,6 +78,15 @@ msgstr ""
 msgid "No Timers active"
 msgstr ""
 
+msgid "inactive"
+msgstr ""
+
+msgid "active timers"
+msgstr ""
+
+msgid "recordings done"
+msgstr ""
+
 msgid "Instant Record"
 msgstr "Okam¾ite nahra»"
 
@@ -87,11 +96,17 @@ msgstr "Vymaza» plán nahrávania"
 msgid "Edit Timer"
 msgstr "Upravi» plán nahrávania"
 
-msgid "Create Series Timer"
-msgstr "Vytvori» sériový plán nahrávania"
+msgid "Timer Timeline"
+msgstr ""
 
 msgid "Create Search Timer"
 msgstr "Vytvori» vyhµadávaè plánov nahrávania"
+
+msgid "Manage Search Timers"
+msgstr ""
+
+msgid "Create Series Timer"
+msgstr "Vytvori» sériový plán nahrávania"
 
 msgid "Create Switch Timer"
 msgstr "Vytvori» prepínací plán"
@@ -101,9 +116,6 @@ msgstr "Vymaza» prepínací plán"
 
 msgid "Search"
 msgstr "Hµada»"
-
-msgid "Timer Timeline"
-msgstr ""
 
 msgid "Check for Timer Conflicts"
 msgstr "Skontrolova» konflikty plánu"
@@ -258,38 +270,23 @@ msgstr "Ruène konfigurova» mo¾nosti"
 msgid "Use Template"
 msgstr "pou¾itie ¹ablóny"
 
-msgid "Creating Search Timer"
-msgstr "Vytvorenie vyhµadávacieho plánu"
+msgid "Manage EPGSearch Search Timers"
+msgstr ""
 
-msgid "Search Term"
-msgstr "kµúèové slovo"
+msgid "No Search Timers Configured"
+msgstr ""
 
-msgid "Using Template"
-msgstr "¹ablóna"
+msgid "Configure Search Timer Options"
+msgstr ""
 
-msgid "Display Results for Search Timer"
-msgstr "Pozrie» výsledky pre vyhµadávanie plánov"
+msgid "Save Search Timer"
+msgstr ""
 
-msgid "Use other Template"
-msgstr "Pou¾i» inú ¹ablónu"
+msgid "Search String"
+msgstr ""
 
-msgid "Configure Search Timer Options for Search String"
-msgstr "Konfigurova» mo¾nosti plánov pre vyhµadávanie kµúèových slov"
-
-msgid "whole term must appear"
-msgstr "kompletný výraz"
-
-msgid "all terms must exist"
-msgstr "v¹etky slová"
-
-msgid "one term must exist"
-msgstr "jeden pojem musí existova»"
-
-msgid "exact match"
-msgstr "presná zhoda"
-
-msgid "regular expression"
-msgstr "regulárny výraz"
+msgid "Active"
+msgstr ""
 
 msgid "Search Mode"
 msgstr "Re¾im vyhµadávania"
@@ -306,14 +303,38 @@ msgstr "Pou¾i» popis"
 msgid "Limit Channels"
 msgstr "Obmedzi» kanály"
 
+msgid "Use Time"
+msgstr "Pou¾i» èas"
+
+msgid "Display advanced Options"
+msgstr ""
+
+msgid "Limit Days of the Week"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Hide advanced Options"
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Pozrie» výsledky pre vyhµadávanie plánov"
+
 msgid "Start Channel"
 msgstr "Od kanálu"
 
 msgid "Stop Channel"
 msgstr "Po kanál"
-
-msgid "Use Time"
-msgstr "Pou¾i» èas"
 
 msgid "Start after"
 msgstr "Zaèiatok po"
@@ -321,14 +342,29 @@ msgstr "Zaèiatok po"
 msgid "Start before"
 msgstr "Zaèiatok pred"
 
-msgid "search results for Search Timer"
-msgstr "nájdené výsledky vyhµadávania plánu"
+msgid "Select Days"
+msgstr ""
 
-msgid "search result for Search Timer"
-msgstr "nájdený výsledok vyhµadávania plánu"
+msgid "Number of allowed repeats"
+msgstr ""
 
-msgid "Nothing found for Search String"
-msgstr "Hµadaný výraz sa nena¹iel"
+msgid "Compare Title"
+msgstr ""
+
+msgid "Compare Subtitle"
+msgstr ""
+
+msgid "Compare Description"
+msgstr ""
+
+msgid "Really delete Search Timer"
+msgstr ""
+
+msgid "Delete only Search Timer"
+msgstr ""
+
+msgid "Delete Search Timer and created Timers"
+msgstr ""
 
 msgid "Search Timer sucessfully created."
 msgstr "Vyhµadávaè plánu vytvorený."
@@ -338,6 +374,27 @@ msgstr "Vyhladávaè plánu inicializovaný"
 
 msgid "Search Timer NOT sucessfully created"
 msgstr "Vyhµadávaè plánu nie je kompletne vytvorený"
+
+msgid "Creating Search Timer"
+msgstr "Vytvorenie vyhµadávacieho plánu"
+
+msgid "Search Term"
+msgstr "kµúèové slovo"
+
+msgid "Using Template"
+msgstr "¹ablóna"
+
+msgid "Use other Template"
+msgstr "Pou¾i» inú ¹ablónu"
+
+msgid "search results for Search Timer"
+msgstr "nájdené výsledky vyhµadávania plánu"
+
+msgid "search result for Search Timer"
+msgstr "nájdený výsledok vyhµadávania plánu"
+
+msgid "Nothing found for Search String"
+msgstr "Hµadaný výraz sa nena¹iel"
 
 msgid "Configure Options for Switchtimer"
 msgstr "Konfigurova» mo¾nosti pre prepínací plán"
@@ -369,12 +426,6 @@ msgstr "Plán prepnutia nie je vytvorený"
 msgid "Switch Timer deleted"
 msgstr "Plán prepnutia vymazaný"
 
-msgid "Show Search Options"
-msgstr "Zobrazi» mo¾nosti vyhµadávania"
-
-msgid "Perform Search"
-msgstr "Vykona» vyhµadávanie"
-
 msgid "Channel to Search"
 msgstr "Hµada» na kanále"
 
@@ -386,6 +437,12 @@ msgstr "Hµada» v titulkách"
 
 msgid "Search in Description"
 msgstr "Hµada» v popise"
+
+msgid "Show Search Options"
+msgstr "Zobrazi» mo¾nosti vyhµadávania"
+
+msgid "Perform Search"
+msgstr "Vykona» vyhµadávanie"
 
 msgid "search results for"
 msgstr "vyhµadané výsledky pre"
@@ -410,6 +467,21 @@ msgstr "pre"
 
 msgid "No recordings found for"
 msgstr "Nena¹li sa nahrávky s názvom "
+
+msgid "whole term must appear"
+msgstr "kompletný výraz"
+
+msgid "all terms must exist"
+msgstr "v¹etky slová"
+
+msgid "one term must exist"
+msgstr "jeden pojem musí existova»"
+
+msgid "exact match"
+msgstr "presná zhoda"
+
+msgid "regular expression"
+msgstr "regulárny výraz"
 
 msgid "General Settings"
 msgstr "V¹eobecné nastavenia"
@@ -648,6 +720,9 @@ msgstr "Hµada» & Nahra» menu písmo"
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Hµada» & Nahra» menu malé písmo"
 
+msgid "Search & Recording Main Menu Font Size"
+msgstr ""
+
 msgid "Create Log Messages for image loading"
 msgstr ""
 
@@ -677,3 +752,6 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Configure Search Timer Options for Search String"
+#~ msgstr "Konfigurova» mo¾nosti plánov pre vyhµadávanie kµúèových slov"

@@ -1,3 +1,4 @@
+#include <list>
 #include "recmenu.h"
 
 // --- cRecMenu  -------------------------------------------------------------
@@ -7,8 +8,8 @@ cRecMenu::cRecMenu(void) {
     height = 2*border;
     headerHeight = 0;
     footerHeight = 0;
-    scrollHeight = 0;
-    scrollItemHeight = 0;
+    currentHeight = 0;
+    deleteMenuItems = true;
     scrollable = false;
     scrollbarWidth = 3 * border;
     pixmapScrollBar = NULL;
@@ -23,7 +24,7 @@ cRecMenu::cRecMenu(void) {
 cRecMenu::~cRecMenu(void) {
     if (header)
         delete header;
-    menuItems.Clear();
+    ClearMenuItems();
     if (footer)
         delete footer;
     if (pixmapScrollBar)
@@ -44,70 +45,49 @@ void cRecMenu::SetWidthPixel(int pixel) {
 
 int cRecMenu::CalculateOptimalWidth(void) {
     int optWidth = 0;
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        int itemWidth = item->GetWidth();
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        int itemWidth = (*item)->GetWidth();
         if (itemWidth > optWidth)
             optWidth = itemWidth;
     }
     return optWidth;
 }
 
-
-void cRecMenu::AddMenuItem(cRecMenuItem *item, cRecMenuItem *before) {
-    if (!before)
-        menuItems.Add(item);
-    else
-        menuItems.Ins(item, before);
-}
-
-void cRecMenu::AddMenuItemScroll(cRecMenuItem *item) {
-    scrollHeight += item->GetHeight();
-    stopIndex++;
-    numItems++;
-    if (scrollItemHeight == 0)
-        scrollItemHeight = item->GetHeight();
-    menuItems.Add(item);
-}
-
-bool cRecMenu::CheckHeight(void) {
-    int nextHeight = headerHeight + footerHeight + scrollHeight + 2*border + 150;
-    if (nextHeight > geoManager.osdHeight) {
-        scrollable = true;
-        return false;
-    }
-    return true;
-}
-
-void cRecMenu::CalculateHeight(void) {
-    height = 2*border;
+bool cRecMenu::CalculateHeight(bool reDraw) {
+    int newHeight = 2*border;
     if (header)
-        height += headerHeight;
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        height += item->GetHeight(); 
+        newHeight += headerHeight;
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        newHeight += (*item)->GetHeight(); 
     }
     if (footer)
-        height += footerHeight;
-    y = (geoManager.osdHeight - height) / 2;
-    
-    if (scrollable) {
-        width += scrollbarWidth + border;
+        newHeight += footerHeight;
+
+    y = (geoManager.osdHeight - newHeight) / 2;
+
+    if (newHeight != height) {
+        height = newHeight;
+        if (scrollable && !reDraw) {
+            width += scrollbarWidth + border;
+        }
+        return true;
     }
+    return false;
 }
 
 void cRecMenu::CreatePixmap(void) {
+    if (pixmap)
+        osdManager.releasePixmap(pixmap);
     pixmap = osdManager.requestPixmap(3, cRect(x, y, width, height));
     if (scrollable) {
         int scrollBarX = x + width - scrollbarWidth - border;
         int scrollBarY = y + border + headerHeight;
         int scrollBarHeight = height - headerHeight - footerHeight - 2 * border;
+        if (pixmapScrollBar)
+            osdManager.releasePixmap(pixmapScrollBar);
         pixmapScrollBar = osdManager.requestPixmap(4, cRect(scrollBarX, scrollBarY, scrollbarWidth, scrollBarHeight));
-    }
-}
-
-void cRecMenu::SetFooter(cRecMenuItem *footer) {
-    this->footer = footer;
-    footerHeight = footer->GetHeight();
-    height += footerHeight;
+    } else 
+        pixmapScrollBar = NULL;
 }
 
 void cRecMenu::SetHeader(cRecMenuItem *header) { 
@@ -116,39 +96,105 @@ void cRecMenu::SetHeader(cRecMenuItem *header) {
     height += headerHeight;
 }
 
-cRecMenuItem *cRecMenu::GetActiveMenuItem(void) {
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        if (item->isActive())
-            return item;
-    }
-    if (footer && footer->isActive())
-        return footer;
-    return NULL;
+void cRecMenu::SetFooter(cRecMenuItem *footer) {
+    this->footer = footer;
+    footerHeight = footer->GetHeight();
+    height += footerHeight;
 }
 
-int cRecMenu::GetActive(bool withOffset) {
-    int numActive = withOffset?startIndex:0;
-    int i = 0;
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        if (item->isActive()) {
-            numActive += i;
-            break;
+void cRecMenu::ClearMenuItems(void) { 
+    if (deleteMenuItems) {
+        for (std::list<cRecMenuItem*>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
+            delete *it;
         }
-        i++;
     }
-    return numActive;
+    menuItems.clear();
+};
+
+void cRecMenu::InitMenu(bool complete) {
+    currentHeight = 0;
+    numItems = 0;
+    if (scrollable) {
+        width -= scrollbarWidth + border;
+        osdManager.releasePixmap(pixmapScrollBar);
+        pixmapScrollBar = NULL;
+        delete imgScrollBar;
+        imgScrollBar = NULL;
+    }
+    osdManager.releasePixmap(pixmap);
+    pixmap = NULL;
+    for (std::list<cRecMenuItem*>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (deleteMenuItems)
+            delete *it;
+        else
+            (*it)->Hide();
+    }
+    menuItems.clear();
+    if (complete) {
+        startIndex = 0;
+        stopIndex = 0;
+        scrollable = false;
+    } else {
+        stopIndex = startIndex;
+    }
+
+}
+
+
+void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
+    if (!inFront)
+        menuItems.push_back(item);
+    else
+        menuItems.push_front(item);
+}
+
+bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item) {
+    currentHeight += item->GetHeight();
+    int totalHeight = headerHeight + footerHeight + currentHeight + 2*border;
+    if (totalHeight >= geoManager.osdHeight) {
+        scrollable = true;
+        currentHeight -= item->GetHeight();
+        if (deleteMenuItems) {
+            delete item;
+        }
+        return false;
+    }
+    stopIndex++;
+    numItems++;
+    menuItems.push_back(item);
+    return true;
+}
+
+void cRecMenu::Activate(cRecMenuItem *itemOld, cRecMenuItem *item) {
+    itemOld->setInactive();
+    itemOld->setBackground();
+    itemOld->Draw();
+    item->setActive();
+    item->setBackground();
+    item->Draw();
 }
 
 bool cRecMenu::ActivatePrev(void) {
     cRecMenuItem *activeItem = GetActiveMenuItem();
     if (!scrollable && footer && footer->isActive()) {
-        Activate(footer, menuItems.Last());
-        return true;
+        if (menuItems.size() > 0) {
+            cRecMenuItem *itemLast = menuItems.back();
+            Activate(footer, itemLast);
+            return true;
+        }
     } else if (activeItem) {
         cRecMenuItem *prev = NULL;
-        for (cRecMenuItem *item = menuItems.Prev(activeItem); item; item = menuItems.Prev(item)) {
-            if (item->isSelectable()) {
-                prev = item;
+        bool foundActive = false;
+        for (std::list<cRecMenuItem*>::iterator item = menuItems.end(); item != menuItems.begin(); ) {
+            item--;
+            if (*item == activeItem) {
+                foundActive = true;
+                continue;
+            }
+            if (!foundActive)
+                continue;
+            if ((*item)->isSelectable()) {
+                prev = *item;
                 break;
             }
         }    
@@ -160,13 +206,56 @@ bool cRecMenu::ActivatePrev(void) {
     return false;
 }
 
+void cRecMenu::ScrollUp(void) {
+    if (footer && footer->isActive()) {
+        if (menuItems.size() > 0)
+            Activate(footer, menuItems.back());
+    } else {
+        //get perv x items
+        int numNewItems = numItems / 2;
+        int numAdded = 0;
+        cRecMenuItem *newItem = NULL;
+        while (newItem = GetMenuItem(startIndex-1)) {
+            AddMenuItem(newItem, true);
+            cRecMenuItem *last = menuItems.back();
+            if (deleteMenuItems) {
+                delete last;
+            } else {
+                last->setInactive();
+                last->Hide();
+            }
+            menuItems.pop_back();
+            stopIndex--;
+            startIndex--;
+            numAdded++;
+            if (numAdded >= numNewItems)
+                break;
+        }
+        if (numAdded != 0) {
+            scrollable = true;
+            if (CalculateHeight(true))
+                CreatePixmap();
+            Arrange(deleteMenuItems);
+            Display(deleteMenuItems);
+            ActivatePrev();
+        }
+    }
+}
+
 bool cRecMenu::ActivateNext(void) {
     cRecMenuItem *activeItem = GetActiveMenuItem();
     if (activeItem) {
         cRecMenuItem *next = NULL;
-        for (cRecMenuItem *item = menuItems.Next(activeItem); item; item = menuItems.Next(item)) {
-            if (item->isSelectable()) {
-                next = item;
+        bool foundActive = false;
+        for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+            if (*item == activeItem) {
+                foundActive = true;
+                continue;
+            }
+            if (!foundActive)
+                continue;
+            if ((*item)->isSelectable()) {
+                next = *item;
                 break;
             }
         }    
@@ -181,57 +270,33 @@ bool cRecMenu::ActivateNext(void) {
     return false;
 }
 
-void cRecMenu::Activate(cRecMenuItem *itemOld, cRecMenuItem *item) {
-    itemOld->setInactive();
-    itemOld->setBackground();
-    itemOld->Draw();
-    item->setActive();
-    item->setBackground();
-    item->Draw();
-}
-
-void cRecMenu::ScrollUp(void) {
-    if (footer && footer->isActive()) {
-        Activate(footer, menuItems.Last());
-    } else {
-        //get perv x items
-        int numNewItems = numItems / 2;
-        int numAdded = 0;
-        cRecMenuItem *newItem = NULL;
-        while (newItem = GetMenuItem(startIndex-1)) {
-            AddMenuItem(newItem, menuItems.First());
-            menuItems.Del(menuItems.Last(), true);
-            stopIndex--;
-            startIndex--;
-            numAdded++;
-            if (numAdded >= numNewItems)
-                break;
-        }
-        if (numAdded != 0) {
-            Arrange(true);
-            Display(true);
-            ActivatePrev();
-        }
-    }
-}
-
 void cRecMenu::ScrollDown(void) {
     //get next x items
     int numNewItems = numItems / 2;
     int numAdded = 0;
     cRecMenuItem *newItem = NULL;
     while (newItem = GetMenuItem(stopIndex)) {
-        menuItems.Add(newItem);
-        menuItems.Del(menuItems.First(), true);
-        stopIndex++;
+        menuItems.push_back(newItem);
+        cRecMenuItem *first = menuItems.front();
+        if (deleteMenuItems) {
+            delete first;
+        } else {
+            first->setInactive();
+            first->Hide();
+        }
+        menuItems.pop_front();
         startIndex++;
+        stopIndex++;
         numAdded++;
         if (numAdded >= numNewItems)
             break;
     }
     if (numAdded != 0) {
-        Arrange(true);
-        Display(true);
+        scrollable = true;
+        if (CalculateHeight(true))
+            CreatePixmap();
+        Arrange(deleteMenuItems);
+        Display(deleteMenuItems);
         ActivateNext();
     } else {
         //last item reached, activate footer
@@ -246,9 +311,9 @@ void cRecMenu::JumpBegin(void) {
     cRecMenuItem *activeItem = GetActiveMenuItem();
     if (!scrollable) {
         cRecMenuItem *firstSelectable= NULL;
-        for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-            if (item->isSelectable()) {
-                firstSelectable = item;
+        for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+            if ((*item)->isSelectable()) {
+                firstSelectable = *item;
                 break;
             }
         }
@@ -260,7 +325,7 @@ void cRecMenu::JumpBegin(void) {
         activeItem->setBackground();
         if (footer)
             footer->Draw();
-        menuItems.Clear();
+        ClearMenuItems();
         int currentItem = 0;
         cRecMenuItem *newItem = NULL;
         while (newItem = GetMenuItem(currentItem)) {
@@ -272,9 +337,10 @@ void cRecMenu::JumpBegin(void) {
         Arrange(true);
         startIndex = 0;
         stopIndex = numItems-1;
-        menuItems.First()->setActive();
-        menuItems.First()->setBackground();
-        menuItems.First()->Draw();
+        cRecMenuItem *first = menuItems.front();
+        first->setActive();
+        first->setBackground();
+        first->Draw();
         Display(true);    
     }
 }
@@ -288,9 +354,10 @@ void cRecMenu::JumpEnd(void) {
         if (footer && footer->isSelectable()) {
             lastSelectable = footer;
         } else {
-            for (cRecMenuItem *item = menuItems.Last(); item; item = menuItems.Prev(item)) {
-                if (item->isSelectable()) {
-                    lastSelectable = item;
+            for (std::list<cRecMenuItem*>::iterator item = menuItems.end(); item != menuItems.begin(); ) {
+                item--;
+                if ((*item)->isSelectable()) {
+                    lastSelectable = *item;
                     break;
                 }
             }
@@ -301,13 +368,13 @@ void cRecMenu::JumpEnd(void) {
     } else {
         activeItem->setInactive();
         activeItem->setBackground();
-        menuItems.Clear();
+        ClearMenuItems();
         int totalNumItems = GetTotalNumMenuItems();
         int currentItem = totalNumItems-1;
         int itemsAdded = 0;
         cRecMenuItem *newItem = NULL;
         while (newItem = GetMenuItem(currentItem)) {
-            AddMenuItem(newItem, menuItems.First());
+            AddMenuItem(newItem, true);
             currentItem--;
             itemsAdded++;
             if (itemsAdded >= numItems)
@@ -321,9 +388,10 @@ void cRecMenu::JumpEnd(void) {
             footer->setBackground();
             footer->Draw();
         } else {
-            menuItems.Last()->setActive();
-            menuItems.Last()->setBackground();
-            menuItems.Last()->Draw();
+            cRecMenuItem *last = menuItems.back();
+            last->setActive();
+            last->setBackground();
+            last->Draw();
         }
         Display(true);
     }
@@ -344,10 +412,10 @@ void cRecMenu::Arrange(bool scroll) {
         }
         yElement += header->GetHeight();
     }
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        item->SetGeometry(xElement, yElement, widthElement);
-        item->SetPixmaps();
-        yElement += item->GetHeight();
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        (*item)->SetGeometry(xElement, yElement, widthElement);
+        (*item)->SetPixmaps();
+        yElement += (*item)->GetHeight();
     }
     if (footer && !scroll) {
         footer->SetGeometry(xElement, yElement, widthElement);
@@ -367,9 +435,10 @@ void cRecMenu::Display(bool scroll) {
         header->setBackground();
         header->Draw();
     }
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        item->setBackground();
-        item->Draw();
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        (*item)->setBackground();
+        (*item)->Show();
+        (*item)->Draw();
     }
     if (footer && !scroll) {
         footer->setBackground();
@@ -387,8 +456,8 @@ void cRecMenu::Hide(void) {
         header->Hide();
     if (footer)
         footer->Hide();
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        item->Hide();
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        (*item)->Hide();
     }
 }
 
@@ -400,8 +469,8 @@ void cRecMenu::Show(void) {
         header->Show();
     if (footer)
         footer->Show();
-    for (cRecMenuItem *item = menuItems.First(); item; item = menuItems.Next(item)) {
-        item->Show();
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        (*item)->Show();
     }
 }
 
@@ -418,58 +487,35 @@ void cRecMenu::DrawScrollBar(void) {
     pixmapScrollBar->DrawImage(cPoint(4, 2 + offset), *imgScrollBar);
 }
 
-int cRecMenu::GetIntValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetIntValue();
+cRecMenuItem *cRecMenu::GetActiveMenuItem(void) {
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        if ((*item)->isActive())
+            return *item;
     }
-    return -1;
+    if (footer && footer->isActive())
+        return footer;
+    return NULL;
 }
 
-time_t cRecMenu::GetTimeValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetTimeValue();
-    }
-    return 0;
-}
-
-bool cRecMenu::GetBoolValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetBoolValue();
-    }
-    return false;
-}
-
-cString cRecMenu::GetStringValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetStringValue();
-    }
-    return cString("");
-}
-
-const cEvent *cRecMenu::GetEventValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetEventValue();
+cRecMenuItem *cRecMenu::GetMenuItemAt(int num) {
+    int current = 0;
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        if (current == num)
+            return *item;
+        current++;
     }
     return NULL;
 }
 
-cTimer *cRecMenu::GetTimerValue(int itemNumber) {
-    cRecMenuItem *item = NULL;
-    item = menuItems.Get(itemNumber);
-    if (item) {
-        return item->GetTimerValue();
+int cRecMenu::GetActive(void) {
+    int numActive = startIndex;
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        if ((*item)->isActive()) {
+            break;
+        }
+        numActive++;
     }
-    return NULL;
+    return numActive;
 }
 
 eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
@@ -485,12 +531,12 @@ eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
     } else if (state == rmsNotConsumed) {
         switch (Key & ~k_Repeat) {
             case kUp:       
-                if (!ActivatePrev() && scrollable)
+                if (!ActivatePrev())
                     ScrollUp();
                     state = rmsConsumed;
                 break;
             case kDown:     
-                if (!ActivateNext() && scrollable)
+                if (!ActivateNext())
                     ScrollDown();
                     state = rmsConsumed;
                 break;

@@ -4,8 +4,11 @@
 #include <string>
 #include <vector>
 #include <vdr/plugin.h>
+#include "services/epgsearch.h"
 #include "detailview.h"
 #include "recmenu.h"
+#include "searchtimer.h"
+#include "switchtimer.h"
 #include "timerconflict.h"
 
 struct TVGuideEPGSearchTemplate {
@@ -19,36 +22,37 @@ class cRecManager   {
 private:
     cPlugin *epgSearchPlugin;
     bool epgSearchAvailable;
-    void DeleteTimer(cTimer *timer);
 public:
-    cRecManager  (void);
+    cRecManager(void);
     void SetEPGSearchPlugin(void);
     bool EpgSearchAvailable(void) {return epgSearchAvailable;};
     bool RefreshRemoteTimers(void);
     bool CheckEventForTimer(const cEvent *event);
     cTimer *GetTimerForEvent(const cEvent *event);
-    cTimer *createTimer(const cEvent *event, std::string path);
+    cTimer *createTimer(const cEvent *event, std::string path = "");
     cTimer *createLocalTimer(const cEvent *event, std::string path);
     cTimer *createRemoteTimer(const cEvent *event, std::string path);
     void SetTimerPath(cTimer *timer, const cEvent *event, std::string path);
+    void DeleteTimer(cTimer *timer);
     void DeleteTimer(int timerID);
     void DeleteTimer(const cEvent *event);
     void DeleteLocalTimer(const cEvent *event);
     void DeleteRemoteTimer(const cEvent *event);
-    void SaveTimer(cTimer *timer, cRecMenu *menu);
+    void SaveTimer(cTimer *timer, cTimer newTimerSettings);
     bool IsRecorded(const cEvent *event);
     cTVGuideTimerConflicts *CheckTimerConflict(void);
-    cTimer *CreateSeriesTimer(cRecMenu *menu, std::string path);
-    std::string BuildEPGSearchString(cString searchString, cRecMenu *menu);
-    std::string BuildEPGSearchString(cString searchString, std::string templValue);
+    void CreateSeriesTimer(cTimer *seriesTimer);
     const cEvent **PerformSearchTimerSearch(std::string epgSearchString, int &numResults);
-    const cEvent **PerformSearch(cRecMenu *menu, bool withOptions, int &numResults);
-    std::vector<TVGuideEPGSearchTemplate> ReadEPGSearchTemplates(void);
+    const cEvent **PerformSearch(Epgsearch_searchresults_v1_0 data, int &numResults);
+    void ReadEPGSearchTemplates(std::vector<TVGuideEPGSearchTemplate> *epgTemplates);
+    void GetSearchTimers(std::vector<cTVGuideSearchTimer> *timers);
     int CreateSearchTimer(std::string epgSearchString);
+    bool SaveSearchTimer(cTVGuideSearchTimer *searchTimer);
+    void DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTimers);
     void UpdateSearchTimers(void);
-    bool CreateSwitchTimer(const cEvent *event, cRecMenu *menu);
+    bool CreateSwitchTimer(const cEvent *event, cSwitchTimer switchTimer);
     void DeleteSwitchTimer(const cEvent *event);
-    cRecording **SearchForRecordings(cString searchString, int &numResults);
+    cRecording **SearchForRecordings(std::string searchString, int &numResults);
     const cEvent **LoadReruns(const cEvent *event, int &numResults);
     virtual ~cRecManager  (void);
 };

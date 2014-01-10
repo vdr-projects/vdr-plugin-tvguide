@@ -38,6 +38,7 @@ void cFontManager::SetFonts() {
     //Fonts for RecMenu
     FontRecMenuItem = CreateFont(geoManager.osdHeight/30 + tvguideConfig.FontRecMenuItemDelta);
     FontRecMenuItemSmall = CreateFont(geoManager.osdHeight/40 + tvguideConfig.FontRecMenuItemSmallDelta);
+    FontRecMenuItemLarge = CreateFont(geoManager.osdHeight/25 + tvguideConfig.FontRecMenuItemLargeDelta);
 }
 
 void cFontManager::DeleteFonts() {
@@ -64,6 +65,7 @@ void cFontManager::DeleteFonts() {
     delete FontTimeLineTimeHorizontal;
     delete FontRecMenuItem;
     delete FontRecMenuItemSmall;
+    delete FontRecMenuItemLarge;
 }
 
 void cFontManager::InitialiseFontType(void) {

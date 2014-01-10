@@ -70,6 +70,7 @@ cTvguideConfig::cTvguideConfig() {
     FontTimeLineTimeHorizontalDelta = 0;
     FontRecMenuItemDelta = 0;
     FontRecMenuItemSmallDelta = 0;
+    FontRecMenuItemLargeDelta = 0;
     timeFormat = 1;
     useNopacityTheme = 1;
     themeIndex = -1;
@@ -274,6 +275,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "FontTimeLineTimeHorizontalDelta") == 0) FontTimeLineTimeHorizontalDelta = atoi(Value);
     else if (strcmp(Name, "FontRecMenuItemDelta") == 0)     FontRecMenuItemDelta = atoi(Value);
     else if (strcmp(Name, "FontRecMenuItemSmallDelta") == 0) FontRecMenuItemSmallDelta = atoi(Value);
+    else if (strcmp(Name, "FontRecMenuItemLargeDelta") == 0) FontRecMenuItemLargeDelta = atoi(Value);
     else if (strcmp(Name, "displayRerunsDetailEPGView") == 0) displayRerunsDetailEPGView = atoi(Value);
     else if (strcmp(Name, "numReruns") == 0)                numReruns = atoi(Value);
     else if (strcmp(Name, "useSubtitleRerun") == 0)         useSubtitleRerun = atoi(Value);

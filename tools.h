@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <vdr/font.h>
+#include <vdr/recording.h>
 
 std::string CutText(std::string text, int width, const cFont *font);
 std::string StrToLowerCase(std::string str);
@@ -17,6 +18,10 @@ public:
 };
 
 int FindIgnoreCase(const std::string& expr, const std::string& query);
+
+char* GetAuxValue(const char* aux, const char* name);
+char* GetAuxValue(const cRecording *recording, const char* name);
+char* GetAuxValue(const cTimer* timer, const char* name);
 
 #ifndef _AFUZZY_H
 #define _AFUZZY_H

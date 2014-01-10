@@ -35,5 +35,6 @@ class cFontManager {
         cFont *FontMessageBoxLarge;
         cFont *FontRecMenuItem;
         cFont *FontRecMenuItemSmall;
+        cFont *FontRecMenuItemLarge;
 };
 #endif //__TVGUIDE_FONTMANAGER_H

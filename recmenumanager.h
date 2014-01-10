@@ -14,23 +14,14 @@ private:
     const cEvent *event;
     cRecManager *recManager;
     cTVGuideTimerConflicts *timerConflicts;
-    std::vector<TVGuideEPGSearchTemplate> epgSearchTemplates;
-    bool instantRecord;
-    bool folderChoosen;
-    cString recFolderInstantTimer;
-    int templateID;
-    bool searchWithOptions;
-    cTimer *timer;
-    cString recFolderSeriesTimer;
-    cString searchString;
     cDetailView *detailView;
     cPixmap *pixmapBackground;
     bool detailViewActive;
     void SetBackground(void);
     void DeleteBackground(void);
-    bool displayTimerConflict(cTimer *timer);
-    bool displayTimerConflict(int timerID);
-    bool createSearchTimer(std::string epgSearchString);
+    void DisplaySearchTimerList(void);
+    bool DisplayTimerConflict(cTimer *timer);
+    bool DisplayTimerConflict(int timerID);
 public:
     cRecMenuManager(void);
     virtual ~cRecMenuManager(void);

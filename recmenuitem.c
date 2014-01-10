@@ -3,6 +3,7 @@
 #include "imageloader.h"
 #include "imagecache.h"
 #include "tools.h"
+#include "recmenus.h"
 #include "recmenuitem.h"
 
 // --- cRecMenuItem  -------------------------------------------------------------
@@ -14,6 +15,7 @@ cRecMenuItem::cRecMenuItem(void) {
     drawn = false;
     font = fontManager.FontRecMenuItem;
     fontSmall = fontManager.FontRecMenuItemSmall;
+    fontLarge = fontManager.FontRecMenuItemLarge;
 }
 
 cRecMenuItem::~cRecMenuItem(void) {
@@ -60,12 +62,13 @@ void cRecMenuItem::setBackground(void) {
 
 // --- cRecMenuItemButton  -------------------------------------------------------
 
-cRecMenuItemButton::cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth, bool alignLeft) {
+cRecMenuItemButton::cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth, bool alignLeft, bool largeFont) {
     selectable = true;
     this->text = text;
     this->action = action;
     this->active = active;
-    height = 3 * font->Height() / 2;
+    fontButtons = (largeFont)?fontLarge:font;
+    height = 3 * fontButtons->Height() / 2;
     this->halfWidth = halfWidth;
     this->alignLeft = alignLeft;
 }
@@ -74,7 +77,7 @@ cRecMenuItemButton::~cRecMenuItemButton(void) {
 }
 
 int cRecMenuItemButton::GetWidth(void) {
-    return font->Width(*text);    
+    return fontButtons->Width(*text);    
 }
 
 void cRecMenuItemButton::SetPixmaps(void) {
@@ -89,13 +92,13 @@ void cRecMenuItemButton::SetPixmaps(void) {
 }
 
 void cRecMenuItemButton::Draw(void) {
-    int y = (height - font->Height()) / 2;
+    int y = (height - fontButtons->Height()) / 2;
     int x;
     if (!alignLeft)
-        x = (width - font->Width(*text)) / 2;
+        x = (width - fontButtons->Width(*text)) / 2;
     else
         x = 10;
-    pixmap->DrawText(cPoint(x, y), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(x, y), *text, colorText, colorTextBack, fontButtons);
 }
 
 eRecMenuState cRecMenuItemButton::ProcessKey(eKeys Key) {
@@ -141,8 +144,8 @@ void cRecMenuItemButtonYesNo::SetPixmaps(void) {
         pixmap = osdManager.requestPixmap(4, cRect(yesX, yPixmaps, buttonWidth, height));
         pixmapNo = new cStyledPixmap(osdManager.requestPixmap(4, cRect(noX, yPixmaps, buttonWidth, height)));    
     } else {
-        pixmap->SetViewPort(cRect(x, yPixmaps, width, height));
-        pixmapNo->SetViewPort(cRect(x, yPixmaps, width, height));
+        pixmap->SetViewPort(cRect(yesX, yPixmaps, buttonWidth, height));
+        pixmapNo->SetViewPort(cRect(noX, yPixmaps, buttonWidth, height));
     }
 }
 
@@ -279,13 +282,17 @@ cRecMenuItemInt::cRecMenuItemInt(cString text,
                                 int initialVal,
                                 int minVal,
                                 int maxVal,
-                                bool active) {
+                                bool active, 
+                                int *callback,
+                                eRecMenuState action) {
     selectable = true;
     this->text = text;
     this->currentVal = initialVal;
     this->minVal = minVal;
     this->maxVal = maxVal;
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
     fresh = true;
@@ -342,6 +349,8 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
             fresh = true;
             if (currentVal > minVal) {
                 currentVal--;
+                if (callback)
+                    *callback = currentVal;
                 DrawValue();
             }
             return rmsConsumed;
@@ -350,6 +359,8 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
             fresh = true;
             if (currentVal < maxVal) {
                 currentVal++;
+                if (callback)
+                    *callback = currentVal;
                 DrawValue();
             }
             return rmsConsumed;
@@ -362,9 +373,13 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
             currentVal = currentVal * 10 + (Key - k0);
             if (!((currentVal >= minVal) &&  (currentVal <= maxVal)))
                 currentVal = oldValue;
+            if (callback)
+                *callback = currentVal;
             DrawValue();
             return rmsConsumed;
             break;
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -375,12 +390,16 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
 cRecMenuItemBool::cRecMenuItemBool(cString text,
                                    bool initialVal,
                                    bool refresh,
-                                   bool active) {
+                                   bool active,
+                                   bool *callback,
+                                   eRecMenuState action) {
     selectable = true;
     this->text = text;
     this->yes = initialVal;
     this->refresh = refresh;
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
 }
@@ -434,12 +453,16 @@ eRecMenuState cRecMenuItemBool::ProcessKey(eKeys Key) {
         case kLeft:
         case kRight:
             yes = !yes;
+            if (callback)
+                *callback = yes;
             DrawValue();
             if (refresh)
                 return rmsRefresh;
             else
                 return rmsConsumed;
             break;
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -448,19 +471,22 @@ eRecMenuState cRecMenuItemBool::ProcessKey(eKeys Key) {
 
 // --- cRecMenuItemSelect  -------------------------------------------------------
 cRecMenuItemSelect::cRecMenuItemSelect(cString text,
-                                       const char * const *Strings,
+                                       std::vector<std::string> Strings,
                                        int initialVal,
-                                       int numValues,
-                                       bool active) {
+                                       bool active,
+                                       int *callback,
+                                       eRecMenuState action) {
     selectable = true;
     this->text = text;
     strings = Strings;
-    this->numValues = numValues;
+    numValues = Strings.size();
     if ((initialVal < 0) || (initialVal > numValues-1))
         this->currentVal = 0;
     else
         this->currentVal = initialVal;
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
 }
@@ -498,11 +524,11 @@ void cRecMenuItemSelect::Draw(void) {
 
 void cRecMenuItemSelect::DrawValue(void) {
     pixmapVal->Fill(clrTransparent);
-    const char *textVal = strings[currentVal];
+    std::string textVal = strings[currentVal];
     int iconSize = min(128, height);
-    int textX = width - font->Width(textVal) - iconSize;
+    int textX = width - font->Width(textVal.c_str()) - iconSize;
     int textY = (height - font->Height()) / 2;
-    pixmapVal->DrawText(cPoint(textX, textY), textVal, colorText, clrTransparent, font);
+    pixmapVal->DrawText(cPoint(textX, textY), textVal.c_str(), colorText, clrTransparent, font);
     int iconLeftX = textX - iconSize;
     int iconRightX = width - iconSize;
     int iconY = (height - iconSize) / 2;
@@ -524,14 +550,20 @@ eRecMenuState cRecMenuItemSelect::ProcessKey(eKeys Key) {
             currentVal--;
             if (currentVal<0)
                 currentVal = numValues - 1;
+            if (callback)
+                *callback = currentVal;
             DrawValue();
             return rmsConsumed;
             break;
         case kRight:
             currentVal = (currentVal+1)%numValues;
+            if (callback)
+                *callback = currentVal;
             DrawValue();
             return rmsConsumed;
             break;
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -542,11 +574,13 @@ eRecMenuState cRecMenuItemSelect::ProcessKey(eKeys Key) {
 cRecMenuItemText::cRecMenuItemText(cString title,
                                    char *initialVal,
                                    int length,
-                                   bool active) {
+                                   bool active,
+                                   char *callback) {
     selectable = true;
     this->title = title;
     value = initialVal;
     this->active = active;
+    this->callback = callback;
     height = 3 * font->Height();
     pixmapVal = NULL;
     pixmapKeyboard = NULL;
@@ -800,6 +834,9 @@ void cRecMenuItemText::LeaveEditMode(bool SaveValue) {
         if (SaveValue) {
             Utf8FromArray(valueUtf8, value, length);
             stripspace(value);
+            if (callback) {
+                strncpy(callback, value, TEXTINPUTLENGTH); 
+            }
         }
         lengthUtf8 = 0;
         delete[] valueUtf8;
@@ -1109,7 +1146,9 @@ eRecMenuState cRecMenuItemText::ProcessKey(eKeys Key) {
 // --- cRecMenuItemTime  -------------------------------------------------------
 cRecMenuItemTime::cRecMenuItemTime(cString text,
                                    int initialVal,
-                                   bool active) {
+                                   bool active,
+                                   int *callback,
+                                   eRecMenuState action) {
     selectable = true;
     this->text = text;
     this->value = initialVal;
@@ -1118,6 +1157,8 @@ cRecMenuItemTime::cRecMenuItemTime(cString text,
     pos = 0;
     fresh = true;
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
 }
@@ -1178,6 +1219,8 @@ eRecMenuState cRecMenuItemTime::ProcessKey(eKeys Key) {
             }
             fresh = true;
             value = hh * 100 + mm;
+            if (callback)
+                *callback = value;
             DrawValue();
             return rmsConsumed;
             break; }
@@ -1191,6 +1234,8 @@ eRecMenuState cRecMenuItemTime::ProcessKey(eKeys Key) {
             fresh = true;
             value = hh * 100 + mm;
             DrawValue();
+            if (callback)
+                *callback = value;
             return rmsConsumed;
             break; }
         case k0|k_Repeat ... k9|k_Repeat:
@@ -1229,9 +1274,13 @@ eRecMenuState cRecMenuItemTime::ProcessKey(eKeys Key) {
                 default: ;
             }
             value = hh * 100 + mm;
+            if (callback)
+                *callback = value;
             DrawValue();
             return rmsConsumed;
             break; }
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -1241,11 +1290,15 @@ eRecMenuState cRecMenuItemTime::ProcessKey(eKeys Key) {
 // --- cRecMenuItemDay  -------------------------------------------------------
 cRecMenuItemDay::cRecMenuItemDay(cString text,
                                  time_t initialVal,
-                                 bool active) {
+                                 bool active,
+                                 time_t *callback,
+                                 eRecMenuState action) {
     selectable = true;
     this->text = text;
     this->currentVal = cTimer::SetTime(initialVal, 0);
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
 }
@@ -1293,14 +1346,20 @@ eRecMenuState cRecMenuItemDay::ProcessKey(eKeys Key) {
     switch (Key & ~k_Repeat) {
         case kLeft:
             currentVal -= 60*60*24;
+            if (callback)
+                *callback = currentVal;
             DrawValue();
             return rmsConsumed;
             break;
         case kRight:
             currentVal += 60*60*24;
+            if (callback)
+                *callback = currentVal;
             DrawValue();
             return rmsConsumed;
             break;
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -1646,6 +1705,15 @@ void cRecMenuItemEvent::Draw(void) {
     pixmapText->DrawText(cPoint(textX, textHeightLine1), *info, colorText, clrTransparent, fontSmall);
     pixmapText->DrawText(cPoint(textX, textHeightLine2), *title, colorText, clrTransparent, font);
     pixmapText->DrawText(cPoint(textX, textHeightLine3), *desc, colorText, clrTransparent, fontSmall);
+
+    if (event->HasTimer()) {
+        int iconSize = height / 2;
+        int iconY = (height - iconSize) / 2;
+        cImage *imgHasTimer = imgCache.GetIcon("activetimer", iconSize, iconSize);
+        if (imgHasTimer) {
+            pixmapIcons->DrawImage(cPoint(width - iconSize - 10, iconY), *imgHasTimer);
+        }
+    }
 }
 
 int cRecMenuItemEvent::DrawIcons(void) {
@@ -1734,7 +1802,9 @@ eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
 // --- cRecMenuItemChannelChooser -------------------------------------------------------
 cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
                                                        cChannel *initialChannel,
-                                                       bool active) {
+                                                       bool active,
+                                                       int *callback,
+                                                       eRecMenuState action) {
     selectable = true;
     this->text = text;
     this->channel = initialChannel;
@@ -1745,6 +1815,8 @@ cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
     channelNumber = 0;
     fresh = true;
     this->active = active;
+    this->callback = callback;
+    this->action = action;
     height = 2 * font->Height();
     pixmapChannel = NULL;
 }
@@ -1829,6 +1901,12 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
                     }    
                 }
             }
+            if (callback) {
+                if (channel)
+                    *callback = channel->Number();
+                else
+                    *callback = 0;
+            }
             DrawValue();
             return rmsConsumed;
             break; }
@@ -1847,6 +1925,12 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
                     }    
                 }
             }
+            if (callback) {
+                if (channel)
+                    *callback = channel->Number();
+                else
+                    *callback = 0;
+            }
             DrawValue();
             return rmsConsumed;
             break; }
@@ -1860,9 +1944,13 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             if (chanNew) {
                 channel = chanNew;
                 DrawValue();
+                if (callback)
+                    *callback = channel->Number();
             }
             return rmsConsumed;
             break; }
+        case kOk:
+            return action;
         default:
             break;
     }
@@ -1872,11 +1960,15 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
 // --- cRecMenuItemDayChooser -------------------------------------------------------
 cRecMenuItemDayChooser::cRecMenuItemDayChooser(cString text,
                                                int weekdays,
-                                               bool active) {
+                                               bool active,
+                                               int *callback) {
     selectable = true;
     this->text = text;
+    if (weekdays < 1)
+        weekdays *= -1;
     this->weekdays = weekdays;
     this->active = active;
+    this->callback = callback;
     height = 2 * font->Height();
     selectedDay = 0;
     pixmapWeekdays = NULL;
@@ -1978,6 +2070,9 @@ void cRecMenuItemDayChooser::ToggleDay(void) {
         weekdays -= dayBit;
     } else {
         weekdays += dayBit;
+    }
+    if (callback) {
+        *callback = weekdays;
     }
 }
 
@@ -2409,6 +2504,137 @@ eRecMenuState cRecMenuItemTimelineTimer::ProcessKey(eKeys Key) {
     switch (Key & ~k_Repeat) {
         case kOk:
             return rmsTimelineTimerEdit;
+        default:
+            break;
+    }
+    return rmsNotConsumed;
+}
+
+
+// --- cRecMenuItemSearchTimer  -------------------------------------------------------
+cRecMenuItemSearchTimer::cRecMenuItemSearchTimer(cTVGuideSearchTimer timer, 
+                                                 eRecMenuState action1,
+                                                 eRecMenuState action2,
+                                                 bool active) {
+    this->timer = timer;
+    this->action = action1;
+    this->action2 = action2;
+    pixmapText = NULL;
+    pixmapIcons = NULL;
+    selectable = true;
+    this->active = active;
+    iconActive = 0;
+    height = 2 * font->Height();;
+}
+
+cRecMenuItemSearchTimer::~cRecMenuItemSearchTimer(void) {
+    if (pixmapText)
+        osdManager.releasePixmap(pixmapText);
+    if (pixmapIcons)
+        osdManager.releasePixmap(pixmapIcons);
+}
+
+void cRecMenuItemSearchTimer::SetPixmaps(void) {
+    if (!pixmap) {
+        pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
+        pixmapText = osdManager.requestPixmap(5, cRect(x, y, width, height));
+        pixmapIcons = osdManager.requestPixmap(6, cRect(x, y, width, height));
+    } else {
+        pixmap->SetViewPort(cRect(x, y, width, height));
+        pixmapText->SetViewPort(cRect(x, y, width, height));
+        pixmapIcons->SetViewPort(cRect(x, y, width, height));
+    }
+}
+
+void cRecMenuItemSearchTimer::Draw(void) {
+    int textX = DrawIcons();
+    if (!drawn) {
+        pixmapText->Fill(clrTransparent);
+        textX += 20;
+        cString label;
+        if (timer.Active()) {
+            label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
+        } else {
+            label = cString::sprintf("\"%s\" (%s)", timer.SearchString().c_str(), tr("inactive"));
+        }
+        int numTimersActive = timer.GetNumTimers();
+        int numRecordings = timer.GetNumRecordings();
+        cString info = cString::sprintf("%s: %d, %s: %d", tr("active timers"), numTimersActive, tr("recordings done"), numRecordings);
+        pixmapText->DrawText(cPoint(textX, 5 + (height/2 - font->Height())/2), *label, colorText, clrTransparent, font);
+        pixmapText->DrawText(cPoint(textX, height/2 + (height/2 - fontSmall->Height())/2), *info, colorText, clrTransparent, fontSmall);
+        drawn = true;
+    }
+}
+
+void cRecMenuItemSearchTimer::Hide(void) { 
+    pixmap->SetLayer(-1);
+    pixmapText->SetLayer(-1);
+    pixmapIcons->SetLayer(-1);
+}
+
+void cRecMenuItemSearchTimer::Show(void) { 
+    pixmap->SetLayer(4);
+    pixmapText->SetLayer(5);
+    pixmapIcons->SetLayer(6);
+}
+
+int cRecMenuItemSearchTimer::DrawIcons(void) {
+    pixmapIcons->Fill(clrTransparent);
+    int iconsX = 10;
+    int iconSize = height / 2;
+    int iconY = (height - iconSize) / 2;
+    std::string iconEdit, iconDelete;
+    if (active) {
+        iconEdit = (iconActive==0)?"edit_active":"edit_inactive";
+        iconDelete = (iconActive==1)?"delete_active":"delete_inactive";
+    } else {
+        iconEdit = "edit_inactive";
+        iconDelete = "delete_inactive";
+    }
+    cImage *imgEdit = imgCache.GetIcon(iconEdit, iconSize, iconSize);
+    if (imgEdit) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgEdit);
+        iconsX += iconSize + 10;
+    }
+    cImage *imgDel = imgCache.GetIcon(iconDelete, iconSize, iconSize);
+    if (imgDel) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgDel);
+        iconsX += iconSize + 10;
+    }
+    return iconsX;
+}
+
+eRecMenuState cRecMenuItemSearchTimer::ProcessKey(eKeys Key) {
+    bool consumed = false;
+    switch (Key & ~k_Repeat) {
+        case kLeft:
+            if (iconActive == 1) {
+                iconActive = 0;
+                consumed = true;
+            } 
+            DrawIcons();
+            if (consumed)
+                return rmsConsumed;
+            else
+                return rmsNotConsumed;
+            break;
+        case kRight: {
+            if (iconActive == 0) {
+                iconActive = 1;
+                consumed = true;
+            }   
+            DrawIcons();
+            if (consumed)
+                return rmsConsumed;
+            else
+                return rmsNotConsumed;
+            break; }
+        case kOk:
+            if (iconActive == 0)
+                return action;
+            else if (iconActive == 1)
+                return action2;
+            break;
         default:
             break;
     }

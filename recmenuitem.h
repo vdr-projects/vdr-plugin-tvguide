@@ -7,6 +7,7 @@
 #include <vdr/tools.h> 
 #include "styledpixmap.h"
 #include "timerconflict.h"
+#include "searchtimer.h"
 
 enum eRecMenuState {
     rmsConsumed,
@@ -14,6 +15,7 @@ enum eRecMenuState {
     rmsRefresh,
     rmsContinue,
     rmsClose,
+    //INSTANT TIMER
     rmsInstantRecord,
     rmsInstantRecordFolder,
     rmsIgnoreTimerConflict,
@@ -26,6 +28,7 @@ enum eRecMenuState {
     rmsDeleteTimerConfirmation,
     rmsEditTimer,
     rmsSaveTimer,
+    //SEARCH
     rmsSearch,
     rmsSearchWithOptions,
     rmsSearchPerform,
@@ -33,28 +36,35 @@ enum eRecMenuState {
     rmsSearchRecord,
     rmsSearchRecordConfirm,
     rmsSearchNothingFoundConfirm,
+    //SERIES TIMER
     rmsSeriesTimer,
     rmsSeriesTimerFolder,
     rmsSeriesTimerCreate,
+    //SEARCHTIMER
     rmsSearchTimer,
     rmsSearchTimerOptions,
-    rmsSearchTimerOptionsReload,
-    rmsSearchTimerUseTemplate,
-    rmsSearchTimerOptionsManually,
-    rmsSearchTimerTestManually,
-    rmsSearchTimerTestTemplate,
-    rmsSearchTimerNothingFoundConfirm,
-    rmsSearchTimerCreateManually,
-    rmsSearchTimerCreateTemplate,
+    rmsSearchTimers,
+    rmsSearchTimerEdit,
+    rmsSearchTimerEditAdvanced,
+    rmsSearchTimerTest,
+    rmsSearchTimerSave,
+    rmsSearchTimerCreateWithTemplate,
+    rmsSearchTimerDeleteConfirm,
+    rmsSearchTimerDelete,
+    rmsSearchTimerDeleteWithTimers,
+    //SWITCHTIMER
     rmsSwitchTimer,
     rmsSwitchTimerCreate,
     rmsSwitchTimerDelete,
+    //RECORDINGS SEARCH
     rmsRecordingSearch,
     rmsRecordingSearchResult,
+    //TIMER CONFLICTS
     rmsTimerConflict,
     rmsTimerConflicts,
     rmsTimerConflictIgnoreReruns,
     rmsTimerConflictRecordRerun,
+    //TIMELINE
     rmsTimeline,
     rmsTimelineTimerEdit,
     rmsTimelineTimerSave,
@@ -66,6 +76,7 @@ enum eDependend {
     eGreater,
     eLower,
 };
+
 // --- cRecMenuItem  -------------------------------------------------------------
 class cRecMenuItem : public cListObject, public cStyledPixmap {
 protected:
@@ -80,6 +91,7 @@ protected:
     tColor colorTextBack;
     const cFont *font;
     const cFont *fontSmall;
+    const cFont *fontLarge;
 public:
     cRecMenuItem(void);
     virtual ~cRecMenuItem(void);
@@ -103,7 +115,6 @@ public:
     virtual const cEvent *GetEventValue(void) { return NULL; };
     virtual cTimer *GetTimerValue(void) { return NULL; };
     virtual eRecMenuState ProcessKey(eKeys Key) { return rmsNotConsumed; };
-
 };
 
 // --- cRecMenuItemButton  -------------------------------------------------------
@@ -112,8 +123,9 @@ private:
     cString text;
     bool halfWidth;
     bool alignLeft;
+    const cFont *fontButtons;
 public:
-    cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth = false, bool alignLeft = false);
+    cRecMenuItemButton(const char *text, eRecMenuState action, bool active, bool halfWidth = false, bool alignLeft = false, bool largeFont = false);
     virtual ~cRecMenuItemButton(void);
     int GetWidth(void);
     void SetPixmaps(void);
@@ -166,6 +178,7 @@ class cRecMenuItemInt : public cRecMenuItem {
 private:
     cString text;
     int currentVal;
+    int *callback;
     int minVal;
     int maxVal;
     cPixmap *pixmapVal;
@@ -176,7 +189,9 @@ public:
                     int initialVal,
                     int minVal,
                     int maxVal,
-                    bool active);
+                    bool active = false,
+                    int *callback = NULL,
+                    eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemInt(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -192,14 +207,17 @@ class cRecMenuItemBool : public cRecMenuItem {
 private:
     cString text;
     bool yes;
+    bool *callback;
     cPixmap *pixmapVal;
     bool refresh;
     void DrawValue(void);
 public:
     cRecMenuItemBool(cString text,
                      bool initialVal,
-                     bool refresh,
-                     bool active);
+                     bool refresh = false,
+                     bool active = false,
+                     bool *callback = NULL,
+                     eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemBool(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -214,16 +232,18 @@ class cRecMenuItemSelect : public cRecMenuItem {
 private:
     cString text;
     int currentVal;
-    const char * const *strings;
+    int *callback;
+    std::vector<std::string> strings;
     int numValues;
     cPixmap *pixmapVal;
     void DrawValue(void);
 public:
     cRecMenuItemSelect(cString text,
-                       const char * const *Strings,
+                       std::vector<std::string> Strings,
                        int initialVal,
-                       int numValues,
-                       bool active);
+                       bool active = false,
+                       int *callback = NULL,
+                       eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemSelect(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -231,7 +251,7 @@ public:
     eRecMenuState ProcessKey(eKeys Key);
     void Draw(void);
     int GetIntValue(void) { return currentVal; };
-    cString GetStringValue(void) { return strings[currentVal]; };
+    cString GetStringValue(void) { return strings[currentVal].c_str(); };
 };
 
 // --- cRecMenuItemText  -------------------------------------------------------
@@ -239,6 +259,7 @@ class cRecMenuItemText : public cRecMenuItem {
 private:
     cString title;
     char *value;
+    char *callback;
     int length;
     const char *allowed;
     int pos, offset;
@@ -279,7 +300,8 @@ public:
     cRecMenuItemText(cString title,
                      char *initialVal,
                      int length,
-                     bool active);
+                     bool active = false,
+                     char *callback = NULL);
     virtual ~cRecMenuItemText(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -296,6 +318,7 @@ class cRecMenuItemTime : public cRecMenuItem {
 private:
     cString text;
     int value;
+    int *callback;
     int mm;
     int hh;
     int pos;
@@ -305,7 +328,9 @@ private:
 public:
     cRecMenuItemTime(cString text,
                     int initialVal,
-                    bool active);
+                    bool active = false,
+                    int *callback = NULL,
+                    eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemTime(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -320,12 +345,15 @@ class cRecMenuItemDay : public cRecMenuItem {
 private:
     cString text;
     time_t currentVal;
+    time_t *callback;
     cPixmap *pixmapVal;
     void DrawValue(void);
 public:
     cRecMenuItemDay(cString text,
                     time_t initialVal,
-                    bool active);
+                    bool active = false,
+                    time_t *callback = NULL,
+                    eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemDay(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -421,6 +449,7 @@ private:
     cString text;
     cChannel *channel;
     int channelNumber;
+    int *callback;
     bool initialChannelSet;
     bool fresh;
     cPixmap *pixmapChannel;
@@ -428,7 +457,9 @@ private:
 public:
     cRecMenuItemChannelChooser (cString text,
                                 cChannel *initialChannel,
-                                bool active);
+                                bool active = false,
+                                int *callback = NULL,
+                                eRecMenuState action = rmsNotConsumed);
     virtual ~cRecMenuItemChannelChooser(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -443,6 +474,8 @@ class cRecMenuItemDayChooser : public cRecMenuItem {
 private:
     cString text;
     int weekdays;
+    int *callback;
+    bool epgsearchMode;
     std::string days;
     int daysX;
     int daysY;
@@ -458,7 +491,8 @@ private:
 public:
     cRecMenuItemDayChooser (cString text,
                             int weekdays,
-                            bool active);
+                            bool active = false,
+                            int *callback = NULL);
     virtual ~cRecMenuItemDayChooser(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -538,6 +572,30 @@ public:
     void Show(void); 
     void Draw(void);
     cTimer *GetTimerValue(void);
+    eRecMenuState ProcessKey(eKeys Key);
+};
+
+// --- cRecMenuItemSearchTimer  -------------------------------------------------------
+class cRecMenuItemSearchTimer : public cRecMenuItem {
+private:
+    cTVGuideSearchTimer timer;
+    eRecMenuState action1;
+    eRecMenuState action2;
+    int iconActive;
+    cPixmap *pixmapText;
+    cPixmap *pixmapIcons;
+    int DrawIcons(void);
+public:
+    cRecMenuItemSearchTimer(cTVGuideSearchTimer timer, 
+                            eRecMenuState action1,
+                            eRecMenuState action2,
+                            bool active);
+    virtual ~cRecMenuItemSearchTimer(void);
+    void SetPixmaps(void);
+    void Hide(void);
+    void Show(void); 
+    void Draw(void);
+    cTVGuideSearchTimer GetTimer(void) { return timer; };
     eRecMenuState ProcessKey(eKeys Key);
 };
 

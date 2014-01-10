@@ -10,14 +10,7 @@ cRecMenuManager::cRecMenuManager(void) {
     activeMenuBuffer = NULL;
     recManager = new cRecManager();
     recManager->SetEPGSearchPlugin();
-    instantRecord = false;
-    folderChoosen = false;
     timerConflicts = NULL;
-    templateID = -1;
-    timer = NULL;
-    recFolderSeriesTimer = "";
-    recFolderInstantTimer = "";
-    searchWithOptions = false;
     detailViewActive = false;
 }
 
@@ -37,14 +30,6 @@ cRecMenuManager::~cRecMenuManager(void) {
 void cRecMenuManager::Start(const cEvent *event) {
     active = true;
     activeMenuBuffer = NULL;
-    instantRecord = false;
-    folderChoosen = false;
-    timerConflicts = NULL;
-    templateID = -1;
-    timer = NULL;
-    recFolderSeriesTimer = "";
-    recFolderInstantTimer = "";
-    searchWithOptions = false;
     detailViewActive = false;
     SetBackground();
     this->event = event;
@@ -87,46 +72,43 @@ void cRecMenuManager::DeleteBackground(void) {
 eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
     eOSState state = osContinue;
     switch (nextState) {
-        /* 
-         * --------- INSTANT RECORDING ---------------------------
-        */
+        /*************************************************************************************** 
+        *    INSTANT RECORDING 
+        ****************************************************************************************/
         case rmsInstantRecord: {
-        //Creating timer for active Event
-        //if no conflict, confirm and exit
-            instantRecord = true;
-            recFolderInstantTimer = "";
-            if (folderChoosen) {
-                int activeItem = activeMenu->GetActive(false);
-                if (activeItem > 0)
-                    recFolderInstantTimer = activeMenu->GetStringValue(activeItem);
+        //caller: main menu or folder chooser
+        //Creating timer for active Event, if no conflict, confirm and exit
+            std::string recFolder = "";
+            if (cRecMenuAskFolder *menu = dynamic_cast<cRecMenuAskFolder*>(activeMenu)) {
+                recFolder = menu->GetFolder();
             }
             delete activeMenu;
-            cTimer *timer = recManager->createTimer(event, *recFolderInstantTimer);
-            if (!displayTimerConflict(timer)) {
+            cTimer *timer = recManager->createTimer(event, recFolder);
+            if (!DisplayTimerConflict(timer)) {
                 activeMenu = new cRecMenuConfirmTimer(event);
                 activeMenu->Display();
             }
             break; }
         case rmsInstantRecordFolder:
+        //caller: main menu
         //Asking for Folder
-            folderChoosen = true;
             delete activeMenu;
             activeMenu = new cRecMenuAskFolder(event, rmsInstantRecord);
             activeMenu->Display();
             break;
         case rmsIgnoreTimerConflict:
+        //caller: cRecMenuTimerConflict
         //Confirming created Timer
-            if (instantRecord) {
-                delete activeMenu;
-                activeMenu = new cRecMenuConfirmTimer(event);
-                activeMenu->Display();
-            } else {
-                state = osEnd;
-                Close();
-            }
+            delete activeMenu;
+            activeMenu = new cRecMenuConfirmTimer(event);
+            activeMenu->Display();
             break;
         case rmsTimerConflictShowInfo: {
-            int timerIndex = activeMenu->GetActive(true);
+            //caller: cRecMenuTimerConflict
+            int timerIndex;
+            if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenu)) {
+                timerIndex = menu->GetTimerConflictIndex();
+            } else break;
             int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
             cTimer *t = Timers.Get(timerID);
             if (t) {
@@ -144,23 +126,29 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             break;}
         case rmsDeleteTimerConflictMenu: {
-        //delete timer out of current timer conflict
-        //active menu: cRecMenuTimerConflict
-            int timerIndex = activeMenu->GetActive(true);
+            //caller: cRecMenuTimerConflict
+            //delete timer out of current timer conflict
+            int timerIndex;
+            if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenu)) {
+                timerIndex = menu->GetTimerConflictIndex();
+            } else break;
             int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
             recManager->DeleteTimer(timerID);
             delete activeMenu;
-            if (!displayTimerConflict(timerID)) {
+            if (!DisplayTimerConflict(timerID)) {
                 activeMenu = new cRecMenuConfirmTimer(event);
                 activeMenu->Display();
             }
             break; }
         case rmsEditTimerConflictMenu: {
-        //edit timer out of current timer conflict
-        //active menu: cRecMenuTimerConflict
-            int timerIndex = activeMenu->GetActive(true);
+            //caller: cRecMenuTimerConflict
+            //edit timer out of current timer conflict
+            int timerIndex;
+            if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenu)) {
+                timerIndex = menu->GetTimerConflictIndex();
+            } else break;
             int timerID = timerConflicts->GetCurrentConflictTimerID(timerIndex);
-            timer = Timers.Get(timerID);
+            cTimer *timer = Timers.Get(timerID);
             if (timer) {
                 delete activeMenu;
                 activeMenu = new cRecMenuEditTimer(timer, rmsSaveTimerConflictMenu);
@@ -168,16 +156,24 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             break; }
         case rmsSaveTimerConflictMenu: {
-        //save timer from current timer conflict
-            recManager->SaveTimer(timer, activeMenu);
+            //caller: cRecMenuEditTimer
+            //save timer from current timer conflict
+            cTimer timerModified;
+            cTimer *originalTimer;
+            if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
+                timerModified = menu->GetTimer();
+                originalTimer = menu->GetOriginalTimer();
+            } else break;
+            recManager->SaveTimer(originalTimer, timerModified);
             delete activeMenu;
-            if (!displayTimerConflict(timer)) {
+            if (!DisplayTimerConflict(originalTimer)) {
                 activeMenu = new cRecMenuConfirmTimer(event);
                 activeMenu->Display();
             }
             break; }
         case rmsDeleteTimer:
-        //delete timer for active event
+            //caller: main menu
+            //delete timer for active event
             delete activeMenu;
             if (recManager->IsRecorded(event)) {
                 activeMenu = new cRecMenuAskDeleteTimer(event);
@@ -188,15 +184,15 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break;
         case rmsDeleteTimerConfirmation:
-        //delete running timer for active event
+            //delete running timer for active event
             recManager->DeleteTimer(event);
             delete activeMenu;
             activeMenu = new cRecMenuConfirmDeleteTimer(event);
             activeMenu->Display();
             break;
         case rmsEditTimer: {
-        //edit timer for active event
-            timer = recManager->GetTimerForEvent(event);
+            //edit timer for active event
+            cTimer *timer = recManager->GetTimerForEvent(event);
             if (timer) {
                 delete activeMenu;
                 activeMenu = new cRecMenuEditTimer(timer, rmsSaveTimer);
@@ -204,141 +200,214 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             break; }
         case rmsSaveTimer: {
-        //save timer for active event
-            recManager->SaveTimer(timer, activeMenu);
+            //caller: cRecMenuEditTimer
+            //save timer for active event
+            cTimer timerModified;
+            cTimer *originalTimer;
+            if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
+                timerModified = menu->GetTimer();
+                originalTimer = menu->GetOriginalTimer();
+            } else break;
+            recManager->SaveTimer(originalTimer, timerModified);
             state = osEnd;
             Close();
             break; }
-        /* 
-         * --------- SERIES TIMER ---------------------------------
-        */
+        /*************************************************************************************** 
+        *    SERIES TIMER
+        ****************************************************************************************/
         case rmsSeriesTimer: {
-            recFolderSeriesTimer = "";
-            if (folderChoosen) {
-                int activeItem = activeMenu->GetActive(false);
-                if (activeItem > 0)
-                    recFolderSeriesTimer = activeMenu->GetStringValue(activeItem);
+            //caller: main menu oder folder chooser
+            std::string recFolder = "";
+            if (cRecMenuAskFolder *menu = dynamic_cast<cRecMenuAskFolder*>(activeMenu)) {
+                recFolder = menu->GetFolder();
             }
             delete activeMenu;
             cChannel *channel = Channels.GetByChannelID(event->ChannelID());
-            activeMenu = new cRecMenuSeriesTimer(channel, event);
+            activeMenu = new cRecMenuSeriesTimer(channel, event, recFolder);
             activeMenu->Display();
             break; }
         case rmsSeriesTimerFolder:
-        //Asking for Folder
-            folderChoosen = true;
+            //caller: main menu
+            //Asking for Folder
             delete activeMenu;
             activeMenu = new cRecMenuAskFolder(event, rmsSeriesTimer);
             activeMenu->Display();
             break;
         case rmsSeriesTimerCreate: {
-            cTimer *seriesTimer = recManager->CreateSeriesTimer(activeMenu, *recFolderSeriesTimer);
+            //caller: cRecMenuSeriesTimer
+            cTimer *seriesTimer;
+            if (cRecMenuSeriesTimer *menu = dynamic_cast<cRecMenuSeriesTimer*>(activeMenu)) {
+                seriesTimer = menu->GetTimer();
+            } else break;
+            recManager->CreateSeriesTimer(seriesTimer);
             delete activeMenu;
             activeMenu = new cRecMenuConfirmSeriesTimer(seriesTimer);
             activeMenu->Display();
             break; }
-        /* 
-         * --------- SEARCH TIMER ---------------------------------
-        */
+        /********************************************************************************************** 
+         *    SEARCH TIMER 
+         ***********************************************************************************************/
         case rmsSearchTimer:
+            //Caller: main menu
+            //set search String for search timer
             delete activeMenu;
             activeMenu = new cRecMenuSearchTimer(event);
             activeMenu->Display();
             break;
         case rmsSearchTimerOptions: {
-            searchString = *activeMenu->GetStringValue(1);
+            //Caller: cRecMenuSearchTimer, cRecMenuSearchTimerTemplates
+            //Choose to set options manually or by template
+            std::string searchString;
+            cTVGuideSearchTimer searchTimer;
+            bool reload = false;
+            if (cRecMenuSearchTimer *menu = dynamic_cast<cRecMenuSearchTimer*>(activeMenu)) {
+                searchString = menu->GetSearchString();
+            } else if (cRecMenuSearchTimerTemplatesCreate *menu = dynamic_cast<cRecMenuSearchTimerTemplatesCreate*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+                reload = true;
+            } else break;
             delete activeMenu;
-            if (isempty(*searchString)) {
+            if (searchString.size() < 4) {
                 activeMenu = new cRecMenuSearchTimer(event);
-            } else {
-                epgSearchTemplates = recManager->ReadEPGSearchTemplates();
-                int numTemplates = epgSearchTemplates.size();
-                if (numTemplates > 0) {
-                    activeMenu = new cRecMenuSearchTimerTemplates(searchString, epgSearchTemplates);
+            } else { 
+                if (!reload) {
+                    searchTimer.SetSearchString(searchString);
+                }
+                std::vector<TVGuideEPGSearchTemplate> epgSearchTemplates;
+                recManager->ReadEPGSearchTemplates(&epgSearchTemplates);
+                if (epgSearchTemplates.size() > 0) {
+                    activeMenu = new cRecMenuSearchTimerTemplates(searchTimer, epgSearchTemplates);
                 } else {
-                    activeMenu = new cRecMenuSearchTimerOptions(searchString);
+                    activeMenu = new cRecMenuSearchTimerEdit(searchTimer, false);
                 }
             }
             activeMenu->Display();
             break; }
-        case rmsSearchTimerOptionsReload: {
-            int numTemplates = epgSearchTemplates.size();
+        case rmsSearchTimers: {
+            //caller: main menu
+            DisplaySearchTimerList();
+            break; }
+        case rmsSearchTimerEdit:
+        case rmsSearchTimerEditAdvanced: {
+            //caller: cRecMenuSearchTimers, cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplates
+            cTVGuideSearchTimer searchTimer;
+            bool advancedOptions = false;
+            if (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+                advancedOptions = (nextState == rmsSearchTimerEditAdvanced)?true:false;
+            } else if (cRecMenuSearchTimerTemplates *menu = dynamic_cast<cRecMenuSearchTimerTemplates*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else break;
             delete activeMenu;
-            activeMenu = new cRecMenuSearchTimerTemplates(searchString, epgSearchTemplates);
+            activeMenu = new cRecMenuSearchTimerEdit(searchTimer, advancedOptions);
             activeMenu->Display();
             break; }
-        case rmsSearchTimerUseTemplate: {
-            templateID = activeMenu->GetActive(true) - 1;
-            delete activeMenu;
-            activeMenu = new cRecMenuSearchTimerTemplatesCreate(searchString, epgSearchTemplates[templateID].name.c_str());
-            activeMenu->Display();
-            break; }
-        case rmsSearchTimerOptionsManually:
-            delete activeMenu;
-            activeMenu = new cRecMenuSearchTimerOptions(searchString);
-            activeMenu->Display();
-            break;
-        case rmsSearchTimerTestTemplate: {
-            std::string epgSearchString = recManager->BuildEPGSearchString(searchString, epgSearchTemplates[templateID].templValue);
+        case rmsSearchTimerTest: {
+            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate
+            //show results of currently choosen search timer
+            cTVGuideSearchTimer searchTimer;
+            if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else if (cRecMenuSearchTimerTemplatesCreate *menu = dynamic_cast<cRecMenuSearchTimerTemplatesCreate*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+                TVGuideEPGSearchTemplate tmpl = menu->GetTemplate();
+                searchTimer.SetTemplate(tmpl.templValue);
+                searchTimer.Parse(true);
+            } else break;
             int numSearchResults = 0;
-            const cEvent **searchResult = recManager->PerformSearchTimerSearch(epgSearchString, numSearchResults);
-            if (searchResult) {
+            std::string searchString = searchTimer.BuildSearchString();
+            const cEvent **searchResult = recManager->PerformSearchTimerSearch(searchString, numSearchResults);
+            if (numSearchResults) {
                 activeMenuBuffer = activeMenu;
                 activeMenuBuffer->Hide();
-                activeMenu = new cRecMenuSearchTimerResults(searchString, searchResult, numSearchResults, epgSearchTemplates[templateID].name);
+                activeMenu = new cRecMenuSearchTimerResults(searchTimer.SearchString(), searchResult, numSearchResults);
                 activeMenu->Display();
             } else {
                activeMenuBuffer = activeMenu;
                activeMenuBuffer->Hide();
-               activeMenu = new cRecMenuSearchTimerNothingFound(searchString, epgSearchTemplates[templateID].name);
+               activeMenu = new cRecMenuSearchTimerNothingFound(searchTimer.SearchString());
                activeMenu->Display();
             }
             break; }
-        case rmsSearchTimerTestManually: {
-            std::string epgSearchString = recManager->BuildEPGSearchString(searchString, activeMenu);
-            int numSearchResults = 0;
-            const cEvent **searchResult = recManager->PerformSearchTimerSearch(epgSearchString, numSearchResults);
-            if (searchResult) {
-                activeMenuBuffer = activeMenu;
-                activeMenuBuffer->Hide();
-                activeMenu = new cRecMenuSearchTimerResults(searchString, searchResult, numSearchResults, "");
-                activeMenu->Display();
+        case rmsSearchTimerSave: {
+            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate
+            //create new or modify existing search timer
+            cTVGuideSearchTimer searchTimer;
+            if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else if (cRecMenuSearchTimerTemplatesCreate *menu = dynamic_cast<cRecMenuSearchTimerTemplatesCreate*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+                TVGuideEPGSearchTemplate tmpl = menu->GetTemplate();
+                searchTimer.SetTemplate(tmpl.templValue);
+                searchTimer.Parse(true);
+            } else break;
+            bool success = recManager->SaveSearchTimer(&searchTimer);
+            recManager->UpdateSearchTimers();
+            if (searchTimer.GetID() >= 0) {
+                //Timer modified, show list
+                DisplaySearchTimerList();
             } else {
-               activeMenuBuffer = activeMenu;
-               activeMenuBuffer->Hide();
-               activeMenu = new cRecMenuSearchTimerNothingFound(searchString, "");
-               activeMenu->Display();
+                //new timer, confirm
+                delete activeMenu;
+                activeMenu = new cRecMenuSearchTimerCreateConfirm(success);
+                activeMenu->Display();
             }
             break; }
-        case rmsSearchTimerNothingFoundConfirm:
+        case rmsSearchTimerCreateWithTemplate: {
+            //caller: cRecMenuSearchTimerTemplates
+            //create new search timer from template
+            TVGuideEPGSearchTemplate templ;
+            cTVGuideSearchTimer searchTimer;
+            if (cRecMenuSearchTimerTemplates *menu = dynamic_cast<cRecMenuSearchTimerTemplates*>(activeMenu)) {
+                templ = menu->GetTemplate();
+                searchTimer = menu->GetSearchTimer();
+            } else break;
             delete activeMenu;
-            activeMenu = activeMenuBuffer;
+            activeMenu = new cRecMenuSearchTimerTemplatesCreate(templ, searchTimer);
+            activeMenu->Display();
+            break; }
+        case rmsSearchTimerDeleteConfirm: {
+            //caller: cRecMenuSearchTimers
+            //Ask for confirmation and if timers created by this search timer should alo be deleted
+            cTVGuideSearchTimer searchTimer;
+            if (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else break;
+            activeMenuBuffer = activeMenu;
+            activeMenuBuffer->Hide();
+            activeMenu = new cRecMenuSearchTimerDeleteConfirm(searchTimer);
+            activeMenu->Display();
+            break; }
+        case rmsSearchTimerDelete: 
+        case rmsSearchTimerDeleteWithTimers: {
+            //caller: cRecMenuSearchTimerDeleteConfirm
+            //actually delete searchtimer
+            cTVGuideSearchTimer searchTimer;
+            if (cRecMenuSearchTimerDeleteConfirm *menu = dynamic_cast<cRecMenuSearchTimerDeleteConfirm*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else break;
+            bool delTimers = (nextState==rmsSearchTimerDeleteWithTimers)?true:false;
+            recManager->DeleteSearchTimer(&searchTimer, delTimers);
+            delete activeMenuBuffer;
             activeMenuBuffer = NULL;
-            activeMenu->Show();
-            break;
-        case rmsSearchTimerCreateManually:
-        case rmsSearchTimerCreateTemplate: {
-            std::string epgSearchString;
-            if (nextState == rmsSearchTimerCreateManually) {
-                epgSearchString = recManager->BuildEPGSearchString(searchString, activeMenu);
-            } else if (nextState = rmsSearchTimerCreateTemplate) {
-                epgSearchString = recManager->BuildEPGSearchString(searchString, epgSearchTemplates[templateID].templValue);
-            }
-            bool success = createSearchTimer(epgSearchString);
-            delete activeMenu;
-            activeMenu = new cRecMenuSearchTimerCreateConfirm(success);
-            activeMenu->Display();
+            DisplaySearchTimerList();
             break; }
-        /* 
-         * --------- SWITCH TIMER ---------------------------------
-        */
+        /********************************************************************************************** 
+         *    SWITCH TIMER 
+         ***********************************************************************************************/
         case rmsSwitchTimer:
             delete activeMenu;
             activeMenu = new cRecMenuSwitchTimer();
             activeMenu->Display();
             break;
         case rmsSwitchTimerCreate: {
-            bool success = recManager->CreateSwitchTimer(event, activeMenu);
+            cSwitchTimer switchTimer;
+            if (cRecMenuSwitchTimer *menu = dynamic_cast<cRecMenuSwitchTimer*>(activeMenu)) {
+                switchTimer = menu->GetSwitchTimer();
+            } else break;
+            bool success = recManager->CreateSwitchTimer(event, switchTimer);
             delete activeMenu;
             activeMenu = new cRecMenuSwitchTimerConfirm(success);
             activeMenu->Display();
@@ -349,19 +418,28 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuSwitchTimerDelete();
             activeMenu->Display();
             break;
-        /* 
-         * --------- RECORDINGS SEARCH ---------------------------------
-        */
-        case rmsRecordingSearch:
+        /********************************************************************************************** 
+         *    RECORDINGS SEARCH 
+         ***********************************************************************************************/
+        case rmsRecordingSearch: {
+            //caller: main menu or rmsRecordingSearchResult
+            std::string searchString = event->Title();
+            if (cRecMenuRecordingSearchResults *menu = dynamic_cast<cRecMenuRecordingSearchResults*>(activeMenu)) {
+                searchString = menu->GetSearchString();
+            };
             delete activeMenu;
-            activeMenu = new cRecMenuRecordingSearch(event);
+            activeMenu = new cRecMenuRecordingSearch(searchString);
             activeMenu->Display();
-            break;
+            break; }
         case rmsRecordingSearchResult:  {
-            searchString = activeMenu->GetStringValue(1);
+            //caller: cRecMenuRecordingSearch
+            std::string searchString;
+            if (cRecMenuRecordingSearch *menu = dynamic_cast<cRecMenuRecordingSearch*>(activeMenu)) {
+                searchString = menu->GetSearchString();
+            } else break;
             delete activeMenu;
-            if (isempty(*searchString)) {
-                activeMenu = new cRecMenuRecordingSearch(event);
+            if (searchString.size() < 4) {
+                activeMenu = new cRecMenuRecordingSearch(searchString);
             } else {
                 int numSearchResults = 0;
                 cRecording **searchResult = recManager->SearchForRecordings(searchString, numSearchResults);
@@ -373,34 +451,35 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             activeMenu->Display();
             break; }
-        /* 
-         * --------- SEARCH ---------------------------------
-        */
+        /********************************************************************************************** 
+         *    SEARCH 
+         ***********************************************************************************************/
         case rmsSearch:
-            delete activeMenu;
-            activeMenu = new cRecMenuSearch(event);
-            activeMenu->Display();
-            searchWithOptions = false;
-            break;
         case rmsSearchWithOptions: {
-            cString searchString = activeMenu->GetStringValue(1);
-            delete activeMenu;
-            if (isempty(*searchString)) {
-                activeMenu = new cRecMenuSearch(event);
-            } else {
-                activeMenu = new cRecMenuSearch(event, *searchString);
-                searchWithOptions = true;
+            //caller: main menu, cRecMenuSearch
+            bool withOptions = false;
+            std::string searchString = event->Title();
+            if (cRecMenuSearch *menu = dynamic_cast<cRecMenuSearch*>(activeMenu)) {
+                withOptions = true;
+                searchString = menu->GetSearchString();
             }
+            delete activeMenu;
+            activeMenu = new cRecMenuSearch(searchString, withOptions);
             activeMenu->Display();
             break; }
         case rmsSearchPerform: {
-            cString searchString = activeMenu->GetStringValue(1);
-            if (isempty(*searchString)) {
+            //caller: cRecMenuSearch
+            Epgsearch_searchresults_v1_0 epgSearchData;
+            if (cRecMenuSearch *menu = dynamic_cast<cRecMenuSearch*>(activeMenu)) {
+                epgSearchData = menu->GetEPGSearchStruct();
+            } else break;
+            std::string searchString = epgSearchData.query;
+            if (searchString.size() < 4) {
                 delete activeMenu;
-                activeMenu = new cRecMenuSearch(event);
+                activeMenu = new cRecMenuSearch(event->Title(), false);
             } else {
                 int numSearchResults = 0;
-                const cEvent **searchResult = recManager->PerformSearch(activeMenu, searchWithOptions, numSearchResults);
+                const cEvent **searchResult = recManager->PerformSearch(epgSearchData, numSearchResults);
                 if (searchResult) {
                     delete activeMenu;
                     activeMenu = new cRecMenuSearchResults(searchString, searchResult, numSearchResults);
@@ -419,7 +498,13 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Show();
             break;
         case rmsSearchShowInfo: {
-            const cEvent *ev = activeMenu->GetEventValue(activeMenu->GetActive(false));
+            //caller: cRecMenuSearchResults, cRecMenuSearchTimerResults
+            const cEvent *ev = NULL;
+            if (cRecMenuSearchResults *menu = dynamic_cast<cRecMenuSearchResults*>(activeMenu)) {
+                ev = menu->GetEvent();
+            } else if (cRecMenuSearchTimerResults *menu = dynamic_cast<cRecMenuSearchTimerResults*>(activeMenu)) {
+                ev = menu->GetEvent();
+            } else break;
             if (ev) {
                 activeMenu->Hide();
                 detailView = new cDetailView(ev);
@@ -432,7 +517,13 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             break;}
         case rmsSearchRecord: {
-            const cEvent *ev = activeMenu->GetEventValue(activeMenu->GetActive(false));
+            //caller: cRecMenuSearchResults
+            const cEvent *ev = NULL;
+            if (cRecMenuSearchResults *menu = dynamic_cast<cRecMenuSearchResults*>(activeMenu)) {
+                ev = menu->GetEvent();
+            } else break;
+            if (!ev)
+                break;
             cTimer *timer = recManager->createTimer(ev, "");
             activeMenuBuffer = activeMenu;
             activeMenuBuffer->Hide();
@@ -445,12 +536,12 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenuBuffer = NULL;
             activeMenu->Show();
             break;
-        /* 
-         * --------- CHECK FOR TIMER CONFLICTS ---------------------------------
-        */
+        /********************************************************************************************** 
+         *    CHECK FOR TIMER CONFLICTS 
+         ***********************************************************************************************/
         case rmsTimerConflicts: {
-        //Show timer conflict
-        //active menu: cRecMenuTimerConflicts
+            //caller: main menu
+            //Show timer conflict
             if (timerConflicts) {
                 delete timerConflicts;
             }
@@ -465,23 +556,30 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsTimerConflict: {
-        //Show timer conflict
-        //active menu: cRecMenuTimerConflicts
+            //caller: cRecMenuTimerConflicts
+            //Show timer conflict
             if (!timerConflicts)
                 break;
-            timerConflicts->SetCurrentConflict(activeMenu->GetActive(true));
+            int timerConflict;
+            if (cRecMenuTimerConflicts *menu = dynamic_cast<cRecMenuTimerConflicts*>(activeMenu)) {
+                timerConflict = menu->GetTimerConflict();
+            } else break;
+            timerConflicts->SetCurrentConflict(timerConflict);
             delete activeMenu;
             activeMenu = new cRecMenuTimerConflict(timerConflicts->GetCurrentConflict());
             activeMenu->Display();
             break; }
         case rmsSearchRerunsTimerConflictMenu: {
-        //Show reruns for timer from timer conflict
-        //active menu: cRecMenuTimerConflict
+            //caller: cRecMenuTimerConflict
+            //Show reruns for timer from timer conflict
             if (!timerConflicts)
                 break;
-            int activeItem = activeMenu->GetActive(true);
-            int timerID = timerConflicts->GetCurrentConflictTimerID(activeItem);
-            timer = Timers.Get(timerID);
+            int timerConflict;
+            if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenu)) {
+                timerConflict = menu->GetTimerConflictIndex();
+            } else break;
+            int timerID = timerConflicts->GetCurrentConflictTimerID(timerConflict);
+            cTimer *timer = Timers.Get(timerID);
             if (timer) {
                 const cEvent *event = timer->Event();
                 if (event) {
@@ -508,13 +606,25 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Show();
             break; }
         case rmsTimerConflictRecordRerun: {
-            const cEvent *replace = activeMenu->GetEventValue(activeMenu->GetActive(false));
-            int originalConflictIndex = activeMenuBuffer->GetActive(false);
+            //caller: cRecMenuRerunResults
+            //buffer: cRecMenuTimerConflict
+            if (!activeMenuBuffer)
+                break;
+            if (!timerConflicts)
+                break;
+            const cEvent *replace;
+            int originalConflictIndex;
+            if (cRecMenuRerunResults *menu = dynamic_cast<cRecMenuRerunResults*>(activeMenu)) {
+                replace = menu->GetRerunEvent();
+            } else break;
+            if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenuBuffer)) {
+                originalConflictIndex = menu->GetTimerConflictIndex();
+            } else break;
             int originalTimerID = timerConflicts->GetCurrentConflictTimerID(originalConflictIndex);
             cTimer *timerOriginal = Timers.Get(originalTimerID);
             if (replace && timerOriginal) {
                 recManager->DeleteTimer(timerOriginal->Event());
-                recManager->createTimer(replace, *recFolderInstantTimer);
+                recManager->createTimer(replace);
                 delete activeMenu;
                 if (activeMenuBuffer) {
                     delete activeMenuBuffer;
@@ -524,10 +634,10 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 activeMenu->Display();
             }
             break; }
-        /* 
-         * --------- TIMELINE ---------------------------------
-        */
-        case rmsTimeline: {
+        /********************************************************************************************** 
+         *    TIMELINE
+         ***********************************************************************************************/
+       case rmsTimeline: {
             if (timerConflicts) {
                 delete timerConflicts;
             }
@@ -537,7 +647,10 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; } 
         case rmsTimelineTimerEdit: {
-            timer = activeMenu->GetTimerValue(activeMenu->GetActive(true));
+            cTimer *timer;
+            if (cRecMenuTimeline *menu = dynamic_cast<cRecMenuTimeline*>(activeMenu)) {
+                timer = menu->GetTimer();
+            } else break;
             if (timer) {
                 delete activeMenu;
                 activeMenu = new cRecMenuEditTimer(timer, rmsTimelineTimerSave);
@@ -545,7 +658,13 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             break;}
         case rmsTimelineTimerSave: {
-            recManager->SaveTimer(timer, activeMenu);
+            cTimer timerModified;
+            cTimer *originalTimer;
+            if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
+                timerModified = menu->GetTimer();
+                originalTimer = menu->GetOriginalTimer();
+            } else break;
+            recManager->SaveTimer(originalTimer, timerModified);
             delete activeMenu;
             if (timerConflicts) {
                 delete timerConflicts;
@@ -555,7 +674,11 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsTimelineTimerDelete: {
-            recManager->DeleteTimer(timer->Event());
+            cTimer *timer;
+            if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
+                timer = menu->GetOriginalTimer();
+            } else break;
+            recManager->DeleteTimer(timer);
             delete activeMenu;
             if (timerConflicts) {
                 delete timerConflicts;
@@ -564,9 +687,9 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuTimeline(timerConflicts);
             activeMenu->Display();
             break; }
-        /* 
-         * --------- COMMON ---------------------------------
-        */
+        /********************************************************************************************** 
+         *    COMMON
+         *********************************************************************************************/
         case rmsClose: {
             if (activeMenuBuffer == NULL) {
                 state = osEnd;
@@ -585,17 +708,25 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
     return state;
 }
 
-bool cRecMenuManager::displayTimerConflict(cTimer *timer) {
+void cRecMenuManager::DisplaySearchTimerList(void) {
+    delete activeMenu;
+    std::vector<cTVGuideSearchTimer> searchTimers;
+    recManager->GetSearchTimers(&searchTimers);
+    activeMenu = new cRecMenuSearchTimers(searchTimers);
+    activeMenu->Display();
+}
+
+bool cRecMenuManager::DisplayTimerConflict(cTimer *timer) {
     int timerID = 0;
     for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
         if (t == timer)
-            return displayTimerConflict(timerID);
+            return DisplayTimerConflict(timerID);
         timerID++;
     }
     return false;
 }
 
-bool cRecMenuManager::displayTimerConflict(int timerID) {
+bool cRecMenuManager::DisplayTimerConflict(int timerID) {
     if (timerConflicts)
         delete timerConflicts;
     timerConflicts = recManager->CheckTimerConflict();
@@ -612,16 +743,6 @@ bool cRecMenuManager::displayTimerConflict(int timerID) {
         return true;
     }
     return false;
-}
-
-bool cRecMenuManager::createSearchTimer(std::string epgSearchString) {
-    int newTimerID = recManager->CreateSearchTimer(epgSearchString);
-    bool success = false;
-    if (newTimerID > -1) {
-        recManager->UpdateSearchTimers();
-        success = true;
-    }
-    return success;
 }
 
 eOSState cRecMenuManager::ProcessKey(eKeys Key) {

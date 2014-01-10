@@ -4,6 +4,10 @@ cSwitchTimers SwitchTimers;
 
 // -- cSwitchTimer -----------------------------------------------------------------
 cSwitchTimer::cSwitchTimer(void) {
+    eventID = 0;
+    startTime = 0;
+    switchMinsBefore = 2;
+    announceOnly = 0;
 }
 
 cSwitchTimer::cSwitchTimer(const cEvent* Event) {

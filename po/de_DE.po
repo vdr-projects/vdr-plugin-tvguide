@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-31 14:31+0100\n"
+"POT-Creation-Date: 2014-01-10 11:54+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -78,6 +78,15 @@ msgstr "Aufn"
 msgid "No Timers active"
 msgstr "Keine Timer aktiv"
 
+msgid "inactive"
+msgstr "inaktiv"
+
+msgid "active timers"
+msgstr "aktive Timer"
+
+msgid "recordings done"
+msgstr "erledigte Aufnahmen"
+
 msgid "Instant Record"
 msgstr "Aufnahme"
 
@@ -87,11 +96,17 @@ msgstr "Timer löschen"
 msgid "Edit Timer"
 msgstr "Timer bearbeiten"
 
-msgid "Create Series Timer"
-msgstr "Serientimer anlegen"
+msgid "Timer Timeline"
+msgstr "Timer anzeigen"
 
 msgid "Create Search Timer"
 msgstr "Suchtimer anlegen"
+
+msgid "Manage Search Timers"
+msgstr "Suchtimer bearbeiten"
+
+msgid "Create Series Timer"
+msgstr "Serientimer anlegen"
 
 msgid "Create Switch Timer"
 msgstr "Umschalttimer anlegen"
@@ -101,9 +116,6 @@ msgstr "Umschalttimer löschen"
 
 msgid "Search"
 msgstr "Suchen"
-
-msgid "Timer Timeline"
-msgstr "Timer Zeitleiste"
 
 msgid "Check for Timer Conflicts"
 msgstr "Auf Timerkonflikte prüfen"
@@ -258,38 +270,23 @@ msgstr "Optionen manuell konfigurieren"
 msgid "Use Template"
 msgstr "Template benutzen"
 
-msgid "Creating Search Timer"
-msgstr "Suchtimer anlegen"
+msgid "Manage EPGSearch Search Timers"
+msgstr "EPGSearch Suchtimer bearbeiten"
 
-msgid "Search Term"
+msgid "No Search Timers Configured"
+msgstr "Keine Suchtimer angelegt"
+
+msgid "Configure Search Timer Options"
+msgstr "Suchtimer konfigurieren"
+
+msgid "Save Search Timer"
+msgstr "Suchtimer speichern"
+
+msgid "Search String"
 msgstr "Suchbegriff"
 
-msgid "Using Template"
-msgstr "Template"
-
-msgid "Display Results for Search Timer"
-msgstr "Ergebnisse für Suchtimer anzeigen"
-
-msgid "Use other Template"
-msgstr "Anderes Template benutzen"
-
-msgid "Configure Search Timer Options for Search String"
-msgstr "Suchtimer Optionen konfigurieren für Suchbegriff"
-
-msgid "whole term must appear"
-msgstr "vollständiger Ausdruck"
-
-msgid "all terms must exist"
-msgstr "alle Worte"
-
-msgid "one term must exist"
-msgstr "ein Wort"
-
-msgid "exact match"
-msgstr "exakt"
-
-msgid "regular expression"
-msgstr "Regulärer Ausdruck"
+msgid "Active"
+msgstr "Aktiv"
 
 msgid "Search Mode"
 msgstr "Suchmodus"
@@ -306,14 +303,38 @@ msgstr "Beschreibung benutzen"
 msgid "Limit Channels"
 msgstr "Kanäle einschränken"
 
+msgid "Use Time"
+msgstr "Zeit benutzen"
+
+msgid "Display advanced Options"
+msgstr "Erweiterte Optionen anzeigen"
+
+msgid "Limit Days of the Week"
+msgstr "Wochentage beschränken"
+
+msgid "Time margin for start in minutes"
+msgstr "Zeit vor Start in Minuten"
+
+msgid "Time margin for stop in minutes"
+msgstr "Zeit nach Ende in Minuten"
+
+msgid "Use VPS"
+msgstr "VPS benutzen"
+
+msgid "Avoid Repeats"
+msgstr "Wiederholungen vermeiden"
+
+msgid "Hide advanced Options"
+msgstr "Erweiterte Optionen ausblenden"
+
+msgid "Display Results for Search Timer"
+msgstr "Ergebnisse für Suchtimer anzeigen"
+
 msgid "Start Channel"
 msgstr "Startkanal"
 
 msgid "Stop Channel"
 msgstr "Stopkanal"
-
-msgid "Use Time"
-msgstr "Zeit benutzen"
 
 msgid "Start after"
 msgstr "Beginn nach"
@@ -321,14 +342,29 @@ msgstr "Beginn nach"
 msgid "Start before"
 msgstr "Beginn vor"
 
-msgid "search results for Search Timer"
-msgstr "Treffer für Suchtimer"
+msgid "Select Days"
+msgstr "Tage bestimmen"
 
-msgid "search result for Search Timer"
-msgstr "Treffer für Suchtimer"
+msgid "Number of allowed repeats"
+msgstr "Anzahl erlaubter Wiederholungen"
 
-msgid "Nothing found for Search String"
-msgstr "Keine Treffer für Suchbegriff"
+msgid "Compare Title"
+msgstr "Titel vergleichen"
+
+msgid "Compare Subtitle"
+msgstr "Untertitel vergleichen"
+
+msgid "Compare Description"
+msgstr "Beschreibung vergleichen"
+
+msgid "Really delete Search Timer"
+msgstr "Suchtimer wirklich löschen"
+
+msgid "Delete only Search Timer"
+msgstr "Nur Suchtimer löschen"
+
+msgid "Delete Search Timer and created Timers"
+msgstr "Suchtimer und erzeugte Timer löschen"
 
 msgid "Search Timer sucessfully created."
 msgstr "Suchtimer erfolgreich angelegt"
@@ -338,6 +374,27 @@ msgstr "Suchtimer update initialisiert"
 
 msgid "Search Timer NOT sucessfully created"
 msgstr "Suchtimer NICHT erfolgreich angelegt"
+
+msgid "Creating Search Timer"
+msgstr "Suchtimer anlegen"
+
+msgid "Search Term"
+msgstr "Suchbegriff"
+
+msgid "Using Template"
+msgstr "Template"
+
+msgid "Use other Template"
+msgstr "Anderes Template benutzen"
+
+msgid "search results for Search Timer"
+msgstr "Treffer für Suchtimer"
+
+msgid "search result for Search Timer"
+msgstr "Treffer für Suchtimer"
+
+msgid "Nothing found for Search String"
+msgstr "Keine Treffer für Suchbegriff"
 
 msgid "Configure Options for Switchtimer"
 msgstr "Optionen für Umschalttimer konfigurieren"
@@ -369,12 +426,6 @@ msgstr "Umschalttimer NICHT erfolgreich angelegt"
 msgid "Switch Timer deleted"
 msgstr "Umschalttimer gelöscht"
 
-msgid "Show Search Options"
-msgstr "Suchoptionen anzeigen"
-
-msgid "Perform Search"
-msgstr "Suche ausführen"
-
 msgid "Channel to Search"
 msgstr "Suche auf Kanal"
 
@@ -386,6 +437,12 @@ msgstr "In Untertitel suchen"
 
 msgid "Search in Description"
 msgstr "In Beschreibung suchen"
+
+msgid "Show Search Options"
+msgstr "Suchoptionen anzeigen"
+
+msgid "Perform Search"
+msgstr "Suche ausführen"
 
 msgid "search results for"
 msgstr "Suchergebnisse für"
@@ -410,6 +467,21 @@ msgstr "für"
 
 msgid "No recordings found for"
 msgstr "Keine Aufnahmen gefunden für"
+
+msgid "whole term must appear"
+msgstr "vollständiger Ausdruck"
+
+msgid "all terms must exist"
+msgstr "alle Worte"
+
+msgid "one term must exist"
+msgstr "ein Wort"
+
+msgid "exact match"
+msgstr "exakt"
+
+msgid "regular expression"
+msgstr "Regulärer Ausdruck"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
@@ -647,6 +719,9 @@ msgstr "Suchen & Aufnehmen Menu Schriftgröße"
 
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Suchen & Aufnehmen Menu kleine Schriftgröße"
+
+msgid "Search & Recording Main Menu Font Size"
+msgstr "Suchen & Aufnehmen Hauptmenü Schriftgröße"
 
 msgid "Create Log Messages for image loading"
 msgstr "Log Nachrichten für das Laden der Bilder erzeugen"

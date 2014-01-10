@@ -52,6 +52,9 @@ std::string StrToLowerCase(std::string str) {
     return lowerCase;
 }
 
+/****************************************************************************************
+*            DrawRoundedCorners
+****************************************************************************************/
 void DrawRoundedCorners(cPixmap *p, int posX, int posY, int width, int height, int radius, int borderWidth, tColor borderColor) {
     if( height > 2*radius) {
         p->DrawEllipse(cRect(posX, posY, radius, radius), borderColor, -2);
@@ -107,6 +110,70 @@ int FindIgnoreCase(const std::string& expr, const std::string& query)
   if (!r)
      return -1;
   return r - p;
+}
+
+
+/****************************************************************************************
+*            GetAuxValue
+****************************************************************************************/
+char* GetAuxValue(const char* aux, const char* name) {
+	if (isempty(aux))
+    	return NULL;
+    
+	char* descr = strdup(aux);
+   	char* beginaux = strstr(descr, "<epgsearch>");
+   	char* endaux = strstr(descr, "</epgsearch>");
+   	if (!beginaux || !endaux) {
+        free(descr);
+    	return NULL;
+	}
+
+	beginaux +=  11;  // strlen("<epgsearch>");
+   	endaux[0] = 0;
+   	memmove(descr, beginaux, endaux - beginaux + 1);
+
+	if (strcmp(name, "epgsearch") == 0) 
+		return descr; // full aux
+
+   	int namelen = strlen(name);
+   	char catname[100] = "";
+   	catname[0] = '<';
+   	memcpy(catname + 1, name, namelen);
+   	catname[1 + namelen] = '>';
+   	catname[2 + namelen] = 0;
+
+   	char* cat = strcasestr(descr, catname);
+   	if (!cat) {
+    	free(descr);
+    	return NULL;
+    }
+      
+	cat += namelen + 2;
+   	char* end = strstr(cat, "</");
+   	if (!end) {
+    	free(descr);	
+    	return NULL;
+    }
+	end[0] = 0;
+
+   	int catlen = end - cat + 1;
+   	char* value = (char *) malloc(catlen);
+   	memcpy(value, cat, catlen);
+
+   	free(descr);
+   	return value;
+}
+
+char* GetAuxValue(const cRecording *recording, const char* name) {
+   	if (!recording || !recording->Info()) 
+        return NULL;
+    return GetAuxValue(recording->Info()->Aux(), name);
+}
+
+char* GetAuxValue(const cTimer *timer, const char* name) {
+	if (!timer || !timer->Aux()) 
+        return NULL;
+    return GetAuxValue(timer->Aux(), name);
 }
 
 /****************************************************************************************

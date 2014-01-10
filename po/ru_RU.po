@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2013-12-31 14:31+0100\n"
+"POT-Creation-Date: 2014-01-10 11:54+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -78,6 +78,15 @@ msgstr ""
 msgid "No Timers active"
 msgstr ""
 
+msgid "inactive"
+msgstr ""
+
+msgid "active timers"
+msgstr ""
+
+msgid "recordings done"
+msgstr ""
+
 msgid "Instant Record"
 msgstr "Записать"
 
@@ -87,11 +96,17 @@ msgstr "Удалить таймер"
 msgid "Edit Timer"
 msgstr "Редактировать таймер"
 
-msgid "Create Series Timer"
-msgstr "Создать циклический таймер"
+msgid "Timer Timeline"
+msgstr ""
 
 msgid "Create Search Timer"
 msgstr "Создать поисковый таймер"
+
+msgid "Manage Search Timers"
+msgstr ""
+
+msgid "Create Series Timer"
+msgstr "Создать циклический таймер"
 
 msgid "Create Switch Timer"
 msgstr "Создать таймер переключения"
@@ -101,9 +116,6 @@ msgstr "Удалить таймер переключения"
 
 msgid "Search"
 msgstr "Поиск"
-
-msgid "Timer Timeline"
-msgstr ""
 
 msgid "Check for Timer Conflicts"
 msgstr "Поиск таймер-конфликтов"
@@ -258,38 +270,23 @@ msgstr "Ручная настройка параметров"
 msgid "Use Template"
 msgstr "Использовать шаблоны"
 
-msgid "Creating Search Timer"
-msgstr "Создается поисковый таймер"
+msgid "Manage EPGSearch Search Timers"
+msgstr ""
 
-msgid "Search Term"
-msgstr "Ключевое слово"
+msgid "No Search Timers Configured"
+msgstr ""
 
-msgid "Using Template"
-msgstr "Использовать шаблон"
+msgid "Configure Search Timer Options"
+msgstr ""
 
-msgid "Display Results for Search Timer"
-msgstr "Тест"
+msgid "Save Search Timer"
+msgstr ""
 
-msgid "Use other Template"
-msgstr "Использовать другие шаблоны"
+msgid "Search String"
+msgstr ""
 
-msgid "Configure Search Timer Options for Search String"
-msgstr "Настроить параметры таймера"
-
-msgid "whole term must appear"
-msgstr "фраза"
-
-msgid "all terms must exist"
-msgstr "все слова"
-
-msgid "one term must exist"
-msgstr "хотя бы одно слово"
-
-msgid "exact match"
-msgstr "точное совпадение"
-
-msgid "regular expression"
-msgstr "регулярные выражения"
+msgid "Active"
+msgstr ""
 
 msgid "Search Mode"
 msgstr "Режим поиска"
@@ -306,14 +303,38 @@ msgstr "Искать в описаниях"
 msgid "Limit Channels"
 msgstr "Ограничить список каналов"
 
+msgid "Use Time"
+msgstr "Время"
+
+msgid "Display advanced Options"
+msgstr ""
+
+msgid "Limit Days of the Week"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Hide advanced Options"
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Тест"
+
 msgid "Start Channel"
 msgstr "С канала"
 
 msgid "Stop Channel"
 msgstr "По канал"
-
-msgid "Use Time"
-msgstr "Время"
 
 msgid "Start after"
 msgstr "С"
@@ -321,14 +342,29 @@ msgstr "С"
 msgid "Start before"
 msgstr "До"
 
-msgid "search results for Search Timer"
-msgstr "Совпадений найдено"
+msgid "Select Days"
+msgstr ""
 
-msgid "search result for Search Timer"
-msgstr "Совпадение найдено"
+msgid "Number of allowed repeats"
+msgstr ""
 
-msgid "Nothing found for Search String"
-msgstr "Совпадений НЕ найдено"
+msgid "Compare Title"
+msgstr ""
+
+msgid "Compare Subtitle"
+msgstr ""
+
+msgid "Compare Description"
+msgstr ""
+
+msgid "Really delete Search Timer"
+msgstr ""
+
+msgid "Delete only Search Timer"
+msgstr ""
+
+msgid "Delete Search Timer and created Timers"
+msgstr ""
 
 msgid "Search Timer sucessfully created."
 msgstr "Поисковый таймер создан"
@@ -338,6 +374,27 @@ msgstr "Поисковый таймер обновляется"
 
 msgid "Search Timer NOT sucessfully created"
 msgstr "Поисковый таймер НЕ создан"
+
+msgid "Creating Search Timer"
+msgstr "Создается поисковый таймер"
+
+msgid "Search Term"
+msgstr "Ключевое слово"
+
+msgid "Using Template"
+msgstr "Использовать шаблон"
+
+msgid "Use other Template"
+msgstr "Использовать другие шаблоны"
+
+msgid "search results for Search Timer"
+msgstr "Совпадений найдено"
+
+msgid "search result for Search Timer"
+msgstr "Совпадение найдено"
+
+msgid "Nothing found for Search String"
+msgstr "Совпадений НЕ найдено"
 
 msgid "Configure Options for Switchtimer"
 msgstr "Настройка таймера переключения"
@@ -369,12 +426,6 @@ msgstr "Таймер переключения НЕ был создан!"
 msgid "Switch Timer deleted"
 msgstr "Таймер переключения удален"
 
-msgid "Show Search Options"
-msgstr "Показать параметры поиска"
-
-msgid "Perform Search"
-msgstr "Найти"
-
 msgid "Channel to Search"
 msgstr "Канал для поиска"
 
@@ -386,6 +437,12 @@ msgstr "Искать в эпизодах"
 
 msgid "Search in Description"
 msgstr "Искать в описаниях"
+
+msgid "Show Search Options"
+msgstr "Показать параметры поиска"
+
+msgid "Perform Search"
+msgstr "Найти"
 
 msgid "search results for"
 msgstr "Найдено по запросу"
@@ -410,6 +467,21 @@ msgstr "для"
 
 msgid "No recordings found for"
 msgstr "Не найдено записей:"
+
+msgid "whole term must appear"
+msgstr "фраза"
+
+msgid "all terms must exist"
+msgstr "все слова"
+
+msgid "one term must exist"
+msgstr "хотя бы одно слово"
+
+msgid "exact match"
+msgstr "точное совпадение"
+
+msgid "regular expression"
+msgstr "регулярные выражения"
 
 msgid "General Settings"
 msgstr "Основные настройки"
@@ -648,6 +720,9 @@ msgstr "Размер шрифта меню Поиск & Запись"
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Размер маленького шрифта меню Поиск & Запись"
 
+msgid "Search & Recording Main Menu Font Size"
+msgstr ""
+
 msgid "Create Log Messages for image loading"
 msgstr ""
 
@@ -677,3 +752,6 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Configure Search Timer Options for Search String"
+#~ msgstr "Настроить параметры таймера"
