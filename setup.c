@@ -63,9 +63,8 @@ void cTvguideSetup::Store(void) {
     SetupStore("showTimeInGrid", tvguideConfig.showTimeInGrid);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
     SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
-    SetupStore("statusHeaderPercent", tvguideConfig.statusHeaderPercent);
+    SetupStore("headerHeightPercent", tvguideConfig.headerHeightPercent);
     SetupStore("channelGroupsPercent", tvguideConfig.channelGroupsPercent);
-    SetupStore("epgViewHeaderPercent", tvguideConfig.epgViewHeaderPercent);
     SetupStore("epgViewBorder", tvguideConfig.epgViewBorder);
     SetupStore("scaleVideo", tvguideConfig.scaleVideo);
     SetupStore("decorateVideo", tvguideConfig.decorateVideo);
@@ -244,11 +243,11 @@ void cMenuSetupScreenLayout::Set(void) {
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Number of Channels to display")), &tmpTvguideConfig->channelRows, 3, 12));
         Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Display time in EPG Grids")), &tmpTvguideConfig->showTimeInGrid));
     }
+    Add(new cMenuEditIntItem(tr("Height of Headers (Status Header and EPG View, Perc. of osd height)"), &tmpTvguideConfig->headerHeightPercent, 10, 50));
     Add(new cMenuEditIntItem(tr("Height of Footer (Perc. of osd height)"), &tmpTvguideConfig->footerHeightPercent, 3, 20));
     
     Add(new cMenuEditBoolItem(tr("Display status header"), &tmpTvguideConfig->displayStatusHeader));
     if (tmpTvguideConfig->displayStatusHeader) {
-        Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Height of status header (Perc. of osd height)")), &tmpTvguideConfig->statusHeaderPercent, 5, 50));
         Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Scale video to upper right corner")), &tmpTvguideConfig->scaleVideo));
         Add(new cMenuEditBoolItem(*cString::sprintf("%s%s", *indent, tr("Rounded corners around video frame")), &tmpTvguideConfig->decorateVideo));
     }
@@ -271,7 +270,6 @@ void cMenuSetupScreenLayout::Set(void) {
         Add(new cMenuEditIntItem(*cString::sprintf("%s%s", *indent, tr("Logo height ratio")), &tmpTvguideConfig->logoHeightRatio, 1, 1000));
     }
     
-    Add(new cMenuEditIntItem(tr("Height of Header in Detailed View (Perc. of osd height)"), &tmpTvguideConfig->epgViewHeaderPercent, 10, 50));
     Add(new cMenuEditIntItem(tr("Text Border in Detailed View (pixel)"), &tmpTvguideConfig->epgViewBorder, 0, 300));
     
     Add(new cMenuEditStraItem(tr("Show EPG Images"), &tmpTvguideConfig->hideEpgImages, 2,  hideChannelLogosItems)); 

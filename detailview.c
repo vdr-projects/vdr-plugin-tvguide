@@ -8,17 +8,19 @@
 #include "tools.h"
 #include "detailview.h"
 
-cDetailView::cDetailView(const cEvent *event) {
+cDetailView::cDetailView(const cEvent *event, cFooter *footer) {
     this->event = event;
+    this->footer = footer;
     imgScrollBar = NULL;
     border = tvguideConfig.epgViewBorder; //px, border in view window
     scrollBarWidth = 40;
+    headerWidth = geoManager.headerContentWidth;
     headerHeight = geoManager.epgViewHeaderHeight;
     pixmapPoster = NULL;
     width = geoManager.osdWidth;
     contentWidth = width - scrollBarWidth;
     contentX = 0;
-    contentHeight = geoManager.osdHeight - headerHeight;
+    contentHeight = geoManager.osdHeight - headerHeight - geoManager.footerHeight;
     widthPoster = 30 * contentWidth / 100;
 }
 
@@ -31,8 +33,6 @@ cDetailView::~cDetailView(void){
     header = NULL;
     osdManager.releasePixmap(headerLogo);
     headerLogo = NULL;
-    osdManager.releasePixmap(headerBack);
-    headerBack = NULL;
     osdManager.releasePixmap(content);
     content = NULL;
     if (pixmapPoster)
@@ -40,9 +40,8 @@ cDetailView::~cDetailView(void){
     pixmapPoster = NULL;
     osdManager.releasePixmap(scrollBar);
     scrollBar = NULL;
-    osdManager.releasePixmap(footer);
-    footer = NULL;
     delete imgScrollBar;
+    footer->LeaveDetailedViewMode(Channels.GetByChannelID(event->ChannelID()));
 }
 
 void cDetailView::setContent() {
@@ -120,13 +119,11 @@ bool cDetailView::setContentDrawportHeight() {
 }
 
 void cDetailView::createPixmaps() {
-    back = osdManager.requestPixmap(3, cRect(0, 0, geoManager.osdWidth, geoManager.osdHeight), cRect::Null);
+    back = osdManager.requestPixmap(3, cRect(0, 0, width, headerHeight + contentHeight), cRect::Null);
     back->Fill(clrBlack);
-    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(0, 0, width, headerHeight), cRect::Null));
+    header = new cStyledPixmap(osdManager.requestPixmap(5, cRect(0, 0, headerWidth, headerHeight), cRect::Null));
     headerLogo = osdManager.requestPixmap(6, cRect(0, 0, width, headerHeight), cRect::Null);
     headerLogo->Fill(clrTransparent);
-    headerBack = osdManager.requestPixmap(4, cRect(0, 0, width, headerHeight), cRect::Null);
-    headerBack->Fill(clrBlack);
     header->setColor(theme.Color(clrHeader), theme.Color(clrHeaderBlending));
     content = osdManager.requestPixmap(5, cRect(contentX, headerHeight, contentWidth, contentHeight),
                                     cRect(0,0, contentWidth, max(heightContent, contentHeight)));
@@ -136,17 +133,22 @@ void cDetailView::createPixmaps() {
         pixmapPoster->DrawRectangle(cRect(2, 0, widthPoster - 2, content->DrawPort().Height()), theme.Color(clrBackground));
     }
     scrollBar = osdManager.requestPixmap(5, cRect(geoManager.osdWidth - scrollBarWidth, headerHeight, scrollBarWidth, contentHeight));
-    
-    footer = osdManager.requestPixmap(5, cRect(0, headerHeight + content->ViewPort().Height(), width, 3));
-    footer->Fill(theme.Color(clrBorder));
 }
 
 void cDetailView::drawHeader() {
+    header->Fill(clrTransparent);
     if (tvguideConfig.style == eStyleGraphical) {
-        header->drawBackgroundGraphical(bgEpgHeader);
+        if (tvguideConfig.scaleVideo) {
+            header->drawBackgroundGraphical(bgStatusHeaderWindowed);
+        } else {
+            header->drawBackgroundGraphical(bgStatusHeaderFull);
+        }
     } else {
         header->drawBackground();
         header->drawBoldBorder();
+    }
+    if (tvguideConfig.scaleVideo) {
+        back->DrawRectangle(cRect(headerWidth, 0, geoManager.tvFrameWidth, headerHeight), clrTransparent);
     }
     tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
     int logoHeight = 2 * header->Height() / 3;
@@ -171,16 +173,16 @@ void cDetailView::drawHeader() {
             epgImageWidth = epgImageHeight * tvguideConfig.epgImageWidth / tvguideConfig.epgImageHeight;
         if (imgLoader.LoadEPGImage(event->EventID(), epgImageWidth, epgImageHeight)) {
             cImage epgImage = imgLoader.GetImage();
-            int epgImageX = header->Width() - border - epgImageWidth;
-            int epgImageY = (header->Height() - epgImageHeight) / 2;
+            int epgImageX = headerWidth - border - epgImageWidth;
+            int epgImageY = (headerHeight - epgImageHeight) / 2;
             header->DrawRectangle(cRect(epgImageX-2, epgImageY-2, epgImageWidth + 4, epgImageHeight + 4), theme.Color(clrBorder));
             header->DrawImage(cPoint(epgImageX, epgImageY), epgImage);
             epgImageDrawn = true;
         }
     }
     int textX = logoDrawn?(border + logoWidth + 5):border;
-    int textY = (header->Height() - 7*lineHeight/2)/2;
-    int maxTextWidth = header->Width() - 2 * border;
+    int textY = (headerHeight - 7*lineHeight/2)/2;
+    int maxTextWidth = headerWidth - 2 * border;
     if (logoDrawn)
         maxTextWidth -= logoWidth;
     if (epgImageDrawn)
@@ -211,9 +213,8 @@ void cDetailView::drawHeader() {
     }
 }
 
-void cDetailView::drawRecIcon() {
+void cDetailView::drawRecIcon(void) {
     cString recIconText(" REC ");
-    int headerWidth = width;
     int widthIcon = fontManager.FontDetailHeader->Width(*recIconText);
     int height = fontManager.FontDetailHeader->Height()+10;
     int posX = headerWidth - widthIcon - 20;

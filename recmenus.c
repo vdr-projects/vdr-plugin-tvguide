@@ -785,7 +785,7 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
 
     if (advancedOptions) {
         useDayOfWeekSubMenu.push_back(new cRecMenuItemDayChooser(tr("Select Days"), dayOfWeek, false, &dayOfWeek));
-        avoidRepeatSubMenu.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 1, 30, false, &allowedRepeats, rmsSearchTimerSave));
+        avoidRepeatSubMenu.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 0, 30, false, &allowedRepeats, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));

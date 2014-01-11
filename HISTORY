@@ -103,3 +103,5 @@ Version 1.1.0
 - Added possibility to manage EPG Search Timers in red button recording 
   menu
 - completely refactored recording menu
+- restructured detailöed EPG View that tv frame and status buttons 
+  are displayed

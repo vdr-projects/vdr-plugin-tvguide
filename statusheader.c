@@ -7,7 +7,7 @@ cStatusHeader::cStatusHeader(void) {
     color = theme.Color(clrStatusHeader);
     colorBlending = theme.Color(clrStatusHeaderBlending);
     height = geoManager.statusHeaderHeight;
-    width = geoManager.statusHeaderContentWidth;
+    width = geoManager.headerContentWidth;
     tvFrameWidth = geoManager.tvFrameWidth;
     pixmap = osdManager.requestPixmap(1, cRect(0, 0, width, height));
     pixmapText = osdManager.requestPixmap(2, cRect(0, 0, width, height));
@@ -35,7 +35,6 @@ void cStatusHeader::Draw(void) {
         } else {
             drawBackgroundGraphical(bgStatusHeaderFull);
         }
-        
     } else {
         if (tvguideConfig.decorateVideo) {
             DecorateVideoFrame();

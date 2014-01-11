@@ -6,6 +6,7 @@
 #include <vdr/epg.h>
 #include "services/tvscraper.h"
 #include "styledpixmap.h"
+#include "footer.h"
 
 // --- cDetailView  -------------------------------------------------------------
 
@@ -16,11 +17,10 @@ private:
     cPixmap *back;
     cStyledPixmap *header;
     cPixmap *headerLogo;
-    cPixmap *headerBack;
     cPixmap *content;
     cPixmap *pixmapPoster;
     cPixmap *scrollBar;
-    cPixmap *footer;
+    cFooter *footer;
     const cEvent *event;
     cImage *imgScrollBar;
     cTextWrapper description;
@@ -28,6 +28,7 @@ private:
     TVScraperGetFullInformation mediaInfo;
     bool hasAdditionalMedia;
     int border;
+    int headerWidth;
     int headerHeight;
     int width;
     int contentWidth;
@@ -65,7 +66,7 @@ private:
     void pageDown();
     void Action(void);
 public:
-    cDetailView(const cEvent *event);
+    cDetailView(const cEvent *event, cFooter *footer);
     virtual ~cDetailView(void);
     void setContent();
     void createPixmaps();

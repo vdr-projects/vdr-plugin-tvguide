@@ -45,8 +45,6 @@ void cStyledPixmap::drawBackgroundGraphical(eBackgroundType type, bool active) {
         back = imgCache.GetOsdElement(oeStatusHeaderContentFull);
     }  else if (type == bgClock) {
         back = imgCache.GetOsdElement(oeClock);
-    } else if (type == bgEpgHeader) {
-        back = imgCache.GetOsdElement(oeEpgHeader);
     } else if (type == bgButton) {
         drawBackgroundButton(active);
         return;

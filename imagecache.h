@@ -29,7 +29,6 @@ enum eOsdElementType {
     oeTimeline2,
     oeDateViewer,
     oeClock,
-    oeEpgHeader,
     oeChannelJump,
 };
 

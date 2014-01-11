@@ -4,10 +4,12 @@
 #include "recmenu.h"
 #include "recmanager.h"
 #include "services/epgsearch.h"
+#include "footer.h"
 
 // --- cRecMenuManager  -------------------------------------------------------------
 class cRecMenuManager {
 private:
+    cFooter *footer;
     bool active;
     cRecMenu *activeMenu;
     cRecMenu *activeMenuBuffer;
@@ -22,9 +24,11 @@ private:
     void DisplaySearchTimerList(void);
     bool DisplayTimerConflict(cTimer *timer);
     bool DisplayTimerConflict(int timerID);
+    void DisplayDetailedView(const cEvent *ev);
 public:
     cRecMenuManager(void);
     virtual ~cRecMenuManager(void);
+    void SetFooter(cFooter *footer) { this->footer = footer; };
     bool isActive(void) { return active; };
     void Start(const cEvent *event);
     void Close(void);

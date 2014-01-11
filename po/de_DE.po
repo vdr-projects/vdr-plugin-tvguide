@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-10 11:54+0100\n"
+"POT-Creation-Date: 2014-01-11 16:02+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -28,7 +28,7 @@ msgid "No EPG Information available"
 msgstr "Keine EPG Daten verfügbar"
 
 msgid "Search & Rec"
-msgstr "Search & Rec"
+msgstr "Suchen & Aufn."
 
 msgid "Channels back"
 msgstr "Kanäle zurück"
@@ -600,14 +600,14 @@ msgstr "Höhe der Zeitleiste (% der OSD Höhe)"
 msgid "Display time in EPG Grids"
 msgstr "Zeit in EPG Grids anzeigen"
 
+msgid "Height of Headers (Status Header and EPG View, Perc. of osd height)"
+msgstr "Höhe der Header (Status Header und EPG View, % der OSD Höhe)"
+
 msgid "Height of Footer (Perc. of osd height)"
 msgstr "Höhe des Footers (% der OSD Höhe)"
 
 msgid "Display status header"
 msgstr "Status Header anzeigen"
-
-msgid "Height of status header (Perc. of osd height)"
-msgstr "Höhe des Status Headers (% der OSD Höhe)"
 
 msgid "Scale video to upper right corner"
 msgstr "Video in obere rechte Ecke skalieren"
@@ -641,9 +641,6 @@ msgstr "Logo Breitenverhältnis"
 
 msgid "Logo height ratio"
 msgstr "Logo Höhenverhältnis"
-
-msgid "Height of Header in Detailed View (Perc. of osd height)"
-msgstr "Höhe des Headers im detailierten EPG View (% der OSD Höhe)"
 
 msgid "Text Border in Detailed View (pixel)"
 msgstr "Rand im detailierten EPG View"

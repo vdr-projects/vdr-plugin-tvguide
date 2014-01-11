@@ -13,7 +13,6 @@ enum eBackgroundType {
     bgChannelHeader,
     bgChannelGroup,
     bgClock,
-    bgEpgHeader,
     bgButton,
     bgRecMenuBack,
     bgChannelJump,

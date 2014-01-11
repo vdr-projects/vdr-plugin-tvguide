@@ -5,6 +5,7 @@
 #include "recmenumanager.h"
 
 cRecMenuManager::cRecMenuManager(void) {
+    footer = NULL;
     active = false;
     activeMenu = NULL;
     activeMenuBuffer = NULL;
@@ -114,17 +115,10 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (t) {
                 const cEvent *ev = t->Event();
                 if (ev) {
-                    activeMenu->Hide();
-                    detailView = new cDetailView(ev);
-                    detailView->setContent();
-                    detailView->drawHeader();
-                    detailView->drawContent();
-                    detailView->drawScrollbar();
-                    detailView->Start();
-                    detailViewActive = true;
+                    DisplayDetailedView(ev);
                 }
             }
-            break;}
+            break; }
         case rmsDeleteTimerConflictMenu: {
             //caller: cRecMenuTimerConflict
             //delete timer out of current timer conflict
@@ -506,14 +500,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 ev = menu->GetEvent();
             } else break;
             if (ev) {
-                activeMenu->Hide();
-                detailView = new cDetailView(ev);
-                detailView->setContent();
-                detailView->drawHeader();
-                detailView->drawContent();
-                detailView->drawScrollbar();
-                detailView->Start();
-                detailViewActive = true;
+               DisplayDetailedView(ev);
             }
             break;}
         case rmsSearchRecord: {
@@ -743,6 +730,18 @@ bool cRecMenuManager::DisplayTimerConflict(int timerID) {
         return true;
     }
     return false;
+}
+
+void cRecMenuManager::DisplayDetailedView(const cEvent *ev) {
+    activeMenu->Hide();
+    detailView = new cDetailView(ev, footer);
+    footer->SetDetailedViewMode();
+    detailView->setContent();
+    detailView->drawHeader();
+    detailView->drawContent();
+    detailView->drawScrollbar();
+    detailView->Start();
+    detailViewActive = true;
 }
 
 eOSState cRecMenuManager::ProcessKey(eKeys Key) {

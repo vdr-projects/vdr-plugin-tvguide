@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-10 11:54+0100\n"
+"POT-Creation-Date: 2014-01-11 16:02+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -600,14 +600,14 @@ msgstr "Высота таймлинии (% от высоты OSD)"
 msgid "Display time in EPG Grids"
 msgstr "Показывать время в сетке EPG"
 
+msgid "Height of Headers (Status Header and EPG View, Perc. of osd height)"
+msgstr ""
+
 msgid "Height of Footer (Perc. of osd height)"
 msgstr ""
 
 msgid "Display status header"
 msgstr "Показывать верхнюю панель"
-
-msgid "Height of status header (Perc. of osd height)"
-msgstr "Высота верхней панели (% от высоты OSD)"
 
 msgid "Scale video to upper right corner"
 msgstr "Показывать видео в правом верхнем углу"
@@ -641,9 +641,6 @@ msgstr "Ширина логотипов"
 
 msgid "Logo height ratio"
 msgstr "Высота логотипов"
-
-msgid "Height of Header in Detailed View (Perc. of osd height)"
-msgstr ""
 
 msgid "Text Border in Detailed View (pixel)"
 msgstr ""
@@ -752,6 +749,9 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Height of status header (Perc. of osd height)"
+#~ msgstr "Высота верхней панели (% от высоты OSD)"
 
 #~ msgid "Configure Search Timer Options for Search String"
 #~ msgstr "Настроить параметры таймера"

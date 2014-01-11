@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-10 11:54+0100\n"
+"POT-Creation-Date: 2014-01-11 16:02+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -603,14 +603,14 @@ msgstr "Alçada cronologia (% alçada OSD)"
 msgid "Display time in EPG Grids"
 msgstr "Mostra el temps a l'EPG"
 
+msgid "Height of Headers (Status Header and EPG View, Perc. of osd height)"
+msgstr ""
+
 msgid "Height of Footer (Perc. of osd height)"
 msgstr ""
 
 msgid "Display status header"
 msgstr "Mostra capçalera d'estat"
-
-msgid "Height of status header (Perc. of osd height)"
-msgstr "Alçada capçalera d'estat (% alçada OSD)"
 
 msgid "Scale video to upper right corner"
 msgstr "Escala de vídeo a cantonada superior dreta"
@@ -644,9 +644,6 @@ msgstr "Proporció amplada logotip"
 
 msgid "Logo height ratio"
 msgstr "Proporció alçada logotip"
-
-msgid "Height of Header in Detailed View (Perc. of osd height)"
-msgstr ""
 
 msgid "Text Border in Detailed View (pixel)"
 msgstr ""
@@ -755,6 +752,9 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Height of status header (Perc. of osd height)"
+#~ msgstr "Alçada capçalera d'estat (% alçada OSD)"
 
 #~ msgid "Configure Search Timer Options for Search String"
 #~ msgstr "Configura opcions de cerca de temporitzadors amb text"

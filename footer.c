@@ -54,12 +54,28 @@ void cFooter::drawBlueButton() {
     DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), oeButtonBlue, positionButtons[3]);
 }
 
-void cFooter::UpdateGroupButtons(const cChannel *channel) {
+void cFooter::UpdateGroupButtons(const cChannel *channel, bool force) {
+    if (!channel)
+        return;
     int group = channelGroups->GetGroup(channel);
-    if (group != currentGroup) {
+    if ((group != currentGroup) || force) {
         currentGroup = group;
         drawGreenButton(channelGroups->GetPrev(group));
         drawYellowButton(channelGroups->GetNext(group));
+    }
+}
+
+void cFooter::SetDetailedViewMode(void) {
+    ClearButton(positionButtons[1]);
+    ClearButton(positionButtons[2]);
+}
+
+void cFooter::LeaveDetailedViewMode(const cChannel *channel) {
+    if (tvguideConfig.channelJumpMode == eNumJump) {
+        drawGreenButton();
+        drawYellowButton();
+    } else {
+        UpdateGroupButtons(channel, true);
     }
 }
 
@@ -125,4 +141,9 @@ void cFooter::DrawButton(const char *text, tColor color, tColor borderColor, eOs
     int textWidth = fontManager.FontButton->Width(text);
     int textHeight = fontManager.FontButton->Height();
     footer->DrawText(cPoint(left + (geoManager.buttonWidth-textWidth)/2, buttonY + (geoManager.buttonHeight-textHeight)/2), text, theme.Color(clrFontButtons), colorTextBack, fontManager.FontButton);
+}
+
+void cFooter::ClearButton(int num) {
+    int left = num * geoManager.buttonWidth + (2 * num + 1) * geoManager.buttonBorder;
+    footer->DrawRectangle(cRect(left, buttonY, geoManager.buttonWidth, geoManager.buttonHeight), clrTransparent); 
 }

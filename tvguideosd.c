@@ -101,8 +101,8 @@ void cTvGuideOsd::drawOsd() {
     timeLine->drawClock();
     channelGroups = new cChannelGroups();
     channelGroups->ReadChannelGroups();
-    //channelGroups->DumpGroups();
     footer = new cFooter(channelGroups);
+    recMenuManager->SetFooter(footer);
     footer->drawRedButton();
     if (tvguideConfig.channelJumpMode == eNumJump) {
         footer->drawGreenButton();
@@ -538,7 +538,9 @@ eOSState cTvGuideOsd::ChannelSwitch() {
 void cTvGuideOsd::DetailedEPG() {
     if (!activeGrid->isDummy()) {
         detailViewActive = true;
-        detailView = new cDetailView(activeGrid->GetEvent());
+        detailView = new cDetailView(activeGrid->GetEvent(), footer);
+        footer->SetDetailedViewMode();
+        osdManager.flush();
         detailView->setContent();
         detailView->drawHeader();
         detailView->drawContent();

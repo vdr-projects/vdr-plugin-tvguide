@@ -20,9 +20,9 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
 	this->osdHeight = osdHeight;
 	esyslog("tvguide: Set OSD to %d x %d px", osdWidth, osdHeight);
 
-	statusHeaderHeight = (tvguideConfig.displayStatusHeader)?(tvguideConfig.statusHeaderPercent * osdHeight / 100):0;
+	statusHeaderHeight = (tvguideConfig.displayStatusHeader)?(tvguideConfig.headerHeightPercent * osdHeight / 100):0;
     tvFrameWidth = statusHeaderHeight * 16 / 9;
-    statusHeaderContentWidth = (tvguideConfig.scaleVideo)?(osdWidth -  tvFrameWidth):osdWidth;
+    headerContentWidth = (tvguideConfig.scaleVideo)?(osdWidth -  tvFrameWidth):osdWidth;
     channelGroupsWidth = (tvguideConfig.displayChannelGroups)?(tvguideConfig.channelGroupsPercent * osdWidth / 100):0;
     channelGroupsHeight = (tvguideConfig.displayChannelGroups)?(tvguideConfig.channelGroupsPercent * osdHeight / 100):0;
     channelHeaderWidth = tvguideConfig.channelHeaderWidthPercent * osdWidth / 100;
@@ -63,7 +63,7 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
     buttonWidth = osdWidth / 4 - 2 * buttonBorder;
     buttonHeight = footerHeight - 3 * buttonBorder;
 
-    epgViewHeaderHeight = tvguideConfig.epgViewHeaderPercent * osdHeight / 100;
+    epgViewHeaderHeight = tvguideConfig.headerHeightPercent * osdHeight / 100;
 
     borderRecMenus = 10;
 

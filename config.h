@@ -46,9 +46,8 @@ class cTvguideConfig {
         int displayTime;
         int displayStatusHeader;
         int displayChannelGroups;
-        int statusHeaderPercent;
+        int headerHeightPercent;
         int channelGroupsPercent;
-        int epgViewHeaderPercent;
         int epgViewBorder;
         int scaleVideo;
         int decorateVideo;

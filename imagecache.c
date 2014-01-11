@@ -57,10 +57,10 @@ void cImageCache::CreateOsdIconCache(void) {
     std::string imgStatusHeaderTVFrame = "osdElements/statusheader_tvframe";
     success = LoadIcon(imgStatusHeaderContentFull);
     if (success)
-        InsertIntoOsdElementCache(oeStatusHeaderContentFull, geoManager.statusHeaderContentWidth, geoManager.statusHeaderHeight);
+        InsertIntoOsdElementCache(oeStatusHeaderContentFull, geoManager.headerContentWidth, geoManager.statusHeaderHeight);
     success = LoadIcon(imgStatusHeaderContentWindowed);
     if (success)
-        InsertIntoOsdElementCache(oeStatusHeaderContentWindowed, geoManager.statusHeaderContentWidth, geoManager.statusHeaderHeight);
+        InsertIntoOsdElementCache(oeStatusHeaderContentWindowed, geoManager.headerContentWidth, geoManager.statusHeaderHeight);
     success = LoadIcon(imgStatusHeaderTVFrame);
     if (success)
         InsertIntoOsdElementCache(oeStatusHeaderTVFrame, geoManager.tvFrameWidth, geoManager.statusHeaderHeight);
@@ -117,11 +117,6 @@ void cImageCache::CreateOsdIconCache(void) {
     success = LoadIcon(imgClock);
     if (success)
         InsertIntoOsdElementCache(oeClock, geoManager.clockWidth, geoManager.clockHeight);
-
-    //Detailed EPG View
-    success = LoadIcon("osdElements/epgview_header");
-    if (success)
-        InsertIntoOsdElementCache(oeEpgHeader, geoManager.osdWidth, geoManager.epgViewHeaderHeight);
 
     //Channel Jump
     success = LoadIcon("osdElements/channel_jump");

@@ -15,16 +15,19 @@ private:
     int currentGroup;
     void SetButtonPositions(void);
     void DrawButton(const char *text, tColor color, tColor borderColor, eOsdElementType buttonType, int num);
+    void ClearButton(int num);
 public:
     cFooter(cChannelGroups *channelGroups);
     virtual ~cFooter(void);
     void drawRedButton();
     void drawGreenButton();
-    void drawYellowButton();
     void drawGreenButton(const char *text);
+    void drawYellowButton();
     void drawYellowButton(const char *text);
     void drawBlueButton();
-    void UpdateGroupButtons(const cChannel *channel);
+    void UpdateGroupButtons(const cChannel *channel, bool force = false);
+    void SetDetailedViewMode(void);
+    void LeaveDetailedViewMode(const cChannel *channel);
 };
 
 #endif //__TVGUIDE_FOOTER_H

@@ -12,7 +12,7 @@ public:
 	int osdHeight;
 	int statusHeaderHeight;
     int tvFrameWidth;
-    int statusHeaderContentWidth;
+    int headerContentWidth;
     //ChannelGroups
 	int	channelGroupsWidth;
     int channelGroupsHeight;
