@@ -122,7 +122,7 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
         newFileName = event->Title();
     }
     
-    if(!isempty(event->ShortText()))
+    if ( !isempty(event->ShortText()) && ((event->Duration() / 60 ) < 70) )     //Add Dir only for Series
         newFileName = cString::sprintf("%s~%s", *newFileName, event->ShortText());
     
     timer->SetFile(*newFileName);
