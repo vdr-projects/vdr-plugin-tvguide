@@ -198,8 +198,11 @@ bool cTVGuideSearchTimer::Parse(bool readTemplate) {
                     ID = atoi(values[value].c_str());
                 break;
     		case 1:
-                if (!readTemplate)
-                    searchString = values[value];
+                if (!readTemplate) {
+                    std::string searchStringMasked = values[value];
+                    std::replace(searchStringMasked.begin(), searchStringMasked.end(), '|', ':');
+                    searchString = searchStringMasked;
+                }
                 break;
     		case 2:
                 useTime = atoi(values[value].c_str());

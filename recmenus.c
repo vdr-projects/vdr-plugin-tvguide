@@ -60,7 +60,7 @@ cRecMenuAskFolder::cRecMenuAskFolder(const cEvent *event, eRecMenuState nextActi
     NextAction = nextAction;
     cString message = tr("Set Folder for");
     cString headerText = cString::sprintf("%s\n\"%s\"", *message, event->Title());
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headerText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headerText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -207,7 +207,7 @@ cRecMenuTimerConflicts::cRecMenuTimerConflicts(cTVGuideTimerConflicts *conflicts
     } else {
         text = cString::sprintf("%d %s %s", conflicts->NumConflicts(), tr("Timer Conflicts"), tr("detected"));
     }
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text, true);
     
     for (int i=0; i<numConflicts; i++) {
         cTVGuideTimerConflict *conflict = conflicts->GetConflict(i);
@@ -316,7 +316,7 @@ cRecMenuRerunResults::cRecMenuRerunResults(const cEvent *original, const cEvent 
     cString message2 = tr("rerun for");
     cString message3 = tr("found");
     cString infoText = cString::sprintf("%d %s:\n\"%s\" %s", numReruns, (numReruns>1)?(*message1):(*message2), original->Title(), *message3);
-    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -407,7 +407,7 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     if (timer->Channel())
         channelName = timer->Channel()->Name();
     cString infoText = cString::sprintf("%s:\n %s, %s", tr("Edit Timer"), *title, *channelName);
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     AddMenuItem(infoItem);
                 
@@ -483,11 +483,11 @@ cRecMenuSeriesTimer::cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent 
     SetWidthPercent(70);
     cString title = tr("Create Series Timer based on");
     cString infoText = cString::sprintf("%s:\n%s", *title, event->Title());
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
 
-    AddMenuItem(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, true, &timerActive));
+    AddMenuItem(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, false, &timerActive));
     AddMenuItem(new cRecMenuItemChannelChooser(tr("Channel"), initialChannel, false, &channel));
     AddMenuItem(new cRecMenuItemTime(tr("Series Timer start time"), start, false, &start));
     AddMenuItem(new cRecMenuItemTime(tr("Series Timer stop time"), stop, false, &stop));
@@ -496,7 +496,7 @@ cRecMenuSeriesTimer::cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent 
     AddMenuItem(new cRecMenuItemInt(tr("Priority"), priority, 0, MAXPRIORITY, false, &priority));
     AddMenuItem(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, MAXLIFETIME, false, &lifetime));
 
-    AddMenuItem(new cRecMenuItemButtonYesNo(tr("Create Timer"), tr("Cancel"), rmsSeriesTimerCreate, rmsClose, false));
+    AddMenuItem(new cRecMenuItemButtonYesNo(tr("Create Timer"), tr("Cancel"), rmsSeriesTimerCreate, rmsClose, true));
 
     CalculateHeight();
     CreatePixmap();
@@ -567,7 +567,7 @@ cRecMenuSearchTimer::cRecMenuSearchTimer(const cEvent *event) {
     SetWidthPercent(70);
     cString message = tr("Configure Search Timer based on");
     cString infoText = cString::sprintf("%s:\n\"%s\"", *message, event->Title());
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     strncpy(searchString, event->Title(), TEXTINPUTLENGTH);
@@ -585,7 +585,7 @@ cRecMenuSearchTimerTemplates::cRecMenuSearchTimerTemplates(cTVGuideSearchTimer s
     SetWidthPercent(70);
     cString message = tr("Configure Search Timer for Search String");
     cString infoText = cString::sprintf("%s:\n%s", *message, searchTimer.SearchString().c_str());
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -635,7 +635,7 @@ cRecMenuSearchTimers::cRecMenuSearchTimers(std::vector<cTVGuideSearchTimer> sear
     } else {
         headline = tr("No Search Timers Configured");
     } 
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headline);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headline, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     if (numSearchTimers > 0)
@@ -653,7 +653,7 @@ cRecMenuSearchTimers::~cRecMenuSearchTimers(void) {
 
 void cRecMenuSearchTimers::SetMenuItems(void) {
     for (int i = 0; i < numSearchTimers; i++) {
-        AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, (i==0)?true:false));
+        AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, rmsSearchTimerTest, (i==0)?true:false));
     }
 }
 
@@ -665,7 +665,7 @@ cTVGuideSearchTimer cRecMenuSearchTimers::GetSearchTimer(void) {
 cRecMenuItem *cRecMenuSearchTimers::GetMenuItem(int number) {
     if (number < 0 || number >= numSearchTimers)
         return NULL;
-    return new cRecMenuItemSearchTimer(searchTimers[number], rmsSearchTimerEdit, rmsSearchTimerDelete, false);
+    return new cRecMenuItemSearchTimer(searchTimers[number], rmsSearchTimerEdit, rmsSearchTimerDelete, rmsSearchTimerTest, false);
 }
 
 int cRecMenuSearchTimers::GetTotalNumMenuItems(void) {
@@ -709,10 +709,10 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     } else {
         infoText = tr("Create Search Timer");
     }
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
-    cRecMenuItemButtonYesNo *footerButton = new cRecMenuItemButtonYesNo(tr("Save Search Timer"), tr("Cancel"), rmsSearchTimerSave, rmsSearchTimers, false);
+    cRecMenuItemButtonYesNo *footerButton = new cRecMenuItemButtonYesNo(tr("Save Search Timer"), tr("Cancel"), rmsSearchTimerSave, rmsSearchTimers, (advancedOptions)?false:true);
     SetFooter(footerButton);
     InitMenuItems();
     CreateMenuItems();
@@ -818,7 +818,7 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
     int numMenuItemsAll = currentMenuItems.size();
     int start = GetStartIndex();
      for (int i = start; i < numMenuItemsAll; i++) {
-        if ((i == start) && !reDraw) {
+        if ((i == start) && !reDraw && advancedOptions) {
             currentMenuItems[i]->setActive();
         }
         if (!AddMenuItemInitial(currentMenuItems[i])) {
@@ -891,7 +891,7 @@ cRecMenuSearchTimerDeleteConfirm::cRecMenuSearchTimerDeleteConfirm(cTVGuideSearc
     SetWidthPercent(70);
     cString message = tr("Really delete Search Timer");
     cString infoText = cString::sprintf("%s \"%s\"?", *message, searchTimer.SearchString().c_str());
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     AddMenuItem(new cRecMenuItemButton(tr("Delete only Search Timer"), rmsSearchTimerDelete, true));
@@ -968,7 +968,7 @@ cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString,
     } else {
         infoText = cString::sprintf("%d %s:\n\"%s\"", numResults, (numResults>1)?(*message1):(*message2), searchString.c_str());
     }
-    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -1033,7 +1033,7 @@ cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
     SetWidthPercent(60);
     
     cString infoText = tr("Configure Options for Switchtimer");
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     AddMenuItem(infoItem);
 
@@ -1107,7 +1107,7 @@ cRecMenuSearch::cRecMenuSearch(std::string searchString, bool withOptions) {
     useDescription = false;
     SetWidthPercent(60);
     cString infoText = tr("Search");
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     AddMenuItem(new cRecMenuItemText(tr("Search Expression:"), this->searchString, TEXTINPUTLENGTH, false, this->searchString));
@@ -1146,11 +1146,12 @@ Epgsearch_searchresults_v1_0 cRecMenuSearch::GetEPGSearchStruct(void) {
 cRecMenuSearchResults::cRecMenuSearchResults(std::string searchString, const cEvent **searchResults, int numResults) {
     this->searchResults = searchResults;
     SetWidthPercent(70);
+    this->searchString = searchString;
     this->numResults = numResults;
     cString message1 = tr("search results for");
     cString message2 = tr("search result for");
     cString infoText = cString::sprintf("%d %s:\n\"%s\"", numResults, (numResults>1)?(*message1):(*message2), searchString.c_str());
-    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -1210,12 +1211,21 @@ cRecMenuSearchConfirmTimer::cRecMenuSearchConfirmTimer(const cEvent *event) {
 }
 
 // --- cRecMenuSearchNothingFound  ---------------------------------------------------------
-cRecMenuSearchNothingFound::cRecMenuSearchNothingFound(std::string searchString) {
+cRecMenuSearchNothingFound::cRecMenuSearchNothingFound(std::string searchString, bool tooShort) {
     SetWidthPercent(50);
-    cString message = tr("Nothing found for Search String");
-    cString text = cString::sprintf("%s\n\"%s\"", 
-                                    *message, 
-                                    searchString.c_str());
+    cString text;
+    if (!tooShort) {
+        cString message = tr("Nothing found for Search String");
+        text = cString::sprintf("%s\n\"%s\"", 
+                                *message, 
+                                searchString.c_str());
+    } else {
+        cString message = tr("Search String has to have at least three letters");
+        text = cString::sprintf("%s\n\"%s\"", 
+                                *message, 
+                                searchString.c_str());
+
+    }
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
     infoItem->CalculateHeight(width - 2 * border);
     AddMenuItem(infoItem);
@@ -1234,7 +1244,7 @@ cRecMenuRecordingSearch::cRecMenuRecordingSearch(std::string search) {
     strncpy(searchString, search.c_str(), TEXTINPUTLENGTH);
     SetWidthPercent(60);
     cString infoText = tr("Search in Recordings");
-    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     
@@ -1256,7 +1266,7 @@ cRecMenuRecordingSearchResults::cRecMenuRecordingSearchResults(std::string searc
     cString message4 = tr("for");
     this->numResults = numResults;
     cString infoText = cString::sprintf("%s %d %s %s:\n\"%s\"", *message1, numResults, (numResults>1)?(*message3):(*message2), *message4, searchString.c_str());
-    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText);
+    cRecMenuItem *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
     

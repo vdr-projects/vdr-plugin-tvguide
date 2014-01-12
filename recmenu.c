@@ -24,7 +24,7 @@ cRecMenu::cRecMenu(void) {
 cRecMenu::~cRecMenu(void) {
     if (header)
         delete header;
-    ClearMenuItems();
+    ClearMenuItems(true);
     if (footer)
         delete footer;
     if (pixmapScrollBar)
@@ -102,11 +102,12 @@ void cRecMenu::SetFooter(cRecMenuItem *footer) {
     height += footerHeight;
 }
 
-void cRecMenu::ClearMenuItems(void) { 
-    if (deleteMenuItems) {
-        for (std::list<cRecMenuItem*>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
+void cRecMenu::ClearMenuItems(bool destructor) { 
+    for (std::list<cRecMenuItem*>::iterator it = menuItems.begin(); it != menuItems.end(); it++) {
+        if (deleteMenuItems)
             delete *it;
-        }
+        else if (!destructor)
+            (*it)->Hide();
     }
     menuItems.clear();
 };
@@ -142,6 +143,7 @@ void cRecMenu::InitMenu(bool complete) {
 
 
 void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
+    item->Show();
     if (!inFront)
         menuItems.push_back(item);
     else
@@ -206,7 +208,7 @@ bool cRecMenu::ActivatePrev(void) {
     return false;
 }
 
-void cRecMenu::ScrollUp(void) {
+bool cRecMenu::ScrollUp(void) {
     if (footer && footer->isActive()) {
         if (menuItems.size() > 0)
             Activate(footer, menuItems.back());
@@ -238,8 +240,11 @@ void cRecMenu::ScrollUp(void) {
             Arrange(deleteMenuItems);
             Display(deleteMenuItems);
             ActivatePrev();
+        } else {
+            return false;
         }
     }
+    return true;
 }
 
 bool cRecMenu::ActivateNext(void) {
@@ -262,7 +267,7 @@ bool cRecMenu::ActivateNext(void) {
         if (next) {
             Activate(activeItem , next);
             return true;
-        } else if (!scrollable && footer && footer->isSelectable()) {
+        } else if (!scrollable && footer && footer->isSelectable() && !footer->isActive()) {
             Activate(activeItem , footer);
             return true;
         }
@@ -270,7 +275,7 @@ bool cRecMenu::ActivateNext(void) {
     return false;
 }
 
-void cRecMenu::ScrollDown(void) {
+bool cRecMenu::ScrollDown(void) {
     //get next x items
     int numNewItems = numItems / 2;
     int numAdded = 0;
@@ -299,12 +304,15 @@ void cRecMenu::ScrollDown(void) {
         Display(deleteMenuItems);
         ActivateNext();
     } else {
-        //last item reached, activate footer
-        if (footer) {
+        //last item reached, activate footer if not already active
+        if ((footer) && !(footer->isActive())) {
             cRecMenuItem *activeItem = GetActiveMenuItem();
             Activate(activeItem , footer);
+        } else {
+            return false;
         }
     }
+    return true;
 }
 
 void cRecMenu::JumpBegin(void) {
@@ -532,13 +540,15 @@ eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
         switch (Key & ~k_Repeat) {
             case kUp:       
                 if (!ActivatePrev())
-                    ScrollUp();
-                    state = rmsConsumed;
+                    if (!ScrollUp())
+                        JumpEnd();
+                state = rmsConsumed;
                 break;
-            case kDown:     
+            case kDown:
                 if (!ActivateNext())
-                    ScrollDown();
-                    state = rmsConsumed;
+                    if (!ScrollDown())
+                        JumpBegin();
+                state = rmsConsumed;
                 break;
             case kLeft:
                 JumpBegin();

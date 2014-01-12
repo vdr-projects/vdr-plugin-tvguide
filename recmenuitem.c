@@ -109,13 +109,13 @@ void cRecMenuItemButton::Draw(void) {
 }
 
 void cRecMenuItemButton::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapText->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapText) pixmapText->SetLayer(-1);
 }
 
 void cRecMenuItemButton::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapText->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapText) pixmapText->SetLayer(5);
 }
 
 eRecMenuState cRecMenuItemButton::ProcessKey(eKeys Key) {
@@ -167,13 +167,13 @@ void cRecMenuItemButtonYesNo::SetPixmaps(void) {
 }
 
 void cRecMenuItemButtonYesNo::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapNo->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapNo) pixmapNo->SetLayer(-1);
 }
 
 void cRecMenuItemButtonYesNo::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapNo->SetLayer(4);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapNo) pixmapNo->SetLayer(4);
 }
 
 void cRecMenuItemButtonYesNo::setBackground() {
@@ -262,10 +262,11 @@ eRecMenuState cRecMenuItemButtonYesNo::ProcessKey(eKeys Key) {
 }
 
 // --- cRecMenuItemInfo  -------------------------------------------------------
-cRecMenuItemInfo::cRecMenuItemInfo(const char *text) {
+cRecMenuItemInfo::cRecMenuItemInfo(const char *text, bool largeFont) {
     selectable = false;
     active = false;
     this->text = text;
+    fontInfo = (largeFont) ? fontLarge : font;
     border = 10;
 }
 
@@ -273,8 +274,8 @@ cRecMenuItemInfo::~cRecMenuItemInfo(void) {
 }
 
 void cRecMenuItemInfo::CalculateHeight(int textWidth) {
-    wrapper.Set(*text, font, textWidth);
-    height = font->Height() * wrapper.Lines() + 2*border;
+    wrapper.Set(*text, fontInfo, textWidth);
+    height = fontInfo->Height() * wrapper.Lines() + 2*border;
 }
 
 void cRecMenuItemInfo::setBackground(void) {
@@ -284,12 +285,12 @@ void cRecMenuItemInfo::setBackground(void) {
 
 void cRecMenuItemInfo::Draw(void) {
     int lines = wrapper.Lines();
-    int lineHeight = font->Height();
+    int lineHeight = fontInfo->Height();
     int x = 0;
     int y = border;
     for (int i = 0; i < lines; i++) {
-        x = (width - font->Width(wrapper.GetLine(i))) / 2;
-        pixmap->DrawText(cPoint(x,y), wrapper.GetLine(i), theme.Color(clrFont), clrTransparent, font);
+        x = (width - fontInfo->Width(wrapper.GetLine(i))) / 2;
+        pixmap->DrawText(cPoint(x,y), wrapper.GetLine(i), theme.Color(clrFont), clrTransparent, fontInfo);
         y += lineHeight;
     }
 }
@@ -331,13 +332,13 @@ void cRecMenuItemInt::SetPixmaps(void) {
 }
 
 void cRecMenuItemInt::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
 }
 
 void cRecMenuItemInt::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemInt::setBackground() {
@@ -437,13 +438,13 @@ void cRecMenuItemBool::SetPixmaps(void) {
 }
 
 void cRecMenuItemBool::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
 }
 
 void cRecMenuItemBool::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemBool::Draw(void) {
@@ -524,13 +525,13 @@ void cRecMenuItemSelect::SetPixmaps(void) {
 }
 
 void cRecMenuItemSelect::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
 }
 
 void cRecMenuItemSelect::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemSelect::Draw(void) {
@@ -660,16 +661,16 @@ void cRecMenuItemText::SetPixmaps(void) {
 }
 
 void cRecMenuItemText::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
-    pixmapKeyboard->SetLayer(-1);
-    pixmapKeyboardHighlight->SetLayer(-1);
-    pixmapKeyboardIcons->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
+    if (pixmapKeyboard) pixmapKeyboard->SetLayer(-1);
+    if (pixmapKeyboardHighlight) pixmapKeyboardHighlight->SetLayer(-1);
+    if (pixmapKeyboardIcons) pixmapKeyboardIcons->SetLayer(-1);
 }
 
 void cRecMenuItemText::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemText::setBackground() {
@@ -1196,13 +1197,13 @@ void cRecMenuItemTime::SetPixmaps(void) {
 }
 
 void cRecMenuItemTime::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
 }
 
 void cRecMenuItemTime::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemTime::Draw(void) {
@@ -1336,13 +1337,13 @@ void cRecMenuItemDay::SetPixmaps(void) {
 }
 
 void cRecMenuItemDay::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapVal->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
 }
 
 void cRecMenuItemDay::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapVal->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
 }
 
 void cRecMenuItemDay::Draw(void) {
@@ -1432,15 +1433,15 @@ void cRecMenuItemTimer::SetPixmaps(void) {
 }
 
 void cRecMenuItemTimer::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapStatus->SetLayer(-1);
-    pixmapIcons->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapStatus) pixmapStatus->SetLayer(-1);
+    if (pixmapIcons) pixmapIcons->SetLayer(-1);
 }
 
 void cRecMenuItemTimer::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapStatus->SetLayer(5);
-    pixmapIcons->SetLayer(6);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapStatus) pixmapStatus->SetLayer(5);
+    if (pixmapIcons) pixmapIcons->SetLayer(6);
 }
 
 void cRecMenuItemTimer::Draw(void) {
@@ -1605,13 +1606,13 @@ void cRecMenuItemTimerConflictHeader::SetPixmaps(void) {
 }
 
 void cRecMenuItemTimerConflictHeader::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapStatus->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapStatus) pixmapStatus->SetLayer(-1);
 }
 
 void cRecMenuItemTimerConflictHeader::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapStatus->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapStatus) pixmapStatus->SetLayer(5);
 }
 
 void cRecMenuItemTimerConflictHeader::setBackground(void) {
@@ -1764,15 +1765,15 @@ int cRecMenuItemEvent::DrawIcons(void) {
 }
 
 void cRecMenuItemEvent::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapText->SetLayer(-1);
-    pixmapIcons->SetLayer(-1);    
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapText) pixmapText->SetLayer(-1);
+    if (pixmapIcons) pixmapIcons->SetLayer(-1);    
 }
 
 void cRecMenuItemEvent::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapText->SetLayer(5);
-    pixmapIcons->SetLayer(6);    
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapText) pixmapText->SetLayer(5);
+    if (pixmapIcons) pixmapIcons->SetLayer(6);    
 }
 
 eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
@@ -1854,13 +1855,13 @@ void cRecMenuItemChannelChooser::SetPixmaps(void) {
 }
 
 void cRecMenuItemChannelChooser::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapChannel->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapChannel) pixmapChannel->SetLayer(-1);
 }
 
 void cRecMenuItemChannelChooser::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapChannel->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapChannel) pixmapChannel->SetLayer(5);
 }
 
 void cRecMenuItemChannelChooser::Draw(void) {
@@ -2013,15 +2014,15 @@ void cRecMenuItemDayChooser::SetPixmaps(void) {
 }
 
 void cRecMenuItemDayChooser::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapWeekdays->SetLayer(-1);
-    pixmapWeekdaysSelect->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapWeekdays) pixmapWeekdays->SetLayer(-1);
+    if (pixmapWeekdaysSelect) pixmapWeekdaysSelect->SetLayer(-1);
 }
 
 void cRecMenuItemDayChooser::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapWeekdays->SetLayer(5);
-    pixmapWeekdaysSelect->SetLayer(6);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapWeekdays) pixmapWeekdays->SetLayer(5);
+    if (pixmapWeekdaysSelect) pixmapWeekdaysSelect->SetLayer(6);
 }
 
 void cRecMenuItemDayChooser::SetSizes(void) {
@@ -2166,13 +2167,13 @@ void cRecMenuItemRecording::Draw(void) {
 }
 
 void cRecMenuItemRecording::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapText->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapText) pixmapText->SetLayer(-1);
 }
 
 void cRecMenuItemRecording::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapText->SetLayer(5);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapText) pixmapText->SetLayer(5);
 }
 
 // --- cRecMenuItemTimelineHeader  -------------------------------------------------------
@@ -2234,9 +2235,9 @@ void cRecMenuItemTimelineHeader::Draw(void) {
     cString headerText = tr("Timers for");
     cString dateText = DateString(day);
     cString header = cString::sprintf("%s: %s", *headerText, *dateText);
-    int xText = (width - font->Width(*header)) / 2;
-    int yText = (height/4 - font->Height())/2;
-    pixmap->DrawText(cPoint(xText, yText), *header, colorText, clrTransparent, font);
+    int xText = (width - fontLarge->Width(*header)) / 2;
+    int yText = (height/4 - fontLarge->Height())/2;
+    pixmap->DrawText(cPoint(xText, yText), *header, colorText, clrTransparent, fontLarge);
 
     DrawCurrentTimer();
 }
@@ -2347,19 +2348,17 @@ void cRecMenuItemTimelineHeader::DrawTimerConflicts(void) {
 }
 
 void cRecMenuItemTimelineHeader::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapTimeline->SetLayer(-1);
-    pixmapTimerInfo->SetLayer(-1);
-    if (pixmapTimerConflicts)
-        pixmapTimerConflicts->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapTimeline) pixmapTimeline->SetLayer(-1);
+    if (pixmapTimerInfo) pixmapTimerInfo->SetLayer(-1);
+    if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(-1);
 }
 
 void cRecMenuItemTimelineHeader::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapTimeline->SetLayer(5);
-    pixmapTimerInfo->SetLayer(6);
-    if (pixmapTimerConflicts)
-        pixmapTimerConflicts->SetLayer(6);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapTimeline) pixmapTimeline->SetLayer(5);
+    if (pixmapTimerInfo) pixmapTimerInfo->SetLayer(6);
+    if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(6);
 }
 
 
@@ -2500,17 +2499,15 @@ void cRecMenuItemTimelineTimer::setInactive(void) {
 }
 
 void cRecMenuItemTimelineTimer::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapBack->SetLayer(-1);
-    if (pixmapTimerConflicts)
-        pixmapTimerConflicts->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapBack) pixmapBack->SetLayer(-1);
+    if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(-1);
 }
 
 void cRecMenuItemTimelineTimer::Show(void) { 
-    pixmap->SetLayer(5);
-    pixmapBack->SetLayer(4);
-    if (pixmapTimerConflicts)
-        pixmapTimerConflicts->SetLayer(6);
+    if (pixmap) pixmap->SetLayer(5);
+    if (pixmapBack) pixmapBack->SetLayer(4);
+    if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(6);
 }
 
 cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
@@ -2532,10 +2529,12 @@ eRecMenuState cRecMenuItemTimelineTimer::ProcessKey(eKeys Key) {
 cRecMenuItemSearchTimer::cRecMenuItemSearchTimer(cTVGuideSearchTimer timer, 
                                                  eRecMenuState action1,
                                                  eRecMenuState action2,
+                                                 eRecMenuState action3,
                                                  bool active) {
     this->timer = timer;
     this->action = action1;
     this->action2 = action2;
+    this->action3 = action3;
     pixmapText = NULL;
     pixmapIcons = NULL;
     selectable = true;
@@ -2584,15 +2583,15 @@ void cRecMenuItemSearchTimer::Draw(void) {
 }
 
 void cRecMenuItemSearchTimer::Hide(void) { 
-    pixmap->SetLayer(-1);
-    pixmapText->SetLayer(-1);
-    pixmapIcons->SetLayer(-1);
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapText) pixmapText->SetLayer(-1);
+    if (pixmapIcons) pixmapIcons->SetLayer(-1);
 }
 
 void cRecMenuItemSearchTimer::Show(void) { 
-    pixmap->SetLayer(4);
-    pixmapText->SetLayer(5);
-    pixmapIcons->SetLayer(6);
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapText) pixmapText->SetLayer(5);
+    if (pixmapIcons) pixmapIcons->SetLayer(6);
 }
 
 int cRecMenuItemSearchTimer::DrawIcons(void) {
@@ -2600,13 +2599,15 @@ int cRecMenuItemSearchTimer::DrawIcons(void) {
     int iconsX = 10;
     int iconSize = height / 2;
     int iconY = (height - iconSize) / 2;
-    std::string iconEdit, iconDelete;
+    std::string iconEdit, iconDelete, iconSearch;
     if (active) {
         iconEdit = (iconActive==0)?"edit_active":"edit_inactive";
         iconDelete = (iconActive==1)?"delete_active":"delete_inactive";
+        iconSearch = (iconActive==2)?"search_active":"search_inactive";
     } else {
         iconEdit = "edit_inactive";
         iconDelete = "delete_inactive";
+        iconSearch = "search_inactive";
     }
     cImage *imgEdit = imgCache.GetIcon(iconEdit, iconSize, iconSize);
     if (imgEdit) {
@@ -2618,39 +2619,39 @@ int cRecMenuItemSearchTimer::DrawIcons(void) {
         pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgDel);
         iconsX += iconSize + 10;
     }
+    cImage *imgSearch = imgCache.GetIcon(iconSearch, iconSize, iconSize);
+    if (imgSearch) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgSearch);
+        iconsX += iconSize + 10;
+    }
     return iconsX;
 }
 
 eRecMenuState cRecMenuItemSearchTimer::ProcessKey(eKeys Key) {
-    bool consumed = false;
     switch (Key & ~k_Repeat) {
         case kLeft:
-            if (iconActive == 1) {
-                iconActive = 0;
-                consumed = true;
-            } 
-            DrawIcons();
-            if (consumed)
+            if (iconActive > 0) {
+                iconActive--;
+                DrawIcons();
                 return rmsConsumed;
-            else
-                return rmsNotConsumed;
+            }
+            return rmsNotConsumed;
             break;
         case kRight: {
-            if (iconActive == 0) {
-                iconActive = 1;
-                consumed = true;
-            }   
-            DrawIcons();
-            if (consumed)
+            if (iconActive < 2) {
+                iconActive++;
+                DrawIcons();
                 return rmsConsumed;
-            else
-                return rmsNotConsumed;
+            }   
+            return rmsNotConsumed;
             break; }
         case kOk:
             if (iconActive == 0)
                 return action;
             else if (iconActive == 1)
                 return action2;
+            else if (iconActive == 2)
+                return action3;
             break;
         default:
             break;

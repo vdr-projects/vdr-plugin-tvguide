@@ -299,10 +299,12 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsSearchTimerTest: {
-            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate
+            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate, rmsSearchTimers
             //show results of currently choosen search timer
             cTVGuideSearchTimer searchTimer;
             if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
+                searchTimer = menu->GetSearchTimer();
+            } else if  (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
             } else if (cRecMenuSearchTimerTemplatesCreate *menu = dynamic_cast<cRecMenuSearchTimerTemplatesCreate*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
@@ -450,11 +452,13 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
          ***********************************************************************************************/
         case rmsSearch:
         case rmsSearchWithOptions: {
-            //caller: main menu, cRecMenuSearch
+            //caller: main menu, cRecMenuSearch, cRecMenuSearchResults
             bool withOptions = false;
             std::string searchString = event->Title();
             if (cRecMenuSearch *menu = dynamic_cast<cRecMenuSearch*>(activeMenu)) {
                 withOptions = true;
+                searchString = menu->GetSearchString();
+            } else if (cRecMenuSearchResults *menu = dynamic_cast<cRecMenuSearchResults*>(activeMenu)) {
                 searchString = menu->GetSearchString();
             }
             delete activeMenu;
@@ -468,9 +472,10 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 epgSearchData = menu->GetEPGSearchStruct();
             } else break;
             std::string searchString = epgSearchData.query;
-            if (searchString.size() < 4) {
-                delete activeMenu;
-                activeMenu = new cRecMenuSearch(event->Title(), false);
+            if (searchString.size() < 3) {
+                activeMenuBuffer = activeMenu;
+                activeMenuBuffer->Hide();
+                activeMenu = new cRecMenuSearchNothingFound(searchString, true);
             } else {
                 int numSearchResults = 0;
                 const cEvent **searchResult = recManager->PerformSearch(epgSearchData, numSearchResults);

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-11 16:02+0100\n"
+"POT-Creation-Date: 2014-01-12 16:23+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -453,6 +453,9 @@ msgstr "Найден по запросу"
 msgid "Adapt Search"
 msgstr "Изменить"
 
+msgid "Search String has to have at least three letters"
+msgstr ""
+
 msgid "Found"
 msgstr "Найдено"
 
@@ -717,7 +720,7 @@ msgstr "Размер шрифта меню Поиск & Запись"
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Размер маленького шрифта меню Поиск & Запись"
 
-msgid "Search & Recording Main Menu Font Size"
+msgid "Search & Recording Menu Header Font Size"
 msgstr ""
 
 msgid "Create Log Messages for image loading"

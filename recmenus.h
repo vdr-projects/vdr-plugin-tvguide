@@ -361,6 +361,7 @@ public:
 // --- cRecMenuSearchResults  ---------------------------------------------------------
 class cRecMenuSearchResults: public cRecMenu {
 private:
+    std::string searchString;
     const cEvent **searchResults;
     int numResults;
 public:
@@ -371,6 +372,7 @@ public:
         delete[] searchResults;
     };
     const cEvent *GetEvent(void);
+    std::string GetSearchString(void) { return searchString; };
 };
 
 // --- cRecMenuSearchConfirmTimer  ---------------------------------------------------------
@@ -383,7 +385,7 @@ public:
 // --- cRecMenuSearchNothingFound  ---------------------------------------------------------
 class cRecMenuSearchNothingFound: public cRecMenu {
 public:
-    cRecMenuSearchNothingFound(std::string searchString);
+    cRecMenuSearchNothingFound(std::string searchString, bool tooShort = false);
     virtual ~cRecMenuSearchNothingFound(void) {};
 };
 

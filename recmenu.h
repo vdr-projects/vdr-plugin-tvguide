@@ -14,8 +14,8 @@ private:
     void Activate(cRecMenuItem *itemOld, cRecMenuItem *item);
     bool ActivateNext(void);
     bool ActivatePrev(void);
-    void ScrollUp(void);
-    void ScrollDown(void);
+    bool ScrollUp(void);
+    bool ScrollDown(void);
     void JumpBegin(void);
     void JumpEnd(void);
 protected:
@@ -37,7 +37,7 @@ protected:
     void CreatePixmap(void);
     void SetHeader(cRecMenuItem *header);
     void SetFooter(cRecMenuItem *footer);
-    void ClearMenuItems(void);
+    void ClearMenuItems(bool destructor = false);
     void InitMenu(bool complete);
     bool AddMenuItemInitial(cRecMenuItem *item);
     void AddMenuItem(cRecMenuItem *item, bool inFront = false);

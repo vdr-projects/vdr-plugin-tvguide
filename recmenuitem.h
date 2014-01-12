@@ -106,8 +106,8 @@ public:
     bool isActive(void) { return active; }
     virtual void setBackground(void);
     virtual void Draw(void) {};
-    virtual void Hide(void) { pixmap->SetLayer(-1);};
-    virtual void Show(void) { pixmap->SetLayer(4);};
+    virtual void Hide(void) { if (pixmap) pixmap->SetLayer(-1);};
+    virtual void Show(void) { if (pixmap) pixmap->SetLayer(4);};
     virtual int GetIntValue(void) { return -1; };
     virtual time_t GetTimeValue(void) { return 0; };
     virtual bool GetBoolValue(void) { return false; };
@@ -168,8 +168,9 @@ private:
     cString text;
     cTextWrapper wrapper;
     int border;
+    const cFont *fontInfo;
 public:
-    cRecMenuItemInfo(const char *text);
+    cRecMenuItemInfo(const char *text, bool largeFont = false);
     virtual ~cRecMenuItemInfo(void);
     void setBackground(void);
     void CalculateHeight(int textWidth);
@@ -584,6 +585,7 @@ private:
     cTVGuideSearchTimer timer;
     eRecMenuState action1;
     eRecMenuState action2;
+    eRecMenuState action3;
     int iconActive;
     cPixmap *pixmapText;
     cPixmap *pixmapIcons;
@@ -592,6 +594,7 @@ public:
     cRecMenuItemSearchTimer(cTVGuideSearchTimer timer, 
                             eRecMenuState action1,
                             eRecMenuState action2,
+                            eRecMenuState action3,
                             bool active);
     virtual ~cRecMenuItemSearchTimer(void);
     void SetPixmaps(void);

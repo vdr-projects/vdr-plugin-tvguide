@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-11 16:02+0100\n"
+"POT-Creation-Date: 2014-01-12 16:23+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -97,7 +97,7 @@ msgid "Edit Timer"
 msgstr "Timer bearbeiten"
 
 msgid "Timer Timeline"
-msgstr "Timer anzeigen"
+msgstr "Timer Tagesübersicht"
 
 msgid "Create Search Timer"
 msgstr "Suchtimer anlegen"
@@ -453,6 +453,9 @@ msgstr "Suchergebnis für"
 msgid "Adapt Search"
 msgstr "Suche anpassen"
 
+msgid "Search String has to have at least three letters"
+msgstr "Suchausdruck muss mindestens drei Zeichen haben"
+
 msgid "Found"
 msgstr " "
 
@@ -717,8 +720,8 @@ msgstr "Suchen & Aufnehmen Menu Schriftgröße"
 msgid "Search & Recording Menu Small Font Size"
 msgstr "Suchen & Aufnehmen Menu kleine Schriftgröße"
 
-msgid "Search & Recording Main Menu Font Size"
-msgstr "Suchen & Aufnehmen Hauptmenü Schriftgröße"
+msgid "Search & Recording Menu Header Font Size"
+msgstr "Suchen & Aufnehmen Menu Header Schriftgröße"
 
 msgid "Create Log Messages for image loading"
 msgstr "Log Nachrichten für das Laden der Bilder erzeugen"
