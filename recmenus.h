@@ -244,6 +244,7 @@ private:
     bool compareTitle;
     bool compareSubtitle;
     bool compareSummary;
+    bool useInFavorites;
     void InitMenuItems(void);
     void AddSubMenu(std::vector<cRecMenuItem*> *subMenu);
 public:
@@ -456,6 +457,23 @@ public:
     };
     eRecMenuState ProcessKey(eKeys Key);
     cTimer *GetTimer(void);
+};
+
+/******************************************************************************************
+*   Favorites
+******************************************************************************************/
+
+// --- cRecMenuFavorites  ---------------------------------------------------------
+class cRecMenuFavorites: public cRecMenu {
+private:
+    std::vector<cTVGuideSearchTimer> favorites;
+    int numFavorites;
+public:
+    cRecMenuFavorites(std::vector<cTVGuideSearchTimer> favorites);
+    cRecMenuItem *GetMenuItem(int number);
+    int GetTotalNumMenuItems(void);
+    cTVGuideSearchTimer GetFavorite(void);
+    virtual ~cRecMenuFavorites(void);
 };
 
 #endif //__TVGUIDE_RECMENUS_H

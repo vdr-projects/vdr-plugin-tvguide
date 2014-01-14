@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-12 16:23+0100\n"
+"POT-Creation-Date: 2014-01-14 17:00+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -41,6 +41,12 @@ msgstr "Prepnú» na kanál"
 
 msgid "Detailed EPG"
 msgstr "Podrobné EPG"
+
+msgid "Close detailed EPG"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
 
 msgid "images"
 msgstr ""
@@ -324,6 +330,9 @@ msgstr ""
 msgid "Avoid Repeats"
 msgstr ""
 
+msgid "Use in Favorites"
+msgstr ""
+
 msgid "Hide advanced Options"
 msgstr ""
 
@@ -471,6 +480,9 @@ msgstr "pre"
 msgid "No recordings found for"
 msgstr "Nena¹li sa nahrávky s názvom "
 
+msgid "No Favorites available"
+msgstr ""
+
 msgid "whole term must appear"
 msgstr "kompletný výraz"
 
@@ -509,6 +521,9 @@ msgstr "Modré: Prepnú» kanál, OK: Podrobné EPG"
 
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Modré: podrobné EPG, OK: prepnú» kanál"
+
+msgid "Blue: Favorites / Switch, Ok: Detailed EPG"
+msgstr ""
 
 msgid "Timely Jump"
 msgstr ""

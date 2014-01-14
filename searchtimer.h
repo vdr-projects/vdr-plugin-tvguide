@@ -95,6 +95,7 @@ public:
     bool CompareTitle(void) { return compareTitle; };
     bool CompareSubtitle(void) { return compareSubtitle; };
     bool CompareSummary(void) { return compareSummary; };
+    bool UseInFavorites(void) { return useInFavorites; };
     //SETTER
     void SetSearchString(std::string searchString) { this->searchString = searchString; };
     void SetActive(bool active) { useAsSearchTimer = active; };
@@ -120,6 +121,7 @@ public:
     void SetCompareTitle(bool compareTitle) { this->compareTitle = compareTitle; };
     void SetCompareSubtitle(bool compareSubtitle) { this->compareSubtitle = compareSubtitle; };
     void SetCompareSummary(bool compareSummary) { this->compareSummary = compareSummary; };
+    void SetUseInFavorites(bool useInFavorites) { this->useInFavorites = useInFavorites; };
     //COMMON
     int GetNumTimers(void);
     int GetNumRecordings(void);

@@ -605,4 +605,25 @@ public:
     eRecMenuState ProcessKey(eKeys Key);
 };
 
+// --- cRecMenuItemFavorite  -------------------------------------------------------
+class cRecMenuItemFavorite : public cRecMenuItem {
+private:
+    cTVGuideSearchTimer favorite;
+    eRecMenuState action1;
+    cPixmap *pixmapText;
+    cPixmap *pixmapIcons;
+    int DrawIcons(void);
+public:
+    cRecMenuItemFavorite(cTVGuideSearchTimer favorite, 
+                         eRecMenuState action1,
+                         bool active);
+    virtual ~cRecMenuItemFavorite(void);
+    void SetPixmaps(void);
+    void Hide(void);
+    void Show(void); 
+    void Draw(void);
+    cTVGuideSearchTimer GetFavorite(void) { return favorite; };
+    eRecMenuState ProcessKey(eKeys Key);
+};
+
 #endif //__TVGUIDE_RECMENUITEM_H

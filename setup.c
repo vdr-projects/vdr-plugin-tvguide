@@ -165,6 +165,7 @@ cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(
     jumpMode[1] = tr("previous / next channel group");
     blueMode[0] = tr("Blue: Channel Switch, Ok: Detailed EPG");
     blueMode[1] = tr("Blue: Detailed EPG, Ok: Channel Switch");
+    blueMode[2] = tr("Blue: Favorites / Switch, Ok: Detailed EPG");
     numMode[0] = tr("Timely Jump");
     numMode[1] = tr("Jump to specific channel");
     useSubtitleRerunTexts[0] = tr("never");
@@ -187,7 +188,7 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));
-    Add(new cMenuEditStraItem(tr("Keys Blue and OK"), &tmpTvguideConfig->blueKeyMode, 2,  blueMode));
+    Add(new cMenuEditStraItem(tr("Keys Blue and OK"), &tmpTvguideConfig->blueKeyMode, 3,  blueMode));
     Add(new cMenuEditBoolItem(tr("Close TVGuide after channel switch"), &tmpTvguideConfig->closeOnSwitch));
     Add(new cMenuEditStraItem(tr("Functionality of numeric Keys"), &tmpTvguideConfig->numkeyMode, 2,  numMode));
     Add(new cMenuEditBoolItem(tr("Hide last Channel Group"), &tmpTvguideConfig->hideLastGroup));

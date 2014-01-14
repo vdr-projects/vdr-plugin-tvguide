@@ -24,7 +24,7 @@ public:
     void drawGreenButton(const char *text);
     void drawYellowButton();
     void drawYellowButton(const char *text);
-    void drawBlueButton();
+    void drawBlueButton(bool detailedEPG = false);
     void UpdateGroupButtons(const cChannel *channel, bool force = false);
     void SetDetailedViewMode(void);
     void LeaveDetailedViewMode(const cChannel *channel);

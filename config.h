@@ -30,6 +30,12 @@ enum {
     eStyleFlat
 };
 
+enum {
+    eBlueKeySwitch,
+    eBlueKeyEPG,
+    eBlueKeyFavorites
+};
+
 class cTvguideConfig {
     private:
     public:

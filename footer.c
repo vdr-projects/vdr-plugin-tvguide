@@ -45,12 +45,21 @@ void cFooter::drawYellowButton(const char *text) {
     DrawButton(cuttedText.c_str(), theme.Color(clrButtonYellow), theme.Color(clrButtonYellowBorder), oeButtonYellow, positionButtons[2]);
 }
 
-void cFooter::drawBlueButton() {
+void cFooter::drawBlueButton(bool detailedEPG) {
     cString text;
-    if (tvguideConfig.blueKeyMode == 0)
+    if (tvguideConfig.blueKeyMode == eBlueKeySwitch)
         text = tr("Switch to Channel");
-    else if (tvguideConfig.blueKeyMode == 1)
-        text = tr("Detailed EPG");
+    else if (tvguideConfig.blueKeyMode == eBlueKeyEPG) {
+        if (!detailedEPG)
+            text = tr("Detailed EPG");
+        else
+            text = tr("Close detailed EPG");
+    } else if (tvguideConfig.blueKeyMode == eBlueKeyFavorites) {
+        if (!detailedEPG)
+            text = tr("Favorites");
+        else
+            text = tr("Switch to Channel");
+    }
     DrawButton(*text, theme.Color(clrButtonBlue), theme.Color(clrButtonBlueBorder), oeButtonBlue, positionButtons[3]);
 }
 
@@ -68,6 +77,10 @@ void cFooter::UpdateGroupButtons(const cChannel *channel, bool force) {
 void cFooter::SetDetailedViewMode(void) {
     ClearButton(positionButtons[1]);
     ClearButton(positionButtons[2]);
+    if (tvguideConfig.blueKeyMode != eBlueKeySwitch) {
+        ClearButton(positionButtons[3]);
+        drawBlueButton(true);
+    }
 }
 
 void cFooter::LeaveDetailedViewMode(const cChannel *channel) {

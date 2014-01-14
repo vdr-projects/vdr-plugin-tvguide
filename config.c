@@ -28,7 +28,7 @@ cTvguideConfig::cTvguideConfig() {
     hugeStepHours = 24;
     channelJumpMode = eNumJump;
     jumpChannels = 0;
-    blueKeyMode = 0;
+    blueKeyMode = eBlueKeySwitch;
     closeOnSwitch = 1;
     numkeyMode = 0;
     useRemoteTimers = 0;

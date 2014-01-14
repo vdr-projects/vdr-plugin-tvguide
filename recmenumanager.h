@@ -31,6 +31,7 @@ public:
     void SetFooter(cFooter *footer) { this->footer = footer; };
     bool isActive(void) { return active; };
     void Start(const cEvent *event);
+    void StartFavorites(void);
     void Close(void);
     eOSState StateMachine(eRecMenuState nextState);
     eOSState ProcessKey(eKeys Key);

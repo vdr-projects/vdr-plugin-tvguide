@@ -108,7 +108,7 @@ void cTvGuideOsd::drawOsd() {
         footer->drawGreenButton();
         footer->drawYellowButton();
     }
-    footer->drawBlueButton();
+    footer->drawBlueButton(false);
     osdManager.flush();
     readChannels(newStartChannel);
     drawGridsChannelJump(offset);
@@ -500,19 +500,23 @@ void cTvGuideOsd::processKeyYellow() {
 }
 
 eOSState cTvGuideOsd::processKeyBlue() {
-    if (tvguideConfig.blueKeyMode == 0) {
+    if (tvguideConfig.blueKeyMode == eBlueKeySwitch) {
         return ChannelSwitch();
-    } else if (tvguideConfig.blueKeyMode == 1) {
+    } else if (tvguideConfig.blueKeyMode == eBlueKeyEPG) {
         DetailedEPG();
+    } else if (tvguideConfig.blueKeyMode == eBlueKeyFavorites) {
+        recMenuManager->StartFavorites();
     }
     return osContinue;
 }
 
 eOSState cTvGuideOsd::processKeyOk() {
-    if (tvguideConfig.blueKeyMode == 0) {
+    if (tvguideConfig.blueKeyMode == eBlueKeySwitch) {
         DetailedEPG();
-    } else if (tvguideConfig.blueKeyMode == 1) {
+    } else if (tvguideConfig.blueKeyMode == eBlueKeyEPG) {
         return ChannelSwitch();
+    } else if (tvguideConfig.blueKeyMode == eBlueKeyFavorites) {
+        DetailedEPG();
     }
     return osContinue;
 }
@@ -656,11 +660,21 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             detailView = NULL;
             detailViewActive = false;
             processKeyRed();
-        } else if (((Key & ~k_Repeat) == kBlue) && (tvguideConfig.blueKeyMode == 0)) {
+        } else if ((Key & ~k_Repeat) == kBlue) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;
-            state = processKeyBlue();
+            if ((tvguideConfig.blueKeyMode == eBlueKeySwitch) || (tvguideConfig.blueKeyMode == eBlueKeyFavorites))
+                state = ChannelSwitch();
+            else {
+                osdManager.flush();
+                state = osContinue;
+            }
+        } else if ((Key & ~k_Repeat) == kOk && (tvguideConfig.blueKeyMode = eBlueKeyEPG)) {
+            delete detailView;
+            detailView = NULL;
+            detailViewActive = false;
+            state = ChannelSwitch();
         } else {
             state = detailView->ProcessKey(Key);
             if (state == osEnd) {

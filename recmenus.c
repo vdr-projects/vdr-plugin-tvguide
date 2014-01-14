@@ -701,6 +701,7 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     compareTitle = searchTimer.CompareTitle();
     compareSubtitle = searchTimer.CompareSubtitle();
     compareSummary = searchTimer.CompareSummary();
+    useInFavorites = searchTimer.UseInFavorites();
 
     SetWidthPercent(70);
     cString infoText;
@@ -769,6 +770,7 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for stop in minutes"), marginStop, 0, 30, false, &marginStop, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), useVPS, false, false, &useVPS, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), avoidRepeats, true, false, &avoidRepeats, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), useInFavorites, false, false, &useInFavorites, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemButton(tr("Hide advanced Options"), rmsSearchTimerEdit, false));
     }
     mainMenuItems.push_back(new cRecMenuItemButton(tr("Display Results for Search Timer"), rmsSearchTimerTest, false));
@@ -871,6 +873,7 @@ cTVGuideSearchTimer cRecMenuSearchTimerEdit::GetSearchTimer(void) {
         searchTimer.SetCompareSubtitle(compareSubtitle);
         searchTimer.SetCompareSummary(compareSummary);
     }
+    searchTimer.SetUseInFavorites(useInFavorites);
     return searchTimer;
 }
 
@@ -1439,4 +1442,53 @@ eRecMenuState cRecMenuTimeline::ProcessKey(eKeys Key) {
         state = cRecMenu::ProcessKey(Key);
     }
     return state;
+}
+
+/******************************************************************************************
+*   Favorites
+******************************************************************************************/
+
+// --- cRecMenuFavorites  ---------------------------------------------------------
+
+cRecMenuFavorites::cRecMenuFavorites(std::vector<cTVGuideSearchTimer> favorites) {
+    this->favorites = favorites;
+    numFavorites = favorites.size();
+    SetWidthPercent(70);
+    cString header;
+    if (numFavorites > 0) {
+        header = tr("Favorites");
+    } else {
+        header = tr("No Favorites available");
+    }
+    cRecMenuItemInfo *headerItem = new cRecMenuItemInfo(*header, true);
+    headerItem->CalculateHeight(width - 2 * border);
+    SetHeader(headerItem);
+
+    for (int i = 0; i < numFavorites; i++) {
+        AddMenuItemInitial(new cRecMenuItemFavorite(favorites[i], rmsSearchTimerTest, (i==0)?true:false));
+    }
+
+    cRecMenuItem *button = new cRecMenuItemButton(tr("Close"), rmsClose, (numFavorites==0)?true:false);
+    SetFooter(button);
+    CalculateHeight();
+    CreatePixmap();
+    Arrange();
+}
+
+cRecMenuFavorites::~cRecMenuFavorites(void) {
+}
+
+cRecMenuItem *cRecMenuFavorites::GetMenuItem(int number) {
+    if (number > -1 && number < numFavorites)
+        return new cRecMenuItemFavorite(favorites[number], rmsSearchTimerTest, false);
+    return NULL;
+}
+
+int cRecMenuFavorites::GetTotalNumMenuItems(void) {
+    return numFavorites;
+}
+
+cTVGuideSearchTimer cRecMenuFavorites::GetFavorite(void) {
+    cRecMenuItemFavorite *activeItem = dynamic_cast<cRecMenuItemFavorite*>(GetActiveMenuItem());
+    return activeItem->GetFavorite();
 }

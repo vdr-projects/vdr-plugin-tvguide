@@ -574,3 +574,23 @@ const cEvent **cRecManager::LoadReruns(const cEvent *event, int &numResults) {
     }
     return NULL;
 }
+
+void cRecManager::GetFavorites(std::vector<cTVGuideSearchTimer> *favorites) {
+    if (!epgSearchAvailable) {
+            return;
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        std::list<std::string> searchTimerList;
+        searchTimerList = epgSearch->handler->SearchTimerList();
+        for(std::list<std::string>::iterator it = searchTimerList.begin(); it != searchTimerList.end(); it++) {
+            cTVGuideSearchTimer timer;
+            timer.SetEPGSearchString(it->c_str());
+            if (timer.Parse()) {
+                if (timer.UseInFavorites())
+                    favorites->push_back(timer);
+            }
+        }
+    }
+
+}

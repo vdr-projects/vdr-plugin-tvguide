@@ -39,6 +39,19 @@ void cRecMenuManager::Start(const cEvent *event) {
     osdManager.flush();
 }
 
+void cRecMenuManager::StartFavorites(void) {
+    active = true;
+    activeMenuBuffer = NULL;
+    detailViewActive = false;
+    SetBackground();
+    std::vector<cTVGuideSearchTimer> favorites;
+    recManager->GetFavorites(&favorites);
+    activeMenu = new cRecMenuFavorites(favorites);
+    activeMenu->Display();
+    osdManager.flush();
+}
+
+
 void cRecMenuManager::Close(void) {
     event = NULL;
     active = false;
@@ -299,7 +312,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsSearchTimerTest: {
-            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate, rmsSearchTimers
+            //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate, cRecMenuSearchTimers, cRecMenuFavorites
             //show results of currently choosen search timer
             cTVGuideSearchTimer searchTimer;
             if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
@@ -311,6 +324,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 TVGuideEPGSearchTemplate tmpl = menu->GetTemplate();
                 searchTimer.SetTemplate(tmpl.templValue);
                 searchTimer.Parse(true);
+            } else if (cRecMenuFavorites *menu = dynamic_cast<cRecMenuFavorites*>(activeMenu)) {
+                searchTimer = menu->GetFavorite();
             } else break;
             int numSearchResults = 0;
             std::string searchString = searchTimer.BuildSearchString();

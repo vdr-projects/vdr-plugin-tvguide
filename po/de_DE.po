@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-12 16:23+0100\n"
+"POT-Creation-Date: 2014-01-14 17:00+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -41,6 +41,12 @@ msgstr "Umschalten"
 
 msgid "Detailed EPG"
 msgstr "Detailiertes EPG"
+
+msgid "Close detailed EPG"
+msgstr "Det. EPG schließen"
+
+msgid "Favorites"
+msgstr "Favoriten"
 
 msgid "images"
 msgstr "Bilder"
@@ -324,6 +330,9 @@ msgstr "VPS benutzen"
 msgid "Avoid Repeats"
 msgstr "Wiederholungen vermeiden"
 
+msgid "Use in Favorites"
+msgstr "Als Favorit benutzen"
+
 msgid "Hide advanced Options"
 msgstr "Erweiterte Optionen ausblenden"
 
@@ -471,6 +480,9 @@ msgstr "für"
 msgid "No recordings found for"
 msgstr "Keine Aufnahmen gefunden für"
 
+msgid "No Favorites available"
+msgstr "Keine Favoriten verfügbar"
+
 msgid "whole term must appear"
 msgstr "vollständiger Ausdruck"
 
@@ -509,6 +521,9 @@ msgstr "Blau: Umschalten, OK: Detailiertes EPG"
 
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Blau: Detailiertes EPG, OK: Umschalten"
+
+msgid "Blue: Favorites / Switch, Ok: Detailed EPG"
+msgstr "Blau: Favoriten / Umschalten, OK: Det. EPG"
 
 msgid "Timely Jump"
 msgstr "Zeitsprung"

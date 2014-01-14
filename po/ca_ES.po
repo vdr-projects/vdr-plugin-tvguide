@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-12 16:23+0100\n"
+"POT-Creation-Date: 2014-01-14 17:00+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -44,6 +44,12 @@ msgstr "Canvia al canal"
 
 msgid "Detailed EPG"
 msgstr "EPG Detallat"
+
+msgid "Close detailed EPG"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
 
 msgid "images"
 msgstr ""
@@ -327,6 +333,9 @@ msgstr ""
 msgid "Avoid Repeats"
 msgstr ""
 
+msgid "Use in Favorites"
+msgstr ""
+
 msgid "Hide advanced Options"
 msgstr ""
 
@@ -474,6 +483,9 @@ msgstr "per"
 msgid "No recordings found for"
 msgstr "No s'han trobat gravacions per"
 
+msgid "No Favorites available"
+msgstr ""
+
 msgid "whole term must appear"
 msgstr "expressió completa"
 
@@ -512,6 +524,9 @@ msgstr "Blau: Canvi de canal, OK: EPG detallat"
 
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Blau: EPG detallat, OK: Canvi de canal"
+
+msgid "Blue: Favorites / Switch, Ok: Detailed EPG"
+msgstr ""
 
 msgid "Timely Jump"
 msgstr ""

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-12 16:23+0100\n"
+"POT-Creation-Date: 2014-01-14 17:00+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -41,6 +41,12 @@ msgstr "Переключиться"
 
 msgid "Detailed EPG"
 msgstr "Подробный EPG"
+
+msgid "Close detailed EPG"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
 
 msgid "images"
 msgstr ""
@@ -324,6 +330,9 @@ msgstr ""
 msgid "Avoid Repeats"
 msgstr ""
 
+msgid "Use in Favorites"
+msgstr ""
+
 msgid "Hide advanced Options"
 msgstr ""
 
@@ -471,6 +480,9 @@ msgstr "для"
 msgid "No recordings found for"
 msgstr "Не найдено записей:"
 
+msgid "No Favorites available"
+msgstr ""
+
 msgid "whole term must appear"
 msgstr "фраза"
 
@@ -509,6 +521,9 @@ msgstr "Синяя: Переключить канал, OK: Подробный EP
 
 msgid "Blue: Detailed EPG, Ok: Channel Switch"
 msgstr "Синяя: Подробный EPG, OK: Переключить канал"
+
+msgid "Blue: Favorites / Switch, Ok: Detailed EPG"
+msgstr ""
 
 msgid "Timely Jump"
 msgstr ""

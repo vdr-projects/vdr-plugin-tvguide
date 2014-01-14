@@ -54,6 +54,7 @@ public:
     void DeleteSwitchTimer(const cEvent *event);
     cRecording **SearchForRecordings(std::string searchString, int &numResults);
     const cEvent **LoadReruns(const cEvent *event, int &numResults);
+    void GetFavorites(std::vector<cTVGuideSearchTimer> *favorites);
     virtual ~cRecManager  (void);
 };
 
