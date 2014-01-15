@@ -87,6 +87,7 @@ void cFooter::LeaveDetailedViewMode(const cChannel *channel) {
     if (tvguideConfig.channelJumpMode == eNumJump) {
         drawGreenButton();
         drawYellowButton();
+        drawBlueButton();
     } else {
         UpdateGroupButtons(channel, true);
     }

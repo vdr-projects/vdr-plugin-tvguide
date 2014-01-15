@@ -670,7 +670,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
                 osdManager.flush();
                 state = osContinue;
             }
-        } else if ((Key & ~k_Repeat) == kOk && (tvguideConfig.blueKeyMode = eBlueKeyEPG)) {
+        } else if ((Key & ~k_Repeat) == kOk && (tvguideConfig.blueKeyMode == eBlueKeyEPG)) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;

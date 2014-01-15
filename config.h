@@ -30,11 +30,13 @@ enum {
     eStyleFlat
 };
 
-enum {
-    eBlueKeySwitch,
+
+enum eBlueKeyMode {
+    eBlueKeySwitch = 0,
     eBlueKeyEPG,
     eBlueKeyFavorites
 };
+
 
 class cTvguideConfig {
     private:
