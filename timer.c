@@ -120,6 +120,13 @@ time_t cMyTime::GetRounded() {
     return mktime(rounded);
 }
 
+bool cMyTime::NowVisible(void) {
+    if (t > tStart)
+        return true;
+    return false;
+}
+
+
 void cMyTime::debug() {
     esyslog("t: %s, tStart: %s, tEnd: %s", *TimeString(t), *TimeString(tStart), *TimeString(tEnd));
 }

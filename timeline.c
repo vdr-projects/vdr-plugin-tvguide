@@ -16,6 +16,10 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                                      0, 
                                                      geoManager.timeLineWidth, 
                                                      1440*geoManager.minutePixel));
+        timeBase = osdManager.requestPixmap(3, cRect(0, 
+                                                     geoManager.statusHeaderHeight + geoManager.channelGroupsHeight + geoManager.channelHeaderHeight, 
+                                                     geoManager.osdWidth, 
+                                                     geoManager.timeLineGridHeight));
     } else if (tvguideConfig.displayMode == eHorizontal) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
                                                                          geoManager.statusHeaderHeight, 
@@ -29,8 +33,12 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
                                                      0, 
                                                      1440*geoManager.minutePixel, 
                                                      geoManager.timeLineHeight));
+        timeBase = osdManager.requestPixmap(3, cRect(geoManager.channelGroupsWidth + geoManager.channelHeaderWidth, 
+                                                     geoManager.statusHeaderHeight, 
+                                                     geoManager.timeLineGridWidth, 
+                                                     geoManager.timeLineHeight + tvguideConfig.channelRows * geoManager.rowHeight));
     }
-
+    timeBase->Fill(clrTransparent);
     int clockY = 10;
     int clockX;
     if (tvguideConfig.scaleVideo) {
@@ -192,6 +200,20 @@ void cTimeLine::drawRoundedCorners(int posX, int posY, int width, int height, in
     }
 }
 
+void cTimeLine::drawCurrentTimeBase(void) {
+    timeBase->Fill(clrTransparent);
+    bool nowVisible = myTime->NowVisible();
+    if (!nowVisible)
+        return;
+    int deltaTime = (myTime->GetNow() - myTime->GetStart()) / 60 * geoManager.minutePixel;
+    if (tvguideConfig.displayMode == eVertical) {
+        timeBase->DrawRectangle(cRect(0, deltaTime - 2, timeBase->ViewPort().Width(), 4), theme.Color(clrTimeBase));
+    } else {
+        timeBase->DrawRectangle(cRect(deltaTime-2, 0, 4, timeBase->ViewPort().Height()), theme.Color(clrTimeBase));
+    }
+}
+
+
 cImage *cTimeLine::createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend) {
     cImage *image = NULL;
     if (tvguideConfig.style == eStyleBlendingDefault) {
@@ -232,6 +254,8 @@ void cTimeLine::setTimeline() {
         yNew = 0;
     }
     timeline->SetDrawPortPoint(cPoint(xNew, yNew));
+    if (tvguideConfig.displayTimeBase)
+        drawCurrentTimeBase();
 }
 
 void cTimeLine::drawClock() {

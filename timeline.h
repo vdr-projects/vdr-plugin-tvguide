@@ -12,15 +12,17 @@ private:
     cStyledPixmap *dateViewer;
     cPixmap *timeline;
     cStyledPixmap *clock;
-    cImage *createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend);
+    cPixmap *timeBase;
     void decorateTile(int posX, int posY, int tileWidth, int tileHeight);
     void drawRoundedCorners(int posX, int posY, int width, int height, int radius);
+    cImage *createBackgroundImage(int width, int height, tColor clrBgr, tColor clrBlend);
+    void drawCurrentTimeBase(void);
 public:
     cTimeLine(cMyTime *myTime);
     virtual ~cTimeLine(void);
+    void setTimeline();
     void drawDateViewer();
     void drawTimeline();
-    void setTimeline();
     void drawClock();
 };
 

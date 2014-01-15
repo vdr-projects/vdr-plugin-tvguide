@@ -63,6 +63,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("showTimeInGrid", tvguideConfig.showTimeInGrid);
     SetupStore("displayStatusHeader", tvguideConfig.displayStatusHeader);
     SetupStore("displayChannelGroups", tvguideConfig.displayChannelGroups);
+    SetupStore("displayTimeBase", tvguideConfig.displayTimeBase);
     SetupStore("headerHeightPercent", tvguideConfig.headerHeightPercent);
     SetupStore("channelGroupsPercent", tvguideConfig.channelGroupsPercent);
     SetupStore("epgViewBorder", tvguideConfig.epgViewBorder);
@@ -263,6 +264,7 @@ void cMenuSetupScreenLayout::Set(void) {
         }
     }
     
+    Add(new cMenuEditBoolItem(tr("Display current time baseline"), &tmpTvguideConfig->displayTimeBase));
     Add(new cMenuEditStraItem(tr("Show Channel Logos"), &tmpTvguideConfig->hideChannelLogos, 2,  hideChannelLogosItems));   
     if (!tmpTvguideConfig->hideChannelLogos) {
         Add(InfoItem(tr("Logo Path used"), *tvguideConfig.logoPath));

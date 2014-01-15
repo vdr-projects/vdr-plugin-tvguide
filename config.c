@@ -12,6 +12,7 @@ cTvguideConfig::cTvguideConfig() {
     displayTime = 160;
     displayStatusHeader = 1;
     displayChannelGroups = 1;
+    displayTimeBase = 1;
     headerHeightPercent = 20;
     channelGroupsPercent = 5;
     epgViewBorder = 50;
@@ -216,6 +217,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "showTimeInGrid") == 0)           showTimeInGrid = atoi(Value);
     else if (strcmp(Name, "displayStatusHeader") == 0)      displayStatusHeader = atoi(Value);
     else if (strcmp(Name, "displayChannelGroups") == 0)     displayChannelGroups = atoi(Value);
+    else if (strcmp(Name, "displayTimeBase") == 0)          displayTimeBase = atoi(Value);
     else if (strcmp(Name, "headerHeightPercent") == 0)      headerHeightPercent = atoi(Value);
     else if (strcmp(Name, "channelGroupsPercent") == 0)     channelGroupsPercent = atoi(Value);
     else if (strcmp(Name, "epgViewBorder") == 0)            epgViewBorder = atoi(Value);

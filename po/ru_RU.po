@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-14 17:00+0100\n"
+"POT-Creation-Date: 2014-01-15 18:19+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -644,6 +644,9 @@ msgstr "Высота группы каналов (% от высоты OSD)"
 
 msgid "Width of channel groups (Perc. of osd width)"
 msgstr "Ширина группы каналов (% от ширины OSD)"
+
+msgid "Display current time baseline"
+msgstr ""
 
 msgid "Show Channel Logos"
 msgstr "Показывать логотипы каналов"

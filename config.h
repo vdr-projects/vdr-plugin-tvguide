@@ -54,6 +54,7 @@ class cTvguideConfig {
         int displayTime;
         int displayStatusHeader;
         int displayChannelGroups;
+        int displayTimeBase;
         int headerHeightPercent;
         int channelGroupsPercent;
         int epgViewBorder;
@@ -190,6 +191,7 @@ THEME_CLR(theme, clrTimeline1, clrWhite);
 THEME_CLR(theme, clrTimeline1Blending, 0xFF828282);
 THEME_CLR(theme, clrTimeline2, clrBlack);
 THEME_CLR(theme, clrTimeline2Blending, 0xFF3F3F3F);
+THEME_CLR(theme, clrTimeBase, 0xA0FF0000);
 THEME_CLR(theme, clrButtonRed, 0x00000000);
 THEME_CLR(theme, clrButtonRedBorder, 0x00000000);
 THEME_CLR(theme, clrButtonGreen, 0x00000000);

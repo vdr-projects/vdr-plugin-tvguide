@@ -15,6 +15,7 @@ class cMyTime {
         virtual ~cMyTime(void);
         static cString printTime(time_t displayTime);
         void Now();
+        time_t GetNow() { return t; };
         void AddStep(int step);
         bool DelStep(int step);
         void SetTime(time_t newTime);
@@ -29,6 +30,7 @@ class cMyTime {
         bool tooFarInPast(time_t current);
         int GetTimelineOffset();
         time_t GetRounded();
+        bool NowVisible(void);
         void debug();
 };
 

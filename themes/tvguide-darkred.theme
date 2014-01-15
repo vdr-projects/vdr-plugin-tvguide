@@ -21,6 +21,7 @@ clrTimeline1 = BBFFFFFF
 clrTimeline1Blending = 90828282
 clrTimeline2 = BB000000
 clrTimeline2Blending = 903F3F3F
+clrTimeBase = A0FF0000
 clrButtonRed = 99BB0000
 clrButtonRedBorder = FFBB0000
 clrButtonGreen = 9900BB00
