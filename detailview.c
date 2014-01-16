@@ -104,7 +104,7 @@ bool cDetailView::setContentDrawportHeight() {
     yAddInf  = yEPGText + heightEPG;
     yActors  = yAddInf + heightReruns;
     yFanart  = yActors + heightActors;
-    yEPGPics = yAddInf + heightFanart;
+    yEPGPics = yFanart + heightFanart;
     
     int totalHeight = heightBanner + heightEPG + heightReruns + heightActors + heightFanart +  heightEpgPics + lineHeight;
     //check if pixmap content has to be scrollable
