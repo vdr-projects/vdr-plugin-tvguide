@@ -460,7 +460,7 @@ bool cRecManager::CreateSwitchTimer(const cEvent *event, cSwitchTimer switchTime
         data.event = event;
         data.mode = 1;
         data.switchMinsBefore = switchTimer.switchMinsBefore;
-        data.announceOnly = switchTimer.switchMinsBefore;
+        data.announceOnly = switchTimer.announceOnly;
         data.success = false;
         epgSearchPlugin->Service("Epgsearch-switchtimer-v1.0", &data);
         cSwitchTimer *t = new cSwitchTimer(event);
