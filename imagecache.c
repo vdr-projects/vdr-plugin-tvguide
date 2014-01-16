@@ -408,6 +408,8 @@ void cImageCache::InsertIntoGridCache(std::string name, int width, int height, b
 }
 
 cImage *cImageCache::CreateGrid(int width, int height, bool active) {
+    if (width > geoManager.osdWidth || width < 6 || height > geoManager.osdHeight || height < 6)
+        return NULL;
     Image *currentGridBuffer = NULL;
     if (active)
         currentGridBuffer = &bufferGridActive;
@@ -424,6 +426,7 @@ cImage *cImageCache::CreateGrid(int width, int height, bool active) {
     tColor *imgData = (tColor *)image->Data();
     if (w != width || h != height) {
         ImageScaler scaler;
+        //esyslog("tvguide: imagescaler parameters: width %d, height %d, w %d, h %d", width, height, w, h);
         scaler.SetImageParameters(imgData, width, width, height, w, h);
         for (const void *pixels_end = &pixels[w*h]; pixels < pixels_end; ++pixels)
             scaler.PutSourcePixel(pixels->blue / ((MaxRGB + 1) / 256),
