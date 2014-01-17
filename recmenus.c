@@ -958,8 +958,9 @@ cRecMenuSearchTimerTemplatesCreate::cRecMenuSearchTimerTemplatesCreate(TVGuideEP
 
 
 // --- cRecMenuSearchTimerResults ---------------------------------------------------------
-cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName) {
+cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName, eRecMenuState action2) {
     this->searchResults = searchResults;
+    this->action2 = action2;
     SetWidthPercent(70);
     cString message1 = tr("search results for Search Timer");
     cString message2 = tr("search result for Search Timer");
@@ -979,7 +980,7 @@ cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString,
     SetFooter(buttons);
     if (searchResults && (numResults > 0)) {
         for (int i=0; i<numResults; i++) {
-            if (!AddMenuItemInitial(new cRecMenuItemEvent(searchResults[i], rmsSearchShowInfo, rmsDisabled, (i==0)?true:false)))
+            if (!AddMenuItemInitial(new cRecMenuItemEvent(searchResults[i], rmsSearchShowInfo, action2, (i==0)?true:false)))
                 break;
         }
     }
@@ -990,7 +991,7 @@ cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString,
     
 cRecMenuItem *cRecMenuSearchTimerResults::GetMenuItem(int number) { 
     if ((number >= 0) && (number < numResults)) {
-        cRecMenuItem *result = new cRecMenuItemEvent(searchResults[number], rmsSearchShowInfo, rmsDisabled, false);
+        cRecMenuItem *result = new cRecMenuItemEvent(searchResults[number], rmsSearchShowInfo, action2, false);
         return result;
     }
     return NULL;
@@ -1192,7 +1193,7 @@ const cEvent *cRecMenuSearchResults::GetEvent(void) {
 
 
 // --- cRecMenuSearchConfirmTimer  ---------------------------------------------------------
-cRecMenuSearchConfirmTimer::cRecMenuSearchConfirmTimer(const cEvent *event) {
+cRecMenuSearchConfirmTimer::cRecMenuSearchConfirmTimer(const cEvent *event, eRecMenuState nextAction) {
     SetWidthPercent(50);
     cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
     cString message = tr("Timer created");
@@ -1207,7 +1208,7 @@ cRecMenuSearchConfirmTimer::cRecMenuSearchConfirmTimer(const cEvent *event) {
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*text);
     infoItem->CalculateHeight(width - 2 * border);
     AddMenuItem(infoItem);
-    AddMenuItem(new cRecMenuItemButton(tr("OK"), rmsSearchRecordConfirm, true, true));
+    AddMenuItem(new cRecMenuItemButton(tr("OK"), nextAction, true, true));
     CalculateHeight();
     CreatePixmap();
     Arrange();

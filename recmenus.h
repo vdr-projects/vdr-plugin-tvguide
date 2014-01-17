@@ -291,8 +291,9 @@ class cRecMenuSearchTimerResults: public cRecMenu {
 private:
     const cEvent **searchResults;
     int numResults;
+    eRecMenuState action2;
 public:
-    cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName = "");
+    cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName = "", eRecMenuState action2 = rmsDisabled);
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuSearchTimerResults(void) {
@@ -379,7 +380,7 @@ public:
 // --- cRecMenuSearchConfirmTimer  ---------------------------------------------------------
 class cRecMenuSearchConfirmTimer: public cRecMenu {
 public:
-    cRecMenuSearchConfirmTimer(const cEvent *event);
+    cRecMenuSearchConfirmTimer(const cEvent *event, eRecMenuState nextAction);
     virtual ~cRecMenuSearchConfirmTimer(void) {};
 };
 

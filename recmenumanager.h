@@ -13,6 +13,7 @@ private:
     bool active;
     cRecMenu *activeMenu;
     cRecMenu *activeMenuBuffer;
+    cRecMenu *activeMenuBuffer2;
     const cEvent *event;
     cRecManager *recManager;
     cTVGuideTimerConflicts *timerConflicts;

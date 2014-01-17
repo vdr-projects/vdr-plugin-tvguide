@@ -15,6 +15,7 @@ enum eRecMenuState {
     rmsRefresh,
     rmsContinue,
     rmsClose,
+    rmsDisabled,
     //INSTANT TIMER
     rmsInstantRecord,
     rmsInstantRecordFolder,
@@ -69,7 +70,9 @@ enum eRecMenuState {
     rmsTimelineTimerEdit,
     rmsTimelineTimerSave,
     rmsTimelineTimerDelete,
-    rmsDisabled,
+    //FAVORITES
+    rmsFavoritesRecord,
+    rmsFavoritesRecordConfirm,
 };
 
 enum eDependend {
