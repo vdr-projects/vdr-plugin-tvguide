@@ -2564,22 +2564,19 @@ void cRecMenuItemSearchTimer::SetPixmaps(void) {
 
 void cRecMenuItemSearchTimer::Draw(void) {
     int textX = DrawIcons();
-    if (!drawn) {
-        pixmapText->Fill(clrTransparent);
-        textX += 20;
-        cString label;
-        if (timer.Active()) {
-            label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
-        } else {
-            label = cString::sprintf("\"%s\" (%s)", timer.SearchString().c_str(), tr("inactive"));
-        }
-        int numTimersActive = timer.GetNumTimers();
-        int numRecordings = timer.GetNumRecordings();
-        cString info = cString::sprintf("%s: %d, %s: %d", tr("active timers"), numTimersActive, tr("recordings done"), numRecordings);
-        pixmapText->DrawText(cPoint(textX, 5 + (height/2 - font->Height())/2), *label, colorText, clrTransparent, font);
-        pixmapText->DrawText(cPoint(textX, height/2 + (height/2 - fontSmall->Height())/2), *info, colorText, clrTransparent, fontSmall);
-        drawn = true;
+    pixmapText->Fill(clrTransparent);
+    textX += 20;
+    cString label;
+    if (timer.Active()) {
+        label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
+    } else {
+        label = cString::sprintf("\"%s\" (%s)", timer.SearchString().c_str(), tr("inactive"));
     }
+    int numTimersActive = timer.GetNumTimers();
+    int numRecordings = timer.GetNumRecordings();
+    cString info = cString::sprintf("%s: %d, %s: %d", tr("active timers"), numTimersActive, tr("recordings done"), numRecordings);
+    pixmapText->DrawText(cPoint(textX, 5 + (height/2 - font->Height())/2), *label, colorText, clrTransparent, font);
+    pixmapText->DrawText(cPoint(textX, height/2 + (height/2 - fontSmall->Height())/2), *info, colorText, clrTransparent, fontSmall);
 }
 
 void cRecMenuItemSearchTimer::Hide(void) { 
@@ -2693,13 +2690,10 @@ void cRecMenuItemFavorite::SetPixmaps(void) {
 
 void cRecMenuItemFavorite::Draw(void) {
     int textX = DrawIcons();
-    if (!drawn) {
-        pixmapText->Fill(clrTransparent);
-        textX += 20;
-        cString label = cString::sprintf("\"%s\"", favorite.SearchString().c_str());
-        pixmapText->DrawText(cPoint(textX, (height - fontLarge->Height())/2), *label, colorText, clrTransparent, fontLarge);
-        drawn = true;
-    }
+    pixmapText->Fill(clrTransparent);
+    textX += 20;
+    cString label = cString::sprintf("\"%s\"", favorite.SearchString().c_str());
+    pixmapText->DrawText(cPoint(textX, (height - fontLarge->Height())/2), *label, colorText, clrTransparent, fontLarge);
 }
 
 void cRecMenuItemFavorite::Hide(void) { 
