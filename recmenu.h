@@ -16,6 +16,8 @@ private:
     bool ActivatePrev(void);
     bool ScrollUp(void);
     bool ScrollDown(void);
+    void PageUp(void);
+    void PageDown(void);
     void JumpBegin(void);
     void JumpEnd(void);
 protected:
@@ -39,7 +41,7 @@ protected:
     void SetFooter(cRecMenuItem *footer);
     void ClearMenuItems(bool destructor = false);
     void InitMenu(bool complete);
-    bool AddMenuItemInitial(cRecMenuItem *item);
+    bool AddMenuItemInitial(cRecMenuItem *item, bool inFront = false);
     void AddMenuItem(cRecMenuItem *item, bool inFront = false);
     void DrawScrollBar(void);
     cImage *createScrollbar(int width, int height, tColor clrBgr, tColor clrBlend);

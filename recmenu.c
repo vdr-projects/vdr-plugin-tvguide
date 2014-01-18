@@ -150,7 +150,7 @@ void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
         menuItems.push_front(item);
 }
 
-bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item) {
+bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item, bool inFront) {
     currentHeight += item->GetHeight();
     int totalHeight = headerHeight + footerHeight + currentHeight + 2*border;
     if (totalHeight >= geoManager.osdHeight) {
@@ -161,9 +161,14 @@ bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item) {
         }
         return false;
     }
-    stopIndex++;
     numItems++;
-    menuItems.push_back(item);
+    if (!inFront) {
+        stopIndex++;
+        menuItems.push_back(item);
+    } else {
+        startIndex--;
+        menuItems.push_front(item);
+    }
     return true;
 }
 
@@ -313,6 +318,86 @@ bool cRecMenu::ScrollDown(void) {
         }
     }
     return true;
+}
+
+void cRecMenu::PageUp(void) {
+    cRecMenuItem *activeItem = GetActiveMenuItem();
+    if (!activeItem)
+        return;
+    if (!scrollable) {
+        JumpBegin();
+        return;
+    }
+    int newActive = GetActive() - numItems;
+    if (newActive < 0)
+        newActive = 0;
+    activeItem->setInactive();
+    activeItem->setBackground();
+    ClearMenuItems();
+    currentHeight = 0;
+    stopIndex = startIndex;
+    numItems = 0;
+    cRecMenuItem *newItem = NULL;
+    bool spaceLeft = true;
+    while (newItem = GetMenuItem(startIndex-1)) {
+        if (startIndex-1 == newActive)
+            newItem->setActive();
+        spaceLeft = AddMenuItemInitial(newItem, true);
+        if (!spaceLeft)
+            break;
+    }
+    if (spaceLeft) {
+        while (newItem = GetMenuItem(stopIndex)) {
+            spaceLeft = AddMenuItemInitial(newItem);
+            if (!spaceLeft)
+                break;
+        }
+    }
+    if (GetActive() == numItems)
+            menuItems.front()->setActive();
+    if (CalculateHeight(true))
+        CreatePixmap();
+    Arrange(deleteMenuItems);
+    Display(deleteMenuItems);
+}
+
+void cRecMenu::PageDown(void) {
+    cRecMenuItem *activeItem = GetActiveMenuItem();
+    if (!activeItem)
+        return;
+    if (!scrollable) {
+        JumpEnd();
+        return;
+    }
+    int newActive = GetActive() + numItems;
+    activeItem->setInactive();
+    activeItem->setBackground();
+    ClearMenuItems();
+    currentHeight = 0;
+    numItems = 0;
+    startIndex = stopIndex;
+    cRecMenuItem *newItem = NULL;
+    bool spaceLeft = true;
+    while (newItem = GetMenuItem(stopIndex)) {
+        if (stopIndex == newActive)
+            newItem->setActive();
+        spaceLeft = AddMenuItemInitial(newItem);
+        if (!spaceLeft)
+            break;
+    }
+    if (spaceLeft) {
+        while (newItem = GetMenuItem(startIndex-1)) {
+            spaceLeft = AddMenuItemInitial(newItem, true);
+            if (!spaceLeft)
+                break;
+        }
+    }
+    if (GetActive() == GetTotalNumMenuItems())
+            menuItems.back()->setActive();
+    if (CalculateHeight(true))
+        CreatePixmap();
+    Arrange(deleteMenuItems);
+    Display(deleteMenuItems);
 }
 
 void cRecMenu::JumpBegin(void) {
@@ -551,11 +636,11 @@ eRecMenuState cRecMenu::ProcessKey(eKeys Key) {
                 state = rmsConsumed;
                 break;
             case kLeft:
-                JumpBegin();
+                PageUp();
                 state = rmsConsumed;
                 break;
             case kRight:
-                JumpEnd();
+                PageDown();
                 state = rmsConsumed;
                 break;
             default:
