@@ -1036,8 +1036,8 @@ cRecMenuSearchTimerNothingFound::cRecMenuSearchTimerNothingFound(std::string sea
 
 // --- cRecMenuSwitchTimer  ---------------------------------------------------------
 cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
-    int switchMinsBefore = 2;
-    int announceOnly = 0;
+    switchMinsBefore = 2;
+    announceOnly = 0;
 
     SetWidthPercent(60);
     
