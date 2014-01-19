@@ -594,3 +594,99 @@ void cRecManager::GetFavorites(std::vector<cTVGuideSearchTimer> *favorites) {
     }
 
 }
+
+const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
+    std::vector<const cEvent*> tmpResults;
+    cSchedulesLock schedulesLock;
+    const cSchedules *schedules = cSchedules::Schedules(schedulesLock);
+    const cChannel *startChannel = NULL, *stopChannel = NULL;
+    if (tvguideConfig.favLimitChannels) {
+        startChannel = Channels.GetByNumber(tvguideConfig.favStartChannel);
+        stopChannel = Channels.GetByNumber(tvguideConfig.favStopChannel);
+    }
+    if (!startChannel)
+        startChannel = Channels.First();
+
+    for (const cChannel *channel = startChannel; channel; channel = Channels.Next(channel)) {
+        if (channel->GroupSep()) continue;
+        const cSchedule *Schedule = schedules->GetSchedule(channel);
+        if (!Schedule) continue;
+
+        const cEvent *event = NULL;
+        if (nowOrNext)
+            event = Schedule->GetPresentEvent();
+        else
+            event = Schedule->GetFollowingEvent();
+        if (event) {
+            tmpResults.push_back(event);
+        }
+        if (stopChannel && (stopChannel->Number() <= channel->Number()))
+            break;
+    }
+    numResults = tmpResults.size();
+    const cEvent **results = new const cEvent *[numResults];
+    for (int i=0; i<numResults; i++) {
+        results[i] = tmpResults[i];        
+    }
+
+    return results;
+}
+
+const cEvent **cRecManager::UserDefinedTime(int userTime, int &numResults) {
+    std::vector<const cEvent*> tmpResults;
+    int favTime = 0;
+    if (userTime == 1) {
+        favTime = tvguideConfig.favTime1;
+    } else if (userTime == 2) {
+        favTime = tvguideConfig.favTime2;
+    } else if (userTime == 3) {
+        favTime = tvguideConfig.favTime3;
+    } else if (userTime == 4) {
+        favTime = tvguideConfig.favTime4;
+    }
+
+    time_t now = time(0);
+    tm *midn = localtime(&now);
+    midn->tm_sec = 0;
+    midn->tm_min = 0;
+    midn->tm_hour = 0;
+    time_t midnight = mktime(midn);
+    int hours = favTime/100;
+    int mins = favTime - hours * 100;
+    time_t searchTime = midnight + hours*60*60 + mins*60;
+    if (searchTime < now)
+        searchTime += 24*60*60;
+
+    cSchedulesLock schedulesLock;
+    const cSchedules *schedules = cSchedules::Schedules(schedulesLock);
+    const cChannel *startChannel = NULL, *stopChannel = NULL;
+    if (tvguideConfig.favLimitChannels) {
+        startChannel = Channels.GetByNumber(tvguideConfig.favStartChannel);
+        stopChannel = Channels.GetByNumber(tvguideConfig.favStopChannel);
+    }
+    if (!startChannel)
+        startChannel = Channels.First();
+
+    for (const cChannel *channel = startChannel; channel; channel = Channels.Next(channel)) {
+        if (channel->GroupSep()) continue;
+        const cSchedule *Schedule = schedules->GetSchedule(channel);
+        if (!Schedule) continue;
+        const cEvent *event = Schedule->GetEventAround(searchTime);
+        if (!event) continue;
+        //if event is more or less over (only 15mns left), take next
+        if ((event->EndTime() - searchTime) < 15*60) {
+            event = Schedule->Events()->Next(event);
+        }
+        if (event)
+            tmpResults.push_back(event);
+        if (stopChannel && (stopChannel->Number() <= channel->Number()))
+            break;
+    }
+
+    numResults = tmpResults.size();
+    const cEvent **results = new const cEvent *[numResults];
+    for (int i=0; i<numResults; i++) {
+        results[i] = tmpResults[i];        
+    }
+    return results;
+}

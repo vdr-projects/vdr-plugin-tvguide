@@ -961,12 +961,17 @@ cRecMenuSearchTimerTemplatesCreate::cRecMenuSearchTimerTemplatesCreate(TVGuideEP
 cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString, const cEvent **searchResults, int numResults, std::string templateName, eRecMenuState action2) {
     this->searchResults = searchResults;
     this->action2 = action2;
-    SetWidthPercent(70);
-    cString message1 = tr("search results for Search Timer");
-    cString message2 = tr("search result for Search Timer");
     this->numResults = numResults;
-    cString message3 = tr("Using Template");
-    cString infoText;
+    SetWidthPercent(70);
+    cString message1 = "", message2 = "", message3 = "", infoText = "";
+    if (action2 == rmsDisabled) {
+        message1 = tr("search results for Search Timer");
+        message2 = tr("search result for Search Timer");
+        message3 = tr("Using Template");
+    } else if (action2 == rmsFavoritesRecord) {
+        message1 = tr("search results for Favorite");
+        message2 = tr("search result for Favorite");
+    }
     if (templateName.size() > 0) {
         infoText = cString::sprintf("%d %s:\n\"%s\"\n%s \"%s\"", numResults, (numResults>1)?(*message1):(*message2), searchString.c_str(), *message3, templateName.c_str());
     } else {
@@ -1452,8 +1457,10 @@ eRecMenuState cRecMenuTimeline::ProcessKey(eKeys Key) {
 // --- cRecMenuFavorites  ---------------------------------------------------------
 
 cRecMenuFavorites::cRecMenuFavorites(std::vector<cTVGuideSearchTimer> favorites) {
+    deleteMenuItems = false;
     this->favorites = favorites;
-    numFavorites = favorites.size();
+    CreateFavoritesMenuItems();
+    numFavorites = myMenuItems.size();
     SetWidthPercent(70);
     cString header;
     if (numFavorites > 0) {
@@ -1465,23 +1472,68 @@ cRecMenuFavorites::cRecMenuFavorites(std::vector<cTVGuideSearchTimer> favorites)
     headerItem->CalculateHeight(width - 2 * border);
     SetHeader(headerItem);
 
-    for (int i = 0; i < numFavorites; i++) {
-        AddMenuItemInitial(new cRecMenuItemFavorite(favorites[i], rmsSearchTimerTest, (i==0)?true:false));
-    }
-
     cRecMenuItem *button = new cRecMenuItemButton(tr("Close"), rmsClose, (numFavorites==0)?true:false);
     SetFooter(button);
+
+    for (int i=0; i<numFavorites; i++) {
+        if (i==0)
+            myMenuItems[i]->setActive();
+        if (!AddMenuItemInitial(myMenuItems[i]))
+            break;
+    }
+
     CalculateHeight();
     CreatePixmap();
     Arrange();
 }
 
 cRecMenuFavorites::~cRecMenuFavorites(void) {
+    for (std::vector<cRecMenuItem*>::iterator it = myMenuItems.begin(); it != myMenuItems.end(); it++) {
+        delete *it;
+    }
+    myMenuItems.clear();
+}
+
+void cRecMenuFavorites::CreateFavoritesMenuItems(void) {
+    if (tvguideConfig.favWhatsOnNow) {
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(tr("What's on now"), rmsFavoritesNow, false));
+    }
+    if (tvguideConfig.favWhatsOnNext) {
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(tr("What's on next"), rmsFavoritesNext, false));
+    }
+    if (tvguideConfig.favUseTime1) {
+        std::string desc = *cString::sprintf("%s (%s)", tvguideConfig.descUser1.c_str(), NiceTime(tvguideConfig.favTime1).c_str());
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(desc, rmsFavoritesUser1, false));
+    }
+    if (tvguideConfig.favUseTime2) {
+        std::string desc = *cString::sprintf("%s (%s)", tvguideConfig.descUser2.c_str(), NiceTime(tvguideConfig.favTime2).c_str());
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(desc, rmsFavoritesUser2, false));
+    }
+    if (tvguideConfig.favUseTime3) {
+        std::string desc = *cString::sprintf("%s (%s)", tvguideConfig.descUser3.c_str(), NiceTime(tvguideConfig.favTime3).c_str());
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(desc, rmsFavoritesUser3, false));
+    }
+    if (tvguideConfig.favUseTime4) {
+        std::string desc = *cString::sprintf("%s (%s)", tvguideConfig.descUser4.c_str(), NiceTime(tvguideConfig.favTime4).c_str());
+        myMenuItems.push_back(new cRecMenuItemFavoriteStatic(desc, rmsFavoritesUser4, false));
+    }
+
+    int numAdditionalFavs = favorites.size();
+    for (int i = 0; i < numAdditionalFavs; i++) {
+        myMenuItems.push_back(new cRecMenuItemFavorite(favorites[i], rmsSearchTimerTest, false));
+    }
+
+}
+
+std::string cRecMenuFavorites::NiceTime(int favTime) {
+    int hours = favTime/100;
+    int mins = favTime - hours * 100;
+    return *cString::sprintf("%02d:%02d", hours, mins);
 }
 
 cRecMenuItem *cRecMenuFavorites::GetMenuItem(int number) {
     if (number > -1 && number < numFavorites)
-        return new cRecMenuItemFavorite(favorites[number], rmsSearchTimerTest, false);
+        return myMenuItems[number];
     return NULL;
 }
 

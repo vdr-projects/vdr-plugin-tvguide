@@ -468,7 +468,10 @@ public:
 class cRecMenuFavorites: public cRecMenu {
 private:
     std::vector<cTVGuideSearchTimer> favorites;
+    std::vector<cRecMenuItem*> myMenuItems;
     int numFavorites;
+    void CreateFavoritesMenuItems(void);
+    std::string NiceTime(int favTime);
 public:
     cRecMenuFavorites(std::vector<cTVGuideSearchTimer> favorites);
     cRecMenuItem *GetMenuItem(int number);

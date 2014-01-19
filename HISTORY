@@ -109,3 +109,5 @@ Version 1.1.0
 - Display baseline for current time
 - Added possibility to create timer from favorites results
 - left / right scroll page up / down in recmenu result lists
+- Improved favorites menu with whats on now / next and up to four user
+  defined times

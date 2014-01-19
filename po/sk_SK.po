@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-15 18:19+0100\n"
+"POT-Creation-Date: 2014-01-19 12:51+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -91,6 +91,12 @@ msgid "active timers"
 msgstr ""
 
 msgid "recordings done"
+msgstr ""
+
+msgid "What's on now"
+msgstr ""
+
+msgid "What's on next"
 msgstr ""
 
 msgid "Instant Record"
@@ -402,6 +408,12 @@ msgstr "nájdené výsledky vyhµadávania plánu"
 msgid "search result for Search Timer"
 msgstr "nájdený výsledok vyhµadávania plánu"
 
+msgid "search results for Favorite"
+msgstr ""
+
+msgid "search result for Favorite"
+msgstr ""
+
 msgid "Nothing found for Search String"
 msgstr "Hµadaný výraz sa nena¹iel"
 
@@ -507,6 +519,9 @@ msgstr "Mo¾nosti zobrazenia"
 msgid "Fonts and Fontsizes"
 msgstr "Písma a veµkosti písma"
 
+msgid "Recording Menus and Favorites"
+msgstr ""
+
 msgid "Image Loading and Caching"
 msgstr ""
 
@@ -581,12 +596,6 @@ msgstr "Veµmi veµké skoky (tlaèidlá 4 / 6) v hodinách"
 
 msgid "Time Format (12h/24h)"
 msgstr "Formát èasu (12h/24h)"
-
-msgid "Use folders for instant records"
-msgstr "Pou¾i» adresáre pre okam¾ité nahrávky"
-
-msgid "Use Remotetimers"
-msgstr "Pou¾i» vzdialený plánovaè"
 
 msgid "Display Reruns in detailed EPG View"
 msgstr "Reprízy v podrobnom zobrazení relácie EPG"
@@ -739,6 +748,39 @@ msgid "Search & Recording Menu Small Font Size"
 msgstr "Hµada» & Nahra» menu malé písmo"
 
 msgid "Search & Recording Menu Header Font Size"
+msgstr ""
+
+msgid "Use folders for instant records"
+msgstr "Pou¾i» adresáre pre okam¾ité nahrávky"
+
+msgid "Use Remotetimers"
+msgstr "Pou¾i» vzdialený plánovaè"
+
+msgid "Use \"What's on now\" in favorites"
+msgstr ""
+
+msgid "Use \"What's on next\" in favorites"
+msgstr ""
+
+msgid "Use user defined time 1 in favorites"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Use user defined time 2 in favorites"
+msgstr ""
+
+msgid "Use user defined time 3 in favorites"
+msgstr ""
+
+msgid "Use user defined time 4 in favorites"
+msgstr ""
+
+msgid "Limit channels in favorites"
 msgstr ""
 
 msgid "Create Log Messages for image loading"

@@ -23,6 +23,7 @@ void cTvguideSetup::Setup(void) {
     Add(new cOsdItem(tr("General Settings")));
     Add(new cOsdItem(tr("Screen Presentation")));
     Add(new cOsdItem(tr("Fonts and Fontsizes")));
+    Add(new cOsdItem(tr("Recording Menus and Favorites")));
     Add(new cOsdItem(tr("Image Loading and Caching")));
 
     SetCurrent(Get(currentItem));
@@ -44,6 +45,8 @@ eOSState cTvguideSetup::ProcessKey(eKeys Key) {
                 state = AddSubMenu(new cMenuSetupScreenLayout(&tmpTvguideConfig));
             if (strcmp(ItemText, tr("Fonts and Fontsizes")) == 0)
                 state = AddSubMenu(new cMenuSetupFont(&tmpTvguideConfig));
+            if (strcmp(ItemText, tr("Recording Menus and Favorites")) == 0)
+                state = AddSubMenu(new cMenuSetupFavorites(&tmpTvguideConfig));
             if (strcmp(ItemText, tr("Image Loading and Caching")) == 0)
                 state = AddSubMenu(new cMenuSetupImageCache(&tmpTvguideConfig));  
         }
@@ -99,6 +102,23 @@ void cTvguideSetup::Store(void) {
     SetupStore("channelHeaderHeightPercent", tvguideConfig.channelHeaderHeightPercent);
     SetupStore("footerHeightPercent", tvguideConfig.footerHeightPercent);
     SetupStore("recMenuAskFolder", tvguideConfig.recMenuAskFolder);
+    SetupStore("favWhatsOnNow", tvguideConfig.favWhatsOnNow);
+    SetupStore("favWhatsOnNext", tvguideConfig.favWhatsOnNext);
+    SetupStore("favUseTime1", tvguideConfig.favUseTime1);
+    SetupStore("favUseTime2", tvguideConfig.favUseTime2);
+    SetupStore("favUseTime3", tvguideConfig.favUseTime3);
+    SetupStore("favUseTime4", tvguideConfig.favUseTime4);
+    SetupStore("favTime1", tvguideConfig.favTime1);
+    SetupStore("favTime2", tvguideConfig.favTime2);
+    SetupStore("favTime3", tvguideConfig.favTime3);
+    SetupStore("favTime4", tvguideConfig.favTime4);
+    SetupStore("descUser1", tvguideConfig.descUser1.c_str());
+    SetupStore("descUser2", tvguideConfig.descUser2.c_str());
+    SetupStore("descUser3", tvguideConfig.descUser3.c_str());
+    SetupStore("descUser4", tvguideConfig.descUser4.c_str());
+    SetupStore("favLimitChannels", tvguideConfig.favLimitChannels);
+    SetupStore("favStartChannel", tvguideConfig.favStartChannel);
+    SetupStore("favStopChannel", tvguideConfig.favStopChannel);
     SetupStore("fontIndex", tvguideConfig.fontIndex);
     SetupStore("FontButtonDelta", tvguideConfig.FontButtonDelta);
     SetupStore("FontDetailViewDelta", tvguideConfig.FontDetailViewDelta);
@@ -156,7 +176,7 @@ eOSState cMenuSetupSubMenu::ProcessKey(eKeys Key) {
   return state;
 }
 
-//------------------------------------------------------------------------------------------------------------------
+//----- General Settings -------------------------------------------------------------------------------------------------------------
 
 cMenuSetupGeneral::cMenuSetupGeneral(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("General Settings"), data) {
     themes.Load(*cString("tvguide"));
@@ -196,9 +216,6 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
-    Add(new cMenuEditBoolItem(tr("Use folders for instant records"), &tmpTvguideConfig->recMenuAskFolder));
-    if (pRemoteTimers)
-        Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
         Add(new cMenuEditIntItem(cString::sprintf("%s%s", *indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
@@ -218,7 +235,7 @@ eOSState cMenuSetupGeneral::ProcessKey(eKeys Key) {
     return state;
 }
 
-//------------------------------------------------------------------------------------------------------------------
+//----- Screen Presentation -------------------------------------------------------------------------------------------------------------
 
 cMenuSetupScreenLayout::cMenuSetupScreenLayout(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Screen Presentation"), data) {
     displayModeItems[0] = "vertical";
@@ -299,7 +316,7 @@ eOSState cMenuSetupScreenLayout::ProcessKey(eKeys Key) {
     return state;
 }
 
-//------------------------------------------------------------------------------------------------------------------
+//-----Fonts and Fontsizes -------------------------------------------------------------------------------------------------------
 
 cMenuSetupFont::cMenuSetupFont(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Fonts and Fontsizes"), data) {
     cFont::GetAvailableFontNames(&fontNames);
@@ -346,6 +363,81 @@ void cMenuSetupFont::Set(void) {
     SetCurrent(Get(currentItem));
     Display();
 }
+
+//----- Recording Menus and Favorites -------------------------------------------------------------------------------------------------------
+
+cMenuSetupFavorites::cMenuSetupFavorites(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Recording Menus and Favorites"), data) {
+    strn0cpy(description1, data->descUser1.c_str(), sizeof(description1));
+    strn0cpy(description2, data->descUser2.c_str(), sizeof(description2));
+    strn0cpy(description3, data->descUser3.c_str(), sizeof(description3));
+    strn0cpy(description4, data->descUser4.c_str(), sizeof(description4));
+    Set();
+}
+
+void cMenuSetupFavorites::Set(void) {
+    int currentItem = Current();
+    Clear();
+
+    Add(new cMenuEditBoolItem(tr("Use folders for instant records"), &tmpTvguideConfig->recMenuAskFolder));
+    if (pRemoteTimers)
+        Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
+
+    Add(new cMenuEditBoolItem(tr("Use \"What's on now\" in favorites"), &tmpTvguideConfig->favWhatsOnNow));
+    Add(new cMenuEditBoolItem(tr("Use \"What's on next\" in favorites"), &tmpTvguideConfig->favWhatsOnNext));
+    Add(new cMenuEditBoolItem(tr("Use user defined time 1 in favorites"), &tmpTvguideConfig->favUseTime1));
+    if (tmpTvguideConfig->favUseTime1) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description1, sizeof(description1), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime1));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 2 in favorites"), &tmpTvguideConfig->favUseTime2));
+    if (tmpTvguideConfig->favUseTime2) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description2, sizeof(description2), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime2));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 3 in favorites"), &tmpTvguideConfig->favUseTime3));
+    if (tmpTvguideConfig->favUseTime3) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description3, sizeof(description3), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime3));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 4 in favorites"), &tmpTvguideConfig->favUseTime4));
+    if (tmpTvguideConfig->favUseTime4) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description4, sizeof(description4), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime4));
+    }
+    Add(new cMenuEditBoolItem(tr("Limit channels in favorites"), &tmpTvguideConfig->favLimitChannels));
+    if (tmpTvguideConfig->favLimitChannels) {
+        Add(new cMenuEditChanItem(tr("Start Channel"), &tmpTvguideConfig->favStartChannel));
+        Add(new cMenuEditChanItem(tr("Stop Channel"), &tmpTvguideConfig->favStopChannel));
+    }
+
+
+    SetCurrent(Get(currentItem));
+    Display();
+}
+
+eOSState cMenuSetupFavorites::ProcessKey(eKeys Key) {
+    int tmpFavUseTime1 = tmpTvguideConfig->favUseTime1;
+    int tmpFavUseTime2 = tmpTvguideConfig->favUseTime2;
+    int tmpFavUseTime3 = tmpTvguideConfig->favUseTime3;
+    int tmpFavUseTime4 = tmpTvguideConfig->favUseTime4;
+    int tmpFavLimitChannels = tmpTvguideConfig->favLimitChannels;
+    eOSState state = cOsdMenu::ProcessKey(Key);
+    if (Key == kOk) {
+        tmpTvguideConfig->descUser1 = description1;
+        tmpTvguideConfig->descUser2 = description2;
+        tmpTvguideConfig->descUser3 = description3;
+        tmpTvguideConfig->descUser4 = description4;
+    } else if ((Key == kLeft)||(Key == kRight)) {
+        if ((tmpFavUseTime1 != tmpTvguideConfig->favUseTime1) ||
+            (tmpFavUseTime2 != tmpTvguideConfig->favUseTime2) ||
+            (tmpFavUseTime3 != tmpTvguideConfig->favUseTime3) ||
+            (tmpFavUseTime4 != tmpTvguideConfig->favUseTime4) ||
+            (tmpFavLimitChannels != tmpTvguideConfig->favLimitChannels) )
+            Set();
+    }
+    return state;
+}
+
 
 //-----Image Caching-------------------------------------------------------------------------------------------------------------
 cMenuSetupImageCache::cMenuSetupImageCache(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Image Loading and Caching"), data) {

@@ -73,6 +73,12 @@ enum eRecMenuState {
     //FAVORITES
     rmsFavoritesRecord,
     rmsFavoritesRecordConfirm,
+    rmsFavoritesNow,
+    rmsFavoritesNext,    
+    rmsFavoritesUser1,
+    rmsFavoritesUser2,
+    rmsFavoritesUser3,
+    rmsFavoritesUser4,
 };
 
 enum eDependend {
@@ -626,6 +632,23 @@ public:
     void Show(void); 
     void Draw(void);
     cTVGuideSearchTimer GetFavorite(void) { return favorite; };
+    eRecMenuState ProcessKey(eKeys Key);
+};
+
+// --- cRecMenuItemFavoriteStatic  -------------------------------------------------------
+class cRecMenuItemFavoriteStatic : public cRecMenuItem {
+private:
+    std::string text;
+    cPixmap *pixmapText;
+    cPixmap *pixmapIcons;
+    int DrawIcons(void);
+public:
+    cRecMenuItemFavoriteStatic(std::string text, eRecMenuState action, bool active);
+    virtual ~cRecMenuItemFavoriteStatic(void);
+    void SetPixmaps(void);
+    void Hide(void);
+    void Show(void); 
+    void Draw(void);
     eRecMenuState ProcessKey(eKeys Key);
 };
 

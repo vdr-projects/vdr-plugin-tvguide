@@ -61,6 +61,18 @@ class cMenuSetupFont : public cMenuSetupSubMenu {
         cMenuSetupFont(cTvguideConfig *data);
 };
 
+class cMenuSetupFavorites : public cMenuSetupSubMenu {
+    protected:
+        char description1[256];
+        char description2[256];
+        char description3[256];
+        char description4[256];
+        void Set(void);
+        virtual eOSState ProcessKey(eKeys Key);
+    public:
+        cMenuSetupFavorites(cTvguideConfig *data);
+};
+
 class cMenuSetupImageCache : public cMenuSetupSubMenu {
     protected:
         void Set(void);

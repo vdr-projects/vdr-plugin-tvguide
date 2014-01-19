@@ -26,6 +26,7 @@ private:
     bool DisplayTimerConflict(cTimer *timer);
     bool DisplayTimerConflict(int timerID);
     void DisplayDetailedView(const cEvent *ev);
+    void DisplayFavoriteResults(std::string header, const cEvent **result, int numResults);
 public:
     cRecMenuManager(void);
     virtual ~cRecMenuManager(void);

@@ -2732,3 +2732,77 @@ eRecMenuState cRecMenuItemFavorite::ProcessKey(eKeys Key) {
     }
     return rmsNotConsumed;
 }
+
+// --- cRecMenuItemFavoriteStatic  -------------------------------------------------------
+cRecMenuItemFavoriteStatic::cRecMenuItemFavoriteStatic(std::string text, eRecMenuState action, bool active) {
+    this->text = text;
+    this->action = action;
+    pixmapText = NULL;
+    pixmapIcons = NULL;
+    selectable = true;
+    this->active = active;
+    height = 2 * font->Height();;
+}
+
+cRecMenuItemFavoriteStatic::~cRecMenuItemFavoriteStatic(void) {
+    if (pixmapText)
+        osdManager.releasePixmap(pixmapText);
+    if (pixmapIcons)
+        osdManager.releasePixmap(pixmapIcons);
+}
+
+void cRecMenuItemFavoriteStatic::SetPixmaps(void) {
+    if (!pixmap) {
+        pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
+        pixmapText = osdManager.requestPixmap(5, cRect(x, y, width, height));
+        pixmapIcons = osdManager.requestPixmap(6, cRect(x, y, width, height));
+    } else {
+        pixmap->SetViewPort(cRect(x, y, width, height));
+        pixmapText->SetViewPort(cRect(x, y, width, height));
+        pixmapIcons->SetViewPort(cRect(x, y, width, height));
+    }
+}
+
+void cRecMenuItemFavoriteStatic::Draw(void) {
+    int textX = DrawIcons();
+    pixmapText->Fill(clrTransparent);
+    textX += 20;
+    pixmapText->DrawText(cPoint(textX, (height - fontLarge->Height())/2), text.c_str(), colorText, clrTransparent, fontLarge);
+}
+
+void cRecMenuItemFavoriteStatic::Hide(void) { 
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapText) pixmapText->SetLayer(-1);
+    if (pixmapIcons) pixmapIcons->SetLayer(-1);
+}
+
+void cRecMenuItemFavoriteStatic::Show(void) { 
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapText) pixmapText->SetLayer(5);
+    if (pixmapIcons) pixmapIcons->SetLayer(6);
+}
+
+int cRecMenuItemFavoriteStatic::DrawIcons(void) {
+    pixmapIcons->Fill(clrTransparent);
+    int iconsX = 10;
+    int iconSize = height / 2;
+    int iconY = (height - iconSize) / 2;
+    std::string iconSearch;
+    iconSearch = active ? "search_active" : "search_inactive" ;
+    cImage *imgSearch = imgCache.GetIcon(iconSearch, iconSize, iconSize);
+    if (imgSearch) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgSearch);
+        iconsX += iconSize + 10;
+    }
+    return iconsX;
+}
+
+eRecMenuState cRecMenuItemFavoriteStatic::ProcessKey(eKeys Key) {
+    switch (Key & ~k_Repeat) {
+        case kOk:
+            return action;
+        default:
+            break;
+    }
+    return rmsNotConsumed;
+}

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-15 18:19+0100\n"
+"POT-Creation-Date: 2014-01-19 12:51+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -94,6 +94,12 @@ msgid "active timers"
 msgstr ""
 
 msgid "recordings done"
+msgstr ""
+
+msgid "What's on now"
+msgstr ""
+
+msgid "What's on next"
 msgstr ""
 
 msgid "Instant Record"
@@ -405,6 +411,12 @@ msgstr "cerca resultats per temporitzador"
 msgid "search result for Search Timer"
 msgstr "cerca resultat per temporitzador"
 
+msgid "search results for Favorite"
+msgstr ""
+
+msgid "search result for Favorite"
+msgstr ""
+
 msgid "Nothing found for Search String"
 msgstr "No s'ha trobat la cadena de text"
 
@@ -510,6 +522,9 @@ msgstr "Presentació de pantalla"
 msgid "Fonts and Fontsizes"
 msgstr "Tipus i mida de lletra"
 
+msgid "Recording Menus and Favorites"
+msgstr ""
+
 msgid "Image Loading and Caching"
 msgstr ""
 
@@ -584,12 +599,6 @@ msgstr "Salt (Botons 4 / 6) en hores"
 
 msgid "Time Format (12h/24h)"
 msgstr "Format de temps (12h/24h)"
-
-msgid "Use folders for instant records"
-msgstr "Utilitza carpetes per gravacions a l'instant"
-
-msgid "Use Remotetimers"
-msgstr "Utilitza temporitzadors remots"
 
 msgid "Display Reruns in detailed EPG View"
 msgstr "Mostre reemissions a l'EPG detallat"
@@ -742,6 +751,39 @@ msgid "Search & Recording Menu Small Font Size"
 msgstr "Mida de la Font petita - Menú Cerca & Enregistra"
 
 msgid "Search & Recording Menu Header Font Size"
+msgstr ""
+
+msgid "Use folders for instant records"
+msgstr "Utilitza carpetes per gravacions a l'instant"
+
+msgid "Use Remotetimers"
+msgstr "Utilitza temporitzadors remots"
+
+msgid "Use \"What's on now\" in favorites"
+msgstr ""
+
+msgid "Use \"What's on next\" in favorites"
+msgstr ""
+
+msgid "Use user defined time 1 in favorites"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Use user defined time 2 in favorites"
+msgstr ""
+
+msgid "Use user defined time 3 in favorites"
+msgstr ""
+
+msgid "Use user defined time 4 in favorites"
+msgstr ""
+
+msgid "Limit channels in favorites"
 msgstr ""
 
 msgid "Create Log Messages for image loading"

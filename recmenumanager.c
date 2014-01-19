@@ -720,6 +720,41 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenuBuffer2 = NULL;
             activeMenu->Show();
             break;
+        case rmsFavoritesNow:
+        case rmsFavoritesNext: {
+            int numResults = 0;
+            bool nowOrNext;
+            std::string header;
+            if (nextState == rmsFavoritesNow) {
+                nowOrNext = true;
+                header = tr("What's on now");
+            } else {
+                nowOrNext = false;
+                header = tr("What's on next");
+            }
+            const cEvent **result = recManager->WhatsOnNow(nowOrNext, numResults);
+            DisplayFavoriteResults(header, result, numResults);
+            break; }
+        case rmsFavoritesUser1: {
+            int numResults = 0;
+            const cEvent **result = recManager->UserDefinedTime(1, numResults);
+            DisplayFavoriteResults(tvguideConfig.descUser1, result, numResults);
+            break; }
+        case rmsFavoritesUser2: {
+            int numResults = 0;
+            const cEvent **result = recManager->UserDefinedTime(2, numResults);
+            DisplayFavoriteResults(tvguideConfig.descUser2, result, numResults);
+            break; }
+        case rmsFavoritesUser3: {
+            int numResults = 0;
+            const cEvent **result = recManager->UserDefinedTime(3, numResults);
+            DisplayFavoriteResults(tvguideConfig.descUser3, result, numResults);
+            break; }
+        case rmsFavoritesUser4: {
+            int numResults = 0;
+            const cEvent **result = recManager->UserDefinedTime(4, numResults);
+            DisplayFavoriteResults(tvguideConfig.descUser4, result, numResults);
+            break; }
 
         /********************************************************************************************** 
          *    COMMON
@@ -740,6 +775,20 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;
     }
     return state;
+}
+
+void cRecMenuManager::DisplayFavoriteResults(std::string header, const cEvent **result, int numResults) {
+    if (numResults) {
+        activeMenuBuffer = activeMenu;
+        activeMenuBuffer->Hide();
+        activeMenu = new cRecMenuSearchTimerResults(header, result, numResults, "", rmsFavoritesRecord);
+        activeMenu->Display();
+    } else {
+        activeMenuBuffer = activeMenu;
+        activeMenuBuffer->Hide();
+        activeMenu = new cRecMenuSearchTimerNothingFound(header);
+        activeMenu->Display();
+    }
 }
 
 void cRecMenuManager::DisplaySearchTimerList(void) {

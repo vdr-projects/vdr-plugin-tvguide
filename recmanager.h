@@ -55,6 +55,8 @@ public:
     cRecording **SearchForRecordings(std::string searchString, int &numResults);
     const cEvent **LoadReruns(const cEvent *event, int &numResults);
     void GetFavorites(std::vector<cTVGuideSearchTimer> *favorites);
+    const cEvent **WhatsOnNow(bool nowOrNext, int &numResults);
+    const cEvent **UserDefinedTime(int userTime, int &numResults);
     virtual ~cRecManager  (void);
 };
 
