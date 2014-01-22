@@ -98,8 +98,9 @@ bool cImageLoader::LoadOsdElement(cString name, int width, int height) {
     success = LoadImage(*name, *path, "png");
     if (!success)
         return false;
-    cString geometry = cString::sprintf("%dx%d!", width, height);
-    buffer.resize(Geometry(*geometry));
+    Geometry size(width, height);
+    size.aspect(true);
+    buffer.sample(size);
     return true;
 }
 
