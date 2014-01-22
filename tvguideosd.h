@@ -38,8 +38,8 @@ private:
   void processKeyRed();
   void processKeyGreen();
   void processKeyYellow();
-  eOSState processKeyBlue();
-  eOSState processKeyOk();
+  eOSState processKeyBlue(bool *alreadyUnlocked);
+  eOSState processKeyOk(bool *alreadyUnlocked);
   void processNumKey(int numKey);
   void TimeJump(int mode);
   void ChannelJump(int num);
@@ -51,7 +51,7 @@ private:
   void timeBack();
   void ScrollForward();
   void ScrollBack();
-  eOSState ChannelSwitch();
+  eOSState ChannelSwitch(bool *alreadyUnlocked);
   void DetailedEPG();
   void SetTimers();
   void dump();

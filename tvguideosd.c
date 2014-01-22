@@ -499,9 +499,9 @@ void cTvGuideOsd::processKeyYellow() {
     }
 }
 
-eOSState cTvGuideOsd::processKeyBlue() {
+eOSState cTvGuideOsd::processKeyBlue(bool *alreadyUnlocked) {
     if (tvguideConfig.blueKeyMode == eBlueKeySwitch) {
-        return ChannelSwitch();
+        return ChannelSwitch(alreadyUnlocked);
     } else if (tvguideConfig.blueKeyMode == eBlueKeyEPG) {
         DetailedEPG();
     } else if (tvguideConfig.blueKeyMode == eBlueKeyFavorites) {
@@ -510,22 +510,24 @@ eOSState cTvGuideOsd::processKeyBlue() {
     return osContinue;
 }
 
-eOSState cTvGuideOsd::processKeyOk() {
+eOSState cTvGuideOsd::processKeyOk(bool *alreadyUnlocked) {
     if (tvguideConfig.blueKeyMode == eBlueKeySwitch) {
         DetailedEPG();
     } else if (tvguideConfig.blueKeyMode == eBlueKeyEPG) {
-        return ChannelSwitch();
+        return ChannelSwitch(alreadyUnlocked);
     } else if (tvguideConfig.blueKeyMode == eBlueKeyFavorites) {
         DetailedEPG();
     }
     return osContinue;
 }
 
-eOSState cTvGuideOsd::ChannelSwitch() {
+eOSState cTvGuideOsd::ChannelSwitch(bool *alreadyUnlocked) {
     if (activeGrid == NULL)
         return osContinue;
     const cChannel *currentChannel = activeGrid->column->getChannel();
     if (currentChannel) {
+        cPixmap::Unlock();
+        *alreadyUnlocked = true;
         cDevice::PrimaryDevice()->SwitchChannel(currentChannel, true);
         if (tvguideConfig.closeOnSwitch) {
             if (detailView) {
@@ -647,6 +649,7 @@ void cTvGuideOsd::SetTimers() {
 eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
     eOSState state = osContinue;
     cPixmap::Lock();
+    bool alreadyUnlocked = false;
     if (recMenuManager->isActive()) {
         state = recMenuManager->ProcessKey(Key);
         if (state == osEnd) {
@@ -664,9 +667,9 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;
-            if ((tvguideConfig.blueKeyMode == eBlueKeySwitch) || (tvguideConfig.blueKeyMode == eBlueKeyFavorites))
-                state = ChannelSwitch();
-            else {
+            if ((tvguideConfig.blueKeyMode == eBlueKeySwitch) || (tvguideConfig.blueKeyMode == eBlueKeyFavorites)) {
+                state = ChannelSwitch(&alreadyUnlocked);
+            } else {
                 osdManager.flush();
                 state = osContinue;
             }
@@ -674,7 +677,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             delete detailView;
             detailView = NULL;
             detailViewActive = false;
-            state = ChannelSwitch();
+            state = ChannelSwitch(&alreadyUnlocked);
         } else {
             state = detailView->ProcessKey(Key);
             if (state == osEnd) {
@@ -694,15 +697,17 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
             case kRed:      processKeyRed(); break;
             case kGreen:    processKeyGreen(); break;
             case kYellow:   processKeyYellow(); break;
-            case kBlue:     state = processKeyBlue(); break;
-            case kOk:       state = processKeyOk(); break;
+            case kBlue:     state = processKeyBlue(&alreadyUnlocked); break;
+            case kOk:       state = processKeyOk(&alreadyUnlocked); break;
             case kBack:     state=osEnd; break;    
             case k0 ... k9: processNumKey(Key - k0); break;
             case kNone:     if (channelJumper) CheckTimeout(); break;
             default:        break;
         }
     }
-    cPixmap::Unlock();
+    if (!alreadyUnlocked) {
+        cPixmap::Unlock();
+    }
     return state;
 }
 
