@@ -5,20 +5,20 @@
 class cTVGuideSearchTimer {
 private:
     std::string strTimer;
-    int 		ID;
+    int         ID;
     std::string searchString;
-	int      	useTime;
-	int      	startTime;
-	int      	stopTime;
-	int  	    useChannel;
-	cChannel 	*channelMin;
+    int         useTime;
+    int         startTime;
+    int      	stopTime;
+    int         useChannel;
+    cChannel 	*channelMin;
     cChannel 	*channelMax;
     std::string channelGroup;
-	int      	useCase;
-	int      	mode;
-	int      	useTitle;
-	int      	useSubtitle;
-	int      	useDescription;
+    int      	useCase;
+    int      	mode;
+    int         useTitle;
+    int         useSubtitle;
+    int         useDescription;
     int         useDuration;
     int         minDuration;
     int         maxDuration;

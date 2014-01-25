@@ -831,7 +831,7 @@ bool cRecMenuManager::DisplayTimerConflict(int timerID) {
 void cRecMenuManager::DisplayDetailedView(const cEvent *ev) {
     activeMenu->Hide();
     detailView = new cDetailView(ev, footer);
-    footer->SetDetailedViewMode();
+    footer->SetDetailedViewMode(true);
     detailView->setContent();
     detailView->drawHeader();
     detailView->drawContent();

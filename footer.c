@@ -74,20 +74,24 @@ void cFooter::UpdateGroupButtons(const cChannel *channel, bool force) {
     }
 }
 
-void cFooter::SetDetailedViewMode(void) {
+void cFooter::SetDetailedViewMode(bool fromRecMenu) {
     ClearButton(positionButtons[1]);
     ClearButton(positionButtons[2]);
-    if (tvguideConfig.blueKeyMode != eBlueKeySwitch) {
+    if (fromRecMenu) {
+        ClearButton(positionButtons[0]);
+        ClearButton(positionButtons[3]);
+    } else if (tvguideConfig.blueKeyMode != eBlueKeySwitch) {
         ClearButton(positionButtons[3]);
         drawBlueButton(true);
     }
 }
 
 void cFooter::LeaveDetailedViewMode(const cChannel *channel) {
+    drawRedButton();
+    drawBlueButton();
     if (tvguideConfig.channelJumpMode == eNumJump) {
         drawGreenButton();
         drawYellowButton();
-        drawBlueButton();
     } else {
         UpdateGroupButtons(channel, true);
     }
