@@ -40,6 +40,7 @@ enum eBlueKeyMode {
 
 class cTvguideConfig {
     private:
+        cString checkSlashAtEnd(std::string path);
     public:
         cTvguideConfig();
         ~cTvguideConfig();
@@ -89,6 +90,9 @@ class cTvguideConfig {
         int epgImageHeightLarge;
         cString epgImagePath;
         cString iconPath;
+        cString logoPathDefault;
+        cString iconPathDefault;
+        cString epgImagePathDefault;
         int recMenuAskFolder;
         int favWhatsOnNow;
         int favWhatsOnNext;

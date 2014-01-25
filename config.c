@@ -191,36 +191,45 @@ void cTvguideConfig::SetStyle(void) {
 }
 
 void cTvguideConfig::SetLogoPath(cString path) {
-    logoPath = path;
+    logoPath = checkSlashAtEnd(*path);
     logoPathSet = true;
     esyslog("tvguide: Logo Path set to %s", *logoPath);
 }
 
 void cTvguideConfig::SetImagesPath(cString path) {
-    epgImagePath = path;
+    epgImagePath = checkSlashAtEnd(*path);
     imagesPathSet = true;
     esyslog("tvguide: EPG Image Path set to %s", *epgImagePath);
 }
 
 void cTvguideConfig::SetIconsPath(cString path) {
-    iconPath = path;
+    iconPath = checkSlashAtEnd(*path);
     iconsPathSet = true;
     esyslog("tvguide: Icon Path set to %s", *iconPath);
 }
 
 void cTvguideConfig::SetDefaultPathes(void) {
+    logoPathDefault = cString::sprintf("%s/logos/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
+    iconPathDefault = cString::sprintf("%s/icons/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
+    epgImagePathDefault = cString::sprintf("%s/epgimages/", cPlugin::CacheDirectory(PLUGIN_NAME_I18N));
+
     if (!logoPathSet) {
-        cString path = cString::sprintf("%s/channellogos/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
-        SetLogoPath(path);
+        logoPath = logoPathDefault;
     }
     if (!imagesPathSet) {
-        cString path = cString::sprintf("%s/epgimages/", cPlugin::CacheDirectory(PLUGIN_NAME_I18N));
-        SetImagesPath(path);
+        epgImagePath = epgImagePathDefault;
     }
     if (!iconsPathSet) {
-        cString path = cString::sprintf("%s/icons/", cPlugin::ResourceDirectory(PLUGIN_NAME_I18N));
-        SetIconsPath(path);
+        iconPath = iconPathDefault;
     }
+}
+
+cString cTvguideConfig::checkSlashAtEnd(std::string path) {
+    try {
+        if (!(path.at(path.size()-1) == '/'))
+            return cString::sprintf("%s/", path.c_str());
+    } catch (...) {return path.c_str();}
+    return path.c_str();
 }
 
 bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {

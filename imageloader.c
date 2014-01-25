@@ -29,10 +29,16 @@ bool cImageLoader::LoadLogo(const cChannel *channel, int width, int height) {
         extension = "jpg";
     }
     bool success = false;
-    success = LoadImage(channelID.c_str(), *tvguideConfig.logoPath, *extension);
-    if (!success) {
-        success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+    if (tvguideConfig.logoPathSet) {
+        success = LoadImage(channelID.c_str(), *tvguideConfig.logoPath, *extension);
+        if (!success) {
+            success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+        }
     }
+    if (!success)
+        success = LoadImage(channelID.c_str(), *tvguideConfig.logoPathDefault, *extension);
+    if (!success)
+        success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPathDefault, *extension);
     if (success)
         buffer.sample(Geometry(width, height));
     return success;
@@ -77,12 +83,22 @@ bool cImageLoader::LoadPoster(const char *poster, int width, int height) {
 bool cImageLoader::LoadIcon(const char *cIcon, int size) {
     if (size==0)
         return false;
-    cString iconPathTheme = cString::sprintf("%s%s/recmenuicons/", *tvguideConfig.iconPath, *tvguideConfig.themeName);
     bool success = false;
-    success = LoadImage(cIcon, *iconPathTheme, "png");
+    if (tvguideConfig.iconsPathSet) {
+        cString iconPathTheme = cString::sprintf("%s%s/recmenuicons/", *tvguideConfig.iconPath, *tvguideConfig.themeName);
+        success = LoadImage(cIcon, *iconPathTheme, "png");
+        if (!success) {
+            cString iconPath = cString::sprintf("%srecmenuicons/", *tvguideConfig.iconPath);
+            success = LoadImage(cIcon, *iconPath, "png");
+        }
+    }
     if (!success) {
-        cString iconPathdefault = cString::sprintf("%s/recmenuicons/", *tvguideConfig.iconPath);
-        success = LoadImage(cIcon, *iconPathdefault, "png");
+        cString iconPathTheme = cString::sprintf("%s%s/recmenuicons/", *tvguideConfig.iconPathDefault, *tvguideConfig.themeName);
+        success = LoadImage(cIcon, *iconPathTheme, "png");
+        if (!success) {
+            cString iconPath = cString::sprintf("%srecmenuicons/", *tvguideConfig.iconPathDefault);
+            success = LoadImage(cIcon, *iconPath, "png");
+        }
     }
     if (!success)
         return false;
@@ -94,8 +110,22 @@ bool cImageLoader::LoadOsdElement(cString name, int width, int height) {
     if ((width == 0)||(height==0))
         return false;
     bool success = false;
-    cString path = cString::sprintf("%s%s%s", *tvguideConfig.iconPath, *tvguideConfig.themeName, "/osdElements/");
-    success = LoadImage(*name, *path, "png");
+    if (tvguideConfig.iconsPathSet) {
+        cString path = cString::sprintf("%s%s%s", *tvguideConfig.iconPath, *tvguideConfig.themeName, "/osdElements/");
+        success = LoadImage(*name, *path, "png");
+        if (!success) {
+            path = cString::sprintf("%s%s", *tvguideConfig.iconPath, "/osdElements/");
+            success = LoadImage(*name, *path, "png");
+        }
+    }
+    if (!success) {
+        cString path = cString::sprintf("%s%s%s", *tvguideConfig.iconPathDefault, *tvguideConfig.themeName, "/osdElements/");
+        success = LoadImage(*name, *path, "png");
+    }
+    if (!success) {
+        cString path = cString::sprintf("%s%s", *tvguideConfig.iconPathDefault, "/osdElements/");
+        success = LoadImage(*name, *path, "png");
+    }
     if (!success)
         return false;
     Geometry size(width, height);

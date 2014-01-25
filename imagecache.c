@@ -548,14 +548,28 @@ void cImageCache::AddCornersGroupVertical(cImage *img) {
 
 bool cImageCache::LoadIcon(std::string name) {
     bool success = false;
-    cString iconPathTheme = cString::sprintf("%s%s/", *tvguideConfig.iconPath, *tvguideConfig.themeName);
-    success = LoadImage(name, *iconPathTheme, "png");
-    if (success) {
-        return true;
-    } else {
-        success = LoadImage(name, *tvguideConfig.iconPath, "png");
+    if (tvguideConfig.iconsPathSet) {
+        cString iconPathTheme = cString::sprintf("%s%s/", *tvguideConfig.iconPath, *tvguideConfig.themeName);
+        success = LoadImage(name, *iconPathTheme, "png");
         if (success) {
             return true;
+        } else {
+            success = LoadImage(name, *tvguideConfig.iconPath, "png");
+            if (success) {
+                return true;
+            }
+        }
+    }
+    if (!success) {
+        cString iconPathTheme = cString::sprintf("%s%s/", *tvguideConfig.iconPathDefault, *tvguideConfig.themeName);
+        success = LoadImage(name, *iconPathTheme, "png");
+        if (success) {
+            return true;
+        } else {
+            success = LoadImage(name, *tvguideConfig.iconPathDefault, "png");
+            if (success) {
+                return true;
+            }
         }
     }
     return false;
@@ -573,10 +587,19 @@ bool cImageCache::LoadLogo(const cChannel *channel) {
     } else if (tvguideConfig.logoExtension == 1) {
         extension = "jpg";
     }
-    success = LoadImage(channelID.c_str(), *tvguideConfig.logoPath, *extension);
+
+    if (tvguideConfig.logoPathSet) {
+        success = LoadImage(channelID.c_str(), *tvguideConfig.logoPath, *extension);
+        if (success)
+            return true;
+        success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+        if (success)
+            return true;
+    }
+    success = LoadImage(channelID.c_str(), *tvguideConfig.logoPathDefault, *extension);
     if (success)
         return true;
-    success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPath, *extension);
+    success = LoadImage(logoLower.c_str(), *tvguideConfig.logoPathDefault, *extension);
     return success;
 }
 
