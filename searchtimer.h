@@ -85,6 +85,7 @@ public:
     bool UseDayOfWeek(void) { return useDayOfWeek; };
     int DayOfWeek(void);
     int UseEpisode(void) { return useEpisode; };
+    std::string Directory(void) { return directory; };
     int Priority(void) { return priority; };
     int Lifetime(void) { return lifetime; };
     int MarginStart(void) { return marginStart; };
@@ -111,6 +112,8 @@ public:
     void SetStopTime(int stopTime) { this->stopTime = stopTime; };
     void SetUseDayOfWeek(bool useDayOfWeek) { this->useDayOfWeek = useDayOfWeek; };
     void SetDayOfWeek(int VDRDayOfWeek);
+    void SetUseEpisode(int useEpisode) { this->useEpisode = useEpisode; };
+    void SetDirectory(std::string directory) { this-> directory = directory; };
     void SetPriority(int priority) { this->priority = priority; };
     void SetLifetime(int lifetime) { this->lifetime = lifetime; };
     void SetMarginStart(int marginStart) { this->marginStart = marginStart; };

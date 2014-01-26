@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-19 12:51+0100\n"
+"POT-Creation-Date: 2014-01-26 09:25+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -50,6 +50,9 @@ msgstr ""
 
 msgid "images"
 msgstr ""
+
+msgid "root video folder"
+msgstr "Hlavný video adresár"
 
 msgid "Transp."
 msgstr "Transp."
@@ -137,9 +140,6 @@ msgstr "Vyhµada» v nahrávkach"
 
 msgid "Set Folder for"
 msgstr "Nastavi» adresár pre"
-
-msgid "root video folder"
-msgstr "Hlavný video adresár"
 
 msgid "Timer created"
 msgstr "Plán vytvorený"
@@ -230,6 +230,9 @@ msgstr "Plán zaèína"
 
 msgid "Timer stop time"
 msgstr "Plán konèí"
+
+msgid "Folder"
+msgstr ""
 
 msgid "Save"
 msgstr "Ulo¾i»"
@@ -328,6 +331,9 @@ msgid "Time margin for start in minutes"
 msgstr ""
 
 msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Series Recording"
 msgstr ""
 
 msgid "Use VPS"

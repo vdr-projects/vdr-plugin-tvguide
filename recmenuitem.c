@@ -588,6 +588,163 @@ eRecMenuState cRecMenuItemSelect::ProcessKey(eKeys Key) {
     return rmsNotConsumed;
 }
 
+// --- cRecMenuItemSelectDirectory  -------------------------------------------------------
+cRecMenuItemSelectDirectory::cRecMenuItemSelectDirectory(cString text,
+                                                         std::string originalFolder,
+                                                         bool active,
+                                                         char *callback,
+                                                         eRecMenuState action) {
+    selectable = true;
+    this->text = text;
+    this->originalFolder = originalFolder;
+    seriesFolder = "";
+    this->active = active;
+    this->callback = callback;
+    this->action = action;
+    height = 3 * font->Height() / 2;
+    pixmapVal = NULL;
+    folders.push_back(tr("root video folder"));
+    ReadFolders(NULL, "");
+    numValues = folders.size();
+    this->currentVal = GetInitial();
+}
+
+cRecMenuItemSelectDirectory::~cRecMenuItemSelectDirectory(void) {
+    if (pixmapVal)
+        osdManager.releasePixmap(pixmapVal);
+}
+
+void cRecMenuItemSelectDirectory::SetPixmaps(void) {
+    if (!pixmap) {
+        pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
+        pixmapVal = osdManager.requestPixmap(5, cRect(x, y, width, height));
+    } else {
+        pixmap->SetViewPort(cRect(x, y, width, height));
+        pixmapVal->SetViewPort(cRect(x, y, width, height));
+    }
+}
+
+void cRecMenuItemSelectDirectory::Hide(void) { 
+    if (pixmap) pixmap->SetLayer(-1);
+    if (pixmapVal) pixmapVal->SetLayer(-1);
+}
+
+void cRecMenuItemSelectDirectory::Show(void) { 
+    if (pixmap) pixmap->SetLayer(4);
+    if (pixmapVal) pixmapVal->SetLayer(5);
+}
+
+void cRecMenuItemSelectDirectory::Draw(void) {
+    int textY = (height - font->Height()) / 2;
+    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    DrawValue();    
+}
+
+void cRecMenuItemSelectDirectory::DrawValue(void) {
+    pixmapVal->Fill(clrTransparent);
+    int iconSize = min(128, height);
+    int textX = width - font->Width(folders[currentVal].c_str()) - iconSize;
+    int textY = (height - font->Height()) / 2;
+    pixmapVal->DrawText(cPoint(textX, textY), folders[currentVal].c_str(), colorText, clrTransparent, font);
+    int iconLeftX = textX - iconSize;
+    int iconRightX = width - iconSize;
+    int iconY = (height - iconSize) / 2;
+    
+    cImage *imgLeft = imgCache.GetIcon("arrow_left", iconSize, iconSize);
+    if (imgLeft) {
+        pixmapVal->DrawImage(cPoint(iconLeftX, iconY), *imgLeft);
+    }
+    cImage *imgRight = imgCache.GetIcon("arrow_right", iconSize, iconSize);
+    if (imgRight) {
+        pixmapVal->DrawImage(cPoint(iconRightX, iconY), *imgRight);
+    }
+
+}
+
+eRecMenuState cRecMenuItemSelectDirectory::ProcessKey(eKeys Key) {
+    int oldValue = currentVal;
+    switch (Key & ~k_Repeat) {
+        case kLeft:
+            currentVal--;
+            if (currentVal<0)
+                currentVal = numValues - 1;
+            if (callback) {
+                SetCallback();
+            }
+            DrawValue();
+            return rmsConsumed;
+            break;
+        case kRight: {
+            currentVal = (currentVal+1)%numValues;
+            if (callback) {
+                SetCallback();
+            }
+            DrawValue();
+            return rmsConsumed;
+            break; }
+        case kOk:
+            return action;
+        default:
+            break;
+    }
+    return rmsNotConsumed;
+}
+
+void cRecMenuItemSelectDirectory::SetCallback(void) {
+    std::string newFolder = folders[currentVal];
+    if (!newFolder.compare(tr("root video folder")))
+        newFolder = "";
+    if (seriesFolder.size() > 0) {
+        if (newFolder.size() > 0)
+            newFolder = *cString::sprintf("%s/%s", folders[currentVal].c_str(), seriesFolder.c_str());
+        else
+            newFolder = seriesFolder;
+    }
+    strncpy(callback, newFolder.c_str(), TEXTINPUTLENGTH);
+}
+
+void cRecMenuItemSelectDirectory::ReadFolders(cList<cNestedItem> *rootFolders, cString path) {
+    cList<cNestedItem> *foldersLevel = NULL;
+    if (rootFolders) {
+        foldersLevel = rootFolders;
+    } else {
+        foldersLevel = &Folders;
+    }
+    for (cNestedItem *folder = foldersLevel->First(); folder; folder = foldersLevel->Next(folder)) {
+        cString strFolder = cString::sprintf("%s%s", *path, folder->Text());
+        folders.push_back(*strFolder);
+        cList<cNestedItem> *subItems = folder->SubItems();
+        if (subItems) {
+            cString newPath = cString::sprintf("%s%s/", *path, folder->Text());
+            ReadFolders(subItems, newPath);
+        }
+    }
+}
+
+int cRecMenuItemSelectDirectory::GetInitial(void) {
+    if (originalFolder.size() == 0)
+        return 0;
+    for (int i=0; i < numValues; i++) {
+        if (!folders[i].compare(originalFolder)) {
+            return i;
+        }
+    }
+    size_t found = originalFolder.find_last_of('/');
+    if (found != std::string::npos) {
+        std::string folderSet = originalFolder.substr(0, found);
+        seriesFolder = originalFolder.substr(found + 1);
+        for (int i=0; i < numValues; i++) {
+            if (!folders[i].compare(folderSet)) {
+                return i;
+            }
+        }
+    } else {
+        seriesFolder = originalFolder;
+    }
+    return 0;
+}
+
+
 // --- cRecMenuItemText  -------------------------------------------------------
 cRecMenuItemText::cRecMenuItemText(cString title,
                                    char *initialVal,

@@ -111,4 +111,7 @@ Version 1.1.0
 - left / right scroll page up / down in recmenu result lists
 - Improved favorites menu with whats on now / next and up to four user
   defined times
-- also check default paths when images and icons are loaded 
+- also check default paths when images and icons are loaded
+- directory for timers can be edited in timer edit menu
+- series recording can be configured in searchtimer menus
+- directory for searchtimers can be set and edited in searchtimer menus

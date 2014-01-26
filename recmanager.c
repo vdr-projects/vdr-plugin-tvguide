@@ -187,12 +187,14 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
     time_t day = newTimerSettings.Day();
     int start = newTimerSettings.Start();
     int stop = newTimerSettings.Stop();
+    std::string fileName = newTimerSettings.File();
 
     timer->SetDay(day);
     timer->SetStart(start);
     timer->SetStop(stop);
     timer->SetPriority(prio);
     timer->SetLifetime(lifetime);
+    timer->SetFile(fileName.c_str());
     
     if (timer->HasFlags(tfActive) && !active)
         timer->ClrFlags(tfActive);

@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -51,6 +52,20 @@ std::string StrToLowerCase(std::string str) {
     }
     return lowerCase;
 }
+
+/****************************************************************************************
+*            GetDirectoryFromTimer
+****************************************************************************************/
+std::string GetDirectoryFromTimer(std::string file) {
+    std::string dir = "";
+    size_t found = file.find_last_of('~');
+    if (found != std::string::npos) {
+        dir = file.substr(0, found);
+        std::replace(dir.begin(), dir.end(), '~', '/');
+    }
+    return dir;
+}
+
 
 /****************************************************************************************
 *            DrawRoundedCorners

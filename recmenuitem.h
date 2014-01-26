@@ -267,6 +267,35 @@ public:
     cString GetStringValue(void) { return strings[currentVal].c_str(); };
 };
 
+// --- cRecMenuItemSelectDirectory  -------------------------------------------------------
+class cRecMenuItemSelectDirectory : public cRecMenuItem {
+private:
+    cString text;
+    std::string originalFolder;
+    std::string seriesFolder;
+    std::vector<std::string> folders;
+    int currentVal;
+    char *callback;
+    int numValues;
+    cPixmap *pixmapVal;
+    void DrawValue(void);
+    void ReadFolders(cList<cNestedItem> *rootFolders, cString path);
+    int GetInitial(void);
+    void SetCallback(void);
+public:
+    cRecMenuItemSelectDirectory(cString text,
+                                std::string originalFolder,
+                                bool active = false,
+                                char *callback = NULL,
+                                eRecMenuState action = rmsNotConsumed);
+    virtual ~cRecMenuItemSelectDirectory(void);
+    void SetPixmaps(void);
+    void Hide(void);
+    void Show(void);
+    eRecMenuState ProcessKey(eKeys Key);
+    void Draw(void);
+};
+
 // --- cRecMenuItemText  -------------------------------------------------------
 class cRecMenuItemText : public cRecMenuItem {
 private:

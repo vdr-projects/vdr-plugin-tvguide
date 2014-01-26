@@ -8,6 +8,7 @@
 
 std::string CutText(std::string text, int width, const cFont *font);
 std::string StrToLowerCase(std::string str);
+std::string GetDirectoryFromTimer(std::string file);
 void DrawRoundedCorners(cPixmap *p, int posX, int posY, int width, int height, int radius, int borderWidth, tColor borderColor);
 
 class splitstring : public std::string {

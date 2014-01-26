@@ -1,4 +1,5 @@
 #include "services/remotetimers.h"
+#include "tools.h"
 #include "recmenumanager.h"
 #include "recmenus.h"
 
@@ -396,7 +397,7 @@ cRecMenuConfirmRerunUsed::cRecMenuConfirmRerunUsed(const cEvent *original, const
 
 // --- cRecMenuEditTimer  ---------------------------------------------------------
 cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
-    SetWidthPercent(60);
+    SetWidthPercent(70);
     if (!timer)
         return;
     originalTimer = timer;
@@ -428,6 +429,7 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     stop = timer->Stop();
     prio = timer->Priority();
     lifetime = timer->Lifetime();
+    strncpy(folder, GetDirectoryFromTimer(timer->File()).c_str(), TEXTINPUTLENGTH);
     
     AddMenuItem(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, true, &timerActive));
     AddMenuItem(new cRecMenuItemInt(tr("Priority"), prio, 0, MAXPRIORITY, false, &prio));
@@ -435,6 +437,7 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     AddMenuItem(new cRecMenuItemDay(tr("Day"), day, false, &day));
     AddMenuItem(new cRecMenuItemTime(tr("Timer start time"), start, false, &start));
     AddMenuItem(new cRecMenuItemTime(tr("Timer stop time"), stop, false, &stop));
+    AddMenuItem(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(folder), false, folder));
     if (nextState == rmsTimelineTimerSave) {
         AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsTimelineTimerDelete, false, false));
         AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsTimeline, false));
@@ -461,6 +464,19 @@ cTimer cRecMenuEditTimer::GetTimer(void) {
     t.SetStop(stop);
     t.SetPriority(prio);
     t.SetLifetime(lifetime);
+    std::string newFolder(folder);
+    std::string newFile = originalTimer->File();
+    if (newFolder.size() > 0) {
+        size_t found = newFile.find_last_of('~');
+        if (found != std::string::npos) {
+            std::string fileName = newFile.substr(found+1);
+            newFile = *cString::sprintf("%s/%s", newFolder.c_str(), fileName.c_str());
+        } else {
+            newFile = *cString::sprintf("%s/%s", newFolder.c_str(), newFile.c_str());
+        }
+    }
+    std::replace(newFile.begin(), newFile.end(), '/', '~');
+    t.SetFile(newFile.c_str());
     return t;
 }
 
@@ -693,6 +709,10 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     dayOfWeek = searchTimer.DayOfWeek();
     priority = searchTimer.Priority();
     lifetime = searchTimer.Lifetime();
+    useEpisode = searchTimer.UseEpisode();
+    std::string dir = searchTimer.Directory();
+    std::replace(dir.begin(), dir.end(), '~', '/');
+    strncpy(directory, dir.c_str(), TEXTINPUTLENGTH);
     marginStart = searchTimer.MarginStart();
     marginStop = searchTimer.MarginStop();
     useVPS = searchTimer.UseVPS();
@@ -768,6 +788,8 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, 99, false, &lifetime, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for start in minutes"), marginStart, 0, 30, false, &marginStart, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for stop in minutes"), marginStop, 0, 30, false, &marginStop, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Series Recording"), useEpisode, false, false, &useEpisode, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(directory), false, directory, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), useVPS, false, false, &useVPS, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), avoidRepeats, true, false, &avoidRepeats, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), useInFavorites, false, false, &useInFavorites, rmsSearchTimerSave));
@@ -863,6 +885,10 @@ cTVGuideSearchTimer cRecMenuSearchTimerEdit::GetSearchTimer(void) {
     }
     searchTimer.SetPriority(priority);
     searchTimer.SetLifetime(lifetime);
+    searchTimer.SetUseEpisode(useEpisode);
+    std::string dir(directory);
+    std::replace(dir.begin(), dir.end(), '/', '~');
+    searchTimer.SetDirectory(dir);
     searchTimer.SetMarginStart(marginStart);
     searchTimer.SetMarginStop(marginStop);
     searchTimer.SetUseVPS(useVPS);

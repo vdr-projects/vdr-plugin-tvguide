@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-19 12:51+0100\n"
+"POT-Creation-Date: 2014-01-26 09:25+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -53,6 +53,9 @@ msgstr ""
 
 msgid "images"
 msgstr ""
+
+msgid "root video folder"
+msgstr "Directori principal per a vídeo"
 
 msgid "Transp."
 msgstr "Transp."
@@ -140,9 +143,6 @@ msgstr "Cerca a les gravacions"
 
 msgid "Set Folder for"
 msgstr "Programa carpeta per"
-
-msgid "root video folder"
-msgstr "Directori principal per a vídeo"
 
 msgid "Timer created"
 msgstr "Temporitzador creat"
@@ -233,6 +233,9 @@ msgstr "Inici temporitzador"
 
 msgid "Timer stop time"
 msgstr "Final temporitzador"
+
+msgid "Folder"
+msgstr ""
 
 msgid "Save"
 msgstr "Desa"
@@ -331,6 +334,9 @@ msgid "Time margin for start in minutes"
 msgstr ""
 
 msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Series Recording"
 msgstr ""
 
 msgid "Use VPS"

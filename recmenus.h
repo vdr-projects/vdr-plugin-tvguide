@@ -123,6 +123,7 @@ private:
     int stop;
     int prio;
     int lifetime;
+    char folder[TEXTINPUTLENGTH];
 public:
     cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState);
     virtual ~cRecMenuEditTimer(void) {};
@@ -236,6 +237,8 @@ private:
     int dayOfWeek;
     int priority;
     int lifetime;
+    bool useEpisode;
+    char directory[TEXTINPUTLENGTH];
     int marginStart;
     int marginStop;
     bool useVPS;
