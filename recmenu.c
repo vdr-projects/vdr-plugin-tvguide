@@ -153,7 +153,7 @@ void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
 bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item, bool inFront) {
     currentHeight += item->GetHeight();
     int totalHeight = headerHeight + footerHeight + currentHeight + 2*border;
-    if (totalHeight >= geoManager.osdHeight) {
+    if (totalHeight >= geoManager.osdHeight - 10) {
         scrollable = true;
         currentHeight -= item->GetHeight();
         if (deleteMenuItems) {

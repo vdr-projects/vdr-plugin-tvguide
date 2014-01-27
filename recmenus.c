@@ -654,10 +654,10 @@ cRecMenuSearchTimers::cRecMenuSearchTimers(std::vector<cTVGuideSearchTimer> sear
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*headline, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
-    if (numSearchTimers > 0)
-        SetMenuItems();    
     cRecMenuItem *button = new cRecMenuItemButton(tr("Close"), rmsClose, (!numSearchTimers)?true:false);
     SetFooter(button);
+    if (numSearchTimers > 0)
+        SetMenuItems();    
     CalculateHeight();
     CreatePixmap();
     Arrange();
@@ -669,7 +669,8 @@ cRecMenuSearchTimers::~cRecMenuSearchTimers(void) {
 
 void cRecMenuSearchTimers::SetMenuItems(void) {
     for (int i = 0; i < numSearchTimers; i++) {
-        AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, rmsSearchTimerTest, (i==0)?true:false));
+        if (!AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, rmsSearchTimerTest, (i==0)?true:false)))
+            break;
     }
 }
 
