@@ -199,6 +199,8 @@ THEME_CLR(theme, clrGrid2, 0x00000000);
 THEME_CLR(theme, clrGrid2Blending, 0x00000000);
 THEME_CLR(theme, clrHighlight, 0xAA3A3A55);
 THEME_CLR(theme, clrHighlightBlending, 0xDD000000);
+THEME_CLR(theme, clrGridFontBack, clrTransparent);
+THEME_CLR(theme, clrGridActiveFontBack, 0xFFAFD533);
 THEME_CLR(theme, clrFont, clrWhite);
 THEME_CLR(theme, clrFontActive, 0xFF363636);
 THEME_CLR(theme, clrFontHeader, 0xFF363636);

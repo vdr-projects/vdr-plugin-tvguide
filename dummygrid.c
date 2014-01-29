@@ -66,7 +66,13 @@ void cDummyGrid::setText() {
 
 void cDummyGrid::drawText() {
     tColor colorText = (active)?theme.Color(clrFontActive):theme.Color(clrFont);
-    tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
+    tColor colorTextBack;
+    if (tvguideConfig.style == eStyleFlat)
+        colorTextBack = color;
+    else if (tvguideConfig.style == eStyleGraphical)
+        colorTextBack = (active)?theme.Color(clrGridActiveFontBack):theme.Color(clrGridFontBack);
+    else
+        colorTextBack = clrTransparent;
     if (tvguideConfig.displayMode == eVertical) {
         if (Height()/geoManager.minutePixel < 6)
             return;
