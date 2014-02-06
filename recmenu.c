@@ -328,6 +328,10 @@ void cRecMenu::PageUp(void) {
         JumpBegin();
         return;
     }
+    if (footer && activeItem == footer) {
+        Activate(footer, menuItems.front());
+        return;
+    }
     int newActive = GetActive() - numItems;
     if (newActive < 0)
         newActive = 0;
@@ -365,6 +369,9 @@ void cRecMenu::PageDown(void) {
     cRecMenuItem *activeItem = GetActiveMenuItem();
     if (!activeItem)
         return;
+    if (footer && activeItem == footer) {
+        return;
+    }
     if (!scrollable) {
         JumpEnd();
         return;
