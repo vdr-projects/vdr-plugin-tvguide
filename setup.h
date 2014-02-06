@@ -67,6 +67,8 @@ class cMenuSetupFavorites : public cMenuSetupSubMenu {
         char description2[256];
         char description3[256];
         char description4[256];
+        const char * recFolderMode[3];
+        char fixedFolder[256];
         void Set(void);
         virtual eOSState ProcessKey(eKeys Key);
     public:

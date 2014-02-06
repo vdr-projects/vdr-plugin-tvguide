@@ -114,6 +114,28 @@ cTimer *cRecManager::createRemoteTimer(const cEvent *event, std::string path) {
 }
 
 void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string path) {
+    if (tvguideConfig.instRecFolderMode == eFolderFixed) {
+        Epgsearch_services_v1_2 *epgSearch = new Epgsearch_services_v1_2;
+        std::string recDir = tvguideConfig.instRecFixedFolder;
+        std::replace(recDir.begin(), recDir.end(), '/', '~');
+        if (strchr(recDir.c_str(), '%') != NULL) {
+            if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+                std::string newFileName = epgSearch->handler->Evaluate(recDir, event);
+                if (strchr(newFileName.c_str(), '%') == NULL) // only set directory to new value if all categories could have been replaced
+                    timer->SetFile(newFileName.c_str());
+                else 
+                    esyslog("tvguide: timer path not set because replacing variable was not successfull: %s", newFileName.c_str());
+            }
+        } else {
+            cString newFileName;
+            if (recDir.size() > 0) {
+                newFileName = cString::sprintf("%s~%s", recDir.c_str(), timer->File());
+                timer->SetFile(*newFileName);
+            }
+        }
+        return;
+    }
+    //Set choosen path
     cString newFileName;
     if (path.size() > 0) {
         std::replace(path.begin(), path.end(), '/', '~');
@@ -121,10 +143,6 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
     } else {
         newFileName = event->Title();
     }
-    
-    if ( !isempty(event->ShortText()) && ((event->Duration() / 60 ) < 70) )     //Add Dir only for Series
-        newFileName = cString::sprintf("%s~%s", *newFileName, event->ShortText());
-    
     timer->SetFile(*newFileName);
 }
 

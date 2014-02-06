@@ -5,11 +5,10 @@
 
 // --- cRecMenuMain  ---------------------------------------------------------
 cRecMenuMain::cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switchTimerActive) {
-    eRecMenuState action;
+    eRecMenuState action = rmsInstantRecord;
     if (!timerActive) {
-        action = (tvguideConfig.recMenuAskFolder)
-                  ?rmsInstantRecordFolder
-                  :rmsInstantRecord;
+        if (tvguideConfig.instRecFolderMode == eFolderSelect)
+            action = rmsInstantRecordFolder;
         AddMenuItem(new cRecMenuItemButton(tr("Instant Record"), action, true, false, false, true));
     } else {
         AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsDeleteTimer, true, false, false, true));
@@ -23,9 +22,10 @@ cRecMenuMain::cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switc
         AddMenuItem(new cRecMenuItemButton(tr("Manage Search Timers"), rmsSearchTimers, false, false, false, true));
     }
 
-    action = (tvguideConfig.recMenuAskFolder)
-              ?rmsSeriesTimerFolder
-              :rmsSeriesTimer;
+    if (tvguideConfig.instRecFolderMode == eFolderSelect)
+        action = rmsSeriesTimerFolder;
+    else
+        action = rmsSeriesTimer;
     AddMenuItem(new cRecMenuItemButton(tr("Create Series Timer"), action, false, false, false, true));
 
     if (epgSearchAvailable) {
@@ -67,10 +67,10 @@ cRecMenuAskFolder::cRecMenuAskFolder(const cEvent *event, eRecMenuState nextActi
     
     AddMenuItemInitial(new cRecMenuItemButton(tr("root video folder"), nextAction, true, false, true));
     
-    readFolders(NULL, "");
+    ReadRecordingDirectories(&folders, NULL, "");
     int numFolders = folders.size();
     for (int i=0; i < numFolders; i++) {
-        if (!AddMenuItemInitial(new cRecMenuItemButton(*folders[i], nextAction, false, false, true)))
+        if (!AddMenuItemInitial(new cRecMenuItemButton(folders[i].c_str(), nextAction, false, false, true)))
             break;
     }
     
@@ -79,30 +79,12 @@ cRecMenuAskFolder::cRecMenuAskFolder(const cEvent *event, eRecMenuState nextActi
     Arrange();
 }
 
-void cRecMenuAskFolder::readFolders(cList<cNestedItem> *rootFolders, cString path) {
-    cList<cNestedItem> *foldersLevel = NULL;
-    if (rootFolders) {
-        foldersLevel = rootFolders;
-    } else {
-        foldersLevel = &Folders;
-    }
-    for (cNestedItem *folder = foldersLevel->First(); folder; folder = foldersLevel->Next(folder)) {
-        cString strFolder = cString::sprintf("%s%s", *path, folder->Text());
-        folders.push_back(strFolder);
-        cList<cNestedItem> *subItems = folder->SubItems();
-        if (subItems) {
-            cString newPath = cString::sprintf("%s%s/", *path, folder->Text());
-            readFolders(subItems, newPath);
-        }
-    }
-}
-
 cRecMenuItem *cRecMenuAskFolder::GetMenuItem(int number) { 
     if (number == 0) {
         cRecMenuItem *result = new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, false, false, true);
         return result;
     } else if ((number > 0) && (number < folders.size()+1)) {
-        cRecMenuItem *result = new cRecMenuItemButton(*folders[number-1], rmsInstantRecord, false, false, true);
+        cRecMenuItem *result = new cRecMenuItemButton(folders[number-1].c_str(), rmsInstantRecord, false, false, true);
         return result;
     }
     return NULL;
@@ -116,7 +98,7 @@ std::string cRecMenuAskFolder::GetFolder(void) {
     std::string folder = "";
     int folderActive = GetActive();
     if (folderActive > 0 && folderActive < folders.size() + 1)
-        folder = *folders[folderActive - 1];
+        folder = folders[folderActive - 1];
     return folder;
 }
 
@@ -410,7 +392,7 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     cString infoText = cString::sprintf("%s:\n %s, %s", tr("Edit Timer"), *title, *channelName);
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
-    AddMenuItem(infoItem);
+    AddMenuItemInitial(infoItem);
                 
     timerActive = false;
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
@@ -431,18 +413,22 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     lifetime = timer->Lifetime();
     strncpy(folder, GetDirectoryFromTimer(timer->File()).c_str(), TEXTINPUTLENGTH);
     
-    AddMenuItem(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, true, &timerActive));
-    AddMenuItem(new cRecMenuItemInt(tr("Priority"), prio, 0, MAXPRIORITY, false, &prio));
-    AddMenuItem(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, MAXLIFETIME, false, &lifetime));
-    AddMenuItem(new cRecMenuItemDay(tr("Day"), day, false, &day));
-    AddMenuItem(new cRecMenuItemTime(tr("Timer start time"), start, false, &start));
-    AddMenuItem(new cRecMenuItemTime(tr("Timer stop time"), stop, false, &stop));
-    AddMenuItem(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(folder), false, folder));
+    AddMenuItemInitial(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, true, &timerActive));
+    AddMenuItemInitial(new cRecMenuItemInt(tr("Priority"), prio, 0, MAXPRIORITY, false, &prio));
+    AddMenuItemInitial(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, MAXLIFETIME, false, &lifetime));
+    AddMenuItemInitial(new cRecMenuItemDay(tr("Day"), day, false, &day));
+    AddMenuItemInitial(new cRecMenuItemTime(tr("Timer start time"), start, false, &start));
+    AddMenuItemInitial(new cRecMenuItemTime(tr("Timer stop time"), stop, false, &stop));
+    cString fileInfo = cString::sprintf("%s:\n%s", tr("Timer File"), timer->File());
+    cRecMenuItemInfo *fileInfoItem = new cRecMenuItemInfo(*fileInfo, false);
+    fileInfoItem->CalculateHeight(width - 2 * border);
+    AddMenuItemInitial(fileInfoItem);
+    AddMenuItemInitial(new cRecMenuItemSelectDirectory(tr("New Folder"), std::string(folder), false, folder));
     if (nextState == rmsTimelineTimerSave) {
-        AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsTimelineTimerDelete, false, false));
-        AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsTimeline, false));
+        AddMenuItemInitial(new cRecMenuItemButton(tr("Delete Timer"), rmsTimelineTimerDelete, false, false));
+        AddMenuItemInitial(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsTimeline, false));
     } else {
-        AddMenuItem(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsClose, false));
+        AddMenuItemInitial(new cRecMenuItemButtonYesNo(tr("Save"), tr("Cancel"), nextState, rmsClose, false));
     }
     CalculateHeight();
     CreatePixmap();
@@ -466,14 +452,16 @@ cTimer cRecMenuEditTimer::GetTimer(void) {
     t.SetLifetime(lifetime);
     std::string newFolder(folder);
     std::string newFile = originalTimer->File();
-    if (newFolder.size() > 0) {
-        size_t found = newFile.find_last_of('~');
-        if (found != std::string::npos) {
-            std::string fileName = newFile.substr(found+1);
-            newFile = *cString::sprintf("%s/%s", newFolder.c_str(), fileName.c_str());
-        } else {
-            newFile = *cString::sprintf("%s/%s", newFolder.c_str(), newFile.c_str());
-        }
+    size_t found = newFile.find_last_of('~');
+    if (found != std::string::npos) {
+        std::string fileName = newFile.substr(found+1);
+        if (newFolder.size() > 0)
+            newFile = *cString::sprintf("%s~%s", newFolder.c_str(), fileName.c_str());
+        else
+            newFile = fileName;
+    } else {
+        if (newFolder.size() > 0)
+            newFile = *cString::sprintf("%s~%s", newFolder.c_str(), newFile.c_str());
     }
     std::replace(newFile.begin(), newFile.end(), '/', '~');
     t.SetFile(newFile.c_str());
@@ -712,7 +700,6 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     lifetime = searchTimer.Lifetime();
     useEpisode = searchTimer.UseEpisode();
     std::string dir = searchTimer.Directory();
-    std::replace(dir.begin(), dir.end(), '~', '/');
     strncpy(directory, dir.c_str(), TEXTINPUTLENGTH);
     marginStart = searchTimer.MarginStart();
     marginStop = searchTimer.MarginStop();
@@ -790,7 +777,7 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for start in minutes"), marginStart, 0, 30, false, &marginStart, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for stop in minutes"), marginStop, 0, 30, false, &marginStop, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Series Recording"), useEpisode, false, false, &useEpisode, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(directory), false, directory, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(directory), false, directory, rmsSearchTimerSave, true));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), useVPS, false, false, &useVPS, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), avoidRepeats, true, false, &avoidRepeats, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), useInFavorites, false, false, &useInFavorites, rmsSearchTimerSave));

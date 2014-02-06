@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <vdr/osd.h>
+#include <vdr/plugin.h>
+#include "services/epgsearch.h"
 
 #include "tools.h"
 
@@ -61,9 +63,46 @@ std::string GetDirectoryFromTimer(std::string file) {
     size_t found = file.find_last_of('~');
     if (found != std::string::npos) {
         dir = file.substr(0, found);
-        std::replace(dir.begin(), dir.end(), '~', '/');
     }
     return dir;
+}
+
+/****************************************************************************************
+*            GetDirectoryFromTimer
+****************************************************************************************/
+void ReadRecordingDirectories(std::vector<std::string> *folders, cList<cNestedItem> *rootFolders, cString path) {
+    cPlugin *epgSearchPlugin = NULL;
+    epgSearchPlugin = cPluginManager::GetPlugin("epgsearch");
+    if (epgSearchPlugin) {
+        Epgsearch_services_v1_0 *epgSearch = new Epgsearch_services_v1_0;
+        if (epgSearchPlugin->Service("Epgsearch-services-v1.0", epgSearch)) {
+            std::set<std::string> epgSearchDirs = epgSearch->handler->DirectoryList();
+            std::set<std::string>::iterator it;
+            for (it = epgSearchDirs.begin(); it != epgSearchDirs.end(); it++) {
+                std::string newFolder = *it;
+                std::replace(newFolder.begin(), newFolder.end(), '/', '~');
+                folders->push_back(newFolder);
+            }
+        }
+    } else {
+        cList<cNestedItem> *foldersLevel = NULL;
+        if (rootFolders) {
+            foldersLevel = rootFolders;
+        } else {
+            foldersLevel = &Folders;
+        }
+        for (cNestedItem *folder = foldersLevel->First(); folder; folder = foldersLevel->Next(folder)) {
+            std::string strFolder = *cString::sprintf("%s%s", *path, folder->Text());
+            std::replace(strFolder.begin(), strFolder.end(), '/', '~');
+            folders->push_back(strFolder);
+            cList<cNestedItem> *subItems = folder->SubItems();
+            if (subItems) {
+                std::string strFolder2 = *cString::sprintf("%s%s", *path, folder->Text());
+                std::replace(strFolder2.begin(), strFolder2.end(), '/', '~');
+                ReadRecordingDirectories(folders, subItems, strFolder2.c_str());
+            }
+        }
+    }
 }
 
 

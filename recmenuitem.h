@@ -272,14 +272,12 @@ class cRecMenuItemSelectDirectory : public cRecMenuItem {
 private:
     cString text;
     std::string originalFolder;
-    std::string seriesFolder;
     std::vector<std::string> folders;
     int currentVal;
     char *callback;
     int numValues;
     cPixmap *pixmapVal;
     void DrawValue(void);
-    void ReadFolders(cList<cNestedItem> *rootFolders, cString path);
     int GetInitial(void);
     void SetCallback(void);
 public:
@@ -287,7 +285,8 @@ public:
                                 std::string originalFolder,
                                 bool active = false,
                                 char *callback = NULL,
-                                eRecMenuState action = rmsNotConsumed);
+                                eRecMenuState action = rmsNotConsumed,
+                                bool isSearchTimer = false);
     virtual ~cRecMenuItemSelectDirectory(void);
     void SetPixmaps(void);
     void Hide(void);

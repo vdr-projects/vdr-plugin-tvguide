@@ -102,6 +102,8 @@ void cTvguideSetup::Store(void) {
     SetupStore("channelHeaderHeightPercent", tvguideConfig.channelHeaderHeightPercent);
     SetupStore("footerHeightPercent", tvguideConfig.footerHeightPercent);
     SetupStore("recMenuAskFolder", tvguideConfig.recMenuAskFolder);
+    SetupStore("instRecFolderMode", tvguideConfig.instRecFolderMode);
+    SetupStore("instRecFixedFolder", tvguideConfig.instRecFixedFolder.c_str());
     SetupStore("favWhatsOnNow", tvguideConfig.favWhatsOnNow);
     SetupStore("favWhatsOnNext", tvguideConfig.favWhatsOnNext);
     SetupStore("favUseTime1", tvguideConfig.favUseTime1);
@@ -371,6 +373,10 @@ cMenuSetupFavorites::cMenuSetupFavorites(cTvguideConfig* data)  : cMenuSetupSubM
     strn0cpy(description2, data->descUser2.c_str(), sizeof(description2));
     strn0cpy(description3, data->descUser3.c_str(), sizeof(description3));
     strn0cpy(description4, data->descUser4.c_str(), sizeof(description4));
+    recFolderMode[0] = tr("Always use root video folder");
+    recFolderMode[1] = tr("Select from folder list");
+    recFolderMode[2] = tr("Use fixed folder");
+    strn0cpy(fixedFolder, data->instRecFixedFolder.c_str(), sizeof(fixedFolder));
     Set();
 }
 
@@ -378,7 +384,10 @@ void cMenuSetupFavorites::Set(void) {
     int currentItem = Current();
     Clear();
 
-    Add(new cMenuEditBoolItem(tr("Use folders for instant records"), &tmpTvguideConfig->recMenuAskFolder));
+    Add(new cMenuEditStraItem(tr("Folder for instant Recordings"), &tmpTvguideConfig->instRecFolderMode, 3,  recFolderMode));
+    if (tmpTvguideConfig->instRecFolderMode == eFolderFixed) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Folder")), fixedFolder, sizeof(fixedFolder), trVDR(FileNameChars)));
+    }
     if (pRemoteTimers)
         Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
 
@@ -421,18 +430,21 @@ eOSState cMenuSetupFavorites::ProcessKey(eKeys Key) {
     int tmpFavUseTime3 = tmpTvguideConfig->favUseTime3;
     int tmpFavUseTime4 = tmpTvguideConfig->favUseTime4;
     int tmpFavLimitChannels = tmpTvguideConfig->favLimitChannels;
+    int tmpFolderMode = tmpTvguideConfig->instRecFolderMode;
     eOSState state = cOsdMenu::ProcessKey(Key);
     if (Key == kOk) {
         tmpTvguideConfig->descUser1 = description1;
         tmpTvguideConfig->descUser2 = description2;
         tmpTvguideConfig->descUser3 = description3;
         tmpTvguideConfig->descUser4 = description4;
+        tmpTvguideConfig->instRecFixedFolder = fixedFolder;
     } else if ((Key == kLeft)||(Key == kRight)) {
         if ((tmpFavUseTime1 != tmpTvguideConfig->favUseTime1) ||
             (tmpFavUseTime2 != tmpTvguideConfig->favUseTime2) ||
             (tmpFavUseTime3 != tmpTvguideConfig->favUseTime3) ||
             (tmpFavUseTime4 != tmpTvguideConfig->favUseTime4) ||
-            (tmpFavLimitChannels != tmpTvguideConfig->favLimitChannels) )
+            (tmpFavLimitChannels != tmpTvguideConfig->favLimitChannels) ||
+            (tmpFolderMode != tmpTvguideConfig->instRecFolderMode) )
             Set();
     }
     return state;

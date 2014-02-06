@@ -118,3 +118,6 @@ Version 1.1.0
 - set blue key favorite mode as new default
 
 Version 1.2.0
+
+- changed video directory choosage behaviour: added possibility to use 
+  a fixed recording dir which also supports epgsearch variables

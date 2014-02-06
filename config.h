@@ -37,6 +37,11 @@ enum eBlueKeyMode {
     eBlueKeyFavorites
 };
 
+enum eInstRecFolderMode {
+    eFolderRoot = 0,
+    eFolderSelect,
+    eFolderFixed
+};
 
 class cTvguideConfig {
     private:
@@ -94,6 +99,8 @@ class cTvguideConfig {
         cString iconPathDefault;
         cString epgImagePathDefault;
         int recMenuAskFolder;
+        int instRecFolderMode;
+        std::string instRecFixedFolder;
         int favWhatsOnNow;
         int favWhatsOnNext;
         int favUseTime1;

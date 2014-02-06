@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-26 09:25+0100\n"
+"POT-Creation-Date: 2014-02-06 17:17+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -231,8 +231,11 @@ msgstr "Timer Start Zeit"
 msgid "Timer stop time"
 msgstr "Timer Stop Zeit"
 
-msgid "Folder"
-msgstr "Verzeichnis"
+msgid "Timer File"
+msgstr "Timer Datei"
+
+msgid "New Folder"
+msgstr "Neues Verzeichnis"
 
 msgid "Save"
 msgstr "Speichern"
@@ -335,6 +338,9 @@ msgstr "Zeit nach Ende in Minuten"
 
 msgid "Series Recording"
 msgstr "Serienaufnahme"
+
+msgid "Folder"
+msgstr "Verzeichnis"
 
 msgid "Use VPS"
 msgstr "VPS benutzen"
@@ -756,8 +762,17 @@ msgstr "Suchen & Aufnehmen Menu kleine Schriftgröße"
 msgid "Search & Recording Menu Header Font Size"
 msgstr "Suchen & Aufnehmen Menu Header Schriftgröße"
 
-msgid "Use folders for instant records"
-msgstr "Bei Sofortaufnahmen Verzeichnisse benutzen"
+msgid "Always use root video folder"
+msgstr "Immer root video Verzeichnis benutzen"
+
+msgid "Select from folder list"
+msgstr "Verzeichnis aus Liste auswählen"
+
+msgid "Use fixed folder"
+msgstr "Festes Verzeichnis benutzen"
+
+msgid "Folder for instant Recordings"
+msgstr "Verzeichnis für Sofortaufnahmen"
 
 msgid "Use Remotetimers"
 msgstr "RemoteTimers benutzen"

@@ -25,9 +25,8 @@ public:
 // --- cRecMenuAskFolder  ---------------------------------------------------------
 class cRecMenuAskFolder: public cRecMenu {
 private:
-    std::vector<cString> folders;
+    std::vector<std::string> folders;
     eRecMenuState NextAction;
-    void readFolders(cList<cNestedItem> *rootFolders, cString path);
 public:
     cRecMenuAskFolder(const cEvent *event, eRecMenuState nextAction);
     cRecMenuItem *GetMenuItem(int number);

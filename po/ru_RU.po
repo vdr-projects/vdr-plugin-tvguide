@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-26 09:25+0100\n"
+"POT-Creation-Date: 2014-02-06 17:17+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -231,7 +231,10 @@ msgstr "Время c"
 msgid "Timer stop time"
 msgstr "Время до"
 
-msgid "Folder"
+msgid "Timer File"
+msgstr ""
+
+msgid "New Folder"
 msgstr ""
 
 msgid "Save"
@@ -334,6 +337,9 @@ msgid "Time margin for stop in minutes"
 msgstr ""
 
 msgid "Series Recording"
+msgstr ""
+
+msgid "Folder"
 msgstr ""
 
 msgid "Use VPS"
@@ -756,8 +762,17 @@ msgstr "Размер маленького шрифта меню Поиск & З�
 msgid "Search & Recording Menu Header Font Size"
 msgstr ""
 
-msgid "Use folders for instant records"
-msgstr "Использовать директории для быстрой записи"
+msgid "Always use root video folder"
+msgstr ""
+
+msgid "Select from folder list"
+msgstr ""
+
+msgid "Use fixed folder"
+msgstr ""
+
+msgid "Folder for instant Recordings"
+msgstr ""
 
 msgid "Use Remotetimers"
 msgstr "RemoteTimers benutzen"
@@ -818,6 +833,9 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Use folders for instant records"
+#~ msgstr "Использовать директории для быстрой записи"
 
 #~ msgid "Height of status header (Perc. of osd height)"
 #~ msgstr "Высота верхней панели (% от высоты OSD)"

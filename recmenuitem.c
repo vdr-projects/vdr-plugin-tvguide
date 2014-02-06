@@ -593,18 +593,20 @@ cRecMenuItemSelectDirectory::cRecMenuItemSelectDirectory(cString text,
                                                          std::string originalFolder,
                                                          bool active,
                                                          char *callback,
-                                                         eRecMenuState action) {
+                                                         eRecMenuState action,
+                                                         bool isSearchTimer) {
     selectable = true;
     this->text = text;
     this->originalFolder = originalFolder;
-    seriesFolder = "";
     this->active = active;
     this->callback = callback;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
     folders.push_back(tr("root video folder"));
-    ReadFolders(NULL, "");
+    if (isSearchTimer && tvguideConfig.instRecFixedFolder.size() > 0)
+        folders.push_back(tvguideConfig.instRecFixedFolder);
+    ReadRecordingDirectories(&folders, NULL, "");
     numValues = folders.size();
     this->currentVal = GetInitial();
 }
@@ -694,31 +696,7 @@ void cRecMenuItemSelectDirectory::SetCallback(void) {
     std::string newFolder = folders[currentVal];
     if (!newFolder.compare(tr("root video folder")))
         newFolder = "";
-    if (seriesFolder.size() > 0) {
-        if (newFolder.size() > 0)
-            newFolder = *cString::sprintf("%s/%s", folders[currentVal].c_str(), seriesFolder.c_str());
-        else
-            newFolder = seriesFolder;
-    }
     strncpy(callback, newFolder.c_str(), TEXTINPUTLENGTH);
-}
-
-void cRecMenuItemSelectDirectory::ReadFolders(cList<cNestedItem> *rootFolders, cString path) {
-    cList<cNestedItem> *foldersLevel = NULL;
-    if (rootFolders) {
-        foldersLevel = rootFolders;
-    } else {
-        foldersLevel = &Folders;
-    }
-    for (cNestedItem *folder = foldersLevel->First(); folder; folder = foldersLevel->Next(folder)) {
-        cString strFolder = cString::sprintf("%s%s", *path, folder->Text());
-        folders.push_back(*strFolder);
-        cList<cNestedItem> *subItems = folder->SubItems();
-        if (subItems) {
-            cString newPath = cString::sprintf("%s%s/", *path, folder->Text());
-            ReadFolders(subItems, newPath);
-        }
-    }
 }
 
 int cRecMenuItemSelectDirectory::GetInitial(void) {
@@ -728,18 +706,6 @@ int cRecMenuItemSelectDirectory::GetInitial(void) {
         if (!folders[i].compare(originalFolder)) {
             return i;
         }
-    }
-    size_t found = originalFolder.find_last_of('/');
-    if (found != std::string::npos) {
-        std::string folderSet = originalFolder.substr(0, found);
-        seriesFolder = originalFolder.substr(found + 1);
-        for (int i=0; i < numValues; i++) {
-            if (!folders[i].compare(folderSet)) {
-                return i;
-            }
-        }
-    } else {
-        seriesFolder = originalFolder;
     }
     return 0;
 }

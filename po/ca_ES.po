@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-01-26 09:25+0100\n"
+"POT-Creation-Date: 2014-02-06 17:17+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -234,7 +234,10 @@ msgstr "Inici temporitzador"
 msgid "Timer stop time"
 msgstr "Final temporitzador"
 
-msgid "Folder"
+msgid "Timer File"
+msgstr ""
+
+msgid "New Folder"
 msgstr ""
 
 msgid "Save"
@@ -337,6 +340,9 @@ msgid "Time margin for stop in minutes"
 msgstr ""
 
 msgid "Series Recording"
+msgstr ""
+
+msgid "Folder"
 msgstr ""
 
 msgid "Use VPS"
@@ -759,8 +765,17 @@ msgstr "Mida de la Font petita - Menú Cerca & Enregistra"
 msgid "Search & Recording Menu Header Font Size"
 msgstr ""
 
-msgid "Use folders for instant records"
-msgstr "Utilitza carpetes per gravacions a l'instant"
+msgid "Always use root video folder"
+msgstr ""
+
+msgid "Select from folder list"
+msgstr ""
+
+msgid "Use fixed folder"
+msgstr ""
+
+msgid "Folder for instant Recordings"
+msgstr ""
 
 msgid "Use Remotetimers"
 msgstr "Utilitza temporitzadors remots"
@@ -821,6 +836,9 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+#~ msgid "Use folders for instant records"
+#~ msgstr "Utilitza carpetes per gravacions a l'instant"
 
 #~ msgid "Height of status header (Perc. of osd height)"
 #~ msgstr "Alçada capçalera d'estat (% alçada OSD)"
