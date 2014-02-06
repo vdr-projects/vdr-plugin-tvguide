@@ -137,12 +137,27 @@ up/down, left/right and the ok key. In scrolling lists, with left/right
 jump to the next page of the list. Pressing up on the first / down on the 
 last list item jumpps to the end / start of the list.
 
-If the Option "Use folders for instant records" is set, both during creating an
-instant records and a series timer you can choose the directory where the
-recordings will be stored. As possible folders all entries from VDRs
-<VDRCONFIG>/folders.conf will be used. These entries can be edited via OSD
-through VDRs Timers Menu. These folders are also provided to choose a folder
-for a search timer.
+In the Plugin Setup Menu in Section "Recording Menus and Favorites" you can
+choose three alternatives for the option "Folder for instant Recordings":
+- "Always use root video folder": the recording will always be placed in the
+  video root folder
+- "Select from folder list": before creating a timer, you'll get asked in which
+  directory the recording should be placed. If the epgsearch plugin is not 
+  available, the entries from VDRs <VDRCONFIG>/folders.conf will be used. If
+  the epgsearch plugin is available, the more sophisticated epgsearch mechanism
+  will be used to identify the possible folders (folders from 
+  <VDRCONFIG>/folders.conf and epgsearchfolders.conf and all already existing 
+  folders in the video directory).
+- "Use fixed folder": the configured folder will always be used. If this string
+  is a epgsearch variable ("%variable%"), epgsearch will be used to replace 
+  the variable with a concrete folder. All values defined in the epgsearch config
+  file "epgsearchuservars.conf" can be used. These variables use the definitions
+  from "epgsearchcats.conf". For a detailed description see the epgsearch Manual.
+  With that and a with an EPG with detailed information about movies and series 
+  it is possible to create sophisticated paths for timers automatically (for 
+  instance with series season and episode in the filename).   
+
+For a search timer also all folders and the defined dedicated folder can be used.
 
 Favorites Menu: if configured, the blue key provides a favorite menu. In this
 menu the current scheduling ("What's on now") and the next upcomming Shows 
@@ -234,8 +249,10 @@ Setup Options
 
 * Recording Menus and Favorites
 
-- Use folders for instant records. If set to yes, when creating an instant record
-  or a series timer you'll be asked about the folder for the recordings.
+- Folder for instant Recordings: (see chapter "Usage" for detailed description)
+  - Always use root video folder
+  - Select from folder list
+  - Use fixed folder
 - Use Remotetimers: Timers are handled not locally but on a VDR Server defined
   with the remotetimers plugin.
 - Use "What's on now" in favorites

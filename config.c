@@ -44,7 +44,6 @@ cTvguideConfig::cTvguideConfig() {
     numAdditionalEPGPictures = 9;
     epgImageWidthLarge = 525;
     epgImageHeightLarge = 400;
-    recMenuAskFolder = 0;
     instRecFolderMode = eFolderRoot;
     instRecFixedFolder = "";
     favWhatsOnNow = 1;
@@ -279,7 +278,6 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "channelHeaderWidthPercent") == 0)  channelHeaderWidthPercent = atoi(Value);
     else if (strcmp(Name, "channelHeaderHeightPercent") == 0) channelHeaderHeightPercent = atoi(Value);
     else if (strcmp(Name, "footerHeightPercent") == 0)      footerHeightPercent = atoi(Value);
-    else if (strcmp(Name, "recMenuAskFolder") == 0)         recMenuAskFolder = atoi(Value);
     else if (strcmp(Name, "instRecFolderMode") == 0)        instRecFolderMode = atoi(Value);
     else if (strcmp(Name, "instRecFixedFolder") == 0)       instRecFixedFolder = Value;
     else if (strcmp(Name, "favWhatsOnNow") == 0)            favWhatsOnNow = atoi(Value);

@@ -101,7 +101,6 @@ void cTvguideSetup::Store(void) {
     SetupStore("channelHeaderWidthPercent", tvguideConfig.channelHeaderWidthPercent);
     SetupStore("channelHeaderHeightPercent", tvguideConfig.channelHeaderHeightPercent);
     SetupStore("footerHeightPercent", tvguideConfig.footerHeightPercent);
-    SetupStore("recMenuAskFolder", tvguideConfig.recMenuAskFolder);
     SetupStore("instRecFolderMode", tvguideConfig.instRecFolderMode);
     SetupStore("instRecFixedFolder", tvguideConfig.instRecFixedFolder.c_str());
     SetupStore("favWhatsOnNow", tvguideConfig.favWhatsOnNow);

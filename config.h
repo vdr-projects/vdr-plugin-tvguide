@@ -98,7 +98,6 @@ class cTvguideConfig {
         cString logoPathDefault;
         cString iconPathDefault;
         cString epgImagePathDefault;
-        int recMenuAskFolder;
         int instRecFolderMode;
         std::string instRecFixedFolder;
         int favWhatsOnNow;
