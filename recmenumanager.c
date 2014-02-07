@@ -316,11 +316,13 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             //caller: cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplatesCreate, cRecMenuSearchTimers, cRecMenuFavorites
             //show results of currently choosen search timer
             cTVGuideSearchTimer searchTimer;
-            bool showRecIcon = false;
+            eRecMenuState recState = rmsDisabled;
             if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
+                recState = rmsSearchTimerRecord;
             } else if  (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
+                recState = rmsSearchTimerRecord;
             } else if (cRecMenuSearchTimerTemplatesCreate *menu = dynamic_cast<cRecMenuSearchTimerTemplatesCreate*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
                 TVGuideEPGSearchTemplate tmpl = menu->GetTemplate();
@@ -328,7 +330,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 searchTimer.Parse(true);
             } else if (cRecMenuFavorites *menu = dynamic_cast<cRecMenuFavorites*>(activeMenu)) {
                 searchTimer = menu->GetFavorite();
-                showRecIcon = true;
+                recState = rmsFavoritesRecord;
             } else break;
             int numSearchResults = 0;
             std::string searchString = searchTimer.BuildSearchString();
@@ -336,7 +338,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (numSearchResults) {
                 activeMenuBuffer = activeMenu;
                 activeMenuBuffer->Hide();
-                activeMenu = new cRecMenuSearchTimerResults(searchTimer.SearchString(), searchResult, numSearchResults, "", showRecIcon?rmsFavoritesRecord:rmsDisabled);
+                activeMenu = new cRecMenuSearchTimerResults(searchTimer.SearchString(), searchResult, numSearchResults, "", recState);
                 activeMenu->Display();
             } else {
                activeMenuBuffer = activeMenu;
@@ -407,6 +409,20 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             delete activeMenuBuffer;
             activeMenuBuffer = NULL;
             DisplaySearchTimerList();
+            break; }
+        case rmsSearchTimerRecord: {
+            //caller: cRecMenuSearchTimerResults
+            const cEvent *ev = NULL;
+            if (cRecMenuSearchTimerResults *menu = dynamic_cast<cRecMenuSearchTimerResults*>(activeMenu)) {
+                ev = menu->GetEvent();
+            } else break;
+            if (!ev)
+                break;
+            recManager->createTimer(ev, "");
+            activeMenuBuffer2 = activeMenu;
+            activeMenuBuffer2->Hide();
+            activeMenu = new cRecMenuSearchConfirmTimer(ev, rmsFavoritesRecordConfirm);
+            activeMenu->Display();
             break; }
         /********************************************************************************************** 
          *    SWITCH TIMER 

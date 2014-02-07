@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 16:15+0100\n"
+"POT-Creation-Date: 2014-02-07 18:08+0100\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -417,17 +417,17 @@ msgstr "Utilitzant plantilla"
 msgid "Use other Template"
 msgstr "Utilitza una altra plantilla"
 
-msgid "search results for Search Timer"
-msgstr "cerca resultats per temporitzador"
-
-msgid "search result for Search Timer"
-msgstr "cerca resultat per temporitzador"
-
 msgid "search results for Favorite"
 msgstr ""
 
 msgid "search result for Favorite"
 msgstr ""
+
+msgid "search results for Search Timer"
+msgstr "cerca resultats per temporitzador"
+
+msgid "search result for Search Timer"
+msgstr "cerca resultat per temporitzador"
 
 msgid "Nothing found for Search String"
 msgstr "No s'ha trobat la cadena de text"

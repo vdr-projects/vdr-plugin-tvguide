@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 16:15+0100\n"
+"POT-Creation-Date: 2014-02-07 18:08+0100\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -414,17 +414,17 @@ msgstr "Использовать шаблон"
 msgid "Use other Template"
 msgstr "Использовать другие шаблоны"
 
-msgid "search results for Search Timer"
-msgstr "Совпадений найдено"
-
-msgid "search result for Search Timer"
-msgstr "Совпадение найдено"
-
 msgid "search results for Favorite"
 msgstr ""
 
 msgid "search result for Favorite"
 msgstr ""
+
+msgid "search results for Search Timer"
+msgstr "Совпадений найдено"
+
+msgid "search result for Search Timer"
+msgstr "Совпадение найдено"
 
 msgid "Nothing found for Search String"
 msgstr "Совпадений НЕ найдено"

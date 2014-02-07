@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 16:15+0100\n"
+"POT-Creation-Date: 2014-02-07 18:08+0100\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -414,17 +414,17 @@ msgstr "Template"
 msgid "Use other Template"
 msgstr "Anderes Template benutzen"
 
-msgid "search results for Search Timer"
-msgstr "Treffer für Suchtimer"
-
-msgid "search result for Search Timer"
-msgstr "Treffer für Suchtimer"
-
 msgid "search results for Favorite"
 msgstr "Suchergebnisse für Favorit"
 
 msgid "search result for Favorite"
 msgstr "Suchergebnis für Favorit"
+
+msgid "search results for Search Timer"
+msgstr "Treffer für Suchtimer"
+
+msgid "search result for Search Timer"
+msgstr "Treffer für Suchtimer"
 
 msgid "Nothing found for Search String"
 msgstr "Keine Treffer für Suchbegriff"
@@ -833,4 +833,3 @@ msgstr "Kanalgruppen Cache"
 
 msgid "Recording Menus Icon Cache"
 msgstr "Recording Menüs Icon Cache"
-

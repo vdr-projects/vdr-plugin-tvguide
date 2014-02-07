@@ -127,3 +127,4 @@ Version 1.2.0
 - changed event result lists that it is possible to scroll page up and
   down directly with left / right. A recording is triggered now with the
   red key.
+- Added possibility to create a recording from search timer result list

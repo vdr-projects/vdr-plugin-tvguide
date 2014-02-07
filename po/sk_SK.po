@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 16:15+0100\n"
+"POT-Creation-Date: 2014-02-07 18:08+0100\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -414,17 +414,17 @@ msgstr "¹ablóna"
 msgid "Use other Template"
 msgstr "Pou¾i» inú ¹ablónu"
 
-msgid "search results for Search Timer"
-msgstr "nájdené výsledky vyhµadávania plánu"
-
-msgid "search result for Search Timer"
-msgstr "nájdený výsledok vyhµadávania plánu"
-
 msgid "search results for Favorite"
 msgstr ""
 
 msgid "search result for Favorite"
 msgstr ""
+
+msgid "search results for Search Timer"
+msgstr "nájdené výsledky vyhµadávania plánu"
+
+msgid "search result for Search Timer"
+msgstr "nájdený výsledok vyhµadávania plánu"
 
 msgid "Nothing found for Search String"
 msgstr "Hµadaný výraz sa nena¹iel"

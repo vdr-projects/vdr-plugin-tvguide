@@ -53,6 +53,7 @@ enum eRecMenuState {
     rmsSearchTimerDeleteConfirm,
     rmsSearchTimerDelete,
     rmsSearchTimerDeleteWithTimers,
+    rmsSearchTimerRecord,
     //SWITCHTIMER
     rmsSwitchTimer,
     rmsSwitchTimerCreate,

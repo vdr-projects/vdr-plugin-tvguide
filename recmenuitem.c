@@ -1871,7 +1871,7 @@ int cRecMenuItemEvent::DrawIcons(void) {
         if (imgHasTimer) {
             pixmapIcons->DrawImage(cPoint(width - iconSize - 10, iconY), *imgHasTimer);
         }
-    } else {
+    } else if (action2 != rmsDisabled) {
         std::string iconRec = active ? "record_active" : "record_inactive";
         cImage *imgRec = imgCache.GetIcon(iconRec, iconSize, iconSize);
         if (imgRec) {

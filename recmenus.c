@@ -978,13 +978,13 @@ cRecMenuSearchTimerResults::cRecMenuSearchTimerResults(std::string searchString,
     this->numResults = numResults;
     SetWidthPercent(70);
     cString message1 = "", message2 = "", message3 = "", infoText = "";
-    if (action2 == rmsDisabled) {
+    if (action2 == rmsFavoritesRecord) {
+        message1 = tr("search results for Favorite");
+        message2 = tr("search result for Favorite");
+    } else {
         message1 = tr("search results for Search Timer");
         message2 = tr("search result for Search Timer");
         message3 = tr("Using Template");
-    } else if (action2 == rmsFavoritesRecord) {
-        message1 = tr("search results for Favorite");
-        message2 = tr("search result for Favorite");
     }
     if (templateName.size() > 0) {
         infoText = cString::sprintf("%d %s:\n\"%s\"\n%s \"%s\"", numResults, (numResults>1)?(*message1):(*message2), searchString.c_str(), *message3, templateName.c_str());
