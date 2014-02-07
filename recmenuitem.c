@@ -2721,13 +2721,18 @@ int cRecMenuItemSearchTimer::DrawIcons(void) {
     int iconY = (height - iconSize) / 2;
     std::string iconEdit, iconDelete, iconSearch;
     if (active) {
-        iconEdit = (iconActive==0)?"edit_active":"edit_inactive";
-        iconDelete = (iconActive==1)?"delete_active":"delete_inactive";
-        iconSearch = (iconActive==2)?"search_active":"search_inactive";
+        iconSearch = (iconActive==0)?"search_active":"search_inactive";
+        iconEdit = (iconActive==1)?"edit_active":"edit_inactive";
+        iconDelete = (iconActive==2)?"delete_active":"delete_inactive";
     } else {
+        iconSearch = "search_inactive";
         iconEdit = "edit_inactive";
         iconDelete = "delete_inactive";
-        iconSearch = "search_inactive";
+    }
+    cImage *imgSearch = imgCache.GetIcon(iconSearch, iconSize, iconSize);
+    if (imgSearch) {
+        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgSearch);
+        iconsX += iconSize + 10;
     }
     cImage *imgEdit = imgCache.GetIcon(iconEdit, iconSize, iconSize);
     if (imgEdit) {
@@ -2737,11 +2742,6 @@ int cRecMenuItemSearchTimer::DrawIcons(void) {
     cImage *imgDel = imgCache.GetIcon(iconDelete, iconSize, iconSize);
     if (imgDel) {
         pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgDel);
-        iconsX += iconSize + 10;
-    }
-    cImage *imgSearch = imgCache.GetIcon(iconSearch, iconSize, iconSize);
-    if (imgSearch) {
-        pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgSearch);
         iconsX += iconSize + 10;
     }
     return iconsX;

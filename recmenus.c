@@ -19,7 +19,7 @@ cRecMenuMain::cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switc
 
     if (epgSearchAvailable) {
         AddMenuItem(new cRecMenuItemButton(tr("Create Search Timer"), rmsSearchTimer, false, false, false, true));
-        AddMenuItem(new cRecMenuItemButton(tr("Manage Search Timers"), rmsSearchTimers, false, false, false, true));
+        AddMenuItem(new cRecMenuItemButton(tr("Search Timers"), rmsSearchTimers, false, false, false, true));
     }
 
     if (tvguideConfig.instRecFolderMode == eFolderSelect)
@@ -635,7 +635,7 @@ cRecMenuSearchTimers::cRecMenuSearchTimers(std::vector<cTVGuideSearchTimer> sear
     SetWidthPercent(70);
     cString headline;
     if (numSearchTimers > 0) {
-        headline = tr("Manage EPGSearch Search Timers");
+        headline = tr("EPGSearch Search Timers");
     } else {
         headline = tr("No Search Timers Configured");
     } 
@@ -657,7 +657,7 @@ cRecMenuSearchTimers::~cRecMenuSearchTimers(void) {
 
 void cRecMenuSearchTimers::SetMenuItems(void) {
     for (int i = 0; i < numSearchTimers; i++) {
-        if (!AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, rmsSearchTimerTest, (i==0)?true:false)))
+        if (!AddMenuItemInitial(new cRecMenuItemSearchTimer(searchTimers[i], rmsSearchTimerTest, rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, (i==0)?true:false)))
             break;
     }
 }
@@ -670,7 +670,7 @@ cTVGuideSearchTimer cRecMenuSearchTimers::GetSearchTimer(void) {
 cRecMenuItem *cRecMenuSearchTimers::GetMenuItem(int number) {
     if (number < 0 || number >= numSearchTimers)
         return NULL;
-    return new cRecMenuItemSearchTimer(searchTimers[number], rmsSearchTimerEdit, rmsSearchTimerDelete, rmsSearchTimerTest, false);
+    return new cRecMenuItemSearchTimer(searchTimers[number], rmsSearchTimerTest, rmsSearchTimerEdit, rmsSearchTimerDeleteConfirm, false);
 }
 
 int cRecMenuSearchTimers::GetTotalNumMenuItems(void) {
