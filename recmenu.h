@@ -60,6 +60,7 @@ public:
     void Display(bool scroll = false);
     void Hide(void);
     void Show(void);
+    void UpdateActiveMenuItem(void);
     virtual eRecMenuState ProcessKey(eKeys Key);
 };
 #endif //__TVGUIDE_RECMENU_H

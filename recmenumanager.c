@@ -544,6 +544,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             delete activeMenu;
             activeMenu = activeMenuBuffer;
             activeMenuBuffer = NULL;
+            activeMenu->UpdateActiveMenuItem();
             activeMenu->Show();
             break;
         /********************************************************************************************** 
@@ -718,6 +719,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             delete activeMenu;
             activeMenu = activeMenuBuffer2;
             activeMenuBuffer2 = NULL;
+            activeMenu->UpdateActiveMenuItem();
             activeMenu->Show();
             break;
         case rmsFavoritesNow:
@@ -767,6 +769,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 delete activeMenu;
                 activeMenu = activeMenuBuffer;
                 activeMenuBuffer = NULL;
+                activeMenu->UpdateActiveMenuItem();
                 activeMenu->Show();
                 state = osContinue;
             }
@@ -795,7 +798,6 @@ void cRecMenuManager::DisplaySearchTimerList(void) {
     delete activeMenu;
     std::vector<cTVGuideSearchTimer> searchTimers;
     recManager->GetSearchTimers(&searchTimers);
-    //std::sort(searchTimers.begin(), searchTimers.end());
     activeMenu = new cRecMenuSearchTimers(searchTimers);
     activeMenu->Display();
 }
@@ -865,6 +867,7 @@ eOSState cRecMenuManager::ProcessKey(eKeys Key) {
                 delete activeMenu;
                 activeMenu = activeMenuBuffer;
                 activeMenuBuffer = NULL;
+                activeMenu->UpdateActiveMenuItem();
                 activeMenu->Show();
                 state = osContinue;
                 osdManager.flush();

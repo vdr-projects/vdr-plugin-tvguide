@@ -574,6 +574,13 @@ void cRecMenu::Show(void) {
     }
 }
 
+void cRecMenu::UpdateActiveMenuItem(void) {
+    cRecMenuItem *activeItem = GetActiveMenuItem();
+    if (activeItem)
+        activeItem->Draw();   
+}
+
+
 void cRecMenu::DrawScrollBar(void) {
     pixmapScrollBar->Fill(theme.Color(clrBorder));
     pixmapScrollBar->DrawRectangle(cRect(2,2,pixmapScrollBar->ViewPort().Width()-4, pixmapScrollBar->ViewPort().Height() - 4), theme.Color(clrBackground));

@@ -1846,15 +1846,6 @@ void cRecMenuItemEvent::Draw(void) {
     pixmapText->DrawText(cPoint(textX, textHeightLine1), *info, colorText, clrTransparent, fontSmall);
     pixmapText->DrawText(cPoint(textX, textHeightLine2), *title, colorText, clrTransparent, font);
     pixmapText->DrawText(cPoint(textX, textHeightLine3), *desc, colorText, clrTransparent, fontSmall);
-
-    if (event->HasTimer()) {
-        int iconSize = height / 2;
-        int iconY = (height - iconSize) / 2;
-        cImage *imgHasTimer = imgCache.GetIcon("activetimer", iconSize, iconSize);
-        if (imgHasTimer) {
-            pixmapIcons->DrawImage(cPoint(width - iconSize - 10, iconY), *imgHasTimer);
-        }
-    }
 }
 
 int cRecMenuItemEvent::DrawIcons(void) {
@@ -1862,28 +1853,33 @@ int cRecMenuItemEvent::DrawIcons(void) {
     int iconsX = 10;
     int iconSize = height / 2;
     int iconY = (height - iconSize) / 2;
-    std::string iconInfo, iconRecord;
+    std::string iconInfo;
     if (active) {
         iconInfo = (iconActive==0)?"info_active":"info_inactive";
-        if (action2 != rmsDisabled)
-            iconRecord = (iconActive==1)?"record_active":"record_inactive";
     } else {
         iconInfo = "info_inactive";
-        if (action2 != rmsDisabled)
-            iconRecord = "record_inactive";
     }
     cImage *imgInfo = imgCache.GetIcon(iconInfo, iconSize, iconSize);
     if (imgInfo) {
         pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgInfo);
         iconsX += iconSize + 5;
     }
-    if (action2 != rmsDisabled) {
-        cImage *imgRec = imgCache.GetIcon(iconRecord, iconSize, iconSize);
-        if (imgRec) {
-            pixmapIcons->DrawImage(cPoint(iconsX, iconY), *imgRec);
-            iconsX += iconSize + 5;
+
+    iconY = height - iconSize - 10;
+    if (event->HasTimer()) {
+        cImage *imgHasTimer = imgCache.GetIcon("activetimer", iconSize, iconSize);
+        if (imgHasTimer) {
+            pixmapIcons->DrawImage(cPoint(width - iconSize - 10, iconY), *imgHasTimer);
         }
-    }    
+    } else {
+        std::string iconRec = active ? "record_active" : "record_inactive";
+        cImage *imgRec = imgCache.GetIcon(iconRec, iconSize, iconSize);
+        if (imgRec) {
+            pixmapIcons->DrawImage(cPoint(width - iconSize - 10, iconY), *imgRec);
+        }
+    }
+
+
     return iconsX;
 }
 
@@ -1902,36 +1898,11 @@ void cRecMenuItemEvent::Show(void) {
 eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
     bool consumed = false;
     switch (Key & ~k_Repeat) {
-        case kLeft:
-            if (action2 == rmsDisabled)
-                return rmsNotConsumed;
-            if (iconActive == 1) {
-                iconActive = 0;
-                consumed = true;
-            } 
-            DrawIcons();
-            if (consumed)
-                return rmsConsumed;
-            else
-                return rmsNotConsumed;
-            break;
-        case kRight: {
-            if (action2 == rmsDisabled)
-                return rmsNotConsumed;
-            if (iconActive == 0) {
-                iconActive = 1;
-                consumed = true;
-            }   
-            DrawIcons();
-            if (consumed)
-                return rmsConsumed;
-            else
-                return rmsNotConsumed;
-            break; }
         case kOk:
-            if (iconActive == 0)
-                return action;
-            else if (iconActive == 1)
+            return action;
+            break;
+        case kRed:
+            if (!event->HasTimer())
                 return action2;
             break;
         default:

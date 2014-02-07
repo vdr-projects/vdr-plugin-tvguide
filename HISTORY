@@ -124,3 +124,6 @@ Version 1.2.0
 - fixed a bug when scrolling page up and the menu footer is active
 - order of search timers in search timer list in alphabetical order
 - changed order of actions on search timer menu items
+- changed event result lists that it is possible to scroll page up and
+  down directly with left / right. A recording is triggered now with the
+  red key.
