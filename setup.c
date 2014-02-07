@@ -206,7 +206,7 @@ void cMenuSetupGeneral::Set(void) {
         if (themes.NumThemes())
             Add(new cMenuEditStraItem(cString::sprintf("%s%s", *indent, tr("Theme")), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
     }
-    Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 120, 320));
+    Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 60, 320));
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));

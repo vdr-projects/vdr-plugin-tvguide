@@ -128,3 +128,4 @@ Version 1.2.0
   down directly with left / right. A recording is triggered now with the
   red key.
 - Added possibility to create a recording from search timer result list
+- Set minimum time to display in Plugin Setup from 120 to 60 minutes
