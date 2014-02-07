@@ -64,13 +64,14 @@ private:
 public:
     cTVGuideSearchTimer(void);
     virtual ~cTVGuideSearchTimer(void);
+    bool operator < (const cTVGuideSearchTimer& other) const;
     void SetEPGSearchString(std::string strTimer) { this->strTimer = strTimer; };
     void SetTemplate(std::string tmpl);
     bool Parse(bool readTemplate = false);
     std::string BuildSearchString(void);
     int GetID(void) { return ID; };
     //GETTER
-    std::string SearchString(void) { return searchString; };
+    std::string SearchString(void) const { return searchString; };
     bool Active(void);
     bool UseTitle(void) { return useTitle; };
     bool UseSubtitle(void) { return useSubtitle; };

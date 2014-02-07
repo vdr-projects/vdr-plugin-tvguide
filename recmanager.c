@@ -1,3 +1,5 @@
+#define __STL_CONFIG_H
+
 #include <string>
 #include <sstream>
 #include <vector>
@@ -385,6 +387,7 @@ void cRecManager::GetSearchTimers(std::vector<cTVGuideSearchTimer> *searchTimer)
                 searchTimer->push_back(timer);
         }
     }
+    std::sort(searchTimer->begin(), searchTimer->end());
 }
 
 int cRecManager::CreateSearchTimer(std::string epgSearchString) {

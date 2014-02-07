@@ -71,6 +71,15 @@ cTVGuideSearchTimer::cTVGuideSearchTimer(void) {
 cTVGuideSearchTimer::~cTVGuideSearchTimer(void) {
 }
 
+bool cTVGuideSearchTimer::operator < (const cTVGuideSearchTimer& other) const {
+    std::string searchStringOther = other.SearchString();
+    int comp = searchString.compare(searchStringOther);
+    if (comp < 0)
+        return true;
+    return false;
+}
+
+
 void cTVGuideSearchTimer::SetTemplate(std::string tmpl) {
     std::stringstream searchTimerString;
     searchTimerString << "0:";

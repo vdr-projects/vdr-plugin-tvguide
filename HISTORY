@@ -122,3 +122,4 @@ Version 1.2.0
 - changed video directory choosage behaviour: added possibility to use 
   a fixed recording dir which also supports epgsearch variables
 - fixed a bug when scrolling page up and the menu footer is active
+- order of search timers in search timer list in alphabetical order

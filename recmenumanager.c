@@ -795,6 +795,7 @@ void cRecMenuManager::DisplaySearchTimerList(void) {
     delete activeMenu;
     std::vector<cTVGuideSearchTimer> searchTimers;
     recManager->GetSearchTimers(&searchTimers);
+    //std::sort(searchTimers.begin(), searchTimers.end());
     activeMenu = new cRecMenuSearchTimers(searchTimers);
     activeMenu->Display();
 }
