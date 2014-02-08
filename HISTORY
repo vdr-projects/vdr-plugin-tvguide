@@ -129,3 +129,4 @@ Version 1.2.0
   red key.
 - Added possibility to create a recording from search timer result list
 - Set minimum time to display in Plugin Setup from 120 to 60 minutes
+- made order of search timer list case insensitive

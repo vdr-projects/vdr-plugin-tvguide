@@ -73,7 +73,9 @@ cTVGuideSearchTimer::~cTVGuideSearchTimer(void) {
 
 bool cTVGuideSearchTimer::operator < (const cTVGuideSearchTimer& other) const {
     std::string searchStringOther = other.SearchString();
-    int comp = searchString.compare(searchStringOther);
+    searchStringOther = StrToLowerCase(searchStringOther);
+    std::string thisSearchString = StrToLowerCase(searchString);
+    int comp = thisSearchString.compare(searchStringOther);
     if (comp < 0)
         return true;
     return false;
