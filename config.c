@@ -44,6 +44,7 @@ cTvguideConfig::cTvguideConfig() {
     numAdditionalEPGPictures = 9;
     epgImageWidthLarge = 525;
     epgImageHeightLarge = 400;
+    detailedViewScrollStep = 5;
     instRecFolderMode = eFolderRoot;
     instRecFixedFolder = "";
     favWhatsOnNow = 1;
@@ -272,6 +273,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "numAdditionalEPGPictures") == 0) numAdditionalEPGPictures = atoi(Value);
     else if (strcmp(Name, "epgImageWidthLarge") == 0)       epgImageWidthLarge = atoi(Value);
     else if (strcmp(Name, "epgImageHeightLarge") == 0)      epgImageHeightLarge = atoi(Value);
+    else if (strcmp(Name, "detailedViewScrollStep") == 0)   detailedViewScrollStep = atoi(Value);
     else if (strcmp(Name, "timeLineWidthPercent") == 0)     timeLineWidthPercent = atoi(Value);
     else if (strcmp(Name, "timeLineHeightPercent") == 0)    timeLineHeightPercent = atoi(Value);
     else if (strcmp(Name, "displayChannelName") == 0)       displayChannelName = atoi(Value);

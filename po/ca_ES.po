@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 18:08+0100\n"
+"POT-Creation-Date: 2014-05-10 17:24+0200\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -21,11 +21,14 @@ msgstr "Programa principal"
 msgid "Channel"
 msgstr "Canal"
 
-msgid "RERUNS OF THIS SHOW"
-msgstr "REEMISSIONS"
+msgid "min"
+msgstr "min"
 
-msgid "Actors"
-msgstr "Actors"
+msgid "Reruns of "
+msgstr ""
+
+msgid "No reruns found"
+msgstr ""
 
 msgid "No EPG Information available"
 msgstr "No hi ha informació EPG"
@@ -71,9 +74,6 @@ msgstr "canal desconegut"
 
 msgid "Duration"
 msgstr "Durada"
-
-msgid "min"
-msgstr "min"
 
 msgid "recorded at"
 msgstr "enregistrat a"
@@ -612,6 +612,9 @@ msgstr "Salt (Botons 4 / 6) en hores"
 msgid "Time Format (12h/24h)"
 msgstr "Format de temps (12h/24h)"
 
+msgid "EPG Window Text Scrolling Speed"
+msgstr ""
+
 msgid "Display Reruns in detailed EPG View"
 msgstr "Mostre reemissions a l'EPG detallat"
 
@@ -836,6 +839,114 @@ msgstr ""
 
 msgid "Recording Menus Icon Cache"
 msgstr ""
+
+msgid "No Cast available"
+msgstr ""
+
+msgid "Cast"
+msgstr ""
+
+msgid "EPG Info"
+msgstr ""
+
+msgid "Reruns"
+msgstr ""
+
+msgid "Recording Information"
+msgstr ""
+
+msgid "Image Galery"
+msgstr ""
+
+msgid "TheTVDB Info"
+msgstr ""
+
+msgid "TheTVDB Information"
+msgstr ""
+
+msgid "Episode"
+msgstr ""
+
+msgid "Season"
+msgstr ""
+
+msgid "Episode Overview"
+msgstr ""
+
+msgid "First aired"
+msgstr ""
+
+msgid "Guest Stars"
+msgstr ""
+
+msgid "TheMovieDB Rating"
+msgstr ""
+
+msgid "Series Overview"
+msgstr ""
+
+msgid "Genre"
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "TheMovieDB Information"
+msgstr ""
+
+msgid "Original Title"
+msgstr ""
+
+msgid "Tagline"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "Adult"
+msgstr ""
+
+msgid "Collection"
+msgstr ""
+
+msgid "Budget"
+msgstr ""
+
+msgid "Revenue"
+msgstr ""
+
+msgid "Homepage"
+msgstr ""
+
+msgid "Release Date"
+msgstr ""
+
+msgid "Runtime"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
+msgid "TheMovieDB Popularity"
+msgstr ""
+
+msgid "TheMovieDB Vote Average"
+msgstr ""
+
+#~ msgid "RERUNS OF THIS SHOW"
+#~ msgstr "REEMISSIONS"
+
+#~ msgid "Actors"
+#~ msgstr "Actors"
 
 #~ msgid "Use folders for instant records"
 #~ msgstr "Utilitza carpetes per gravacions a l'instant"

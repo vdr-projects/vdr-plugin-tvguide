@@ -31,6 +31,7 @@ class cFontManager {
         cFont *FontDetailView;
         cFont *FontDetailViewSmall;
         cFont *FontDetailHeader;
+        cFont *FontDetailHeaderLarge;
         cFont *FontMessageBox;
         cFont *FontMessageBoxLarge;
         cFont *FontRecMenuItem;

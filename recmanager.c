@@ -7,7 +7,6 @@
 
 #include <vdr/menu.h>
 #include "services/remotetimers.h"
-#include "services/tvscraper.h"
 #include "tools.h"
 #include "switchtimer.h"
 #include "timerconflict.h"

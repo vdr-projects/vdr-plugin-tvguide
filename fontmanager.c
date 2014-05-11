@@ -15,7 +15,8 @@ void cFontManager::SetFonts() {
     FontButton = CreateFont(geoManager.footerHeight/3 + 4 + tvguideConfig.FontButtonDelta);
     FontDetailView = CreateFont(geoManager.osdHeight/30 + tvguideConfig.FontDetailViewDelta);
     FontDetailViewSmall = CreateFont(geoManager.osdHeight/40 + tvguideConfig.FontDetailViewSmallDelta);
-    FontDetailHeader = CreateFont(geoManager.osdHeight/25 + tvguideConfig.FontDetailHeaderDelta);
+    FontDetailHeader = CreateFont(geoManager.osdHeight/27 + tvguideConfig.FontDetailHeaderDelta);
+    FontDetailHeaderLarge = CreateFont(geoManager.osdHeight/20 + tvguideConfig.FontDetailHeaderDelta);
     FontMessageBox = CreateFont(geoManager.osdHeight/33 + tvguideConfig.FontMessageBoxDelta);
     FontMessageBoxLarge = CreateFont(geoManager.osdHeight/30 + tvguideConfig.FontMessageBoxLargeDelta);    
     FontStatusHeader = CreateFont(geoManager.statusHeaderHeight/6 - 4 + tvguideConfig.FontStatusHeaderDelta);
@@ -46,6 +47,7 @@ void cFontManager::DeleteFonts() {
     delete FontDetailView;
     delete FontDetailViewSmall;
     delete FontDetailHeader;
+    delete FontDetailHeaderLarge;
     delete FontMessageBox;
     delete FontMessageBoxLarge;
     delete FontStatusHeader;

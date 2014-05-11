@@ -851,10 +851,6 @@ void cRecMenuManager::DisplayDetailedView(const cEvent *ev) {
     activeMenu->Hide();
     detailView = new cDetailView(ev, footer);
     footer->SetDetailedViewMode(true);
-    detailView->setContent();
-    detailView->drawHeader();
-    detailView->drawContent();
-    detailView->drawScrollbar();
     detailView->Start();
     detailViewActive = true;
 }

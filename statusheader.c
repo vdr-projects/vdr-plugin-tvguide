@@ -1,5 +1,5 @@
 #include "tools.h"
-#include "services/tvscraper.h"
+#include "services/scraper2vdr.h"
 #include "imageloader.h"
 #include "statusheader.h"
 
@@ -101,28 +101,26 @@ void cStatusHeader::DrawInfoText(cGrid *grid) {
 
 int cStatusHeader::DrawPoster(const cEvent *event, int x, int y, int height, int border) {
     bool hasPoster = false;
-    TVScraperGetPoster poster;
+    ScraperGetPoster posterScraper2Vdr;
     int posterWidth = 0;
     int posterHeight = 0;
-    if (event) {
-        static cPlugin *pTVScraper = cPluginManager::GetPlugin("tvscraper");
-        if (pTVScraper) {
-            poster.event = event;
-            poster.isRecording = false;
-            if (pTVScraper->Service("TVScraperGetPoster", &poster)) {
-                hasPoster = true;
-                int posterWidthOrig = poster.media.width;
-                int posterHeightOrig = poster.media.height;
-                if ((posterWidthOrig > 10) && (posterHeightOrig > 10)) {
-                    posterHeight = height;
-                    posterWidth = posterWidthOrig * ((double)posterHeight / (double)posterHeightOrig);
-                }
-            }
+    static cPlugin *pScraper2Vdr = cPluginManager::GetPlugin("scraper2vdr");
+    if (pScraper2Vdr) {
+        posterScraper2Vdr.event = event;
+        posterScraper2Vdr.recording = NULL;
+        if (pScraper2Vdr->Service("GetPoster", &posterScraper2Vdr)) {
+            hasPoster = true;
+            int posterWidthOrig = posterScraper2Vdr.poster.width;
+            int posterHeightOrig = posterScraper2Vdr.poster.height;
+            posterHeight = height;
+            posterWidth = posterWidthOrig * ((double)posterHeight / (double)posterHeightOrig);
+        } else {
+            hasPoster = false;
         }
     }
     if (hasPoster) {
         cImageLoader imgLoader;
-        if (imgLoader.LoadPoster(poster.media.path.c_str(), posterWidth, posterHeight)) {
+        if (imgLoader.LoadPoster(posterScraper2Vdr.poster.path.c_str(), posterWidth, posterHeight)) {
             pixmapText->DrawImage(cPoint(x, y), imgLoader.GetImage());
             return posterWidth + border;
         }

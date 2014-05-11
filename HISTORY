@@ -124,9 +124,17 @@ Version 1.2.0
 - fixed a bug when scrolling page up and the menu footer is active
 - order of search timers in search timer list in alphabetical order
 - changed order of actions on search timer menu items
+
+Version 1.2.1
+
 - changed event result lists that it is possible to scroll page up and
   down directly with left / right. A recording is triggered now with the
   red key.
 - Added possibility to create a recording from search timer result list
 - Set minimum time to display in Plugin Setup from 120 to 60 minutes
 - made order of search timer list case insensitive
+
+Version 1.2.2
+
+- added scraper2vdr support
+- introduced tabbed EPG detail view

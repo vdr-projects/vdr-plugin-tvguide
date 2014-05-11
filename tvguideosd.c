@@ -547,10 +547,6 @@ void cTvGuideOsd::DetailedEPG() {
         detailView = new cDetailView(activeGrid->GetEvent(), footer);
         footer->SetDetailedViewMode();
         osdManager.flush();
-        detailView->setContent();
-        detailView->drawHeader();
-        detailView->drawContent();
-        detailView->drawScrollbar();
         detailView->Start();
         osdManager.flush();
     }

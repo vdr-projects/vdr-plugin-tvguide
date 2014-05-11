@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-02-07 18:08+0100\n"
+"POT-Creation-Date: 2014-05-10 17:24+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -18,11 +18,14 @@ msgstr "Hauptprogramm"
 msgid "Channel"
 msgstr "Kanal"
 
-msgid "RERUNS OF THIS SHOW"
-msgstr "Wiederholungen dieser Sendung"
+msgid "min"
+msgstr "min"
 
-msgid "Actors"
-msgstr "Schauspieler"
+msgid "Reruns of "
+msgstr "Wiederholungen von "
+
+msgid "No reruns found"
+msgstr "Keine Wiederholungen gefunden"
 
 msgid "No EPG Information available"
 msgstr "Keine EPG Daten verfügbar"
@@ -68,9 +71,6 @@ msgstr "unbekannter Kanal"
 
 msgid "Duration"
 msgstr "Dauer"
-
-msgid "min"
-msgstr "min"
 
 msgid "recorded at"
 msgstr "aufgenommen am"
@@ -609,6 +609,9 @@ msgstr "Sehr großer Sprung (Tasten 4 / 6) in Stunden"
 msgid "Time Format (12h/24h)"
 msgstr "Zeitformat (12h/24h)"
 
+msgid "EPG Window Text Scrolling Speed"
+msgstr "Text Scroll Geschwindigkeit des EPG Fensters"
+
 msgid "Display Reruns in detailed EPG View"
 msgstr "Wiederholungen in der detailierten EPG Ansicht anzeigen"
 
@@ -833,3 +836,106 @@ msgstr "Kanalgruppen Cache"
 
 msgid "Recording Menus Icon Cache"
 msgstr "Recording Menüs Icon Cache"
+
+msgid "No Cast available"
+msgstr "Keine Besetzung vorhanden"
+
+msgid "Cast"
+msgstr "Besetzung"
+
+msgid "EPG Info"
+msgstr "EPG Info"
+
+msgid "Reruns"
+msgstr "Wiederholungen"
+
+msgid "Recording Information"
+msgstr ""
+
+msgid "Image Galery"
+msgstr "Bildergalerie"
+
+msgid "TheTVDB Info"
+msgstr "TheTVDB Info"
+
+msgid "TheTVDB Information"
+msgstr "TheTVDB Information"
+
+msgid "Episode"
+msgstr "Episode"
+
+msgid "Season"
+msgstr "Staffel"
+
+msgid "Episode Overview"
+msgstr "Episodenüberblick"
+
+msgid "First aired"
+msgstr "Erstausstrahlung"
+
+msgid "Guest Stars"
+msgstr "Gast Stars"
+
+msgid "TheMovieDB Rating"
+msgstr "TheMovieDB Wertung"
+
+msgid "Series Overview"
+msgstr "Serienüberblick"
+
+msgid "Genre"
+msgstr "Genre"
+
+msgid "Network"
+msgstr "Sendeanstalt"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "TheMovieDB Information"
+msgstr "TheMovieDB Information"
+
+msgid "Original Title"
+msgstr "Original Titel"
+
+msgid "Tagline"
+msgstr "Zusammenfassung"
+
+msgid "Overview"
+msgstr "Überblick"
+
+msgid "yes"
+msgstr "Ja"
+
+msgid "no"
+msgstr "Nein"
+
+msgid "Adult"
+msgstr "Nur für Erwachsene"
+
+msgid "Collection"
+msgstr "Kollektion"
+
+msgid "Budget"
+msgstr "Budget"
+
+msgid "Revenue"
+msgstr "Einnahmen"
+
+msgid "Homepage"
+msgstr "Homepage"
+
+msgid "Release Date"
+msgstr "Veröffentlicht"
+
+msgid "Runtime"
+msgstr "Laufzeit"
+
+msgid "minutes"
+msgstr "Minuten"
+
+msgid "TheMovieDB Popularity"
+msgstr "TheMovieDB Popularität"
+
+msgid "TheMovieDB Vote Average"
+msgstr "TheMovieDB durchschnittliche Bewertung"
+

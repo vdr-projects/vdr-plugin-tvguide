@@ -93,6 +93,7 @@ class cTvguideConfig {
         int numAdditionalEPGPictures;
         int epgImageWidthLarge;
         int epgImageHeightLarge;
+        int detailedViewScrollStep;
         cString epgImagePath;
         cString iconPath;
         cString logoPathDefault;
@@ -221,7 +222,8 @@ THEME_CLR(theme, clrTimeline1Blending, 0xFF828282);
 THEME_CLR(theme, clrTimeline2, clrBlack);
 THEME_CLR(theme, clrTimeline2Blending, 0xFF3F3F3F);
 THEME_CLR(theme, clrTimeBase, 0xA0FF0000);
-THEME_CLR(theme, clrButtonRed, 0x00000000);
+THEME_CLR(theme, clrTabInactive, 0xA01F3D7A);
+THEME_CLR(theme, clrButtonRed, 0xFFFF0000);
 THEME_CLR(theme, clrButtonRedBorder, 0x00000000);
 THEME_CLR(theme, clrButtonGreen, 0x00000000);
 THEME_CLR(theme, clrButtonGreenBorder, 0x00000000);

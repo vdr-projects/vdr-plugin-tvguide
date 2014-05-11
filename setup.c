@@ -95,6 +95,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("numAdditionalEPGPictures", tvguideConfig.numAdditionalEPGPictures);
     SetupStore("epgImageWidthLarge", tvguideConfig.epgImageWidthLarge);
     SetupStore("epgImageHeightLarge", tvguideConfig.epgImageHeightLarge);
+    SetupStore("detailedViewScrollStep", tvguideConfig.detailedViewScrollStep);
     SetupStore("timeLineWidthPercent", tvguideConfig.timeLineWidthPercent);
     SetupStore("timeLineHeightPercent", tvguideConfig.timeLineHeightPercent);
     SetupStore("displayChannelName", tvguideConfig.displayChannelName);
@@ -217,6 +218,7 @@ void cMenuSetupGeneral::Set(void) {
     Add(new cMenuEditIntItem(tr("Big Step (Keys 1 / 3) in hours"), &tmpTvguideConfig->bigStepHours, 1, 12));
     Add(new cMenuEditIntItem(tr("Huge Step (Keys 4 / 6) in hours"), &tmpTvguideConfig->hugeStepHours, 13, 48));
     Add(new cMenuEditStraItem(tr("Time Format (12h/24h)"), &tmpTvguideConfig->timeFormat, 2,  timeFormatItems));
+    Add(new cMenuEditIntItem(tr("EPG Window Text Scrolling Speed"), &tmpTvguideConfig->detailedViewScrollStep, 1, 30));
     Add(new cMenuEditBoolItem(tr("Display Reruns in detailed EPG View"), &tmpTvguideConfig->displayRerunsDetailEPGView));
     if (tmpTvguideConfig->displayRerunsDetailEPGView) {
         Add(new cMenuEditIntItem(cString::sprintf("%s%s", *indent, tr("Number of reruns to display")), &tmpTvguideConfig->numReruns, 1, 10));
