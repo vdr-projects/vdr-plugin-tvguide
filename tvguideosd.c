@@ -73,15 +73,17 @@ void cTvGuideOsd::Show(void) {
 
 void cTvGuideOsd::drawOsd() {
     cPixmap::Lock();
+    int numBack = tvguideConfig.numGrids / 2;
+    int offset = 0;
+    const cChannel *newStartChannel;
 #if VDRVERSNUM >= 20301
+    {
     LOCK_CHANNELS_READ;
     const cChannel *startChannel = Channels->GetByNumber(cDevice::CurrentChannel());
 #else
     cChannel *startChannel = Channels.GetByNumber(cDevice::CurrentChannel());
 #endif
-    int numBack = tvguideConfig.numGrids / 2;
-    int offset = 0;
-    const cChannel *newStartChannel = startChannel;
+    newStartChannel = startChannel;
 #if VDRVERSNUM >= 20301
     for (; newStartChannel ; newStartChannel = Channels->Prev(newStartChannel)) {
 #else
@@ -96,6 +98,7 @@ void cTvGuideOsd::drawOsd() {
     if (!newStartChannel)
 #if VDRVERSNUM >= 20301
         newStartChannel = Channels->First();
+    } //LOCK_CHANNELS_READ
 #else
         newStartChannel = Channels.First();
 #endif
@@ -236,6 +239,7 @@ void cTvGuideOsd::channelForward() {
     if (!colRight) {
         const cChannel *channelRight = activeGrid->column->getChannel();
 #if VDRVERSNUM >= 20301
+	{
         LOCK_CHANNELS_READ;
         while (channelRight = Channels->Next(channelRight)) {
 #else
@@ -254,6 +258,9 @@ void cTvGuideOsd::channelForward() {
                 }
             }
         }
+#if VDRVERSNUM >= 20301
+        } //LOCK_CHANNELS_READ
+#endif
         if (colRight) {
             colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
@@ -291,8 +298,9 @@ void cTvGuideOsd::channelBack() {
     if (!colLeft) {
         const cChannel *channelLeft = activeGrid->column->getChannel();
 #if VDRVERSNUM >= 20301
-        LOCK_CHANNELS_READ;
-        while (channelLeft = Channels->Prev(channelLeft)) {
+	{
+	LOCK_CHANNELS_READ;
+	while (channelLeft = Channels->Prev(channelLeft)) {
 #else
         while (channelLeft = Channels.Prev(channelLeft)) {
 #endif
@@ -306,6 +314,9 @@ void cTvGuideOsd::channelBack() {
                 }
             }
         }
+#if VDRVERSNUM >= 20301
+	} //LOCK_CHANNELS_READ
+#endif
         if (colLeft) {
             colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
@@ -677,11 +688,14 @@ void cTvGuideOsd::CheckTimeout(void) {
         int newChannelNum = channelJumper->GetChannel(); 
         delete channelJumper;
         channelJumper = NULL;
+        const cChannel *newChannel;
 #if VDRVERSNUM >= 20301
+        {
         LOCK_CHANNELS_READ;
-        const cChannel *newChannel = Channels->GetByNumber(newChannelNum);
+        newChannel = Channels->GetByNumber(newChannelNum);
+        }
 #else
-        const cChannel *newChannel = Channels.GetByNumber(newChannelNum);
+        newChannel = Channels.GetByNumber(newChannelNum);
 #endif
         if (newChannel) {
             readChannels(newChannel);
@@ -767,7 +781,7 @@ eOSState cTvGuideOsd::ProcessKey(eKeys Key) {
 void cTvGuideOsd::dump() {
     esyslog("tvguide: ------Dumping Content---------");
     activeGrid->debug();
-    int i=1;
+//    int i=1;
     for (cChannelColumn *col = columns.First(); col; col = columns.Next(col)) {
         col->dumpGrids();
     }

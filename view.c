@@ -121,7 +121,7 @@ void cView::DrawHeader(void) {
     //REC Icon
     eTimerMatch timerMatch=tmNone; 
 #if VDRVERSNUM >= 20301
-    LOCK_TIMERS_READ;
+//    LOCK_TIMERS_READ;
     const cTimer *ti;
 #else
     cTimer *ti;
