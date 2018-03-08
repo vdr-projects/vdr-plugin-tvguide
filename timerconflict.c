@@ -86,7 +86,7 @@ void cTVGuideTimerConflicts::CalculateConflicts(void) {
         cTimeInterval *unionSet = NULL;
         int numTimers = conflicts[i]->timerIDs.size();
         for (int j=0; j < numTimers; j++) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             LOCK_TIMERS_READ;
             const cTimer *timer = Timers->Get(conflicts[i]->timerIDs[j]);
 #else
@@ -110,7 +110,7 @@ void cTVGuideTimerConflicts::CalculateConflicts(void) {
         
         cTimeInterval *intersect = NULL;
         for (int j=0; j < numTimers; j++) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             LOCK_TIMERS_READ;
             const cTimer *timer = Timers->Get(conflicts[i]->timerIDs[j]);
 #else

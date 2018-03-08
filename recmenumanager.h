@@ -23,7 +23,7 @@ private:
     void SetBackground(void);
     void DeleteBackground(void);
     void DisplaySearchTimerList(void);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     bool DisplayTimerConflict(const cTimer *timer);
 #else
     bool DisplayTimerConflict(cTimer *timer);

@@ -10,6 +10,10 @@ public:
     tChannelID channelID;
     int switchMinsBefore;
     int announceOnly;
+#if VDRVERSNUM >= 20305
+    cSwitchTimer(const cSwitchTimer &SwitchTimer) { *this = SwitchTimer; };
+    cSwitchTimer& operator= (const cSwitchTimer &SwitchTimer);
+#endif
     cSwitchTimer(void);
     cSwitchTimer(const cEvent* Event);
     bool Parse(const char *s);

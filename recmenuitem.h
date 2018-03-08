@@ -123,7 +123,7 @@ public:
     virtual bool GetBoolValue(void) { return false; };
     virtual cString GetStringValue(void) { return cString(""); };
     virtual const cEvent *GetEventValue(void) { return NULL; };
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     virtual const cTimer *GetTimerValue(void) { return NULL; };
 #else
     virtual cTimer *GetTimerValue(void) { return NULL; };
@@ -493,7 +493,7 @@ public:
 class cRecMenuItemChannelChooser : public cRecMenuItem {
 private:
     cString text;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cChannel *channel;
 #else
     cChannel *channel;
@@ -506,7 +506,7 @@ private:
     void DrawValue(void);
 public:
     cRecMenuItemChannelChooser (cString text,
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                                 const cChannel *initialChannel,
 #else
                                 cChannel *initialChannel,
@@ -560,14 +560,14 @@ public:
 // --- cRecMenuItemRecording  -------------------------------------------------------
 class cRecMenuItemRecording : public cRecMenuItem {
 private:
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cRecording *recording;
 #else
     cRecording *recording;
 #endif
     cPixmap *pixmapText;
 public:
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     cRecMenuItemRecording(const cRecording *recording, bool active);
 #else
     cRecMenuItemRecording(cRecording *recording, bool active);
@@ -583,7 +583,7 @@ public:
 class cRecMenuItemTimelineHeader : public cRecMenuItem {
 private:
     time_t day;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cTimer *timer;
 #else
     cTimer *timer;
@@ -603,7 +603,7 @@ public:
     virtual ~cRecMenuItemTimelineHeader(void);
     void SetDay(time_t day) { this->day = day; };
     void SetPixmaps(void);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     void SetCurrentTimer(const cTimer *timer) { this->timer = timer; };
 #else
     void SetCurrentTimer(cTimer *timer) { this->timer = timer; };
@@ -618,7 +618,7 @@ public:
 // --- cRecMenuItemTimelineTimer  -------------------------------------------------------
 class cRecMenuItemTimelineTimer : public cRecMenuItem {
 private:
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cTimer *timer;
 #else
     cTimer *timer;
@@ -637,7 +637,7 @@ private:
     void DrawTimerConflicts(void);
     void DrawNoTimerInfo(void);
 public:
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     cRecMenuItemTimelineTimer(const cTimer *timer, time_t start, time_t stop, std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active);
 #else
     cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop, std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active);
@@ -649,7 +649,7 @@ public:
     void Hide(void);
     void Show(void); 
     void Draw(void);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cTimer *GetTimerValue(void);
 #else
     cTimer *GetTimerValue(void);

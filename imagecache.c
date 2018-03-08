@@ -280,7 +280,7 @@ void cImageCache::CreateLogoCache(void) {
         return;
     if (tvguideConfig.numLogosInitial > 0) {
         int channelsCached = 0;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         for (const cChannel *channel = Channels->First(); channel; channel = Channels->Next(channel)) {
 #else
@@ -460,7 +460,7 @@ void cImageCache::AddCornersHorizontal(cImage *img, bool active) {
     }
     if (!cornerLeft || !cornerRight)
         return;
-    int maxX = min(cornerWidth, imgWidth);
+    int maxX = std::min(cornerWidth, imgWidth);
     for (int row = 0; row < cornerHeight; row++) {
         for (int col = 0; col < maxX; ++col) {
             img->SetPixel(cPoint(col, row), cornerLeft->GetPixel(cPoint(col, row)));
@@ -482,7 +482,7 @@ void cImageCache::AddCornersVertical(cImage *img, bool active) {
     }
     if (!cornerHead || !cornerBottom)
         return;
-    int maxY = min(cornerHeight, imgHeight);
+    int maxY = std::min(cornerHeight, imgHeight);
     for (int row = 0; row < maxY; row++) {
         for (int col = 0; col < cornerWidth; ++col) {
             img->SetPixel(cPoint(col, row), cornerHead->GetPixel(cPoint(col, row)));
@@ -527,7 +527,7 @@ void cImageCache::AddCornersGroupHorizontal(cImage *img) {
     int imgWidth = img->Width();
     int imgHeight = img->Height();
     int heightHeadBottom = groupsHead->Height();
-    int maxY = min(heightHeadBottom, imgHeight);
+    int maxY = std::min(heightHeadBottom, imgHeight);
     for (int row = 0; row < maxY; row++) {
         for (int col = 0; col < imgWidth; ++col) {
             img->SetPixel(cPoint(col, row), groupsHead->GetPixel(cPoint(col, row)));
@@ -542,7 +542,7 @@ void cImageCache::AddCornersGroupVertical(cImage *img) {
     int imgWidth = img->Width();
     int imgHeight = img->Height();
     int widthLeftRight = groupsLeft->Width();
-    int maxX = min(widthLeftRight, imgWidth);
+    int maxX = std::min(widthLeftRight, imgWidth);
     for (int row = 0; row < imgHeight; row++) {
         for (int col = 0; col < maxX; ++col) {
             img->SetPixel(cPoint(col, row), groupsLeft->GetPixel(cPoint(col, row)));

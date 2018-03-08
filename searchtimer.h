@@ -11,7 +11,7 @@ private:
     int         startTime;
     int      	stopTime;
     int         useChannel;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     const cChannel    *channelMin;
     const cChannel    *channelMax;
 #else

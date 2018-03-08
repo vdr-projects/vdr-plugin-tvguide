@@ -120,7 +120,7 @@ void cView::DrawHeader(void) {
     pixmapHeader->DrawText(cPoint(xText, ySubtitle), CutText(subTitle, textWidthMax, fontHeader).c_str(), theme.Color(clrFont), theme.Color(clrStatusHeader), fontHeader);
     //REC Icon
     eTimerMatch timerMatch=tmNone; 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     const cTimer *ti;
 #else
@@ -135,7 +135,7 @@ void cView::DrawHeader(void) {
         timerMatch = (eTimerMatch)rtMatch.timerMatch;
         ti = rtMatch.timer;
     } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_TIMERS_READ;
         ti=Timers->GetMatch(event, &timerMatch);
 #else

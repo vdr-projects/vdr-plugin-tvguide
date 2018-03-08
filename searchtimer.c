@@ -16,7 +16,7 @@ cTVGuideSearchTimer::cTVGuideSearchTimer(void) {
     startTime = 0000;
     stopTime = 2359;
     useChannel = false;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     channelMin = Channels->GetByNumber(cDevice::CurrentChannel());
     channelMax = Channels->GetByNumber(cDevice::CurrentChannel());
@@ -245,7 +245,7 @@ bool cTVGuideSearchTimer::Parse(bool readTemplate) {
                     char *channelMinbuffer = NULL;
                     char *channelMaxbuffer = NULL;
                     int channels = sscanf(values[value].c_str(), "%a[^|]|%a[^|]", &channelMinbuffer, &channelMaxbuffer);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                     LOCK_CHANNELS_READ;
                     channelMin = Channels->GetByChannelID(tChannelID::FromString(channelMinbuffer), true, true);
 #else
@@ -258,7 +258,7 @@ bool cTVGuideSearchTimer::Parse(bool readTemplate) {
                     if (channels == 1)
                         channelMax = channelMin;
                     else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                         channelMax = Channels->GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
 #else
                         channelMax = Channels.GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
@@ -526,7 +526,7 @@ int cTVGuideSearchTimer::GetNumTimers(void) {
     int numTimers = 0;
     if (ID < 0)
     	return numTimers;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     for (const cTimer *timer = Timers->First(); timer; timer = Timers->Next(timer)) {
 #else
@@ -545,7 +545,7 @@ int cTVGuideSearchTimer::GetNumRecordings(void) {
     int numRecordings = 0;
     if (ID < 0)
         return numRecordings;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_RECORDINGS_READ;
     for (const cRecording *recording = Recordings->First(); recording; recording = Recordings->Next(recording)) {
 #else
@@ -595,7 +595,7 @@ void cTVGuideSearchTimer::Dump(void) {
 
 void cTVGuideSearchTimer::SetStartChannel(int startChannel)
 {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
    LOCK_CHANNELS_READ;
    channelMin = Channels->GetByNumber(startChannel);
 #else
@@ -605,7 +605,7 @@ void cTVGuideSearchTimer::SetStartChannel(int startChannel)
 
 void cTVGuideSearchTimer::SetStopChannel(int stopChannel)
 {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
    LOCK_CHANNELS_READ;
    channelMax = Channels->GetByNumber(stopChannel);
 #else

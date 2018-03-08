@@ -56,7 +56,7 @@ bool cRecManager::CheckEventForTimer(const cEvent *event) {
     return hasTimer;
 }
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
 const cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
     const cTimer *timer = NULL;
 #else
@@ -68,7 +68,7 @@ cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
         rtMatch.event = event;
         pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
         timer = rtMatch.timer;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         return timer;
     }
         LOCK_TIMERS_READ;
@@ -92,7 +92,7 @@ cTimer *cRecManager::createTimer(const cEvent *event, std::string path) {
 
 cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
     cTimer *timer = new cTimer(event);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_WRITE;
     cTimer *t = Timers->GetTimer(timer);
 #else
@@ -100,7 +100,7 @@ cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
 #endif
     if (t) {
         t->OnOff();
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         t->SetEvent(event);
 #else
         t->SetEventFromSchedule();
@@ -109,7 +109,7 @@ cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
         timer = t;
         isyslog("timer %s reactivated", *t->ToDescr());
     } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         Timers->Add(timer);
 #else
         Timers.Add(timer);
@@ -117,7 +117,7 @@ cTimer *cRecManager::createLocalTimer(const cEvent *event, std::string path) {
         isyslog("timer %s added (active)", *timer->ToDescr());
     }
     SetTimerPath(timer, event, path);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     Timers->SetModified();
 #else
     Timers.SetModified();
@@ -178,7 +178,7 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
 }
 
 void cRecManager::DeleteTimer(int timerID) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     const cTimer *t = Timers->Get(timerID);
 #else
@@ -200,7 +200,7 @@ void cRecManager::DeleteTimer(const cEvent *event) {
 }
 
 void cRecManager::DeleteLocalTimer(const cEvent *event) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     const cTimer *t = Timers->GetMatch(event);
 #else
@@ -212,7 +212,7 @@ void cRecManager::DeleteLocalTimer(const cEvent *event) {
 }
 
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
 void cRecManager::DeleteTimer(const cTimer *timer) {
     LOCK_TIMERS_WRITE;
     cTimers* timers = Timers;
@@ -230,7 +230,7 @@ void cRecManager::DeleteTimer(cTimer *timer) {
     }
 #endif
     isyslog("timer %s deleted", *timer->ToDescr());
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     timers->Del(t, true);
     timers->SetModified();
 #else
@@ -253,7 +253,7 @@ void cRecManager::DeleteRemoteTimer(const cEvent *event) {
     }
 }
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
 void cRecManager::SaveTimer(const cTimer *timer, cTimer newTimerSettings) {
 #else
 void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
@@ -269,7 +269,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
     int stop = newTimerSettings.Stop();
     std::string fileName = newTimerSettings.File();
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     ((cTimer*)timer)->SetDay(day);
     ((cTimer*)timer)->SetStart(start);
     ((cTimer*)timer)->SetStop(stop);
@@ -286,7 +286,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
 #endif
 
     if (timer->HasFlags(tfActive) && !active)
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         ((cTimer*)timer)->ClrFlags(tfActive);
     else if (!timer->HasFlags(tfActive) && active)
         ((cTimer*)timer)->SetFlags(tfActive);
@@ -300,7 +300,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
 #endif
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_Timer_v1_0 rt;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         rt.timer = (cTimer*)timer;
 #else
         rt.timer = timer;
@@ -309,7 +309,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
             rt.timer = NULL;
         RefreshRemoteTimers();
     } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_TIMERS_WRITE;
         Timers->SetModified();
 #else
@@ -320,7 +320,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
 
 
 bool cRecManager::IsRecorded(const cEvent *event) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_WRITE;
     cTimer *timer = Timers->GetMatch(event);
 #else
@@ -351,7 +351,7 @@ cTVGuideTimerConflicts *cRecManager::CheckTimerConflict(void) {
 }
 
 void cRecManager::CreateSeriesTimer(cTimer *seriesTimer) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
 #else
     seriesTimer->SetEventFromSchedule();
 #endif
@@ -362,7 +362,7 @@ void cRecManager::CreateSeriesTimer(cTimer *seriesTimer) {
             isyslog("%s", *rt.errorMsg);
         RefreshRemoteTimers();
     } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_TIMERS_WRITE;
         cTimers* timers = Timers;
         timers->Add(seriesTimer);
@@ -417,7 +417,7 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
         numResults = results.size();
         if (numResults > 0) {
             searchResults = new const cEvent *[numResults];
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             LOCK_SCHEDULES_READ;
             const cSchedules* schedules = Schedules;
 #else
@@ -434,7 +434,7 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
                     int eventID = atoi(flds[1].c_str());
                     std::string channelID = flds[7];
                     tChannelID chanID = tChannelID::FromString(channelID.c_str());
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                     LOCK_CHANNELS_READ;
                     const cChannel *channel = Channels->GetByChannelID(chanID);
 #else
@@ -546,7 +546,7 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
         return;
     int searchTimerID = searchTimer->GetID();
     if (delTimers) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_TIMERS_WRITE;
         cTimer *timer = Timers->First();
 #else
@@ -557,7 +557,7 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
                 char* searchID = GetAuxValue(timer, "s-id");
                 if (searchID) {
                     if (searchTimerID == atoi(searchID)) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                         cTimer* timerNext = Timers->Next(timer);
 #else
                         cTimer* timerNext = Timers.Next(timer);
@@ -565,7 +565,7 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
                         DeleteTimer(timer);
                         timer = timerNext;
                     } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                         timer = Timers->Next(timer);
 #else
                         timer = Timers.Next(timer);
@@ -573,14 +573,14 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
                     }
                     free(searchID);
                 } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                     timer = Timers->Next(timer);
 #else
                     timer = Timers.Next(timer);
 #endif
                 }
             } else {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                 timer = Timers->Next(timer);
 #else
                 timer = Timers.Next(timer);
@@ -637,7 +637,7 @@ void cRecManager::DeleteSwitchTimer(const cEvent *event) {
     }
 }
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
 const cRecording **cRecManager::SearchForRecordings(std::string searchString, int &numResults) {
 
     const cRecording **matchingRecordings = NULL;
@@ -649,7 +649,7 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
     int num = 0;
     numResults = 0;
     
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_RECORDINGS_READ;
     for (const cRecording *recording = Recordings->First(); recording; recording = Recordings->Next(recording)) {
 #else
@@ -685,7 +685,7 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
         }
         
         if (match) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             matchingRecordings = (const cRecording **)realloc(matchingRecordings, (num + 1) * sizeof(cRecording *));
 #else
             matchingRecordings = (cRecording **)realloc(matchingRecordings, (num + 1) * sizeof(cRecording *));
@@ -766,7 +766,7 @@ void cRecManager::GetFavorites(std::vector<cTVGuideSearchTimer> *favorites) {
 
 const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
     std::vector<const cEvent*> tmpResults;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_SCHEDULES_READ;
     LOCK_CHANNELS_READ;
     const cChannels* channels = Channels;
@@ -777,7 +777,7 @@ const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
 #endif
     const cChannel *startChannel = NULL, *stopChannel = NULL;
     if (tvguideConfig.favLimitChannels) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         startChannel = Channels->GetByNumber(tvguideConfig.favStartChannel);
         stopChannel = Channels->GetByNumber(tvguideConfig.favStopChannel);
     }
@@ -843,7 +843,7 @@ const cEvent **cRecManager::UserDefinedTime(int userTime, int &numResults) {
     if (searchTime < now)
         searchTime += 24*60*60;
 
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     LOCK_SCHEDULES_READ;
     const cChannels* channels = Channels;
@@ -854,7 +854,7 @@ const cEvent **cRecManager::UserDefinedTime(int userTime, int &numResults) {
 #endif
     const cChannel *startChannel = NULL, *stopChannel = NULL;
     if (tvguideConfig.favLimitChannels) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         startChannel = Channels->GetByNumber(tvguideConfig.favStartChannel);
         stopChannel = Channels->GetByNumber(tvguideConfig.favStopChannel);
     }

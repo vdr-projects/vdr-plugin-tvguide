@@ -9,7 +9,7 @@ cDetailView::~cDetailView(void){
     Cancel(-1);
     while (Active())
         cCondWait::SleepMs(10);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     footer->LeaveDetailedViewMode(Channels->GetByChannelID(event->ChannelID()));
 #else
@@ -47,7 +47,7 @@ void cDetailView::InitiateView(void) {
         dateTime = cString::sprintf("%s  %s - %s (%d %s)", *event->GetDateString(), *event->GetTimeString(), *event->GetEndTimeString(), event->Duration()/60, tr("min"));
     }
     view->SetDateTime(*dateTime);
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     view->SetChannel(Channels->GetByChannelID(event->ChannelID(), true));
 #else
@@ -100,7 +100,7 @@ std::string cDetailView::LoadReruns(void) {
                     continue;
                 i++;
                 sstrReruns  << *DayDateTime(r->event->StartTime());
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
                 LOCK_CHANNELS_READ;
                 const cChannel *channel = Channels->GetByChannelID(r->event->ChannelID(), true, true);
 #else

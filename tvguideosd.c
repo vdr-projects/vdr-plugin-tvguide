@@ -73,7 +73,7 @@ void cTvGuideOsd::Show(void) {
 
 void cTvGuideOsd::drawOsd() {
     cPixmap::Lock();
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     const cChannel *startChannel = Channels->GetByNumber(cDevice::CurrentChannel());
 #else
@@ -82,7 +82,7 @@ void cTvGuideOsd::drawOsd() {
     int numBack = tvguideConfig.numGrids / 2;
     int offset = 0;
     const cChannel *newStartChannel = startChannel;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     for (; newStartChannel ; newStartChannel = Channels->Prev(newStartChannel)) {
 #else
     for (; newStartChannel ; newStartChannel = Channels.Prev(newStartChannel)) {
@@ -94,7 +94,7 @@ void cTvGuideOsd::drawOsd() {
             break;
     }
     if (!newStartChannel)
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         newStartChannel = Channels->First();
 #else
         newStartChannel = Channels.First();
@@ -135,7 +135,7 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
     columns.Clear();
     if (!channelStart)
         return;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     for (const cChannel *channel = channelStart; channel; channel = Channels->Next(channel)) {
 #else
@@ -162,7 +162,7 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
         int numCurrent = columns.Count();
         int numBack = tvguideConfig.numGrids - numCurrent;
         int newChannelNumber = columns.First()->getChannel()->Number() - numBack;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         const cChannel *newStart = Channels->GetByNumber(newChannelNumber);
 #else
         const cChannel *newStart = Channels.GetByNumber(newChannelNumber);
@@ -235,7 +235,7 @@ void cTvGuideOsd::channelForward() {
     bool colAdded = false;
     if (!colRight) {
         const cChannel *channelRight = activeGrid->column->getChannel();
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         while (channelRight = Channels->Next(channelRight)) {
 #else
@@ -290,7 +290,7 @@ void cTvGuideOsd::channelBack() {
     bool colAdded = false;
     if (!colLeft) {
         const cChannel *channelLeft = activeGrid->column->getChannel();
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         while (channelLeft = Channels->Prev(channelLeft)) {
 #else
@@ -466,7 +466,7 @@ void cTvGuideOsd::processKeyGreen() {
     if (tvguideConfig.channelJumpMode == eGroupJump) {
         int prevNum = channelGroups->GetPrevGroupChannelNumber(currentChannel);
         if (prevNum) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             LOCK_CHANNELS_READ;
             prev = Channels->GetByNumber(prevNum);
 #else
@@ -475,7 +475,7 @@ void cTvGuideOsd::processKeyGreen() {
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i = tvguideConfig.jumpChannels + 1;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         for (const cChannel *channel = firstChannel; channel; channel = Channels->Prev(channel)) {
 #else
@@ -512,7 +512,7 @@ void cTvGuideOsd::processKeyYellow() {
     if (tvguideConfig.channelJumpMode == eGroupJump) {
         int nextNum = channelGroups->GetNextGroupChannelNumber(currentChannel);
         if (nextNum) {
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
             LOCK_CHANNELS_READ;
             next = Channels->GetByNumber(nextNum);
 #else
@@ -521,7 +521,7 @@ void cTvGuideOsd::processKeyYellow() {
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i=0;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         for (const cChannel *channel = firstChannel; channel; channel = Channels->Next(channel)) {
 #else
@@ -677,7 +677,7 @@ void cTvGuideOsd::CheckTimeout(void) {
         int newChannelNum = channelJumper->GetChannel(); 
         delete channelJumper;
         channelJumper = NULL;
-#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#if VDRVERSNUM >= 20301
         LOCK_CHANNELS_READ;
         const cChannel *newChannel = Channels->GetByNumber(newChannelNum);
 #else

@@ -82,7 +82,7 @@ void cStatusHeader::DrawInfoText(cGrid *grid) {
         int lineHeight = fontManager.FontStatusHeader->Height();
         int textLines = description.Lines();
         int maxLines = heightText / lineHeight;
-        int lines = min(textLines, maxLines);
+        int lines = std::min(textLines, maxLines);
         for (int i = 0; i < lines-1; i++) {
             pixmapText->DrawText(cPoint(x,y), description.GetLine(i), theme.Color(clrFont), colorTextBack, fontManager.FontStatusHeader);
             y += lineHeight;
