@@ -33,7 +33,6 @@ void cEpgGrid::SetViewportHeight() {
 }
 
 void cEpgGrid::PositionPixmap() {
-    int x0, y0;
     if (tvguideConfig.displayMode == eVertical) {
         int x0 = column->getX();
         int y0 = geoManager.statusHeaderHeight + geoManager.channelHeaderHeight + geoManager.channelGroupsHeight;
@@ -70,8 +69,13 @@ void cEpgGrid::SetTimer() {
             hasTimer = true;
 	else
 	    hasTimer = false;
+#if VDRVERSNUM >= 20301
+    } else if (event->HasTimer()) {
+        hasTimer = true;
+#else
     } else if (column->HasTimer()) {
         hasTimer = event->HasTimer();
+#endif
     } else {
         hasTimer = false;
     }
@@ -105,6 +109,16 @@ void cEpgGrid::drawText() {
         colorTextBack = (active)?theme.Color(clrGridActiveFontBack):theme.Color(clrGridFontBack);
     else
         colorTextBack = clrTransparent;
+/*    if (hasSwitchTimer)
+       colorTextBack = theme.Color(clrButtonYellow);
+    if (hasTimer) {
+       LOCK_TIMERS_READ;
+       timer = Timers->GetMatch(event);
+       if (timer && timer->HasFlags(tfActive))
+          colorTextBack = theme.Color(clrButtonRed);
+       else
+          colorTextBack = theme.Color(clrButtonGreen);
+       }*/
     if (tvguideConfig.displayMode == eVertical) {
         if (Height()/geoManager.minutePixel < 6)
             return;
@@ -139,8 +153,16 @@ void cEpgGrid::drawText() {
     }
     if (hasSwitchTimer) 
         drawIcon("Switch", theme.Color(clrButtonYellow));
-    if (hasTimer) 
-        drawIcon("REC", theme.Color(clrButtonRed));
+    if (hasTimer) {
+        const cTimer *timer = NULL;
+        LOCK_TIMERS_READ;
+        timer = Timers->GetMatch(event);
+        if (timer)
+           if (timer->HasFlags(tfActive))
+              drawIcon("REC", theme.Color(clrButtonRed));
+           else
+              drawIcon("REC", theme.Color(clrButtonGreen));
+        }
 }
 
 void cEpgGrid::drawIcon(cString iconText, tColor color) {

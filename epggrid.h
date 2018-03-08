@@ -8,6 +8,7 @@
 
 class cEpgGrid : public cGrid {
 private:
+    const cTimer *timer;
     const cEvent *event;
     cTextWrapper *extText;
     cString timeString;
