@@ -8,9 +8,17 @@
 #include <stdio.h>
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
+#include <vdr/skins.h>
 #include "services/epgsearch.h"
 
 #include "tools.h"
+
+cPlugin *GetScraperPlugin(void) {
+    static cPlugin *pScraper = cPluginManager::GetPlugin("scraper2vdr");
+    if( !pScraper ) // if it doesn't exit, try tvscraper
+        pScraper = cPluginManager::GetPlugin("tvscraper");
+    return pScraper;
+}
 
 /****************************************************************************************
 *            CUTTEXT

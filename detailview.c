@@ -20,14 +20,14 @@ cDetailView::~cDetailView(void){
 }
 
 void cDetailView::InitiateView(void) {
-    static cPlugin *pScraper2Vdr = cPluginManager::GetPlugin("scraper2vdr");
+    static cPlugin *pScraper = GetScraperPlugin();
     ScraperGetEventType call;
     if (!event)
         return;
     call.event = event;
-    if (!pScraper2Vdr) {
+    if (!pScraper) {
         view = new cEPGView();
-    } else if (pScraper2Vdr->Service("GetEventType", &call)) {
+    } else if (pScraper->Service("GetEventType", &call)) {
         if (call.type == tMovie) {
             view = new cMovieView(call.movieId);
         } else if (call.type == tSeries) {

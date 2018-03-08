@@ -641,12 +641,12 @@ cSeriesView::~cSeriesView(void) {
 }
 
 void cSeriesView::LoadMedia(void) {
-    static cPlugin *pScraper2Vdr = cPluginManager::GetPlugin("scraper2vdr");
-    if (!pScraper2Vdr || seriesId < 1)
+    static cPlugin *pScraper = GetScraperPlugin();
+    if (!pScraper || seriesId < 1)
         return;
     series.seriesId = seriesId;
     series.episodeId = episodeId;
-    pScraper2Vdr->Service("GetSeries", &series);
+    pScraper->Service("GetSeries", &series);
 }
 
 void cSeriesView::SetTabs(void) {
@@ -863,11 +863,11 @@ cMovieView::~cMovieView(void) {
 }
 
 void cMovieView::LoadMedia(void) {
-    static cPlugin *pScraper2Vdr = cPluginManager::GetPlugin("scraper2vdr");
-    if (!pScraper2Vdr || movieId < 1)
+    static cPlugin *pScraper = GetScraperPlugin();
+    if (!pScraper || movieId < 1)
         return;
     movie.movieId = movieId;
-    pScraper2Vdr->Service("GetMovie", &movie);    
+    pScraper->Service("GetMovie", &movie);
 }
 
 void cMovieView::SetTabs(void) {

@@ -5,6 +5,9 @@
 #include <vector>
 #include <vdr/font.h>
 #include <vdr/recording.h>
+#include <vdr/plugin.h>
+
+cPlugin *GetScraperPlugin(void);
 
 std::string CutText(std::string text, int width, const cFont *font);
 std::string StrToLowerCase(std::string str);

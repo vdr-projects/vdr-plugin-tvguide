@@ -104,11 +104,11 @@ int cStatusHeader::DrawPoster(const cEvent *event, int x, int y, int height, int
     ScraperGetPoster posterScraper2Vdr;
     int posterWidth = 0;
     int posterHeight = 0;
-    static cPlugin *pScraper2Vdr = cPluginManager::GetPlugin("scraper2vdr");
-    if (pScraper2Vdr) {
+    static cPlugin *pScraper = GetScraperPlugin();
+    if (pScraper) {
         posterScraper2Vdr.event = event;
         posterScraper2Vdr.recording = NULL;
-        if (pScraper2Vdr->Service("GetPoster", &posterScraper2Vdr)) {
+        if (pScraper->Service("GetPoster", &posterScraper2Vdr)) {
             hasPoster = true;
             int posterWidthOrig = posterScraper2Vdr.poster.width;
             int posterHeightOrig = posterScraper2Vdr.poster.height;
