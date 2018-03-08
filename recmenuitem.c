@@ -1817,7 +1817,12 @@ void cRecMenuItemEvent::Draw(void) {
     if (!event)
         return;
     int logoX = DrawIcons();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    const cChannel *channel = Channels->GetByChannelID(event->ChannelID());
+#else
     const cChannel *channel = Channels.GetByChannelID(event->ChannelID());
+#endif
     cString channelName = "";
     if (channel)
         channelName = channel->Name();
@@ -1913,7 +1918,11 @@ eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
 
 // --- cRecMenuItemChannelChooser -------------------------------------------------------
 cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                                                       const cChannel *initialChannel,
+#else
                                                        cChannel *initialChannel,
+#endif
                                                        bool active,
                                                        int *callback,
                                                        eRecMenuState action) {
@@ -1998,15 +2007,29 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             fresh = true;
             if (!channel)
                 return rmsConsumed;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+            const cChannel *prev = channel;
+            LOCK_CHANNELS_READ;
+            const cChannel *firstChannel = Channels->First();
+#else
             cChannel *prev = channel;
             cChannel *firstChannel = Channels.First();
+#endif
             if(firstChannel->GroupSep())
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                firstChannel = Channels->Next(firstChannel);
+#else
                 firstChannel = Channels.Next(firstChannel);
+#endif
             if (prev == firstChannel) {
                 if (!initialChannelSet)
                     channel = NULL;
             } else {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                while (prev = Channels->Prev(prev)) {
+#else
                 while (prev = Channels.Prev(prev)) {
+#endif
                     if(!prev->GroupSep()) {
                         channel = prev;
                         break;
@@ -2023,14 +2046,30 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             return rmsConsumed;
             break; }
         case kRight: {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+            LOCK_CHANNELS_READ;
+#endif
             fresh = true;
             if (!channel) {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                channel = Channels->First();
+#else
                 channel = Channels.First();
+#endif
                 if(channel->GroupSep())
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                    channel = Channels->Next(channel);
+#else
                     channel = Channels.Next(channel);
+#endif
             } else {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+                const cChannel *next = channel;
+                while (next = Channels->Next(next)) {
+#else
                 cChannel *next = channel;
                 while (next = Channels.Next(next)) {
+#endif
                     if(!next->GroupSep()) {
                         channel = next;
                         break;
@@ -2052,7 +2091,12 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
                fresh = false;
             }
             channelNumber = channelNumber * 10 + (Key - k0);
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+            LOCK_CHANNELS_READ;
+            const cChannel *chanNew = Channels->GetByNumber(channelNumber);
+#else
             cChannel *chanNew = Channels.GetByNumber(channelNumber);
+#endif
             if (chanNew) {
                 channel = chanNew;
                 DrawValue();
@@ -2214,7 +2258,11 @@ eRecMenuState cRecMenuItemDayChooser::ProcessKey(eKeys Key) {
 }
 
 // --- cRecMenuItemRecording  -------------------------------------------------------
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+cRecMenuItemRecording::cRecMenuItemRecording(const cRecording *recording, bool active) {
+#else
 cRecMenuItemRecording::cRecMenuItemRecording(cRecording *recording, bool active) {
+#endif
     selectable = true;
     this->recording = recording;
     this->active = active;
@@ -2242,7 +2290,12 @@ void cRecMenuItemRecording::Draw(void) {
     if (!recording)
         return;
     const cRecordingInfo *recInfo = recording->Info();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    const cChannel *channel = Channels->GetByChannelID(recInfo->ChannelID());
+#else
     cChannel *channel = Channels.GetByChannelID(recInfo->ChannelID());
+#endif
     cString channelName = tr("unknown channel");
     if (channel)
         channelName = channel->Name();
@@ -2457,7 +2510,11 @@ void cRecMenuItemTimelineHeader::Show(void) {
 
 
 // --- cRecMenuItemTimelineTimer  -------------------------------------------------------
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+cRecMenuItemTimelineTimer::cRecMenuItemTimelineTimer(const cTimer *timer, time_t start, time_t stop,  std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active) {
+#else
 cRecMenuItemTimelineTimer::cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop,  std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active) {
+#endif
     conflicts = conflictsToday;
     defaultBackground = false;
     pixmapBack = NULL;
@@ -2604,7 +2661,11 @@ void cRecMenuItemTimelineTimer::Show(void) {
     if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(6);
 }
 
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+const cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
+#else
 cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
+#endif
     return timer;    
 }
 

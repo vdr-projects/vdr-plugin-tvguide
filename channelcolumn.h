@@ -20,7 +20,10 @@ private:
     const cChannel *channel;
     cHeaderGrid *header;
     cList<cGrid> grids;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#else
     cSchedulesLock *schedulesLock;
+#endif
     const cSchedules *schedules;
     bool hasTimer;
     bool hasSwitchTimer;
@@ -50,7 +53,11 @@ public:
     void ClearOutdatedEnd();
     int GetNum() {return num;};
     void SetNum(int num) {this->num = num;};
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    void setTimer();
+#else
     void setTimer() {hasTimer = channel->HasTimer();};
+#endif
     bool HasTimer() { return hasTimer; };
     void setSwitchTimer() {hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);};
     bool HasSwitchTimer() { return hasSwitchTimer; };

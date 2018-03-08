@@ -5,9 +5,15 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->channel = channel;
     this->num = num;
     this->myTime = myTime;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#else
     hasTimer = channel->HasTimer();
+#endif
     hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#else
     schedulesLock = new cSchedulesLock(false, 100);
+#endif
     header = NULL;
 }
 
@@ -15,7 +21,10 @@ cChannelColumn::~cChannelColumn(void) {
     if (header)
         delete header;
     grids.Clear();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#else
     delete schedulesLock;
+#endif
 }
 
 void cChannelColumn::clearGrids() {
@@ -33,7 +42,12 @@ void cChannelColumn::drawHeader() {
 }
 
 bool cChannelColumn::readGrids() {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_SCHEDULES_READ;
+    const cSchedules* schedules = Schedules;
+#else
     schedules = cSchedules::Schedules(*schedulesLock);
+#endif
     const cSchedule *Schedule = NULL;
     Schedule = schedules->GetSchedule(channel);
     if (!Schedule) {
@@ -186,7 +200,12 @@ void cChannelColumn::AddNewGridsAtStart() {
         return;
     }
     //if not, i have to add new ones to the list
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_SCHEDULES_READ;
+    const cSchedules* schedules = Schedules;
+#else
     schedules = cSchedules::Schedules(*schedulesLock);
+#endif
     const cSchedule *Schedule = NULL;
     Schedule = schedules->GetSchedule(channel);
     if (!Schedule) {
@@ -234,7 +253,12 @@ void cChannelColumn::AddNewGridsAtEnd() {
         return;
     }
     //if not, i have to add new ones to the list
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_SCHEDULES_READ;
+    const cSchedules* schedules = Schedules;
+#else
     schedules = cSchedules::Schedules(*schedulesLock);
+#endif
     const cSchedule *Schedule = NULL;
     Schedule = schedules->GetSchedule(channel);
     if (!Schedule) {
@@ -342,7 +366,10 @@ cGrid *cChannelColumn::addDummyGrid(time_t start, time_t end, cGrid *firstGrid, 
 }
 
 void cChannelColumn::SetTimers() {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+#else
     hasTimer = channel->HasTimer();
+#endif
     hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
     for (cGrid *grid = grids.First(); grid; grid = grids.Next(grid)) {
         bool gridHadTimer = grid->HasTimer();

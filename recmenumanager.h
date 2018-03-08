@@ -23,7 +23,11 @@ private:
     void SetBackground(void);
     void DeleteBackground(void);
     void DisplaySearchTimerList(void);
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    bool DisplayTimerConflict(const cTimer *timer);
+#else
     bool DisplayTimerConflict(cTimer *timer);
+#endif
     bool DisplayTimerConflict(int timerID);
     void DisplayDetailedView(const cEvent *ev);
     void DisplayFavoriteResults(std::string header, const cEvent **result, int numResults);

@@ -73,11 +73,20 @@ void cTvGuideOsd::Show(void) {
 
 void cTvGuideOsd::drawOsd() {
     cPixmap::Lock();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    const cChannel *startChannel = Channels->GetByNumber(cDevice::CurrentChannel());
+#else
     cChannel *startChannel = Channels.GetByNumber(cDevice::CurrentChannel());
+#endif
     int numBack = tvguideConfig.numGrids / 2;
     int offset = 0;
     const cChannel *newStartChannel = startChannel;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    for (; newStartChannel ; newStartChannel = Channels->Prev(newStartChannel)) {
+#else
     for (; newStartChannel ; newStartChannel = Channels.Prev(newStartChannel)) {
+#endif
         if (newStartChannel && !newStartChannel->GroupSep()) {
             offset++;
         }
@@ -85,7 +94,11 @@ void cTvGuideOsd::drawOsd() {
             break;
     }
     if (!newStartChannel)
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        newStartChannel = Channels->First();
+#else
         newStartChannel = Channels.First();
+#endif
     offset--;
     if (offset < 0)
         offset = 0;
@@ -122,7 +135,12 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
     columns.Clear();
     if (!channelStart)
         return;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    for (const cChannel *channel = channelStart; channel; channel = Channels->Next(channel)) {
+#else
     for (const cChannel *channel = channelStart; channel; channel = Channels.Next(channel)) {
+#endif
         if (!channel->GroupSep()) {
             if (channelGroups->IsInLastGroup(channel)) {
                 break;
@@ -144,7 +162,11 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
         int numCurrent = columns.Count();
         int numBack = tvguideConfig.numGrids - numCurrent;
         int newChannelNumber = columns.First()->getChannel()->Number() - numBack;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        const cChannel *newStart = Channels->GetByNumber(newChannelNumber);
+#else
         const cChannel *newStart = Channels.GetByNumber(newChannelNumber);
+#endif
         readChannels(newStart);
     }
 }
@@ -213,7 +235,12 @@ void cTvGuideOsd::channelForward() {
     bool colAdded = false;
     if (!colRight) {
         const cChannel *channelRight = activeGrid->column->getChannel();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        while (channelRight = Channels->Next(channelRight)) {
+#else
         while (channelRight = Channels.Next(channelRight)) {
+#endif
             if (!channelRight->GroupSep()) {
                 if (channelGroups->IsInLastGroup(channelRight)) {
                     break;
@@ -263,7 +290,12 @@ void cTvGuideOsd::channelBack() {
     bool colAdded = false;
     if (!colLeft) {
         const cChannel *channelLeft = activeGrid->column->getChannel();
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        while (channelLeft = Channels->Prev(channelLeft)) {
+#else
         while (channelLeft = Channels.Prev(channelLeft)) {
+#endif
             if (!channelLeft->GroupSep()) {
                 colLeft = new cChannelColumn(0, channelLeft, myTime);
                 if (colLeft->readGrids()) {
@@ -434,11 +466,21 @@ void cTvGuideOsd::processKeyGreen() {
     if (tvguideConfig.channelJumpMode == eGroupJump) {
         int prevNum = channelGroups->GetPrevGroupChannelNumber(currentChannel);
         if (prevNum) {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+            LOCK_CHANNELS_READ;
+            prev = Channels->GetByNumber(prevNum);
+#else
             prev = Channels.GetByNumber(prevNum);
+#endif
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i = tvguideConfig.jumpChannels + 1;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        for (const cChannel *channel = firstChannel; channel; channel = Channels->Prev(channel)) {
+#else
         for (const cChannel *channel = firstChannel; channel; channel = Channels.Prev(channel)) {
+#endif
             if (!channel->GroupSep()) {
                 prev = channel;
                 i--;
@@ -470,11 +512,21 @@ void cTvGuideOsd::processKeyYellow() {
     if (tvguideConfig.channelJumpMode == eGroupJump) {
         int nextNum = channelGroups->GetNextGroupChannelNumber(currentChannel);
         if (nextNum) {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+            LOCK_CHANNELS_READ;
+            next = Channels->GetByNumber(nextNum);
+#else
             next = Channels.GetByNumber(nextNum);
+#endif
         }    
     } else if (tvguideConfig.channelJumpMode == eNumJump) {
         int i=0;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        for (const cChannel *channel = firstChannel; channel; channel = Channels->Next(channel)) {
+#else
         for (const cChannel *channel = firstChannel; channel; channel = Channels.Next(channel)) {
+#endif
             if (channelGroups->IsInLastGroup(channel)) {
                 break;
             }
@@ -625,7 +677,12 @@ void cTvGuideOsd::CheckTimeout(void) {
         int newChannelNum = channelJumper->GetChannel(); 
         delete channelJumper;
         channelJumper = NULL;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        const cChannel *newChannel = Channels->GetByNumber(newChannelNum);
+#else
         const cChannel *newChannel = Channels.GetByNumber(newChannelNum);
+#endif
         if (newChannel) {
             readChannels(newChannel);
             if (columns.Count() > 0) {

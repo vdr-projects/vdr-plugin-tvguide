@@ -10,12 +10,21 @@ cChannelGroups::~cChannelGroups(void) {
 void cChannelGroups::ReadChannelGroups(void) {
     bool setStart = false;
     int lastChannelNumber = 0;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    const cChannel *first = Channels->First();
+#else
     const cChannel *first = Channels.First();
+#endif
     if (!first->GroupSep()) {
         channelGroups.push_back(cChannelGroup(tr("Main Program")));
         setStart = true;
     }    
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    for (const cChannel *channel = Channels->First(); channel; channel = Channels->Next(channel)) {
+#else
     for (const cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+#endif
         if (setStart && (channelGroups.size() > 0)) {
             channelGroups[channelGroups.size()-1].SetChannelStart(channel->Number());
             setStart = false;
@@ -103,7 +112,12 @@ void cChannelGroups::DrawChannelGroups(const cChannel *start, const cChannel *st
     int groupLast = group;
     int line = 0;
     int lineStart = 0;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+    LOCK_CHANNELS_READ;
+    for (const cChannel *channel = Channels->Next(start); channel; channel = Channels->Next(channel)) {
+#else
     for (const cChannel *channel = Channels.Next(start); channel; channel = Channels.Next(channel)) {
+#endif
         if (channel->GroupSep())
             continue;
         group = GetGroup(channel);

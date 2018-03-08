@@ -280,7 +280,12 @@ void cImageCache::CreateLogoCache(void) {
         return;
     if (tvguideConfig.numLogosInitial > 0) {
         int channelsCached = 0;
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        for (const cChannel *channel = Channels->First(); channel; channel = Channels->Next(channel)) {
+#else
         for (const cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+#endif
             if (channelsCached >= tvguideConfig.numLogosInitial)
                 break;
             if (!channel->GroupSep()) {

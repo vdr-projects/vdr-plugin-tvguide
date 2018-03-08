@@ -11,7 +11,12 @@ cChannelJump::cChannelJump(cChannelGroups *channelGroups) {
     pixmapText = NULL;
     channel = 0;
 	if (!tvguideConfig.hideLastGroup) {
+#if defined (APIVERSNUM) && (APIVERSNUM >= 20301)
+        LOCK_CHANNELS_READ;
+        maxChannels = Channels->MaxNumber();
+#else
         maxChannels = Channels.MaxNumber();
+#endif
 	} else {
         maxChannels = channelGroups->GetLastValidChannel();
     }
