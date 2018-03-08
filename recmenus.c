@@ -411,7 +411,7 @@ cRecMenuConfirmRerunUsed::cRecMenuConfirmRerunUsed(const cEvent *original, const
 // --- cRecMenuEditTimer  ---------------------------------------------------------
 #if VDRVERSNUM >= 20301
 cRecMenuEditTimer::cRecMenuEditTimer(const cTimer *timer, eRecMenuState nextState) {
-    const cTimer *originalTimer;
+//    const cTimer *originalTimer;
 #else
 cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
 #endif
@@ -1429,7 +1429,7 @@ void cRecMenuTimeline::GetTimersForDay(void) {
     timersToday.clear();
 #if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
-    const cTimers* timers = Timers;
+//    const cTimers* timers = Timers;
     for (const cTimer *t = Timers->First(); t; t = Timers->Next(t)) {
 #else
     for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {

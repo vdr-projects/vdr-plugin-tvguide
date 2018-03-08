@@ -710,7 +710,7 @@ const cEvent **cRecManager::LoadReruns(const cEvent *event, int &numResults) {
                 strQuery += "~";
             if (!isempty(event->ShortText()))
                 strQuery += event->ShortText();
-                data.useSubTitle = true;
+            data.useSubTitle = true;
         } else {
             data.useSubTitle = false;
         }
@@ -769,7 +769,7 @@ const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
 #if VDRVERSNUM >= 20301
     LOCK_SCHEDULES_READ;
     LOCK_CHANNELS_READ;
-    const cChannels* channels = Channels;
+//    const cChannels* channels = Channels;
     const cSchedules* schedules = Schedules;
 #else
     cSchedulesLock schedulesLock;
@@ -846,7 +846,7 @@ const cEvent **cRecManager::UserDefinedTime(int userTime, int &numResults) {
 #if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
     LOCK_SCHEDULES_READ;
-    const cChannels* channels = Channels;
+//    const cChannels* channels = Channels;
     const cSchedules* schedules = Schedules;
 #else
     cSchedulesLock schedulesLock;

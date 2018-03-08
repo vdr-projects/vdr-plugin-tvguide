@@ -562,7 +562,7 @@ void cRecMenuItemSelect::DrawValue(void) {
 }
 
 eRecMenuState cRecMenuItemSelect::ProcessKey(eKeys Key) {
-    int oldValue = currentVal;
+//    int oldValue = currentVal;
     switch (Key & ~k_Repeat) {
         case kLeft:
             currentVal--;
@@ -664,7 +664,7 @@ void cRecMenuItemSelectDirectory::DrawValue(void) {
 }
 
 eRecMenuState cRecMenuItemSelectDirectory::ProcessKey(eKeys Key) {
-    int oldValue = currentVal;
+//    int oldValue = currentVal;
     switch (Key & ~k_Repeat) {
         case kLeft:
             currentVal--;
@@ -1180,18 +1180,18 @@ eRecMenuState cRecMenuItemText::ProcessKey(eKeys Key) {
         case kDown|k_Repeat:
         case kDown:  
             if (InEditMode()) {
-                if (insert && newchar) {
-                // create a new character in insert mode
-                    if (lengthUtf8 < length - 1)
-                        Insert();
-                    }
-                    if (uppercase)
-                        valueUtf8[pos] = Utf8to(upper, Inc(Utf8to(lower, valueUtf8[pos]), NORMALKEY(Key) == kUp));
-                    else
-                        valueUtf8[pos] =               Inc(              valueUtf8[pos],  NORMALKEY(Key) == kUp);
-                        newchar = false;
-                consumed = true;
-            }
+               if (insert && newchar) {
+               // create a new character in insert mode
+                  if (lengthUtf8 < length - 1)
+                     Insert();
+                  }
+               if (uppercase)
+                  valueUtf8[pos] = Utf8to(upper, Inc(Utf8to(lower, valueUtf8[pos]), NORMALKEY(Key) == kUp));
+               else
+                  valueUtf8[pos] =               Inc(              valueUtf8[pos],  NORMALKEY(Key) == kUp);
+               newchar = false;
+               consumed = true;
+               }
             break;
         case k0|k_Repeat ... k9|k_Repeat:
         case k0 ... k9: {
@@ -1901,7 +1901,7 @@ void cRecMenuItemEvent::Show(void) {
 }
 
 eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
-    bool consumed = false;
+//    bool consumed = false;
     switch (Key & ~k_Repeat) {
         case kOk:
             return action;

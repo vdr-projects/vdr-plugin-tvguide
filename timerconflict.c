@@ -79,9 +79,9 @@ void cTVGuideTimerConflicts::AddConflict(std::string epgSearchConflictLine) {
 }
 
 void cTVGuideTimerConflicts::CalculateConflicts(void) {
-	numConflicts = conflicts.size();
-    time_t startTime = 0;
-    time_t endTime = 0;
+    numConflicts = conflicts.size();
+//    time_t startTime = 0;
+//    time_t endTime = 0;
     for (int i=0; i < numConflicts; i++) {
         cTimeInterval *unionSet = NULL;
         int numTimers = conflicts[i]->timerIDs.size();

@@ -137,9 +137,9 @@ void cView::DrawHeader(void) {
     } else {
 #if VDRVERSNUM >= 20301
         LOCK_TIMERS_READ;
-        ti=Timers->GetMatch(event, &timerMatch);
+        ti = Timers->GetMatch(event, &timerMatch);
 #else
-        ti=Timers.GetMatch(event, &timerMatch);
+        ti = Timers.GetMatch(event, &timerMatch);
 #endif
     }
     if (timerMatch == tmFull) {
@@ -357,7 +357,7 @@ void cView::DrawActors(std::vector<cActor> *actors) {
     int y = 2 * border + fontHeaderLarge->Height();
     if (!Running())
         return;
-        cImageLoader imgLoader;
+    cImageLoader imgLoader;
     int actor = 0;
     for (int row = 0; row < picLines; row++) {
         for (int col = 0; col < picsPerLine; col++) {
@@ -475,7 +475,7 @@ bool cView::KeyUp(void) {
     if (!scrollable)
         return false;
     int aktHeight = pixmapContent->DrawPort().Point().Y();
-    int lineHeight = font->Height();
+//    int lineHeight = font->Height();
     if (aktHeight >= 0) {
         return false;
     }

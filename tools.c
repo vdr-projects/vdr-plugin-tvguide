@@ -463,7 +463,7 @@ int afuzzy_checkSUB(const char *t, AFUZZY *fuzzy)
 	return 0;
 }
 
-static int afuzzy_checkFLT(const char *t, AFUZZY *fuzzy)
+int afuzzy_checkFLT(const char *t, AFUZZY *fuzzy)
 {
 	register Uint FilterR = 0;
 	register Uint FilterR1;
