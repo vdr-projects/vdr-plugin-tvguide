@@ -217,8 +217,11 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsEditTimer: {
             //edit timer for active event
 #if VDRVERSNUM >= 20301
+            const cTimer *timer;
+            {
             LOCK_TIMERS_READ;
-            const cTimer *timer = recManager->GetTimerForEvent(event);
+            timer = recManager->GetTimerForEvent(event);
+            }
 #else
             cTimer *timer = recManager->GetTimerForEvent(event);
 #endif
