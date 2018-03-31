@@ -178,9 +178,13 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
 }
 
 void cRecManager::DeleteTimer(int timerID) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 #if VDRVERSNUM >= 20301
+    const cTimer *t;
+    {
     LOCK_TIMERS_READ;
-    const cTimer *t = Timers->Get(timerID);
+    t = Timers->Get(timerID);
+    }
 #else
     cTimer *t = Timers.Get(timerID);
 #endif
@@ -190,6 +194,7 @@ void cRecManager::DeleteTimer(int timerID) {
 }
 
 void cRecManager::DeleteTimer(const cEvent *event) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     if (!event)
         return;
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
@@ -200,9 +205,13 @@ void cRecManager::DeleteTimer(const cEvent *event) {
 }
 
 void cRecManager::DeleteLocalTimer(const cEvent *event) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 #if VDRVERSNUM >= 20301
+    const cTimer *t;
+    {
     LOCK_TIMERS_READ;
-    const cTimer *t = Timers->GetMatch(event);
+    t = Timers->GetMatch(event);
+    }
 #else
     cTimer *t = Timers.GetMatch(event);
 #endif
@@ -214,6 +223,7 @@ void cRecManager::DeleteLocalTimer(const cEvent *event) {
 
 #if VDRVERSNUM >= 20301
 void cRecManager::DeleteTimer(const cTimer *timer) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     LOCK_TIMERS_WRITE;
     cTimers* timers = Timers;
     cTimer* t = timers->GetTimer((cTimer*)timer);  // #TODO dirty cast

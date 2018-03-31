@@ -6,11 +6,13 @@
 // --- cRecMenuMain  ---------------------------------------------------------
 cRecMenuMain::cRecMenuMain(bool epgSearchAvailable, bool timerActive, bool switchTimerActive) {
     eRecMenuState action = rmsInstantRecord;
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     if (!timerActive) {
         if (tvguideConfig.instRecFolderMode == eFolderSelect)
             action = rmsInstantRecordFolder;
         AddMenuItem(new cRecMenuItemButton(tr("Instant Record"), action, true, false, false, true));
     } else {
+        dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
         AddMenuItem(new cRecMenuItemButton(tr("Delete Timer"), rmsDeleteTimer, true, false, false, true));
         AddMenuItem(new cRecMenuItemButton(tr("Edit Timer"), rmsEditTimer, false, false, false, true));
     }
@@ -147,6 +149,7 @@ cRecMenuConfirmTimer::cRecMenuConfirmTimer(const cEvent *event) {
 
 // --- cRecMenuConfirmDeleteTimer  ---------------------------------------------------------
 cRecMenuConfirmDeleteTimer::cRecMenuConfirmDeleteTimer(const cEvent *event) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     SetWidthPercent(50);
 #if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
@@ -174,6 +177,7 @@ cRecMenuConfirmDeleteTimer::cRecMenuConfirmDeleteTimer(const cEvent *event) {
 
 // --- cRecMenuAskDeleteTimer ---------------------------------------------------------
 cRecMenuAskDeleteTimer::cRecMenuAskDeleteTimer(const cEvent *event) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     SetWidthPercent(50);
 #if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;

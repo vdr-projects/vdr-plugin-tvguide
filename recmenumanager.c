@@ -141,6 +141,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsDeleteTimerConflictMenu: {
             //caller: cRecMenuTimerConflict
             //delete timer out of current timer conflict
+            dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
             int timerIndex;
             if (cRecMenuTimerConflict *menu = dynamic_cast<cRecMenuTimerConflict*>(activeMenu)) {
                 timerIndex = menu->GetTimerConflictIndex();
@@ -196,6 +197,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsDeleteTimer:
             //caller: main menu
             //delete timer for active event
+            dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
             delete activeMenu;
             if (recManager->IsRecorded(event)) {
                 activeMenu = new cRecMenuAskDeleteTimer(event);
