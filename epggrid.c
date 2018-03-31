@@ -158,7 +158,11 @@ void cEpgGrid::drawText() {
         LOCK_TIMERS_READ;
         timer = Timers->GetMatch(event);
         if (timer)
-           if (timer->HasFlags(tfActive))
+#ifdef USE_SWITCHONLY
+           if (timer->HasFlags(tfSwitchOnly))
+              drawIcon("Switch", theme.Color(clrButtonYellow));
+#endif /* SWITCHONLY */
+           else if (timer->HasFlags(tfActive))
               drawIcon("REC", theme.Color(clrButtonRed));
            else
               drawIcon("REC", theme.Color(clrButtonGreen));
