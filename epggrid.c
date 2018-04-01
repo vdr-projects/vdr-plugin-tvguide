@@ -40,7 +40,7 @@ void cEpgGrid::PositionPixmap() {
             y0 += (StartTime() - column->Start())/60*geoManager.minutePixel;
         }
         if (!pixmap) {
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, geoManager.colWidth, viewportHeight), 
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, geoManager.colWidth, viewportHeight),
                                                 cRect(0, 0, geoManager.colWidth, Duration()/60*geoManager.minutePixel));
         } else {
             pixmap->SetViewPort(cRect(x0, y0, geoManager.colWidth, viewportHeight));
@@ -52,7 +52,7 @@ void cEpgGrid::PositionPixmap() {
             x0 += (StartTime() - column->Start())/60*geoManager.minutePixel;
         }
         if (!pixmap) {
-            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, geoManager.rowHeight), 
+            pixmap = osdManager.requestPixmap(-1, cRect(x0, y0, viewportHeight, geoManager.rowHeight),
                                                 cRect(0, 0, Duration()/60*geoManager.minutePixel, geoManager.rowHeight));
         } else {
             pixmap->SetViewPort(cRect(x0, y0, viewportHeight, geoManager.rowHeight ));
@@ -151,7 +151,7 @@ void cEpgGrid::drawText() {
         }
         pixmap->DrawText(cPoint(borderWidth, titleY), *strTitle, colorText, colorTextBack, fontManager.FontGridHorizontal);
     }
-    if (hasSwitchTimer) 
+    if (hasSwitchTimer)
         drawIcon("Switch", theme.Color(clrButtonYellow));
     if (hasTimer) {
         const cTimer *timer = NULL;
@@ -161,8 +161,10 @@ void cEpgGrid::drawText() {
 #ifdef USE_SWITCHONLY
            if (timer->HasFlags(tfSwitchOnly))
               drawIcon("Switch", theme.Color(clrButtonYellow));
-#endif /* SWITCHONLY */
            else if (timer->HasFlags(tfActive))
+#else /* SWITCHONLY */
+           if (timer->HasFlags(tfActive))
+#endif /* SWITCHONLY */
               drawIcon("REC", theme.Color(clrButtonRed));
            else
               drawIcon("REC", theme.Color(clrButtonGreen));
@@ -170,14 +172,14 @@ void cEpgGrid::drawText() {
 }
 
 void cEpgGrid::drawIcon(cString iconText, tColor color) {
-    
+
     const cFont *font = (tvguideConfig.displayMode == eVertical)
                         ?fontManager.FontGrid
                         :fontManager.FontGridHorizontalSmall;
     int textWidth = font->Width(*iconText)+2*borderWidth;
     int textHeight = font->Height()+10;
     pixmap->DrawRectangle( cRect(Width() - textWidth - borderWidth, Height() - textHeight - borderWidth, textWidth, textHeight), color);
-    pixmap->DrawText(cPoint(Width() - textWidth, Height() - textHeight - borderWidth/2), *iconText, theme.Color(clrFont), color, font);   
+    pixmap->DrawText(cPoint(Width() - textWidth, Height() - textHeight - borderWidth/2), *iconText, theme.Color(clrFont), color, font);
 }
 
 cString cEpgGrid::getTimeString(void) {
@@ -185,11 +187,11 @@ cString cEpgGrid::getTimeString(void) {
 }
 
 void cEpgGrid::debug() {
-    esyslog("tvguide epggrid: %s: %s, %s, viewportHeight: %d px, Duration: %d min, active: %d", 
+    esyslog("tvguide epggrid: %s: %s, %s, viewportHeight: %d px, Duration: %d min, active: %d",
                 column->Name(),
-                *(event->GetTimeString()), 
-                event->Title(), 
-                viewportHeight, 
+                *(event->GetTimeString()),
+                event->Title(),
+                viewportHeight,
                 event->Duration()/60,
                 active);
 }
