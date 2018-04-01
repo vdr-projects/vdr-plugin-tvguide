@@ -264,13 +264,18 @@ void cRecManager::DeleteRemoteTimer(const cEvent *event) {
 }
 
 #if VDRVERSNUM >= 20301
-void cRecManager::SaveTimer(const cTimer *timer, cTimer newTimerSettings) {
+void cRecManager::SaveTimer(const cTimer *t, cTimer newTimerSettings) {
+    if (!t)
 #else
 void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
-#endif
     if (!timer)
+#endif
         return;
 
+#if VDRVERSNUM >= 20301
+    LOCK_TIMERS_WRITE;
+    cTimer *timer = Timers->GetTimer(t);
+#endif
     bool active = newTimerSettings.HasFlags(tfActive);
     int prio = newTimerSettings.Priority();
     int lifetime = newTimerSettings.Lifetime();
@@ -279,48 +284,29 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
     int stop = newTimerSettings.Stop();
     std::string fileName = newTimerSettings.File();
 
-#if VDRVERSNUM >= 20301
-    ((cTimer*)timer)->SetDay(day);
-    ((cTimer*)timer)->SetStart(start);
-    ((cTimer*)timer)->SetStop(stop);
-    ((cTimer*)timer)->SetPriority(prio);
-    ((cTimer*)timer)->SetLifetime(lifetime);
-    ((cTimer*)timer)->SetFile(fileName.c_str());
-#else
     timer->SetDay(day);
     timer->SetStart(start);
     timer->SetStop(stop);
     timer->SetPriority(prio);
     timer->SetLifetime(lifetime);
     timer->SetFile(fileName.c_str());
-#endif
 
     if (timer->HasFlags(tfActive) && !active)
-#if VDRVERSNUM >= 20301
-        ((cTimer*)timer)->ClrFlags(tfActive);
-    else if (!timer->HasFlags(tfActive) && active)
-        ((cTimer*)timer)->SetFlags(tfActive);
-
-#else
         timer->ClrFlags(tfActive);
     else if (!timer->HasFlags(tfActive) && active)
         timer->SetFlags(tfActive);
 
+#if VDRVERSNUM < 20300
     timer->SetEventFromSchedule();
 #endif
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_Timer_v1_0 rt;
-#if VDRVERSNUM >= 20301
-        rt.timer = (cTimer*)timer;
-#else
         rt.timer = timer;
-#endif
         if (!pRemoteTimers->Service("RemoteTimers::ModTimer-v1.0", &rt))
             rt.timer = NULL;
         RefreshRemoteTimers();
     } else {
 #if VDRVERSNUM >= 20301
-        LOCK_TIMERS_WRITE;
         Timers->SetModified();
 #else
         Timers.SetModified();
