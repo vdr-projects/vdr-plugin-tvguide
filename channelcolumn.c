@@ -43,8 +43,11 @@ void cChannelColumn::drawHeader() {
 
 bool cChannelColumn::readGrids() {
 #if VDRVERSNUM >= 20301
+    const cSchedules* schedules;
+    {
     LOCK_SCHEDULES_READ;
-    const cSchedules* schedules = Schedules;
+    schedules = Schedules;
+    }
 #else
     schedules = cSchedules::Schedules(*schedulesLock);
 #endif
@@ -201,8 +204,11 @@ void cChannelColumn::AddNewGridsAtStart() {
     }
     //if not, i have to add new ones to the list
 #if VDRVERSNUM >= 20301
+    const cSchedules* schedules;
+    {
     LOCK_SCHEDULES_READ;
-    const cSchedules* schedules = Schedules;
+    schedules = Schedules;
+    }
 #else
     schedules = cSchedules::Schedules(*schedulesLock);
 #endif
@@ -254,8 +260,11 @@ void cChannelColumn::AddNewGridsAtEnd() {
     }
     //if not, i have to add new ones to the list
 #if VDRVERSNUM >= 20301
+    const cSchedules* schedules;
+    {
     LOCK_SCHEDULES_READ;
-    const cSchedules* schedules = Schedules;
+    schedules = Schedules;
+    }
 #else
     schedules = cSchedules::Schedules(*schedulesLock);
 #endif

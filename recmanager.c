@@ -43,7 +43,7 @@ bool cRecManager::RefreshRemoteTimers(void) {
 
 bool cRecManager::CheckEventForTimer(const cEvent *event) {
     bool hasTimer = false;
-    
+
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_GetMatch_v1_0 rtMatch;
         rtMatch.event = event;
@@ -71,11 +71,11 @@ cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
 #if VDRVERSNUM >= 20301
         return timer;
     }
-        LOCK_TIMERS_READ;
-        timer = Timers->GetMatch(event);
+    LOCK_TIMERS_READ;
+    timer = Timers->GetMatch(event);
 #else
     } else
-        timer = Timers.GetMatch(event);    
+        timer = Timers.GetMatch(event);
 #endif
     return timer;
 }
@@ -154,7 +154,7 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
                 std::string newFileName = epgSearch->handler->Evaluate(recDir, event);
                 if (strchr(newFileName.c_str(), '%') == NULL) // only set directory to new value if all categories could have been replaced
                     timer->SetFile(newFileName.c_str());
-                else 
+                else
                     esyslog("tvguide: timer path not set because replacing variable was not successfull: %s", newFileName.c_str());
             }
         } else {
@@ -227,7 +227,7 @@ void cRecManager::DeleteTimer(const cTimer *timer) {
     LOCK_TIMERS_WRITE;
     cTimers* timers = Timers;
     cTimer* t = timers->GetTimer((cTimer*)timer);  // #TODO dirty cast
-   
+
     if (t->Recording()) {
        t->Skip();
        cRecordControls::Process(timers, time(NULL));
@@ -270,7 +270,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
 #endif
     if (!timer)
         return;
-    
+
     bool active = newTimerSettings.HasFlags(tfActive);
     int prio = newTimerSettings.Priority();
     int lifetime = newTimerSettings.Lifetime();
@@ -325,7 +325,7 @@ void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
 #else
         Timers.SetModified();
 #endif
-    }          
+    }
 }
 
 
@@ -455,7 +455,7 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
                         Schedule = schedules->GetSchedule(channel);
                         event = Schedule->GetEvent(eventID);
                         if (event) {
-                            searchResults[index] = event;                        
+                            searchResults[index] = event;
                         } else
                             return NULL;
                     } else
@@ -606,7 +606,7 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
         } else {
             esyslog("tvguide: error deleting search timer \"%s\"", searchTimer->SearchString().c_str());
         }
-    }   
+    }
 }
 
 void cRecManager::UpdateSearchTimers(void) {
@@ -653,12 +653,12 @@ const cRecording **cRecManager::SearchForRecordings(std::string searchString, in
     const cRecording **matchingRecordings = NULL;
 #else
 cRecording **cRecManager::SearchForRecordings(std::string searchString, int &numResults) {
-    
+
     cRecording **matchingRecordings = NULL;
 #endif
     int num = 0;
     numResults = 0;
-    
+
 #if VDRVERSNUM >= 20301
     LOCK_RECORDINGS_READ;
     for (const cRecording *recording = Recordings->First(); recording; recording = Recordings->Next(recording)) {
@@ -668,12 +668,12 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
         std::string s1 = recording->Name();
         std::string s2 = searchString;
         if (s1.empty() || s2.empty()) continue;
-        
+
         // tolerance for fuzzy searching: 90% of the shorter text length, but at least 1
-        int tolerance = std::max(1, (int)std::min(s1.size(), s2.size()) / 10); 
+        int tolerance = std::max(1, (int)std::min(s1.size(), s2.size()) / 10);
 
         bool match = FindIgnoreCase(s1, s2) >= 0 || FindIgnoreCase(s2, s1) >= 0;
-        
+
         if (!match) {
             AFUZZY af = { NULL, NULL, NULL, NULL, NULL, NULL, { 0 }, { 0 }, 0, 0, 0, 0, 0, 0 };
             if (s1.size() > 32) s1 = s1.substr(0, 32);
@@ -683,7 +683,7 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
             afuzzy_free(&af);
             match = (res > 0);
         }
-        
+
         if (!match) {
             AFUZZY af = { NULL, NULL, NULL, NULL, NULL, NULL, { 0 }, { 0 }, 0, 0, 0, 0, 0, 0 };
             if (s2.size() > 32) s2 = s2.substr(0, 32);
@@ -693,7 +693,7 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
             afuzzy_free(&af);
             match = (res > 0);
         }
-        
+
         if (match) {
 #if VDRVERSNUM >= 20301
             matchingRecordings = (const cRecording **)realloc(matchingRecordings, (num + 1) * sizeof(cRecording *));
@@ -729,7 +729,7 @@ const cEvent **cRecManager::LoadReruns(const cEvent *event, int &numResults) {
         data.channelNr = 0;
         data.useTitle = true;
         data.useDescription = false;
-        
+
         if (epgSearchPlugin->Service("Epgsearch-searchresults-v1.0", &data)) {
             cList<Epgsearch_searchresults_v1_0::cServiceSearchResult>* list = data.pResultList;
             if (!list)
@@ -822,7 +822,7 @@ const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
     numResults = tmpResults.size();
     const cEvent **results = new const cEvent *[numResults];
     for (int i=0; i<numResults; i++) {
-        results[i] = tmpResults[i];        
+        results[i] = tmpResults[i];
     }
 
     return results;
@@ -899,7 +899,7 @@ const cEvent **cRecManager::UserDefinedTime(int userTime, int &numResults) {
     numResults = tmpResults.size();
     const cEvent **results = new const cEvent *[numResults];
     for (int i=0; i<numResults; i++) {
-        results[i] = tmpResults[i];        
+        results[i] = tmpResults[i];
     }
     return results;
 }
