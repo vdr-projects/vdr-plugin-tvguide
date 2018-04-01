@@ -1,4 +1,4 @@
-#include "recmenu.h" 
+#include "recmenu.h"
 #include "recmenus.h"
 #include "switchtimer.h"
 #include "timerconflict.h"
@@ -87,8 +87,8 @@ void cRecMenuManager::DeleteBackground(void) {
 eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
     eOSState state = osContinue;
     switch (nextState) {
-        /*************************************************************************************** 
-        *    INSTANT RECORDING 
+        /***************************************************************************************
+        *    INSTANT RECORDING
         ****************************************************************************************/
         case rmsInstantRecord: {
         //caller: main menu or folder chooser
@@ -248,7 +248,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             state = osEnd;
             Close();
             break; }
-        /*************************************************************************************** 
+        /***************************************************************************************
         *    SERIES TIMER
         ****************************************************************************************/
         case rmsSeriesTimer: {
@@ -285,8 +285,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuConfirmSeriesTimer(seriesTimer);
             activeMenu->Display();
             break; }
-        /********************************************************************************************** 
-         *    SEARCH TIMER 
+        /**********************************************************************************************
+         *    SEARCH TIMER
          ***********************************************************************************************/
         case rmsSearchTimer:
             //Caller: main menu
@@ -310,7 +310,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             delete activeMenu;
             if (searchString.size() < 4) {
                 activeMenu = new cRecMenuSearchTimer(event);
-            } else { 
+            } else {
                 if (!reload) {
                     searchTimer.SetSearchString(searchString);
                 }
@@ -429,7 +429,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuSearchTimerDeleteConfirm(searchTimer);
             activeMenu->Display();
             break; }
-        case rmsSearchTimerDelete: 
+        case rmsSearchTimerDelete:
         case rmsSearchTimerDeleteWithTimers: {
             //caller: cRecMenuSearchTimerDeleteConfirm
             //actually delete searchtimer
@@ -457,8 +457,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuSearchConfirmTimer(ev, rmsFavoritesRecordConfirm);
             activeMenu->Display();
             break; }
-        /********************************************************************************************** 
-         *    SWITCH TIMER 
+        /**********************************************************************************************
+         *    SWITCH TIMER
          ***********************************************************************************************/
         case rmsSwitchTimer:
             delete activeMenu;
@@ -475,14 +475,14 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuSwitchTimerConfirm(success);
             activeMenu->Display();
             break; }
-        case rmsSwitchTimerDelete: 
+        case rmsSwitchTimerDelete:
             recManager->DeleteSwitchTimer(event);
             delete activeMenu;
             activeMenu = new cRecMenuSwitchTimerDelete();
             activeMenu->Display();
             break;
-        /********************************************************************************************** 
-         *    RECORDINGS SEARCH 
+        /**********************************************************************************************
+         *    RECORDINGS SEARCH
          ***********************************************************************************************/
         case rmsRecordingSearch: {
             //caller: main menu or rmsRecordingSearchResult
@@ -518,8 +518,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             }
             activeMenu->Display();
             break; }
-        /********************************************************************************************** 
-         *    SEARCH 
+        /**********************************************************************************************
+         *    SEARCH
          ***********************************************************************************************/
         case rmsSearch:
         case rmsSearchWithOptions: {
@@ -600,8 +600,8 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->UpdateActiveMenuItem();
             activeMenu->Show();
             break;
-        /********************************************************************************************** 
-         *    CHECK FOR TIMER CONFLICTS 
+        /**********************************************************************************************
+         *    CHECK FOR TIMER CONFLICTS
          ***********************************************************************************************/
         case rmsTimerConflicts: {
             //caller: main menu
@@ -708,7 +708,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 activeMenu->Display();
             }
             break; }
-        /********************************************************************************************** 
+        /**********************************************************************************************
          *    TIMELINE
          ***********************************************************************************************/
        case rmsTimeline: {
@@ -719,7 +719,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             delete activeMenu;
             activeMenu = new cRecMenuTimeline(timerConflicts);
             activeMenu->Display();
-            break; } 
+            break; }
         case rmsTimelineTimerEdit: {
 #if VDRVERSNUM >= 20301
             const cTimer *timer;
@@ -764,7 +764,10 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timer = menu->GetOriginalTimer();
             } else break;
-            recManager->DeleteTimer(timer);
+            {
+            LOCK_TIMERS_WRITE;
+            recManager->DeleteTimer(Timers->GetTimer(timer));
+            }
             delete activeMenu;
             if (timerConflicts) {
                 delete timerConflicts;
@@ -773,7 +776,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu = new cRecMenuTimeline(timerConflicts);
             activeMenu->Display();
             break; }
-        /********************************************************************************************** 
+        /**********************************************************************************************
          *    FAVORITES
          *********************************************************************************************/
         case rmsFavoritesRecord: {
@@ -833,7 +836,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             DisplayFavoriteResults(tvguideConfig.descUser4, result, numResults);
             break; }
 
-        /********************************************************************************************** 
+        /**********************************************************************************************
          *    COMMON
          *********************************************************************************************/
         case rmsClose: {
@@ -849,7 +852,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 state = osContinue;
             }
             break; }
-        default:        
+        default:
             break;
     }
     return state;

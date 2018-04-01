@@ -180,9 +180,9 @@ void cRecManager::SetTimerPath(cTimer *timer, const cEvent *event, std::string p
 void cRecManager::DeleteTimer(int timerID) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 #if VDRVERSNUM >= 20301
-    const cTimer *t;
+    cTimer *t;
     {
-    LOCK_TIMERS_READ;
+    LOCK_TIMERS_WRITE;
     t = Timers->Get(timerID);
     }
 #else
@@ -207,9 +207,9 @@ void cRecManager::DeleteTimer(const cEvent *event) {
 void cRecManager::DeleteLocalTimer(const cEvent *event) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 #if VDRVERSNUM >= 20301
-    const cTimer *t;
+    cTimer *t;
     {
-    LOCK_TIMERS_READ;
+    LOCK_TIMERS_WRITE;
     t = Timers->GetMatch(event);
     }
 #else
@@ -220,29 +220,23 @@ void cRecManager::DeleteLocalTimer(const cEvent *event) {
     DeleteTimer(t);
 }
 
-
-#if VDRVERSNUM >= 20301
-void cRecManager::DeleteTimer(const cTimer *timer) {
-    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
-    LOCK_TIMERS_WRITE;
-    cTimers* timers = Timers;
-    cTimer* t = timers->GetTimer((cTimer*)timer);  // #TODO dirty cast
-
-    if (t->Recording()) {
-       t->Skip();
-       cRecordControls::Process(timers, time(NULL));
-    }
-#else
 void cRecManager::DeleteTimer(cTimer *timer) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
+#if VDRVERSNUM >= 20301
+    LOCK_TIMERS_WRITE;
+#endif
     if (timer->Recording()) {
         timer->Skip();
+#if VDRVERSNUM >= 20301
+        cRecordControls::Process(Timers, time(NULL));
+#else
         cRecordControls::Process(time(NULL));
-    }
 #endif
+    }
     isyslog("timer %s deleted", *timer->ToDescr());
 #if VDRVERSNUM >= 20301
-    timers->Del(t, true);
-    timers->SetModified();
+    Timers->Del(timer, true);
+    Timers->SetModified();
 #else
     Timers.Del(timer, true);
     Timers.SetModified();

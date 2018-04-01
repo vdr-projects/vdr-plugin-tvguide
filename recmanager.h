@@ -37,11 +37,7 @@ public:
     cTimer *createLocalTimer(const cEvent *event, std::string path);
     cTimer *createRemoteTimer(const cEvent *event, std::string path);
     void SetTimerPath(cTimer *timer, const cEvent *event, std::string path);
-#if VDRVERSNUM >= 20301
-    void DeleteTimer(const cTimer *timer);
-#else
     void DeleteTimer(cTimer *timer);
-#endif
     void DeleteTimer(int timerID);
     void DeleteTimer(const cEvent *event);
     void DeleteLocalTimer(const cEvent *event);
