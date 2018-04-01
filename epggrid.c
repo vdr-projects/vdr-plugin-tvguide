@@ -69,7 +69,7 @@ void cEpgGrid::SetTimer() {
             hasTimer = true;
 	else
 	    hasTimer = false;
-#if VDRVERSNUM >= 20301
+#if VDRVERSNUM >= 20401
     } else if (event->HasTimer()) {
         hasTimer = true;
 #else

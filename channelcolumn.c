@@ -6,6 +6,14 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->num = num;
     this->myTime = myTime;
 #if VDRVERSNUM >= 20301
+    hasTimer = false;
+    const cSchedule *Schedule = NULL;
+    LOCK_SCHEDULES_READ;
+    const cSchedules* schedules = Schedules;
+    if (schedules) {
+	Schedule = schedules->GetSchedule(channel);
+        hasTimer = Schedule ? Schedule->HasTimer() : false;
+    }
 #else
     hasTimer = channel->HasTimer();
 #endif
@@ -376,6 +384,14 @@ cGrid *cChannelColumn::addDummyGrid(time_t start, time_t end, cGrid *firstGrid, 
 
 void cChannelColumn::SetTimers() {
 #if VDRVERSNUM >= 20301
+    hasTimer = false;
+    const cSchedule *Schedule = NULL;
+    LOCK_SCHEDULES_READ;
+    const cSchedules* schedules = Schedules;
+    if (schedules) {
+        Schedule = schedules->GetSchedule(channel);
+        hasTimer = Schedule ? Schedule->HasTimer() : false;
+    }
 #else
     hasTimer = channel->HasTimer();
 #endif
