@@ -386,11 +386,13 @@ void cChannelColumn::SetTimers() {
 #if VDRVERSNUM >= 20301
     hasTimer = false;
     const cSchedule *Schedule = NULL;
+    {
     LOCK_SCHEDULES_READ;
     const cSchedules* schedules = Schedules;
     if (schedules) {
         Schedule = schedules->GetSchedule(channel);
         hasTimer = Schedule ? Schedule->HasTimer() : false;
+        }
     }
 #else
     hasTimer = channel->HasTimer();
