@@ -44,6 +44,8 @@ void cHeaderGrid::drawChannel(const cChannel *channel) {
     }
 }
 
+// Draw Channel horizontal view
+
 void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
     int logoWidth = geoManager.logoWidth;
     int logoX = tvguideConfig.displayChannelName?2:(Width()-logoWidth)/2;
@@ -53,7 +55,8 @@ void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
     if (!tvguideConfig.hideChannelLogos) {
         cImage *logo = imgCache.GetLogo(channel);
         if (logo) {
-            pixmapLogo->DrawImage(cPoint(logoX, 0), *logo);
+            const int logoheight = logo->Height();
+            pixmapLogo->DrawImage(cPoint(logoX, (Height() - logoheight) / 2), *logo);
             logoFound = true;
         }
     }
@@ -74,6 +77,8 @@ void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
     }
 }
 
+// Draw Channel vertical view
+
 void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     int logoWidth = geoManager.logoWidth;
     int logoHeight = geoManager.logoHeight;
@@ -87,7 +92,8 @@ void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     if (!tvguideConfig.hideChannelLogos) {
         cImage *logo = imgCache.GetLogo(channel);
         if (logo) {
-                pixmapLogo->DrawImage(cPoint((Width() - logoWidth)/2, 4), *logo);
+                const int logoheight = logo->Height();
+                pixmapLogo->DrawImage(cPoint((Width() - logoWidth) / 2, (geoManager.channelHeaderHeight - lineHeight - logoheight) / 2), *logo);
                 logoFound = true;
         }
     }
