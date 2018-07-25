@@ -106,7 +106,8 @@ void cView::DrawHeader(void) {
         cImageLoader imgLoader;
         if (imgLoader.LoadLogo(channel, logoWidth, logoHeight)) {
             cImage logo = imgLoader.GetImage();
-            pixmapHeaderLogo->DrawImage(cPoint(border/2, (headerHeight - logoHeight)/2), logo);
+            const int logoheight = logo.Height();
+            pixmapHeaderLogo->DrawImage(cPoint(border / 2, ((headerHeight - logoHeight) / 2 + (logoHeight - logoheight) / 2)), logo);
             xText += logoWidth + border / 2;
         }
     }
