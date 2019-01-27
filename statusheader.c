@@ -57,7 +57,11 @@ void cStatusHeader::ScaleVideo(void) {
 
 void cStatusHeader::DrawInfoText(cGrid *grid) {
     int border = 10;
-    int textWidth = width - 2 * border - geoManager.clockWidth - 2;
+    int textWidth = 0;
+    if (tvguideConfig.displayMode == eVertical)
+       textWidth = width - 2 * border - geoManager.clockWidth - 2;
+    else
+       textWidth = width - 2 * border;
     tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
     pixmapText->Fill(clrTransparent);
     int x = border;
