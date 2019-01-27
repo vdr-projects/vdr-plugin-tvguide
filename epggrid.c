@@ -69,7 +69,7 @@ void cEpgGrid::SetTimer() {
             hasTimer = true;
 	else
 	    hasTimer = false;
-#if VDRVERSNUM >= 20401
+#if VDRVERSNUM >= 30400
     } else if (event->HasTimer()) {
         hasTimer = true;
 #else
@@ -109,16 +109,6 @@ void cEpgGrid::drawText() {
         colorTextBack = (active)?theme.Color(clrGridActiveFontBack):theme.Color(clrGridFontBack);
     else
         colorTextBack = clrTransparent;
-/*    if (hasSwitchTimer)
-       colorTextBack = theme.Color(clrButtonYellow);
-    if (hasTimer) {
-       LOCK_TIMERS_READ;
-       timer = Timers->GetMatch(event);
-       if (timer && timer->HasFlags(tfActive))
-          colorTextBack = theme.Color(clrButtonRed);
-       else
-          colorTextBack = theme.Color(clrButtonGreen);
-       }*/
     if (tvguideConfig.displayMode == eVertical) {
         if (Height()/geoManager.minutePixel < 6)
             return;
