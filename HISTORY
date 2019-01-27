@@ -138,3 +138,12 @@ Version 1.2.2
 
 - added scraper2vdr support
 - introduced tabbed EPG detail view
+
+Version 1.2.3
+
+- Compile under VDR 2.3.1+
+- Reinsert old tvscraper compatibility
+- New Makefile style
+- Show inactive timer in EPG grid
+- Center channel logos in EPG
+- Clock in timeline if displaymode horizontal
