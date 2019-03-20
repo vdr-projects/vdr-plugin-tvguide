@@ -13,6 +13,8 @@ cSwitchTimer::cSwitchTimer(void) {
 cSwitchTimer::cSwitchTimer(const cEvent* Event) {
     eventID = 0;
     startTime = 0;
+    switchMinsBefore = 2;
+    announceOnly = 0;
     if (Event) {
       eventID = Event->EventID();
       channelID = Event->ChannelID();
@@ -27,6 +29,7 @@ cSwitchTimer& cSwitchTimer::operator= (const cSwitchTimer &SwitchTimer)
     this->startTime = SwitchTimer.startTime;
     this->channelID = SwitchTimer.channelID;
     this->switchMinsBefore = SwitchTimer.switchMinsBefore;
+    this->announceOnly = SwitchTimer.announceOnly;
     return *this;
 }
 
