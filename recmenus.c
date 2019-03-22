@@ -1109,7 +1109,7 @@ cRecMenuSearchTimerNothingFound::cRecMenuSearchTimerNothingFound(std::string sea
 
 // --- cRecMenuSwitchTimer  ---------------------------------------------------------
 cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
-    switchMinsBefore = 2;
+    switchMinsBefore = tvguideConfig.switchMinsBefore;
     announceOnly = 0;
 
     SetWidthPercent(60);

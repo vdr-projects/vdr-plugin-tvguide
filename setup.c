@@ -121,6 +121,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("favLimitChannels", tvguideConfig.favLimitChannels);
     SetupStore("favStartChannel", tvguideConfig.favStartChannel);
     SetupStore("favStopChannel", tvguideConfig.favStopChannel);
+    SetupStore("switchMinsBefore", tvguideConfig.switchMinsBefore);
     SetupStore("fontIndex", tvguideConfig.fontIndex);
     SetupStore("FontButtonDelta", tvguideConfig.FontButtonDelta);
     SetupStore("FontDetailViewDelta", tvguideConfig.FontDetailViewDelta);
@@ -419,6 +420,7 @@ void cMenuSetupFavorites::Set(void) {
         Add(new cMenuEditChanItem(tr("Start Channel"), &tmpTvguideConfig->favStartChannel));
         Add(new cMenuEditChanItem(tr("Stop Channel"), &tmpTvguideConfig->favStopChannel));
     }
+    Add(new cMenuEditIntItem(tr("Minutes a switchtimer switches before start of a show"), &tmpTvguideConfig->switchMinsBefore, 0, 10));
 
 
     SetCurrent(Get(currentItem));

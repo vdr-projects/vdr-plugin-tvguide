@@ -64,6 +64,7 @@ cTvguideConfig::cTvguideConfig() {
     favLimitChannels = 0;
     favStartChannel = 0;
     favStopChannel = 0;
+    switchMinsBefore = 2;
     fontIndex = 0;
     fontNameDefault = "VDRSymbols Sans:Book";
     FontButtonDelta = 0;
@@ -299,6 +300,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "favLimitChannels") == 0)         favLimitChannels = atoi(Value);
     else if (strcmp(Name, "favStartChannel") == 0)          favStartChannel = atoi(Value);
     else if (strcmp(Name, "favStopChannel") == 0)           favStopChannel = atoi(Value);
+    else if (strcmp(Name, "switchMinsBefore") == 0)         switchMinsBefore = atoi(Value);
     else if (strcmp(Name, "fontIndex") == 0)                fontIndex = atoi(Value);
     else if (strcmp(Name, "FontButtonDelta") == 0)          FontButtonDelta = atoi(Value);
     else if (strcmp(Name, "FontDetailViewDelta") == 0)      FontDetailViewDelta = atoi(Value);
