@@ -22,18 +22,6 @@ cSwitchTimer::cSwitchTimer(const cEvent* Event) {
     }
 }
 
-#if VDRVERSNUM >= 20305
-cSwitchTimer& cSwitchTimer::operator= (const cSwitchTimer &SwitchTimer)
-{
-    this->eventID = SwitchTimer.eventID;
-    this->startTime = SwitchTimer.startTime;
-    this->channelID = SwitchTimer.channelID;
-    this->switchMinsBefore = SwitchTimer.switchMinsBefore;
-    this->announceOnly = SwitchTimer.announceOnly;
-    return *this;
-}
-
-#endif
 bool cSwitchTimer::Parse(const char *s) {
     char *line;
     char *pos;

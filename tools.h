@@ -45,21 +45,21 @@ typedef unsigned int Uint;
 
 typedef struct
 {
-	Uint 	*R,
-		*R1,
-		*RP,
-		*S,
-		*RI;
-	Uint 	*FilterS;
+    Uint        *R,
+                *R1,
+                *RP,
+                *S,
+                *RI;
+    Uint        *FilterS;
 
-	int 	Map[256];
-	int 	FilterMap[256];
-	int	k;
-	Uint	mask_ok;
-	Uint	filter_ok;
-	Uint	filter_shift;
-	int	r_size;
-	int	FilterSet;
+    int         Map[256];
+    int         FilterMap[256];
+    int         k;
+    Uint        mask_ok;
+    Uint        filter_ok;
+    Uint        filter_shift;
+    int         r_size;
+    int         FilterSet;
 } AFUZZY;
 
 void afuzzy_init(const char *p, int kerr, int UseFilter, AFUZZY *fuzzy);

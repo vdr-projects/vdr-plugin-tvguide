@@ -71,7 +71,7 @@ void cTVGuideTimerConflicts::AddConflict(std::string epgSearchConflictLine) {
     splitstring s3(flds2[2].c_str());
     std::vector<std::string> flds3 = s3.split('#');
     std::vector<int> timerIDs;
-    for (int k = 0; k < flds3.size(); k++) {
+    for (int k = 0; k < (int)flds3.size(); k++) {
         timerIDs.push_back(atoi(flds3[k].c_str()) - 1);
     }
     conflict->timerIDs = timerIDs;
@@ -80,18 +80,17 @@ void cTVGuideTimerConflicts::AddConflict(std::string epgSearchConflictLine) {
 
 void cTVGuideTimerConflicts::CalculateConflicts(void) {
     numConflicts = conflicts.size();
-//    time_t startTime = 0;
-//    time_t endTime = 0;
     for (int i=0; i < numConflicts; i++) {
         cTimeInterval *unionSet = NULL;
         int numTimers = conflicts[i]->timerIDs.size();
-        for (int j=0; j < numTimers; j++) {
 #if VDRVERSNUM >= 20301
-            LOCK_TIMERS_READ;
-            const cTimer *timer = Timers->Get(conflicts[i]->timerIDs[j]);
+        LOCK_TIMERS_READ;
+        const cTimers* timers = Timers;
 #else
-            const cTimer *timer = Timers.Get(conflicts[i]->timerIDs[j]);
+        const cTimers* timers = &Timers;
 #endif
+        for (int j=0; j < numTimers; j++) {
+            const cTimer *timer = timers->Get(conflicts[i]->timerIDs[j]);
             if (timer) {
                 if (!unionSet) {
                     unionSet = new cTimeInterval(timer->StartTime(), timer->StopTime());
@@ -110,12 +109,7 @@ void cTVGuideTimerConflicts::CalculateConflicts(void) {
         
         cTimeInterval *intersect = NULL;
         for (int j=0; j < numTimers; j++) {
-#if VDRVERSNUM >= 20301
-            LOCK_TIMERS_READ;
-            const cTimer *timer = Timers->Get(conflicts[i]->timerIDs[j]);
-#else
-            const cTimer *timer = Timers.Get(conflicts[i]->timerIDs[j]);
-#endif
+            const cTimer *timer = timers->Get(conflicts[i]->timerIDs[j]);
             if (timer) {
                 if (!intersect) {
                     intersect = new cTimeInterval(timer->StartTime(), timer->StopTime());

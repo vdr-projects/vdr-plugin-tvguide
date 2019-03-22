@@ -12,7 +12,15 @@ public:
     int announceOnly;
 #if VDRVERSNUM >= 20305
     cSwitchTimer(const cSwitchTimer &SwitchTimer) { *this = SwitchTimer; };
-    cSwitchTimer& operator= (const cSwitchTimer &SwitchTimer);
+    cSwitchTimer& operator= (const cSwitchTimer &SwitchTimer)
+    {
+        this->eventID = SwitchTimer.eventID;
+        this->startTime = SwitchTimer.startTime;
+        this->channelID = SwitchTimer.channelID;
+        this->switchMinsBefore = SwitchTimer.switchMinsBefore;
+        this->announceOnly = SwitchTimer.announceOnly;
+        return *this;
+    };
 #endif
     cSwitchTimer(void);
     cSwitchTimer(const cEvent* Event);
