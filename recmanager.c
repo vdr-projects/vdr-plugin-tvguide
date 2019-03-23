@@ -759,9 +759,8 @@ void cRecManager::GetFavorites(std::vector<cTVGuideSearchTimer> *favorites) {
 const cEvent **cRecManager::WhatsOnNow(bool nowOrNext, int &numResults) {
     std::vector<const cEvent*> tmpResults;
 #if VDRVERSNUM >= 20301
-    LOCK_SCHEDULES_READ;
     LOCK_CHANNELS_READ;
-//    const cChannels* channels = Channels;
+    LOCK_SCHEDULES_READ;
     const cSchedules* schedules = Schedules;
 #else
     cSchedulesLock schedulesLock;
