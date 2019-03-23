@@ -147,3 +147,14 @@ Version 1.2.3
 - Show inactive timer in EPG grid
 - Center channel logos in EPG
 - Clock in timeline if displaymode horizontal
+
+Version 1.2.4
+
+- Add Support for new SVDRPPeering
+- Add italian translation
+- Use graphicsmagick instead of imagemagick
+- Correct a switchtimer error
+- Add "switchMinsBefore" to setup menu
+- Eliminate some warnings
+- Center channel logos in favorite view
+- Update "services/epgsearch.h"
