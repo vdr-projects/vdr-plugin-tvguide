@@ -85,7 +85,7 @@ cRecMenuItem *cRecMenuAskFolder::GetMenuItem(int number) {
     if (number == 0) {
         cRecMenuItem *result = new cRecMenuItemButton(tr("root video folder"), rmsInstantRecord, false, false, true);
         return result;
-    } else if ((number > 0) && (number < folders.size()+1)) {
+    } else if ((number > 0) && (number < (int)folders.size() + 1)) {
         cRecMenuItem *result = new cRecMenuItemButton(folders[number-1].c_str(), rmsInstantRecord, false, false, true);
         return result;
     }
@@ -99,7 +99,7 @@ int cRecMenuAskFolder::GetTotalNumMenuItems(void) {
 std::string cRecMenuAskFolder::GetFolder(void) {
     std::string folder = "";
     int folderActive = GetActive();
-    if (folderActive > 0 && folderActive < folders.size() + 1)
+    if (folderActive > 0 && folderActive < (int)folders.size() + 1)
         folder = folders[folderActive - 1];
     return folder;
 }
@@ -275,7 +275,7 @@ cRecMenuTimerConflict::cRecMenuTimerConflict(cTVGuideTimerConflict *conflict) {
 }
     
 cRecMenuItem *cRecMenuTimerConflict::GetMenuItem(int number) { 
-    if ((number >= 0) && (number < conflict->timerIDs.size())) {
+    if ((number >= 0) && (number < (int)conflict->timerIDs.size())) {
 #if VDRVERSNUM >= 20301
         LOCK_TIMERS_READ;
         const cTimer *timer = Timers->Get(conflict->timerIDs[number]);
@@ -677,7 +677,7 @@ int cRecMenuSearchTimerTemplates::GetTotalNumMenuItems(void) {
 TVGuideEPGSearchTemplate cRecMenuSearchTimerTemplates::GetTemplate(void) {
     TVGuideEPGSearchTemplate templ;
     int tmplActive = GetActive() - 1;
-    if (tmplActive >= 0 && tmplActive < templates.size())
+    if (tmplActive >= 0 && tmplActive < (int)templates.size())
         templ = templates[tmplActive];
     return templ;
 }

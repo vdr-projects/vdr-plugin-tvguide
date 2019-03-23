@@ -351,7 +351,7 @@ cImage *cImageCache::GetLogo(const cChannel *channel) {
     } else {
         bool success = LoadLogo(channel);
         if (success) {
-            if ((tvguideConfig.limitLogoCache) && (logoCache.size() >= tvguideConfig.numLogosMax)) {
+            if ((tvguideConfig.limitLogoCache) && ((int)logoCache.size() >= tvguideConfig.numLogosMax)) {
             //logo cache is full, don't cache anymore
                 if (tempStaticLogo) {
                     delete tempStaticLogo;

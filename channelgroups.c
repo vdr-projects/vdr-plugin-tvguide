@@ -69,7 +69,7 @@ const char* cChannelGroups::GetPrev(int group) {
 
 const char* cChannelGroups::GetNext(int group) {
     if (group > -1) {
-        if ((group+1) < channelGroups.size())
+        if ((group+1) < (int)channelGroups.size())
             return channelGroups[group+1].GetName();
     }
     return "";
@@ -89,7 +89,7 @@ int cChannelGroups::GetNextGroupChannelNumber(const cChannel *channel) {
     int currentGroup = GetGroup(channel);
     if (currentGroup == -1)
         return 0;
-    if ((currentGroup+1) < channelGroups.size()) {
+    if ((currentGroup+1) < (int)channelGroups.size()) {
         return channelGroups[currentGroup+1].StartChannel();
     }
     return 0;

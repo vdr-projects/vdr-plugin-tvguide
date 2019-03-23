@@ -122,7 +122,6 @@ void cView::DrawHeader(void) {
     //REC Icon
     eTimerMatch timerMatch=tmNone; 
 #if VDRVERSNUM >= 20301
-//    LOCK_TIMERS_READ;
     const cTimer *ti;
 #else
     cTimer *ti;
@@ -284,7 +283,7 @@ void cView::CreateFloatingTextWrapper(cTextWrapper *twNarrow, cTextWrapper *twFu
     std::stringstream sstrTextTall;
     std::stringstream sstrTextFull;
       
-    for (int i=0; i<flds.size(); i++) {
+    for (int i = 0; i < (int)flds.size(); i++) {
         if (!flds[i].size()) {
             //empty line
             linesDrawn++;

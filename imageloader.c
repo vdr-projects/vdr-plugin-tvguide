@@ -173,7 +173,7 @@ void cImageLoader::CreateGradient(tColor back, tColor blend, int width, int heig
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             PixelPacket *pixel = pixels + y * width + x;
-            int opacity = (maxw / width * x + maxh - maxh / height * y) / 2;
+            unsigned int opacity = (maxw / width * x + maxh - maxh / height * y) / 2;
             pixel->opacity = (opacity <= MaxRGB) ? opacity : MaxRGB;
         }
     }

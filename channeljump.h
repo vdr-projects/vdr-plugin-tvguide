@@ -10,8 +10,8 @@ private:
     int channel;
     cChannelGroups *channelGroups;
     int maxChannels;
-    int startTime;
-    int timeout;
+    long unsigned int startTime;
+    long unsigned int timeout;
     cPixmap *pixmapBack;
     cPixmap *pixmapText;
     void SetPixmaps(void);
