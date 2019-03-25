@@ -48,9 +48,9 @@ void cHeaderGrid::drawChannel(const cChannel *channel) {
 
 void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
     int logoWidth = geoManager.logoWidth;
-    int logoX = tvguideConfig.displayChannelName?2:(Width()-logoWidth)/2;
+    int logoX = tvguideConfig.displayChannelName ? 5 : (Width() - logoWidth) / 2;
     int textX = 5;
-    int textY = (Height() - fontManager.FontChannelHeaderHorizontal->Height())/2;
+    int textY = (Height() - fontManager.FontChannelHeaderHorizontal->Height()) / 2;
     bool logoFound = false;
     if (!tvguideConfig.hideChannelLogos) {
         cImage *logo = imgCache.GetLogo(channel);
@@ -64,10 +64,11 @@ void cHeaderGrid::drawChannelHorizontal(const cChannel *channel) {
     int textWidthMax = Width() - 10;
     if (!logoFound) {
         drawText = true;
-    } else  if (tvguideConfig.displayChannelName) {
+    }
+    if (tvguideConfig.displayChannelName) {
         drawText = true;
-        textX += logoWidth;
-        textWidthMax -= logoWidth;
+        textX += logoWidth + 5;
+        textWidthMax -= textX;
     }
     if (drawText) {
         tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
