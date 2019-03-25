@@ -1832,8 +1832,9 @@ void cRecMenuItemEvent::Draw(void) {
         if (imgLoader.LoadLogo(channel, logoWidth, height)) {
             cImage logo = imgLoader.GetImage();
             pixmapText->DrawImage(cPoint(logoX, (height - logo.Height()) / 2), logo);
-            logoX += logoWidth + 5;
+//            logoX += logoWidth + 5;
         }
+	logoX += logoWidth + 5;
     }
     
     int textX = logoX;
