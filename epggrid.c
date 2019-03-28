@@ -145,12 +145,16 @@ void cEpgGrid::drawText() {
         drawIcon("Switch", theme.Color(clrButtonYellow));
     if (hasTimer) {
         const cTimer *timer = NULL;
+#if VDRVERSNUM >= 20301
         {
         LOCK_TIMERS_READ;
         timer = Timers->GetMatch(event);
         }
+#else
+        timer = Timers.GetMatch(event);
+#endif
 	if (timer)
-#ifdef USE_SWITCHONLY
+#ifdef SWITCHONLYPATCH
            if (timer->HasFlags(tfSwitchOnly))
               drawIcon("Switch", theme.Color(clrButtonYellow));
            else if (timer->HasFlags(tfActive))

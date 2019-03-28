@@ -764,10 +764,14 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timer = menu->GetOriginalTimer();
             } else break;
+#if VDRVERSNUM >= 20301
             {
             LOCK_TIMERS_WRITE;
             recManager->DeleteTimer(Timers->GetTimer(timer));
             }
+#else
+            recManager->DeleteTimer(Timers.GetTimer(timer));
+#endif
             delete activeMenu;
             if (timerConflicts) {
                 delete timerConflicts;
