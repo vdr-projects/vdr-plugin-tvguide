@@ -409,12 +409,14 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
         numResults = results.size();
         if (numResults > 0) {
             searchResults = new const cEvent *[numResults];
+            const cSchedules *schedules;
 #if VDRVERSNUM >= 20301
+            {
             LOCK_SCHEDULES_READ;
-            const cSchedules* schedules = Schedules;
+            schedules = Schedules;
+            }
 #else
             cSchedulesLock schedulesLock;
-            const cSchedules *schedules;
             schedules = cSchedules::Schedules(schedulesLock);
 #endif
             const cEvent *event = NULL;
@@ -426,11 +428,14 @@ const cEvent **cRecManager::PerformSearchTimerSearch(std::string epgSearchString
                     int eventID = atoi(flds[1].c_str());
                     std::string channelID = flds[7];
                     tChannelID chanID = tChannelID::FromString(channelID.c_str());
+                    const cChannel *channel;
 #if VDRVERSNUM >= 20301
+                    {
                     LOCK_CHANNELS_READ;
-                    const cChannel *channel = Channels->GetByChannelID(chanID);
+                    channel = Channels->GetByChannelID(chanID);
+                    }
 #else
-                    cChannel *channel = Channels.GetByChannelID(chanID);
+                    channel = Channels.GetByChannelID(chanID);
 #endif
                     if (channel) {
                         const cSchedule *Schedule = NULL;
