@@ -2259,11 +2259,7 @@ eRecMenuState cRecMenuItemDayChooser::ProcessKey(eKeys Key) {
 }
 
 // --- cRecMenuItemRecording  -------------------------------------------------------
-#if VDRVERSNUM >= 20301
 cRecMenuItemRecording::cRecMenuItemRecording(const cRecording *recording, bool active) {
-#else
-cRecMenuItemRecording::cRecMenuItemRecording(cRecording *recording, bool active) {
-#endif
     selectable = true;
     this->recording = recording;
     this->active = active;
@@ -2511,11 +2507,7 @@ void cRecMenuItemTimelineHeader::Show(void) {
 
 
 // --- cRecMenuItemTimelineTimer  -------------------------------------------------------
-#if VDRVERSNUM >= 20301
 cRecMenuItemTimelineTimer::cRecMenuItemTimelineTimer(const cTimer *timer, time_t start, time_t stop,  std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active) {
-#else
-cRecMenuItemTimelineTimer::cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop,  std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active) {
-#endif
     conflicts = conflictsToday;
     defaultBackground = false;
     pixmapBack = NULL;
@@ -2662,11 +2654,7 @@ void cRecMenuItemTimelineTimer::Show(void) {
     if (pixmapTimerConflicts) pixmapTimerConflicts->SetLayer(6);
 }
 
-#if VDRVERSNUM >= 20301
 const cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
-#else
-cTimer *cRecMenuItemTimelineTimer::GetTimerValue(void) {
-#endif
     return timer;    
 }
 

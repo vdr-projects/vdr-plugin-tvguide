@@ -123,11 +123,7 @@ public:
     virtual bool GetBoolValue(void) { return false; };
     virtual cString GetStringValue(void) { return cString(""); };
     virtual const cEvent *GetEventValue(void) { return NULL; };
-#if VDRVERSNUM >= 20301
     virtual const cTimer *GetTimerValue(void) { return NULL; };
-#else
-    virtual cTimer *GetTimerValue(void) { return NULL; };
-#endif
     virtual eRecMenuState ProcessKey(eKeys Key) { return rmsNotConsumed; };
 };
 
@@ -560,18 +556,10 @@ public:
 // --- cRecMenuItemRecording  -------------------------------------------------------
 class cRecMenuItemRecording : public cRecMenuItem {
 private:
-#if VDRVERSNUM >= 20301
     const cRecording *recording;
-#else
-    cRecording *recording;
-#endif
     cPixmap *pixmapText;
 public:
-#if VDRVERSNUM >= 20301
     cRecMenuItemRecording(const cRecording *recording, bool active);
-#else
-    cRecMenuItemRecording(cRecording *recording, bool active);
-#endif
     virtual ~cRecMenuItemRecording(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -583,11 +571,7 @@ public:
 class cRecMenuItemTimelineHeader : public cRecMenuItem {
 private:
     time_t day;
-#if VDRVERSNUM >= 20301
     const cTimer *timer;
-#else
-    cTimer *timer;
-#endif
     std::vector<cTVGuideTimerConflict*> conflicts;
     cPixmap *pixmapTimeline;
     cPixmap *pixmapTimerInfo;
@@ -603,11 +587,7 @@ public:
     virtual ~cRecMenuItemTimelineHeader(void);
     void SetDay(time_t day) { this->day = day; };
     void SetPixmaps(void);
-#if VDRVERSNUM >= 20301
     void SetCurrentTimer(const cTimer *timer) { this->timer = timer; };
-#else
-    void SetCurrentTimer(cTimer *timer) { this->timer = timer; };
-#endif
     void UnsetCurrentTimer(void) { timer = NULL; };
     void RefreshTimerDisplay(void);
     void Hide(void);
@@ -618,11 +598,7 @@ public:
 // --- cRecMenuItemTimelineTimer  -------------------------------------------------------
 class cRecMenuItemTimelineTimer : public cRecMenuItem {
 private:
-#if VDRVERSNUM >= 20301
     const cTimer *timer;
-#else
-    cTimer *timer;
-#endif
     std::vector<cTVGuideTimerConflict*> conflicts;
     cPixmap *pixmapBack;
     cPixmap *pixmapTimerConflicts;
@@ -637,11 +613,7 @@ private:
     void DrawTimerConflicts(void);
     void DrawNoTimerInfo(void);
 public:
-#if VDRVERSNUM >= 20301
     cRecMenuItemTimelineTimer(const cTimer *timer, time_t start, time_t stop, std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active);
-#else
-    cRecMenuItemTimelineTimer(cTimer *timer, time_t start, time_t stop, std::vector<cTVGuideTimerConflict*> conflictsToday, cRecMenuItemTimelineHeader *header, bool active);
-#endif
     virtual ~cRecMenuItemTimelineTimer(void);
     void setActive(void);
     void setInactive(void);
@@ -649,11 +621,7 @@ public:
     void Hide(void);
     void Show(void); 
     void Draw(void);
-#if VDRVERSNUM >= 20301
     const cTimer *GetTimerValue(void);
-#else
-    cTimer *GetTimerValue(void);
-#endif
     eRecMenuState ProcessKey(eKeys Key);
 };
 

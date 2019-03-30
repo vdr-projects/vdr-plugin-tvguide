@@ -56,26 +56,21 @@ bool cRecManager::CheckEventForTimer(const cEvent *event) {
     return hasTimer;
 }
 
-#if VDRVERSNUM >= 20301
 const cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
     const cTimer *timer = NULL;
-#else
-cTimer *cRecManager::GetTimerForEvent(const cEvent *event) {
-    cTimer *timer = NULL;
-#endif
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_GetMatch_v1_0 rtMatch;
         rtMatch.event = event;
         pRemoteTimers->Service("RemoteTimers::GetMatch-v1.0", &rtMatch);
         timer = rtMatch.timer;
-#if VDRVERSNUM >= 20301
         return timer;
     }
+
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     timer = Timers->GetMatch(event);
 #else
-    } else
-        timer = Timers.GetMatch(event);
+    timer = Timers.GetMatch(event);
 #endif
     return timer;
 }
@@ -208,41 +203,42 @@ void cRecManager::DeleteTimer(const cEvent *event) {
 
 void cRecManager::DeleteLocalTimer(const cEvent *event) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
+    const cTimer *t;
 #if VDRVERSNUM >= 20301
-    cTimer *t;
     {
-    LOCK_TIMERS_WRITE;
+    LOCK_TIMERS_READ;
     t = Timers->GetMatch(event);
     }
 #else
-    cTimer *t = Timers.GetMatch(event);
+    t = Timers.GetMatch(event);
 #endif
     if (!t)
         return;
     DeleteTimer(t);
 }
 
-void cRecManager::DeleteTimer(cTimer *timer) {
+void cRecManager::DeleteTimer(const cTimer *timer) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 #if VDRVERSNUM >= 20301
     LOCK_TIMERS_WRITE;
+    cTimers* timers = Timers;
+    cTimer* t = timers->GetTimer(timer);
+#else
+    cTimers* timers = &Timers;
+    cTimer* t = timers->GetTimer((cTimer*)timer);
 #endif
-    if (timer->Recording()) {
-        timer->Skip();
+
+    if (t->Recording()) {
+        t->Skip();
 #if VDRVERSNUM >= 20301
-        cRecordControls::Process(Timers, time(NULL));
+        cRecordControls::Process(timers, time(NULL));
 #else
         cRecordControls::Process(time(NULL));
 #endif
-    }
-    isyslog("timer %s deleted", *timer->ToDescr());
-#if VDRVERSNUM >= 20301
-    Timers->Del(timer, true);
-    Timers->SetModified();
-#else
-    Timers.Del(timer, true);
-    Timers.SetModified();
-#endif
+        }
+    isyslog("timer %s deleted", *t->ToDescr());
+    timers->Del(t, true);
+    timers->SetModified();
 }
 
 void cRecManager::DeleteRemoteTimer(const cEvent *event) {
@@ -259,19 +255,17 @@ void cRecManager::DeleteRemoteTimer(const cEvent *event) {
     }
 }
 
-#if VDRVERSNUM >= 20301
 void cRecManager::SaveTimer(const cTimer *t, cTimer newTimerSettings) {
     if (!t)
-#else
-void cRecManager::SaveTimer(cTimer *timer, cTimer newTimerSettings) {
-    if (!timer)
-#endif
         return;
 
 #if VDRVERSNUM >= 20301
     LOCK_TIMERS_WRITE;
     cTimer *timer = Timers->GetTimer(t);
+#else
+    cTimer *timer = Timers.GetTimer((cTimer*)t);
 #endif
+
     bool active = newTimerSettings.HasFlags(tfActive);
     int prio = newTimerSettings.Priority();
     int lifetime = newTimerSettings.Lifetime();
@@ -622,24 +616,20 @@ void cRecManager::DeleteSwitchTimer(const cEvent *event) {
     }
 }
 
-#if VDRVERSNUM >= 20301
 const cRecording **cRecManager::SearchForRecordings(std::string searchString, int &numResults) {
 
     const cRecording **matchingRecordings = NULL;
-#else
-cRecording **cRecManager::SearchForRecordings(std::string searchString, int &numResults) {
-
-    cRecording **matchingRecordings = NULL;
-#endif
     int num = 0;
     numResults = 0;
 
 #if VDRVERSNUM >= 20301
     LOCK_RECORDINGS_READ;
-    for (const cRecording *recording = Recordings->First(); recording; recording = Recordings->Next(recording)) {
+    const cRecordings* recordings = Recordings;
 #else
-    for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
+    const cRecordings* recordings = &Recordings;
 #endif
+
+    for (const cRecording *recording = recordings->First(); recording; recording = recordings->Next(recording)) {
         std::string s1 = recording->Name();
         std::string s2 = searchString;
         if (s1.empty() || s2.empty()) continue;
@@ -670,11 +660,7 @@ cRecording **cRecManager::SearchForRecordings(std::string searchString, int &num
         }
 
         if (match) {
-#if VDRVERSNUM >= 20301
             matchingRecordings = (const cRecording **)realloc(matchingRecordings, (num + 1) * sizeof(cRecording *));
-#else
-            matchingRecordings = (cRecording **)realloc(matchingRecordings, (num + 1) * sizeof(cRecording *));
-#endif
             matchingRecordings[num++] = recording;
         }
     }

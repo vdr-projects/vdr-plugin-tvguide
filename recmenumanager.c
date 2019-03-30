@@ -166,7 +166,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             LOCK_TIMERS_READ;
             const cTimer *timer = Timers->Get(timerID);
 #else
-            cTimer *timer = Timers.Get(timerID);
+            const cTimer *timer = Timers.Get(timerID);
 #endif
             if (timer) {
                 delete activeMenu;
@@ -178,11 +178,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             //caller: cRecMenuEditTimer
             //save timer from current timer conflict
             cTimer timerModified;
-#if VDRVERSNUM >= 20301
             const cTimer *originalTimer;
-#else
-            cTimer *originalTimer;
-#endif
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timerModified = menu->GetTimer();
                 originalTimer = menu->GetOriginalTimer();
@@ -216,14 +212,14 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;
         case rmsEditTimer: {
             //edit timer for active event
-#if VDRVERSNUM >= 20301
             const cTimer *timer;
+#if VDRVERSNUM >= 20301
             {
             LOCK_TIMERS_READ;
             timer = recManager->GetTimerForEvent(event);
             }
 #else
-            cTimer *timer = recManager->GetTimerForEvent(event);
+            timer = recManager->GetTimerForEvent(event);
 #endif
             if (timer) {
                 delete activeMenu;
@@ -235,11 +231,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             //caller: cRecMenuEditTimer
             //save timer for active event
             cTimer timerModified;
-#if VDRVERSNUM >= 20301
             const cTimer *originalTimer;
-#else
-            cTimer *originalTimer;
-#endif
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timerModified = menu->GetTimer();
                 originalTimer = menu->GetOriginalTimer();
@@ -505,11 +497,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 activeMenu = new cRecMenuRecordingSearch(searchString);
             } else {
                 int numSearchResults = 0;
-#if VDRVERSNUM >= 20301
                 const cRecording **searchResult = recManager->SearchForRecordings(searchString, numSearchResults);
-#else
-                cRecording **searchResult = recManager->SearchForRecordings(searchString, numSearchResults);
-#endif
                 if (numSearchResults == 0) {
                     activeMenu = new cRecMenuRecordingSearchNotFound(searchString);
                 } else {
@@ -721,11 +709,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsTimelineTimerEdit: {
-#if VDRVERSNUM >= 20301
             const cTimer *timer;
-#else
-            cTimer *timer;
-#endif
             if (cRecMenuTimeline *menu = dynamic_cast<cRecMenuTimeline*>(activeMenu)) {
                 timer = menu->GetTimer();
             } else break;
@@ -737,11 +721,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             break;}
         case rmsTimelineTimerSave: {
             cTimer timerModified;
-#if VDRVERSNUM >= 20301
             const cTimer *originalTimer;
-#else
-            cTimer *originalTimer;
-#endif
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timerModified = menu->GetTimer();
                 originalTimer = menu->GetOriginalTimer();
@@ -756,11 +736,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             activeMenu->Display();
             break; }
         case rmsTimelineTimerDelete: {
-#if VDRVERSNUM >= 20301
             const cTimer *timer;
-#else
-            cTimer *timer;
-#endif
             if (cRecMenuEditTimer *menu = dynamic_cast<cRecMenuEditTimer*>(activeMenu)) {
                 timer = menu->GetOriginalTimer();
             } else break;
@@ -770,7 +746,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             recManager->DeleteTimer(Timers->GetTimer(timer));
             }
 #else
-            recManager->DeleteTimer(Timers.GetTimer(timer));
+            recManager->DeleteTimer(Timers.GetTimer((cTimer*)timer));
 #endif
             delete activeMenu;
             if (timerConflicts) {
@@ -884,15 +860,13 @@ void cRecMenuManager::DisplaySearchTimerList(void) {
     activeMenu->Display();
 }
 
-#if VDRVERSNUM >= 20301
 bool cRecMenuManager::DisplayTimerConflict(const cTimer *timer) {
     int timerID = 0;
+#if VDRVERSNUM >= 20301
     LOCK_TIMERS_READ;
     for (const cTimer *t = Timers->First(); t; t = Timers->Next(t)) {
 #else
-bool cRecMenuManager::DisplayTimerConflict(cTimer *timer) {
-    int timerID = 0;
-    for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
+    for (const cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
 #endif
         if (t == timer)
             return DisplayTimerConflict(timerID);

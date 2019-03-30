@@ -15,6 +15,7 @@ private:
     cRecMenu *activeMenuBuffer;
     cRecMenu *activeMenuBuffer2;
     const cEvent *event;
+    const cEvent *displayEvent;
     cRecManager *recManager;
     cTVGuideTimerConflicts *timerConflicts;
     cDetailView *detailView;
@@ -23,14 +24,11 @@ private:
     void SetBackground(void);
     void DeleteBackground(void);
     void DisplaySearchTimerList(void);
-#if VDRVERSNUM >= 20301
     bool DisplayTimerConflict(const cTimer *timer);
-#else
-    bool DisplayTimerConflict(cTimer *timer);
-#endif
     bool DisplayTimerConflict(int timerID);
     void DisplayDetailedView(const cEvent *ev);
     void DisplayFavoriteResults(std::string header, const cEvent **result, int numResults);
+    eOSState StateMachine(eRecMenuState nextState);
 public:
     cRecMenuManager(void);
     virtual ~cRecMenuManager(void);
@@ -39,7 +37,6 @@ public:
     void Start(const cEvent *event);
     void StartFavorites(void);
     void Close(void);
-    eOSState StateMachine(eRecMenuState nextState);
     eOSState ProcessKey(eKeys Key);
 };
 

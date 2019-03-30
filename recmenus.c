@@ -111,7 +111,7 @@ cRecMenuConfirmTimer::cRecMenuConfirmTimer(const cEvent *event) {
     LOCK_CHANNELS_READ;
     const cString channelName = Channels->GetByChannelID(event->ChannelID())->Name();
 #else
-    cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
+    const cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
 #endif
     cString message;
     bool eventHasTimer = false;
@@ -155,7 +155,7 @@ cRecMenuConfirmDeleteTimer::cRecMenuConfirmDeleteTimer(const cEvent *event) {
     LOCK_CHANNELS_READ;
     const cString channelName = Channels->GetByChannelID(event->ChannelID())->Name();
 #else
-    cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
+    const cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
 #endif
     cString text = cString::sprintf("%s\n%s\n%s %s - %s\n%s", 
                                     tr("Timer deleted"), 
@@ -183,7 +183,7 @@ cRecMenuAskDeleteTimer::cRecMenuAskDeleteTimer(const cEvent *event) {
     LOCK_CHANNELS_READ;
     const cString channelName = Channels->GetByChannelID(event->ChannelID())->Name();
 #else
-    cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
+    const cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
 #endif
     cString text = cString::sprintf("%s \"%s, %s\" %s", 
                                     tr("Timer"),
@@ -387,8 +387,8 @@ cRecMenuConfirmRerunUsed::cRecMenuConfirmRerunUsed(const cEvent *original, const
     const cString channelOrig = Channels->GetByChannelID(original->ChannelID())->Name();
     const cString channelReplace = Channels->GetByChannelID(replace->ChannelID())->Name();
 #else
-    cString channelOrig = Channels.GetByChannelID(original->ChannelID())->Name();
-    cString channelReplace = Channels.GetByChannelID(replace->ChannelID())->Name();
+    const cString channelOrig = Channels.GetByChannelID(original->ChannelID())->Name();
+    const cString channelReplace = Channels.GetByChannelID(replace->ChannelID())->Name();
 #endif
     cString message1 = tr("Timer for");
     cString message2 = tr("replaced by rerun");
@@ -413,12 +413,7 @@ cRecMenuConfirmRerunUsed::cRecMenuConfirmRerunUsed(const cEvent *original, const
 }
 
 // --- cRecMenuEditTimer  ---------------------------------------------------------
-#if VDRVERSNUM >= 20301
 cRecMenuEditTimer::cRecMenuEditTimer(const cTimer *timer, eRecMenuState nextState) {
-//    const cTimer *originalTimer;
-#else
-cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
-#endif
     SetWidthPercent(70);
     if (!timer)
         return;
@@ -475,11 +470,7 @@ cRecMenuEditTimer::cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState) {
     Arrange();
 }
 
-#if VDRVERSNUM >= 20301
 const cTimer *cRecMenuEditTimer::GetOriginalTimer(void) {
-#else
-cTimer *cRecMenuEditTimer::GetOriginalTimer(void) {
-#endif
     return originalTimer;
 }
 
@@ -517,11 +508,7 @@ cTimer cRecMenuEditTimer::GetTimer(void) {
 ******************************************************************************************/
 
 // --- cRecMenuSeriesTimer ---------------------------------------------------------
-#if VDRVERSNUM >= 20301
 cRecMenuSeriesTimer::cRecMenuSeriesTimer(const cChannel *initialChannel, const cEvent *event, std::string folder) {
-#else
-cRecMenuSeriesTimer::cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent *event, std::string folder) {
-#endif
     if (!initialChannel)
         return;
     timerActive = true;
@@ -540,7 +527,11 @@ cRecMenuSeriesTimer::cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent 
     SetHeader(infoItem);
 
     AddMenuItem(new cRecMenuItemBool(tr("Timer Active"), timerActive, false, false, &timerActive));
+#if VDRVERSNUM >= 20301
     AddMenuItem(new cRecMenuItemChannelChooser(tr("Channel"), initialChannel, false, &channel));
+#else
+    AddMenuItem(new cRecMenuItemChannelChooser(tr("Channel"), (cChannel*)initialChannel, false, &channel));
+#endif
     AddMenuItem(new cRecMenuItemTime(tr("Series Timer start time"), start, false, &start));
     AddMenuItem(new cRecMenuItemTime(tr("Series Timer stop time"), stop, false, &stop));
     AddMenuItem(new cRecMenuItemDayChooser(tr("Days to record"), dayOfWeek, false, &dayOfWeek));
@@ -1277,7 +1268,7 @@ cRecMenuSearchConfirmTimer::cRecMenuSearchConfirmTimer(const cEvent *event, eRec
     LOCK_CHANNELS_READ;
     const cString channelName = Channels->GetByChannelID(event->ChannelID())->Name();
 #else
-    cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
+    const cString channelName = Channels.GetByChannelID(event->ChannelID())->Name();
 #endif
     cString message = tr("Timer created");
     cString text = cString::sprintf("%s\n%s\n%s %s - %s\n%s", 
@@ -1343,11 +1334,7 @@ cRecMenuRecordingSearch::cRecMenuRecordingSearch(std::string search) {
 }
 
 // --- cRecMenuRecordingSearchResults  ---------------------------------------------------------
-#if VDRVERSNUM >= 20301
 cRecMenuRecordingSearchResults::cRecMenuRecordingSearchResults(std::string searchString, const cRecording **searchResults, int numResults) {
-#else
-cRecMenuRecordingSearchResults::cRecMenuRecordingSearchResults(std::string searchString, cRecording **searchResults, int numResults) {
-#endif
     this->searchString = searchString;
     this->searchResults = searchResults;
     SetWidthPercent(80);
@@ -1364,8 +1351,8 @@ cRecMenuRecordingSearchResults::cRecMenuRecordingSearchResults(std::string searc
     cRecMenuItem *buttons = new cRecMenuItemButtonYesNo(tr("Adapt Search"), tr("Close"), rmsRecordingSearch, rmsClose, false);
     SetFooter(buttons);
     if (searchResults && (numResults > 0)) {
-        for (int i=0; i<numResults; i++) {
-            if (!AddMenuItemInitial(new cRecMenuItemRecording(searchResults[i], (i==0)?true:false)))
+        for (int i = 0; i < numResults; i++) {
+            if (!AddMenuItemInitial(new cRecMenuItemRecording(searchResults[i], (i == 0) ? true : false)))
                 break;
         }
     }
@@ -1436,7 +1423,7 @@ void cRecMenuTimeline::GetTimersForDay(void) {
 //    const cTimers* timers = Timers;
     for (const cTimer *t = Timers->First(); t; t = Timers->Next(t)) {
 #else
-    for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
+    for (const cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
 #endif
         if (((t->StartTime() > timeStart) && (t->StartTime() <= timeStop)) || ((t->StopTime() > timeStart) && (t->StopTime() <= timeStop))) {
             timersToday.push_back(t);
@@ -1511,11 +1498,7 @@ void cRecMenuTimeline::ClearMenu(void) {
     header->UnsetCurrentTimer();
 }
 
-#if VDRVERSNUM >= 20301
 const cTimer *cRecMenuTimeline::GetTimer(void) {
-#else
-cTimer *cRecMenuTimeline::GetTimer(void) {
-#endif
     if (cRecMenuItemTimelineTimer *activeItem = dynamic_cast<cRecMenuItemTimelineTimer*>(GetActiveMenuItem()))
         return activeItem->GetTimerValue();
     return NULL;

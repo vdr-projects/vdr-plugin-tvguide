@@ -115,11 +115,7 @@ public:
 // --- cRecMenuEditTimer  ---------------------------------------------------------
 class cRecMenuEditTimer: public cRecMenu {
 private:
-#if VDRVERSNUM >= 20301
     const cTimer *originalTimer;
-#else
-    cTimer *originalTimer;
-#endif
     bool timerActive;
     time_t day;
     int start;
@@ -128,13 +124,8 @@ private:
     int lifetime;
     char folder[TEXTINPUTLENGTH];
 public:
-#if VDRVERSNUM >= 20301
     cRecMenuEditTimer(const cTimer *timer, eRecMenuState nextState);
     const cTimer *GetOriginalTimer(void);
-#else
-    cRecMenuEditTimer(cTimer *timer, eRecMenuState nextState);
-    cTimer *GetOriginalTimer(void);
-#endif
     virtual ~cRecMenuEditTimer(void) {};
     cTimer GetTimer(void);
 };
@@ -157,11 +148,7 @@ class cRecMenuSeriesTimer: public cRecMenu {
     int lifetime;
     void CalculateTimes(const cEvent *event);
 public:
-#if VDRVERSNUM >= 20301
     cRecMenuSeriesTimer(const cChannel *initialChannel, const cEvent *event, std::string folder);
-#else
-    cRecMenuSeriesTimer(cChannel *initialChannel, const cEvent *event, std::string folder);
-#endif
     virtual ~cRecMenuSeriesTimer(void) {};
     cTimer *GetTimer(void);
 };
@@ -425,18 +412,10 @@ public:
 class cRecMenuRecordingSearchResults: public cRecMenu {
 private:
     std::string searchString;
-#if VDRVERSNUM >= 20301
     const cRecording **searchResults;
-#else
-    cRecording **searchResults;
-#endif
     int numResults;
 public:
-#if VDRVERSNUM >= 20301
     cRecMenuRecordingSearchResults(std::string searchString, const cRecording **searchResults, int numResults);
-#else
-    cRecMenuRecordingSearchResults(std::string searchString, cRecording **searchResults, int numResults);
-#endif
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
     virtual ~cRecMenuRecordingSearchResults(void) {
@@ -459,11 +438,7 @@ public:
 // --- cRecMenuTimeline  ---------------------------------------------------------
 class cRecMenuTimeline: public cRecMenu {
 private:
-#if VDRVERSNUM >= 20301
     std::vector<const cTimer*> timersToday;
-#else
-    std::vector<cTimer*> timersToday;
-#endif
     int numTimersToday;
     time_t today;
     time_t timeStart;
@@ -479,16 +454,11 @@ private:
     void ClearMenu(void);
 public:
     cRecMenuTimeline(cTVGuideTimerConflicts *timerConflicts);
+    virtual ~cRecMenuTimeline(void) {};
     cRecMenuItem *GetMenuItem(int number);
     int GetTotalNumMenuItems(void);
-    virtual ~cRecMenuTimeline(void) {
-    };
     eRecMenuState ProcessKey(eKeys Key);
-#if VDRVERSNUM >= 20301
     const cTimer *GetTimer(void);
-#else
-    cTimer *GetTimer(void);
-#endif
 };
 
 /******************************************************************************************
