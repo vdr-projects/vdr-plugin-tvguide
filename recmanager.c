@@ -543,45 +543,33 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
         return;
     int searchTimerID = searchTimer->GetID();
     if (delTimers) {
+        cTimers* timers;
 #if VDRVERSNUM >= 20301
+        {
         LOCK_TIMERS_WRITE;
-        cTimer *timer = Timers->First();
+        timers = Timers;
+        }
 #else
-        cTimer *timer = Timers.First();
+        timers = &Timers;
 #endif
+        cTimer *timer = timers->First();
         while(timer) {
             if (!timer->Recording()) {
                 char* searchID = GetAuxValue(timer, "s-id");
                 if (searchID) {
                     if (searchTimerID == atoi(searchID)) {
-#if VDRVERSNUM >= 20301
-                        cTimer* timerNext = Timers->Next(timer);
-#else
-                        cTimer* timerNext = Timers.Next(timer);
-#endif
+                        cTimer* timerNext = timers->Next(timer);
                         DeleteTimer(timer);
                         timer = timerNext;
                     } else {
-#if VDRVERSNUM >= 20301
-                        timer = Timers->Next(timer);
-#else
-                        timer = Timers.Next(timer);
-#endif
+                        timer = timers->Next(timer);
                     }
                     free(searchID);
                 } else {
-#if VDRVERSNUM >= 20301
-                    timer = Timers->Next(timer);
-#else
-                    timer = Timers.Next(timer);
-#endif
+                    timer = timers->Next(timer);
                 }
             } else {
-#if VDRVERSNUM >= 20301
-                timer = Timers->Next(timer);
-#else
-                timer = Timers.Next(timer);
-#endif
+                timer = timers->Next(timer);
             }
         }
     }
