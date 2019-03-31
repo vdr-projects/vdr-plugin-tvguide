@@ -121,13 +121,9 @@ void cView::DrawHeader(void) {
     pixmapHeader->DrawText(cPoint(xText, ySubtitle), CutText(subTitle, textWidthMax, fontHeader).c_str(), theme.Color(clrFont), theme.Color(clrStatusHeader), fontHeader);
     //REC Icon
     eTimerMatch timerMatch=tmNone; 
-#if VDRVERSNUM >= 20301
-    const cTimer *ti;
-#else
-    cTimer *ti;
-#endif
     if (!event)
         return;
+    const cTimer *ti;
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_GetMatch_v1_0 rtMatch;
         rtMatch.event = event;
@@ -142,7 +138,7 @@ void cView::DrawHeader(void) {
         ti = Timers.GetMatch(event, &timerMatch);
 #endif
     }
-    if (timerMatch == tmFull) {
+    if (ti && timerMatch == tmFull) {
         cString recIconText(" REC ");
         int widthIcon = fontManager.FontDetailHeader->Width(*recIconText);
         int height = fontManager.FontDetailHeader->Height()+10;
