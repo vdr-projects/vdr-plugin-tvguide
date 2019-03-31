@@ -1,4 +1,5 @@
 #include "detailview.h"
+#include "switchtimer.h"
 
 /********************************************************************************************
 * cView
@@ -15,6 +16,7 @@ cView::cView(void) {
     pixmapBackground = NULL;
     pixmapHeader = NULL;
     pixmapHeaderLogo = NULL;
+    pixmapHeaderIcon = NULL;
     pixmapContent = NULL;
     pixmapTabs = NULL;
     pixmapScrollbar = NULL;
@@ -45,6 +47,8 @@ cView::~cView(void) {
         delete pixmapHeader;
     if (pixmapHeaderLogo)
         osdManager.releasePixmap(pixmapHeaderLogo);   
+    if (pixmapHeaderIcon)
+        osdManager.releasePixmap(pixmapHeaderIcon);
     if (pixmapContent)
         osdManager.releasePixmap(pixmapContent);
     if (pixmapTabs)
@@ -120,7 +124,7 @@ void cView::DrawHeader(void) {
     pixmapHeader->DrawText(cPoint(xText, yTitle), CutText(title, textWidthMax, fontHeaderLarge).c_str(), theme.Color(clrFont), theme.Color(clrStatusHeader), fontHeaderLarge);
     pixmapHeader->DrawText(cPoint(xText, ySubtitle), CutText(subTitle, textWidthMax, fontHeader).c_str(), theme.Color(clrFont), theme.Color(clrStatusHeader), fontHeader);
     //REC Icon
-    eTimerMatch timerMatch=tmNone; 
+    eTimerMatch timerMatch = tmNone; 
     if (!event)
         return;
     const cTimer *ti;
@@ -138,14 +142,25 @@ void cView::DrawHeader(void) {
         ti = Timers.GetMatch(event, &timerMatch);
 #endif
     }
-    if (ti && timerMatch == tmFull) {
-        cString recIconText(" REC ");
-        int widthIcon = fontManager.FontDetailHeader->Width(*recIconText);
-        int height = fontManager.FontDetailHeader->Height()+10;
-        int posX = headerWidth - widthIcon - 20;
-        int posY = 20;
-        pixmapHeader->DrawRectangle( cRect(posX, posY, widthIcon, height), theme.Color(clrButtonRed));
-        pixmapHeader->DrawText(cPoint(posX, posY+5), *recIconText, theme.Color(clrFont), theme.Color(clrButtonRed), fontManager.FontDetailHeader);
+    bool hasSwitchTimer = SwitchTimers.EventInSwitchList(event);
+    if (hasSwitchTimer || (ti && timerMatch == tmFull)) {
+        tColor iconColor;
+        bool switchOnly = false;
+        bool timerActive = ti && ti->HasFlags(tfActive);
+        cString recIconText;
+#ifdef SWITCHONLYPATCH
+        switchOnly = ti && ti->HasFlags(tfSwitchOnly);
+#endif
+        (hasSwitchTimer || switchOnly) ? recIconText = "Switch" : recIconText = " REC ";
+        iconColor = (hasSwitchTimer || switchOnly) ? theme.Color(clrButtonYellow) : timerActive ? theme.Color(clrButtonRed) : theme.Color(clrButtonGreen);
+        int widthIcon = fontManager.FontDetailHeader->Width(*recIconText) + 10;
+        int height = fontManager.FontDetailHeader->Height() + 10;
+        int posX = headerWidth - widthIcon - 25;
+        int posY = ySubtitle - 5;
+        if (!pixmapHeaderIcon)
+            pixmapHeaderIcon = osdManager.requestPixmap(7, cRect(posX, posY, widthIcon, height));
+        pixmapHeaderIcon->DrawRectangle(cRect(0, 0, widthIcon, height), iconColor);
+        pixmapHeaderIcon->DrawText(cPoint(5, 5), *recIconText, theme.Color(clrFont), iconColor, fontManager.FontDetailHeader);
     }
 }
 
