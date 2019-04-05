@@ -158,3 +158,12 @@ Version 1.2.4
 - Eliminate some warnings
 - Center channel logos in favorite view
 - Update "services/epgsearch.h"
+
+Version 1.2.5
+
+- Compile again with VDR < 2.3.0
+- Correct some x positions in EPG grid
+- Fixed a "invalid lock sequence report" in "cRecManager::PerformSearchTimerSearch"
+- Eliminate a seqfault in "cRecManager::DeleteSearchTimer"
+- Show Inactive timer in DrawHeader
+- Add "switchMode" to setup menu

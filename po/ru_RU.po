@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-05-10 17:24+0200\n"
+"POT-Creation-Date: 2019-04-05 13:01+0200\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -805,6 +805,12 @@ msgid "Use user defined time 4 in favorites"
 msgstr ""
 
 msgid "Limit channels in favorites"
+msgstr ""
+
+msgid "Switchtimer:"
+msgstr ""
+
+msgid "Switch (x)min before start of the show"
 msgstr ""
 
 msgid "Create Log Messages for image loading"

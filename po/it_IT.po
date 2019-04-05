@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2014-05-10 17:24+0200\n"
+"POT-Creation-Date: 2019-04-05 13:01+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: fiveten_59\n"
 "Language-Team: \n"
@@ -807,6 +807,12 @@ msgstr "Usa il tempo definito per l'user 4 in favoriti"
 msgid "Limit channels in favorites"
 msgstr "Limite dei canali nei favoriti"
 
+msgid "Switchtimer:"
+msgstr ""
+
+msgid "Switch (x)min before start of the show"
+msgstr ""
+
 msgid "Create Log Messages for image loading"
 msgstr "Log Nachrichten für das Laden der Bilder erzeugen"
 
@@ -938,4 +944,3 @@ msgstr "TheMovieDB Popularità"
 
 msgid "TheMovieDB Vote Average"
 msgstr "Voto medio di TheMovieDB"
-
