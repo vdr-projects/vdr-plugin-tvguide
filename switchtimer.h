@@ -10,7 +10,7 @@ public:
     time_t startTime;
     tChannelID channelID;
     int switchMinsBefore;
-    int announceOnly;
+    int switchMode;
 #if VDRVERSNUM >= 20305
     cSwitchTimer(const cSwitchTimer &SwitchTimer) { *this = SwitchTimer; };
     cSwitchTimer& operator= (const cSwitchTimer &SwitchTimer)
@@ -19,7 +19,7 @@ public:
         this->startTime = SwitchTimer.startTime;
         this->channelID = SwitchTimer.channelID;
         this->switchMinsBefore = SwitchTimer.switchMinsBefore;
-        this->announceOnly = SwitchTimer.announceOnly;
+        this->switchMode = SwitchTimer.switchMode;
         return *this;
     };
 #endif

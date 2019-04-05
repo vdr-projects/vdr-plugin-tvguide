@@ -319,7 +319,7 @@ public:
 class cRecMenuSwitchTimer: public cRecMenu {
 private:
     int switchMinsBefore;
-    int announceOnly;
+    int switchMode;
 public:
     cRecMenuSwitchTimer(void);
     virtual ~cRecMenuSwitchTimer(void) {};

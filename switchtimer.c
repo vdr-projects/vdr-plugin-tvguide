@@ -7,14 +7,14 @@ cSwitchTimer::cSwitchTimer(void) {
     eventID = 0;
     startTime = 0;
     switchMinsBefore = tvguideConfig.switchMinsBefore;
-    announceOnly = 0;
+    switchMode = tvguideConfig.switchMode;
 }
 
 cSwitchTimer::cSwitchTimer(const cEvent* Event) {
     eventID = 0;
     startTime = 0;
-    switchMinsBefore = tvguideConfig.switchMinsBefore;
-    announceOnly = 0;
+//    switchMinsBefore = tvguideConfig.switchMinsBefore;
+//    switchModes = tvguideConfig.switchModes;
     if (Event) {
       eventID = Event->EventID();
       channelID = Event->ChannelID();

@@ -121,6 +121,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("favLimitChannels", tvguideConfig.favLimitChannels);
     SetupStore("favStartChannel", tvguideConfig.favStartChannel);
     SetupStore("favStopChannel", tvguideConfig.favStopChannel);
+    SetupStore("switchMode", tvguideConfig.switchMode);
     SetupStore("switchMinsBefore", tvguideConfig.switchMinsBefore);
     SetupStore("fontIndex", tvguideConfig.fontIndex);
     SetupStore("FontButtonDelta", tvguideConfig.FontButtonDelta);
@@ -379,6 +380,9 @@ cMenuSetupFavorites::cMenuSetupFavorites(cTvguideConfig* data)  : cMenuSetupSubM
     recFolderMode[1] = tr("Select from folder list");
     recFolderMode[2] = tr("Use fixed folder");
     strn0cpy(fixedFolder, data->instRecFixedFolder.c_str(), sizeof(fixedFolder));
+    switchModeItems[0] = (tr("switch"));
+    switchModeItems[1] = (tr("announce only"));
+    switchModeItems[2] = (tr("ask for switch"));
     Set();
 }
 
@@ -420,7 +424,9 @@ void cMenuSetupFavorites::Set(void) {
         Add(new cMenuEditChanItem(tr("Start Channel"), &tmpTvguideConfig->favStartChannel));
         Add(new cMenuEditChanItem(tr("Stop Channel"), &tmpTvguideConfig->favStopChannel));
     }
-    Add(new cMenuEditIntItem(tr("Minutes a switchtimer switches before start of a show"), &tmpTvguideConfig->switchMinsBefore, 0, 10));
+    Add(new cOsdItem(tr("Switchtimer:"), osUnknown, false));
+    Add(new cMenuEditStraItem(tr("Switch Mode"), &tmpTvguideConfig->switchMode, 3,  switchModeItems));
+    Add(new cMenuEditIntItem(tr("Switch (x)min before start of the show"), &tmpTvguideConfig->switchMinsBefore, 0, 10));
 
 
     SetCurrent(Get(currentItem));

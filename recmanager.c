@@ -586,14 +586,14 @@ void cRecManager::UpdateSearchTimers(void) {
     }
 }
 
-// announceOnly: 0 = switch, 1 = announce only, 2 = ask for switch
+// switchMode: 0 = switch, 1 = announce only, 2 = ask for switch
 bool cRecManager::CreateSwitchTimer(const cEvent *event, cSwitchTimer switchTimer) {
     if (epgSearchAvailable && event) {
         Epgsearch_switchtimer_v1_0 data;
         data.event = event;
         data.mode = 1;
         data.switchMinsBefore = switchTimer.switchMinsBefore;
-        data.announceOnly = switchTimer.announceOnly;
+        data.announceOnly = switchTimer.switchMode;
         data.success = false;
         epgSearchPlugin->Service("Epgsearch-switchtimer-v1.0", &data);
         cSwitchTimer *t = new cSwitchTimer(event);

@@ -1101,7 +1101,7 @@ cRecMenuSearchTimerNothingFound::cRecMenuSearchTimerNothingFound(std::string sea
 // --- cRecMenuSwitchTimer  ---------------------------------------------------------
 cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
     switchMinsBefore = tvguideConfig.switchMinsBefore;
-    announceOnly = 0;
+    switchMode = tvguideConfig.switchMode;
 
     SetWidthPercent(60);
     
@@ -1111,11 +1111,11 @@ cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
     AddMenuItem(infoItem);
 
     AddMenuItem(new cRecMenuItemInt(tr("Minutes before switching"), switchMinsBefore, 0, 10, false, &switchMinsBefore));
-    std::vector<std::string> switchModes;
-    switchModes.push_back(tr("switch"));
-    switchModes.push_back(tr("announce only"));
-    switchModes.push_back(tr("ask for switch"));
-    AddMenuItem(new cRecMenuItemSelect(tr("Switch Mode"), switchModes, announceOnly, false, &announceOnly));
+    std::vector<std::string> switchModeItems;
+    switchModeItems.push_back(tr("switch"));
+    switchModeItems.push_back(tr("announce only"));
+    switchModeItems.push_back(tr("ask for switch"));
+    AddMenuItem(new cRecMenuItemSelect(tr("Switch Mode"), switchModeItems, switchMode, false, &switchMode));
     
     AddMenuItem(new cRecMenuItemButtonYesNo(tr("Create"), tr("Cancel"), rmsSwitchTimerCreate, rmsClose, true));
     
@@ -1127,7 +1127,7 @@ cRecMenuSwitchTimer::cRecMenuSwitchTimer(void) {
 cSwitchTimer cRecMenuSwitchTimer::GetSwitchTimer(void) {
     cSwitchTimer st;
     st.switchMinsBefore = switchMinsBefore;
-    st.announceOnly = announceOnly;
+    st.switchMode = switchMode;
     return st;
 }
 

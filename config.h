@@ -118,6 +118,7 @@ class cTvguideConfig {
         int favLimitChannels;
         int favStartChannel;
         int favStopChannel;
+	int switchMode;
         int switchMinsBefore;
         int fontIndex;
         const char *fontNameDefault;
