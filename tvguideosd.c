@@ -139,11 +139,15 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
     if (!channelStart)
         return;
 #if VDRVERSNUM >= 20301
+    const cChannels *channels;
+    {
     LOCK_CHANNELS_READ;
-    for (const cChannel *channel = channelStart; channel; channel = Channels->Next(channel)) {
+    channels = Channels;
+    }
 #else
-    for (const cChannel *channel = channelStart; channel; channel = Channels.Next(channel)) {
+    cChannels *channels = &Channels;
 #endif
+    for (const cChannel *channel = channelStart; channel; channel = channels->Next(channel)) {
         if (!channel->GroupSep()) {
             if (channelGroups->IsInLastGroup(channel)) {
                 break;
@@ -165,11 +169,7 @@ void cTvGuideOsd::readChannels(const cChannel *channelStart) {
         int numCurrent = columns.Count();
         int numBack = tvguideConfig.numGrids - numCurrent;
         int newChannelNumber = columns.First()->getChannel()->Number() - numBack;
-#if VDRVERSNUM >= 20301
-        const cChannel *newStart = Channels->GetByNumber(newChannelNumber);
-#else
-        const cChannel *newStart = Channels.GetByNumber(newChannelNumber);
-#endif
+        const cChannel *newStart = channels->GetByNumber(newChannelNumber);
         readChannels(newStart);
     }
 }

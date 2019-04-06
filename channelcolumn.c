@@ -5,21 +5,11 @@ cChannelColumn::cChannelColumn(int num, const cChannel *channel, cMyTime *myTime
     this->channel = channel;
     this->num = num;
     this->myTime = myTime;
-#if VDRVERSNUM >= 20301
-    hasTimer = false;
-    const cSchedule *Schedule = NULL;
-    LOCK_SCHEDULES_READ;
-    const cSchedules* schedules = Schedules;
-    if (schedules) {
-	Schedule = schedules->GetSchedule(channel);
-        hasTimer = Schedule ? Schedule->HasTimer() : false;
-    }
-#else
+#if VDRVERSNUM < 20301
     hasTimer = channel->HasTimer();
 #endif
     hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
-#if VDRVERSNUM >= 20301
-#else
+#if VDRVERSNUM < 20301
     schedulesLock = new cSchedulesLock(false, 100);
 #endif
     header = NULL;
@@ -29,8 +19,7 @@ cChannelColumn::~cChannelColumn(void) {
     if (header)
         delete header;
     grids.Clear();
-#if VDRVERSNUM >= 20301
-#else
+#if VDRVERSNUM < 20301
     delete schedulesLock;
 #endif
 }
@@ -383,25 +372,14 @@ cGrid *cChannelColumn::addDummyGrid(time_t start, time_t end, cGrid *firstGrid, 
 }
 
 void cChannelColumn::SetTimers() {
-#if VDRVERSNUM >= 20301
-    hasTimer = false;
-    const cSchedule *Schedule = NULL;
-    {
-    LOCK_SCHEDULES_READ;
-    const cSchedules* schedules = Schedules;
-    if (schedules) {
-        Schedule = schedules->GetSchedule(channel);
-        hasTimer = Schedule ? Schedule->HasTimer() : false;
-        }
-    }
-#else
+#if VDRVERSNUM < 20301
     hasTimer = channel->HasTimer();
 #endif
     hasSwitchTimer = SwitchTimers.ChannelInSwitchList(channel);
     for (cGrid *grid = grids.First(); grid; grid = grids.Next(grid)) {
         bool gridHadTimer = grid->HasTimer();
         grid->SetTimer();
-        if (gridHadTimer != grid->HasTimer())
+        if (gridHadTimer || gridHadTimer != grid->HasTimer())
             grid->SetDirty();
         bool gridHadSwitchTimer = grid->HasSwitchTimer();
         grid->SetSwitchTimer();

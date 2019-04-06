@@ -62,22 +62,23 @@ void cEpgGrid::PositionPixmap() {
 }
 
 void cEpgGrid::SetTimer() {
+    hasTimer = false;
     if (tvguideConfig.useRemoteTimers && pRemoteTimers) {
         RemoteTimers_Event_v1_0 rt;
         rt.event = event;
         if (pRemoteTimers->Service("RemoteTimers::GetTimerByEvent-v1.0", &rt))
             hasTimer = true;
-	else
-	    hasTimer = false;
-#if VDRVERSNUM >= 30400
-    } else if (event->HasTimer()) {
-        hasTimer = true;
+#if VDRVERSNUM >= 20301
+    } else {
+        eTimerMatch TimerMatch = tmNone;
+        LOCK_TIMERS_READ;
+        const cTimers *timers = Timers;
+        if (timers->GetMatch(event, &TimerMatch) && (TimerMatch == tmFull))
+            hasTimer = true;
 #else
     } else if (column->HasTimer()) {
         hasTimer = event->HasTimer();
 #endif
-    } else {
-        hasTimer = false;
     }
 }
 
