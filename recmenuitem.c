@@ -2004,29 +2004,21 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             fresh = true;
             if (!channel)
                 return rmsConsumed;
-#if VDRVERSNUM >= 20301
             const cChannel *prev = channel;
+#if VDRVERSNUM >= 20301
             LOCK_CHANNELS_READ;
-            const cChannel *firstChannel = Channels->First();
+            const cChannels* channels = Channels;
 #else
-            const cChannel *prev = channel;
-            const cChannel *firstChannel = Channels.First();
+            const cChannels* channels = &Channels;
 #endif
+            const cChannel *firstChannel = channels->First();
             if(firstChannel->GroupSep())
-#if VDRVERSNUM >= 20301
-                firstChannel = Channels->Next(firstChannel);
-#else
-                firstChannel = Channels.Next(firstChannel);
-#endif
+                firstChannel = channels->Next(firstChannel);
             if (prev == firstChannel) {
                 if (!initialChannelSet)
                     channel = NULL;
             } else {
-#if VDRVERSNUM >= 20301
-                while (prev = Channels->Prev(prev)) {
-#else
-                while (prev = Channels.Prev(prev)) {
-#endif
+                while (prev = channels->Prev(prev)) {
                     if(!prev->GroupSep()) {
                         channel = prev;
                         break;
@@ -2043,30 +2035,20 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             return rmsConsumed;
             break; }
         case kRight: {
+            fresh = true;
 #if VDRVERSNUM >= 20301
             LOCK_CHANNELS_READ;
+            const cChannels* channels = Channels;
+#else
+            const cChannels* channels = &Channels;
 #endif
-            fresh = true;
             if (!channel) {
-#if VDRVERSNUM >= 20301
-                channel = Channels->First();
-#else
-                channel = Channels.First();
-#endif
+                channel = channels->First();
                 if(channel->GroupSep())
-#if VDRVERSNUM >= 20301
-                    channel = Channels->Next(channel);
-#else
-                    channel = Channels.Next(channel);
-#endif
+                    channel = channels->Next(channel);
             } else {
-#if VDRVERSNUM >= 20301
                 const cChannel *next = channel;
-                while (next = Channels->Next(next)) {
-#else
-                const cChannel *next = channel;
-                while (next = Channels.Next(next)) {
-#endif
+                while (next = channels->Next(next)) {
                     if(!next->GroupSep()) {
                         channel = next;
                         break;
