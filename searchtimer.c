@@ -210,31 +210,31 @@ bool cTVGuideSearchTimer::Parse(bool readTemplate) {
         return false;
     for (int value = 0; value < numValues; value++) {
     	switch (value) {
-    		case 0:
+            case 0:
                 if (!readTemplate)
                     ID = atoi(values[value].c_str());
                 break;
-    		case 1:
+            case 1:
                 if (!readTemplate) {
                     std::string searchStringMasked = values[value];
                     std::replace(searchStringMasked.begin(), searchStringMasked.end(), '|', ':');
                     searchString = searchStringMasked;
                 }
                 break;
-    		case 2:
+            case 2:
                 useTime = atoi(values[value].c_str());
                 break;
             case 3:
                 if (useTime) {
-				    startTime = atoi(values[value].c_str());
-				}
-				break;
+                    startTime = atoi(values[value].c_str());
+                }
+                break;
             case 4:
                 if (useTime) {
-				    stopTime = atoi(values[value].c_str());
-				}
-				break;
-    		case 5:
+                    stopTime = atoi(values[value].c_str());
+                }
+                break;
+            case 5:
                 useChannel = atoi(values[value].c_str());
                 break;
             case 6:
@@ -242,39 +242,44 @@ bool cTVGuideSearchTimer::Parse(bool readTemplate) {
                     channelMin = NULL;
                     channelMax = NULL;
                 } else if (useChannel == 1) {
-                    char *channelMinbuffer = NULL;
-                    char *channelMaxbuffer = NULL;
-                    int channels = sscanf(values[value].c_str(), "%a[^|]|%a[^|]", &channelMinbuffer, &channelMaxbuffer);
+                    int minNum = 0, maxNum = 0;
+                    int fields = sscanf(values[value].c_str(), "%d-%d", &minNum, &maxNum);
+                    if (fields == 0) { // stored with ID
+                        char *channelMinbuffer = NULL;
+                        char *channelMaxbuffer = NULL;
+                        int channels = sscanf(values[value].c_str(), "%m[^|]|%m[^|]", &channelMinbuffer, &channelMaxbuffer);
 #if VDRVERSNUM >= 20301
-                    LOCK_CHANNELS_READ;
-                    channelMin = Channels->GetByChannelID(tChannelID::FromString(channelMinbuffer), true, true);
+                        LOCK_CHANNELS_READ;
+                        channelMin = Channels->GetByChannelID(tChannelID::FromString(channelMinbuffer), true, true);
 #else
-                    channelMin = Channels.GetByChannelID(tChannelID::FromString(channelMinbuffer), true, true);
+                        channelMin = Channels.GetByChannelID(tChannelID::FromString(channelMinbuffer), true, true);
 #endif
-                    if (!channelMin) {
-                    	channelMin = channelMax = NULL;
-                        useChannel = 0;
-                    }
-                    if (channels == 1)
-                        channelMax = channelMin;
-                    else {
-#if VDRVERSNUM >= 20301
-                        channelMax = Channels->GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
-#else
-                        channelMax = Channels.GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
-#endif
-                        if (!channelMax) {
+                        if (!channelMin) {
+                            esyslog("ERROR: channel '%s' not defined", channelMinbuffer);
                             channelMin = channelMax = NULL;
                             useChannel = 0;
                         }
+                        if (channels == 1)
+                            channelMax = channelMin;
+                        else {
+#if VDRVERSNUM >= 20301
+                            channelMax = Channels->GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
+#else
+                            channelMax = Channels.GetByChannelID(tChannelID::FromString(channelMaxbuffer), true, true);
+#endif
+                            if (!channelMax) {
+                                esyslog("ERROR: channel '%s' not defined", channelMaxbuffer);
+                                channelMin = channelMax = NULL;
+                                useChannel = 0;
+                            }
+                        }
+                        free(channelMinbuffer);
+                        free(channelMaxbuffer);
                     }
-                    free(channelMinbuffer);
-                    free(channelMaxbuffer);
-                } else if (useChannel == 2) {
-                	channelGroup = values[value];
-                }
+                } else if (useChannel == 2)
+                    channelGroup = values[value];
                 break;
-           	case 7:
+            case 7:
            		useCase = atoi(values[value].c_str());
                 break;
             case 8:  
