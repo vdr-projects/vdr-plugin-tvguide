@@ -489,11 +489,7 @@ public:
 class cRecMenuItemChannelChooser : public cRecMenuItem {
 private:
     cString text;
-#if VDRVERSNUM >= 20301
     const cChannel *channel;
-#else
-    cChannel *channel;
-#endif
     int channelNumber;
     int *callback;
     bool initialChannelSet;
@@ -502,11 +498,7 @@ private:
     void DrawValue(void);
 public:
     cRecMenuItemChannelChooser (cString text,
-#if VDRVERSNUM >= 20301
                                 const cChannel *initialChannel,
-#else
-                                cChannel *initialChannel,
-#endif
                                 bool active = false,
                                 int *callback = NULL,
                                 eRecMenuState action = rmsNotConsumed);

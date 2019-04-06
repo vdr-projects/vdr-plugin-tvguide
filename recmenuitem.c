@@ -1919,11 +1919,7 @@ eRecMenuState cRecMenuItemEvent::ProcessKey(eKeys Key) {
 
 // --- cRecMenuItemChannelChooser -------------------------------------------------------
 cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
-#if VDRVERSNUM >= 20301
                                                        const cChannel *initialChannel,
-#else
-                                                       cChannel *initialChannel,
-#endif
                                                        bool active,
                                                        int *callback,
                                                        eRecMenuState action) {
@@ -2013,8 +2009,8 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             LOCK_CHANNELS_READ;
             const cChannel *firstChannel = Channels->First();
 #else
-            cChannel *prev = channel;
-            cChannel *firstChannel = Channels.First();
+            const cChannel *prev = channel;
+            const cChannel *firstChannel = Channels.First();
 #endif
             if(firstChannel->GroupSep())
 #if VDRVERSNUM >= 20301
@@ -2068,7 +2064,7 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
                 const cChannel *next = channel;
                 while (next = Channels->Next(next)) {
 #else
-                cChannel *next = channel;
+                const cChannel *next = channel;
                 while (next = Channels.Next(next)) {
 #endif
                     if(!next->GroupSep()) {
@@ -2096,7 +2092,7 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
             LOCK_CHANNELS_READ;
             const cChannel *chanNew = Channels->GetByNumber(channelNumber);
 #else
-            cChannel *chanNew = Channels.GetByNumber(channelNumber);
+            const cChannel *chanNew = Channels.GetByNumber(channelNumber);
 #endif
             if (chanNew) {
                 channel = chanNew;
@@ -2291,7 +2287,7 @@ void cRecMenuItemRecording::Draw(void) {
     LOCK_CHANNELS_READ;
     const cChannel *channel = Channels->GetByChannelID(recInfo->ChannelID());
 #else
-    cChannel *channel = Channels.GetByChannelID(recInfo->ChannelID());
+    const cChannel *channel = Channels.GetByChannelID(recInfo->ChannelID());
 #endif
     cString channelName = tr("unknown channel");
     if (channel)
