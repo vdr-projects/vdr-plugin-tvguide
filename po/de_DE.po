@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-05 13:01+0200\n"
+"POT-Creation-Date: 2019-04-06 16:05+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -842,6 +842,9 @@ msgstr "Kanalgruppen Cache"
 
 msgid "Recording Menus Icon Cache"
 msgstr "Recording Menüs Icon Cache"
+
+msgid "A fancy 2d EPG Viewer"
+msgstr "Eine schicke Programm Vorschau"
 
 msgid "No Cast available"
 msgstr "Keine Besetzung vorhanden"
