@@ -155,7 +155,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("limitLogoCache", tvguideConfig.limitLogoCache);
 }
 
-cMenuSetupSubMenu::cMenuSetupSubMenu(const char* Title, cTvguideConfig* data) : cOsdMenu(Title, 30) {
+cMenuSetupSubMenu::cMenuSetupSubMenu(const char* Title, cTvguideConfig* data) : cOsdMenu(Title, 40) {
     tmpTvguideConfig = data;
     indent = "    ";
 }
@@ -397,32 +397,33 @@ void cMenuSetupFavorites::Set(void) {
     if (pRemoteTimers)
         Add(new cMenuEditBoolItem(tr("Use Remotetimers"), &tmpTvguideConfig->useRemoteTimers));
 
-    Add(new cMenuEditBoolItem(tr("Use \"What's on now\" in favorites"), &tmpTvguideConfig->favWhatsOnNow));
-    Add(new cMenuEditBoolItem(tr("Use \"What's on next\" in favorites"), &tmpTvguideConfig->favWhatsOnNext));
-    Add(new cMenuEditBoolItem(tr("Use user defined time 1 in favorites"), &tmpTvguideConfig->favUseTime1));
-    if (tmpTvguideConfig->favUseTime1) {
-        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description1, sizeof(description1), trVDR(FileNameChars)));
-        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime1));
-    }
-    Add(new cMenuEditBoolItem(tr("Use user defined time 2 in favorites"), &tmpTvguideConfig->favUseTime2));
-    if (tmpTvguideConfig->favUseTime2) {
-        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description2, sizeof(description2), trVDR(FileNameChars)));
-        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime2));
-    }
-    Add(new cMenuEditBoolItem(tr("Use user defined time 3 in favorites"), &tmpTvguideConfig->favUseTime3));
-    if (tmpTvguideConfig->favUseTime3) {
-        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description3, sizeof(description3), trVDR(FileNameChars)));
-        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime3));
-    }
-    Add(new cMenuEditBoolItem(tr("Use user defined time 4 in favorites"), &tmpTvguideConfig->favUseTime4));
-    if (tmpTvguideConfig->favUseTime4) {
-        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description4, sizeof(description4), trVDR(FileNameChars)));
-        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime4));
-    }
     Add(new cMenuEditBoolItem(tr("Limit channels in favorites"), &tmpTvguideConfig->favLimitChannels));
     if (tmpTvguideConfig->favLimitChannels) {
         Add(new cMenuEditChanItem(tr("Start Channel"), &tmpTvguideConfig->favStartChannel));
         Add(new cMenuEditChanItem(tr("Stop Channel"), &tmpTvguideConfig->favStopChannel));
+    }
+    Add(new cMenuEditBoolItem(tr("Use \"What's on now\" in favorites"), &tmpTvguideConfig->favWhatsOnNow));
+    Add(new cMenuEditBoolItem(tr("Use \"What's on next\" in favorites"), &tmpTvguideConfig->favWhatsOnNext));
+    Add(new cOsdItem(tr("User defined times in favorites:"), osUnknown, false));
+    Add(new cMenuEditBoolItem(tr("Use user defined time 1"), &tmpTvguideConfig->favUseTime1));
+    if (tmpTvguideConfig->favUseTime1) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description1, sizeof(description1), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime1));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 2"), &tmpTvguideConfig->favUseTime2));
+    if (tmpTvguideConfig->favUseTime2) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description2, sizeof(description2), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime2));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 3"), &tmpTvguideConfig->favUseTime3));
+    if (tmpTvguideConfig->favUseTime3) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description3, sizeof(description3), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime3));
+    }
+    Add(new cMenuEditBoolItem(tr("Use user defined time 4"), &tmpTvguideConfig->favUseTime4));
+    if (tmpTvguideConfig->favUseTime4) {
+        Add(new cMenuEditStrItem(cString::sprintf("%s%s", *indent, tr("Description")), description4, sizeof(description4), trVDR(FileNameChars)));
+        Add(new cMenuEditTimeItem(cString::sprintf("%s%s", *indent, tr("Time")), &tmpTvguideConfig->favTime4));
     }
     Add(new cOsdItem(tr("Switchtimer:"), osUnknown, false));
     Add(new cMenuEditStraItem(tr("Switch Mode"), &tmpTvguideConfig->switchMode, 3,  switchModeItems));
@@ -434,31 +435,41 @@ void cMenuSetupFavorites::Set(void) {
 }
 
 eOSState cMenuSetupFavorites::ProcessKey(eKeys Key) {
+
     int tmpFavUseTime1 = tmpTvguideConfig->favUseTime1;
     int tmpFavUseTime2 = tmpTvguideConfig->favUseTime2;
     int tmpFavUseTime3 = tmpTvguideConfig->favUseTime3;
     int tmpFavUseTime4 = tmpTvguideConfig->favUseTime4;
     int tmpFavLimitChannels = tmpTvguideConfig->favLimitChannels;
     int tmpFolderMode = tmpTvguideConfig->instRecFolderMode;
+
     eOSState state = cOsdMenu::ProcessKey(Key);
-    if (Key == kOk) {
-        tmpTvguideConfig->descUser1 = description1;
-        tmpTvguideConfig->descUser2 = description2;
-        tmpTvguideConfig->descUser3 = description3;
-        tmpTvguideConfig->descUser4 = description4;
-        tmpTvguideConfig->instRecFixedFolder = fixedFolder;
-    } else if ((Key == kLeft)||(Key == kRight)) {
-        if ((tmpFavUseTime1 != tmpTvguideConfig->favUseTime1) ||
-            (tmpFavUseTime2 != tmpTvguideConfig->favUseTime2) ||
-            (tmpFavUseTime3 != tmpTvguideConfig->favUseTime3) ||
-            (tmpFavUseTime4 != tmpTvguideConfig->favUseTime4) ||
-            (tmpFavLimitChannels != tmpTvguideConfig->favLimitChannels) ||
-            (tmpFolderMode != tmpTvguideConfig->instRecFolderMode) )
-            Set();
+
+    if ((tmpFavUseTime1 != tmpTvguideConfig->favUseTime1) ||
+        (tmpFavUseTime2 != tmpTvguideConfig->favUseTime2) ||
+        (tmpFavUseTime3 != tmpTvguideConfig->favUseTime3) ||
+        (tmpFavUseTime4 != tmpTvguideConfig->favUseTime4) ||
+        (tmpFavLimitChannels != tmpTvguideConfig->favLimitChannels) ||
+        (tmpFolderMode != tmpTvguideConfig->instRecFolderMode) ) {
+        Set();
+        Display();
     }
+
+    if (state == osUnknown) {
+        switch (Key) {
+        case kOk: {
+            tmpTvguideConfig->descUser1 = cString::sprintf("%s", description1);
+            tmpTvguideConfig->descUser2 = cString::sprintf("%s", description2);
+            tmpTvguideConfig->descUser3 = cString::sprintf("%s", description3);
+            tmpTvguideConfig->descUser4 = cString::sprintf("%s", description4);
+            return osBack; }
+        default:
+            break;
+        }
+    }
+
     return state;
 }
-
 
 //-----Image Caching-------------------------------------------------------------------------------------------------------------
 cMenuSetupImageCache::cMenuSetupImageCache(cTvguideConfig* data)  : cMenuSetupSubMenu(tr("Image Loading and Caching"), data) {

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-06 16:05+0200\n"
+"POT-Creation-Date: 2019-04-07 14:23+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -780,14 +780,20 @@ msgstr "Verzeichnis für Sofortaufnahmen"
 msgid "Use Remotetimers"
 msgstr "RemoteTimers benutzen"
 
+msgid "Limit channels in favorites"
+msgstr "Kanäle in Favoriten beschränken"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr "\"Was läuft jetzt\" in Favoriten benutzen"
 
 msgid "Use \"What's on next\" in favorites"
 msgstr "\"Was läuft als nächstes\" in Favoriten benutzen"
 
-msgid "Use user defined time 1 in favorites"
-msgstr "Benutzerdef. Zeit 1 in Favoriten benutzen"
+msgid "User defined times in favorites:"
+msgstr "Nutzer definierte Zeiten in Favoriten:"
+
+msgid "Use user defined time 1"
+msgstr "Verw. benutzerdef. Zeit 1"
 
 msgid "Description"
 msgstr "Beschreibung"
@@ -795,17 +801,14 @@ msgstr "Beschreibung"
 msgid "Time"
 msgstr "Zeit"
 
-msgid "Use user defined time 2 in favorites"
-msgstr "Benutzerdef. Zeit 2 in Favoriten benutzen"
+msgid "Use user defined time 2"
+msgstr "Verw. benutzerdef. Zeit 2"
 
-msgid "Use user defined time 3 in favorites"
-msgstr "Benutzerdef. Zeit 3 in Favoriten benutzen"
+msgid "Use user defined time 3"
+msgstr "Verw. benutzerdef. Zeit 3"
 
-msgid "Use user defined time 4 in favorites"
-msgstr "Benutzerdef. Zeit 4 in Favoriten benutzen"
-
-msgid "Limit channels in favorites"
-msgstr "Kanäle in Favoriten beschränken"
+msgid "Use user defined time 4"
+msgstr "Verw. benutzerdef. Zeit 4"
 
 msgid "Switchtimer:"
 msgstr "Umschalttimer:"

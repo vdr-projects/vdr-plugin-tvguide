@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-05 13:01+0200\n"
+"POT-Creation-Date: 2019-04-07 14:23+0200\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -780,13 +780,19 @@ msgstr ""
 msgid "Use Remotetimers"
 msgstr "RemoteTimers benutzen"
 
+msgid "Limit channels in favorites"
+msgstr ""
+
 msgid "Use \"What's on now\" in favorites"
 msgstr ""
 
 msgid "Use \"What's on next\" in favorites"
 msgstr ""
 
-msgid "Use user defined time 1 in favorites"
+msgid "User defined times in favorites:"
+msgstr ""
+
+msgid "Use user defined time 1"
 msgstr ""
 
 msgid "Description"
@@ -795,16 +801,13 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-msgid "Use user defined time 2 in favorites"
+msgid "Use user defined time 2"
 msgstr ""
 
-msgid "Use user defined time 3 in favorites"
+msgid "Use user defined time 3"
 msgstr ""
 
-msgid "Use user defined time 4 in favorites"
-msgstr ""
-
-msgid "Limit channels in favorites"
+msgid "Use user defined time 4"
 msgstr ""
 
 msgid "Switchtimer:"
@@ -841,6 +844,9 @@ msgid "Channel Groups Cache"
 msgstr ""
 
 msgid "Recording Menus Icon Cache"
+msgstr ""
+
+msgid "A fancy 2d EPG Viewer"
 msgstr ""
 
 msgid "No Cast available"
