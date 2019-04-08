@@ -88,13 +88,12 @@ void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     tw.Set(*headerText, fontManager.FontChannelHeader, geoManager.colWidth - 8);
     int lines = tw.Lines();
     int lineHeight = fontManager.FontChannelHeader->Height();
-    int yStart = (geoManager.channelHeaderHeight - lines*lineHeight)/2 + 8;
+    int yStart = (geoManager.channelHeaderHeight - lines * lineHeight) / 2 + 8;
     bool logoFound = false;
     if (!tvguideConfig.hideChannelLogos) {
         cImage *logo = imgCache.GetLogo(channel);
         if (logo) {
-                const int logoheight = logo->Height();
-                pixmapLogo->DrawImage(cPoint((Width() - logoWidth) / 2, (geoManager.channelHeaderHeight - lineHeight - logoheight) / 2), *logo);
+                pixmapLogo->DrawImage(cPoint((Width() - logoWidth) / 2, 6), *logo);
                 logoFound = true;
         }
     }
@@ -108,12 +107,12 @@ void cHeaderGrid::drawChannelVertical(const cChannel *channel) {
     if (!drawText)
         return;
     tColor colorTextBack = (tvguideConfig.style == eStyleFlat)?color:clrTransparent;
-    for (int i=0; i<lines; i++) {
+    for (int i = 0; i < lines; i++) {
         int textWidth = fontManager.FontChannelHeader->Width(tw.GetLine(i));
         int xText = (geoManager.colWidth - textWidth) / 2;
         if (xText < 0) 
             xText = 0;
-        pixmap->DrawText(cPoint(xText, yStart + i*lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), colorTextBack, fontManager.FontChannelHeader);
+        pixmap->DrawText(cPoint(xText, yStart + i * lineHeight), tw.GetLine(i), theme.Color(clrFontHeader), colorTextBack, fontManager.FontChannelHeader);
     }
 }
 

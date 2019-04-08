@@ -29,8 +29,6 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
     channelHeaderHeight = tvguideConfig.channelHeaderHeightPercent * osdHeight / 100;
     timeLineWidth = tvguideConfig.timeLineWidthPercent * osdWidth / 100;
     timeLineHeight = tvguideConfig.timeLineHeightPercent * osdHeight / 100;
-    clockWidth = tvFrameWidth / 3;
-    clockHeight = timeLineHeight;
     footerHeight = tvguideConfig.footerHeightPercent * osdHeight / 100;
     footerY = osdHeight - footerHeight;
 
@@ -43,9 +41,11 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
         logoWidth = channelLogoWidth/2 - 15;
         logoHeight = logoWidth * tvguideConfig.logoHeightRatio / tvguideConfig.logoWidthRatio;
         timeLineGridWidth = timeLineWidth;
-        timeLineGridHeight = minutePixel*30;
+        timeLineGridHeight = minutePixel * 30;
         dateVieverWidth = timeLineWidth;
-        dateVieverHeight = channelHeaderHeight + channelGroupsHeight;
+        dateVieverHeight = (channelHeaderHeight + channelGroupsHeight) * 2 / 3;
+        clockWidth = dateVieverWidth;
+        clockHeight = (channelHeaderHeight + channelGroupsHeight) - dateVieverHeight;
     } else if (tvguideConfig.displayMode == eHorizontal) {
         colWidth = 0;
         rowHeight = (osdHeight - statusHeaderHeight - timeLineHeight - footerHeight) / tvguideConfig.channelRows;
@@ -54,10 +54,12 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
         channelLogoHeight = rowHeight;
         logoWidth = channelLogoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
         logoHeight = channelLogoHeight;
-        timeLineGridWidth = geoManager.minutePixel*30;
+        timeLineGridWidth = geoManager.minutePixel * 30;
         timeLineGridHeight = geoManager.timeLineHeight;
-        dateVieverWidth = channelHeaderWidth + channelGroupsWidth;
+        dateVieverWidth = (channelHeaderWidth + channelGroupsWidth) * 3 / 5;
         dateVieverHeight = timeLineHeight;
+        clockWidth = (channelHeaderWidth + channelGroupsWidth) - dateVieverWidth;
+        clockHeight = timeLineHeight;
     }
     buttonBorder = footerHeight / 6;
     buttonWidth = osdWidth / 4 - 2 * buttonBorder;

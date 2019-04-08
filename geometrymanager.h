@@ -4,17 +4,17 @@
 class cGeometryManager {
 private:
 public:
-	cGeometryManager(void);
-	~cGeometryManager();
-	bool SetGeometry(int osdWidth, int osdHeight, bool force = false);
+    cGeometryManager(void);
+    ~cGeometryManager();
+    bool SetGeometry(int osdWidth, int osdHeight, bool force = false);
     //Common
-	int osdWidth;
-	int osdHeight;
-	int statusHeaderHeight;
+    int osdWidth;
+    int osdHeight;
+    int statusHeaderHeight;
     int tvFrameWidth;
     int headerContentWidth;
     //ChannelGroups
-	int	channelGroupsWidth;
+    int channelGroupsWidth;
     int channelGroupsHeight;
     //ContentHeader
     int channelHeaderWidth;

@@ -5,7 +5,7 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
     this->myTime = myTime;
     if (tvguideConfig.displayMode == eVertical) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(0, 
-                                                                         geoManager.statusHeaderHeight, 
+                                                                         geoManager.statusHeaderHeight + geoManager.clockHeight, 
                                                                          geoManager.dateVieverWidth, 
                                                                          geoManager.dateVieverHeight)));
         timeline = osdManager.requestPixmap(2, cRect(0, 
@@ -23,7 +23,7 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
     } else if (tvguideConfig.displayMode == eHorizontal) {
         dateViewer = new cStyledPixmap(osdManager.requestPixmap(1, cRect(geoManager.clockWidth, 
                                                                          geoManager.statusHeaderHeight, 
-                                                                         geoManager.dateVieverWidth - geoManager.clockWidth,
+                                                                         geoManager.dateVieverWidth,
                                                                          geoManager.dateVieverHeight)));
         timeline = osdManager.requestPixmap(2, cRect(geoManager.channelHeaderWidth + geoManager.channelGroupsWidth, 
                                                      geoManager.statusHeaderHeight, 
@@ -42,13 +42,8 @@ cTimeLine::cTimeLine(cMyTime *myTime) {
     int clockY;
     int clockX;
     if (tvguideConfig.displayMode == eVertical) {
-       clockY = 10;
-       if (tvguideConfig.scaleVideo) {
-          clockX = geoManager.osdWidth - geoManager.tvFrameWidth - geoManager.clockWidth - 4;
-          }
-       else {
-          clockX = geoManager.osdWidth - geoManager.clockWidth - 10;
-          }
+       clockY = geoManager.statusHeaderHeight;
+       clockX = 0;
        }
     else {
        clockY = geoManager.statusHeaderHeight;
@@ -83,18 +78,20 @@ void cTimeLine::drawDateViewer() {
             dateViewer->Fill(clrTransparent);
     }
     tColor colorFont = theme.Color(clrButtonYellow);
-    tColor colorFontBack = (tvguideConfig.style == eStyleFlat)?theme.Color(clrHeader):clrTransparent;
+    tColor colorFontBack = (tvguideConfig.style == eStyleFlat) ? theme.Color(clrHeader) : clrTransparent;
 
     if (tvguideConfig.displayMode == eVertical) {
-        int textHeight = fontManager.FontTimeLineWeekday->Height();
+        int textHeightWeekday = fontManager.FontTimeLineWeekday->Height();
+        int textHeightDate = fontManager.FontTimeLineDate->Height();
         int weekdayWidth = fontManager.FontTimeLineWeekday->Width(*weekDay);
         int dateWidth = fontManager.FontTimeLineDate->Width(*date);
-        dateViewer->DrawText(cPoint((geoManager.timeLineWidth-weekdayWidth)/2, (geoManager.channelHeaderHeight + geoManager.channelGroupsHeight -2*textHeight)/2), *weekDay, colorFont, colorFontBack, fontManager.FontTimeLineWeekday);
-        dateViewer->DrawText(cPoint((geoManager.timeLineWidth-dateWidth)/2, (geoManager.channelHeaderHeight + geoManager.channelGroupsHeight -2*textHeight)/2 + textHeight + 5), *date, colorFont, colorFontBack, fontManager.FontTimeLineDate);
+        int y = ((geoManager.dateVieverHeight - textHeightWeekday - textHeightDate) / 2);
+        dateViewer->DrawText(cPoint((geoManager.timeLineWidth - weekdayWidth) / 2, y), *weekDay, colorFont, colorFontBack, fontManager.FontTimeLineWeekday);
+        dateViewer->DrawText(cPoint((geoManager.timeLineWidth - dateWidth) / 2, y + textHeightWeekday), *date, colorFont, colorFontBack, fontManager.FontTimeLineDate);
     } else if (tvguideConfig.displayMode == eHorizontal) {
         cString strDate = cString::sprintf("%s %s", *weekDay, *date);
         int x = ((dateViewer->Width() - fontManager.FontTimeLineDateHorizontal->Width(*strDate)) / 2);
-        int y = (dateViewer->Height() - fontManager.FontTimeLineDateHorizontal->Height())/2;
+        int y = ((dateViewer->Height() - fontManager.FontTimeLineDateHorizontal->Height()) / 2);
         dateViewer->DrawText(cPoint(x, y), *strDate, colorFont, colorFontBack, fontManager.FontTimeLineDateHorizontal);
     }
 }
