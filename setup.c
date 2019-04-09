@@ -236,11 +236,16 @@ void cMenuSetupGeneral::Set(void) {
 }
 
 eOSState cMenuSetupGeneral::ProcessKey(eKeys Key) {
+    bool olduseNopacityTheme = tmpTvguideConfig->useNopacityTheme;
+    bool olddisplayRerunsDetailEPGView = tmpTvguideConfig->displayRerunsDetailEPGView;
     eOSState state = cOsdMenu::ProcessKey(Key);
     if (Key == kOk) {
         state = osBack;
     } else if (Key != kNone) {
-        Set();
+        if (tmpTvguideConfig->useNopacityTheme != olduseNopacityTheme ||
+	    tmpTvguideConfig->displayRerunsDetailEPGView != olddisplayRerunsDetailEPGView) {
+            Set();
+        }
     }
     return state;
 }
@@ -317,11 +322,22 @@ void cMenuSetupScreenLayout::Set(void) {
 }
 
 eOSState cMenuSetupScreenLayout::ProcessKey(eKeys Key) {
+    int olddisplayMode = tmpTvguideConfig->displayMode;
+    bool olddisplayStatusHeader = tmpTvguideConfig->displayStatusHeader;
+    bool olddisplayChannelGroups = tmpTvguideConfig->displayChannelGroups;
+    int oldhideChannelLogos = tmpTvguideConfig->hideChannelLogos;
+    int oldhideEpgImages = tmpTvguideConfig->hideEpgImages;
     eOSState state = cOsdMenu::ProcessKey(Key);
     if (Key == kOk) {
         state = osBack;
     } else if (Key != kNone) {
-        Set();
+        if (tmpTvguideConfig->displayMode != olddisplayMode ||
+            tmpTvguideConfig->displayStatusHeader != olddisplayStatusHeader ||
+            tmpTvguideConfig->displayChannelGroups != olddisplayChannelGroups ||
+            tmpTvguideConfig->hideChannelLogos != oldhideChannelLogos ||
+            tmpTvguideConfig->hideEpgImages != oldhideEpgImages) {
+            Set();
+        }
     }
     return state;
 }
