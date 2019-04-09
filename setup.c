@@ -77,6 +77,7 @@ void cTvguideSetup::Store(void) {
     SetupStore("channelCols", tvguideConfig.channelCols);
     SetupStore("channelRows", tvguideConfig.channelRows);
     SetupStore("displayTime", tvguideConfig.displayTime);
+    SetupStore("displayHorizontalTime", tvguideConfig.displayHorizontalTime);
     SetupStore("bigStepHours", tvguideConfig.bigStepHours);
     SetupStore("hugeStepHours", tvguideConfig.hugeStepHours);
     SetupStore("channelJumpMode", tvguideConfig.channelJumpMode);
@@ -209,7 +210,11 @@ void cMenuSetupGeneral::Set(void) {
         if (themes.NumThemes())
             Add(new cMenuEditStraItem(cString::sprintf("%s%s", *indent, tr("Theme")), &tmpTvguideConfig->themeIndex, themes.NumThemes(), themes.Descriptions()));
     }
-    Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 60, 320));
+    if (tmpTvguideConfig->displayMode == eVertical) {
+        Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayTime, 60, 320));
+    } else if (tmpTvguideConfig->displayMode == eHorizontal) {
+        Add(new cMenuEditIntItem(tr("Time to display in minutes"), &tmpTvguideConfig->displayHorizontalTime, 60, 320));
+    }
     Add(new cMenuEditBoolItem(tr("Rounded Corners"), &tmpTvguideConfig->roundedCorners));
     
     Add(new cMenuEditStraItem(tr("Channel Jump Mode (Keys Green / Yellow)"), &tmpTvguideConfig->channelJumpMode, 2,  jumpMode));

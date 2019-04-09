@@ -49,7 +49,7 @@ bool cGeometryManager::SetGeometry(int osdWidth, int osdHeight, bool force) {
     } else if (tvguideConfig.displayMode == eHorizontal) {
         colWidth = 0;
         rowHeight = (osdHeight - statusHeaderHeight - timeLineHeight - footerHeight) / tvguideConfig.channelRows;
-        minutePixel = (osdWidth - channelHeaderWidth - channelGroupsWidth) / tvguideConfig.displayTime;
+        minutePixel = (osdWidth - channelHeaderWidth - channelGroupsWidth) / tvguideConfig.displayHorizontalTime;
         channelLogoWidth = channelHeaderWidth;
         channelLogoHeight = rowHeight;
         logoWidth = channelLogoHeight * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;

@@ -10,6 +10,7 @@ cTvguideConfig::cTvguideConfig() {
     channelCols = 5;
     channelRows = 10;
     displayTime = 160;
+    displayHorizontalTime = 160;
     displayStatusHeader = 1;
     displayChannelGroups = 1;
     displayTimeBase = 1;
@@ -257,6 +258,7 @@ bool cTvguideConfig::SetupParse(const char *Name, const char *Value) {
     else if (strcmp(Name, "channelCols") == 0)              channelCols = atoi(Value);
     else if (strcmp(Name, "channelRows") == 0)              channelRows = atoi(Value);
     else if (strcmp(Name, "displayTime") == 0)              displayTime = atoi(Value);
+    else if (strcmp(Name, "displayHorizontalTime") == 0)    displayHorizontalTime = atoi(Value);
     else if (strcmp(Name, "hideChannelLogos") == 0)         hideChannelLogos = atoi(Value);
     else if (strcmp(Name, "logoExtension") == 0)            logoExtension = atoi(Value);
     else if (strcmp(Name, "logoWidthRatio") == 0)           logoWidthRatio = atoi(Value);

@@ -58,6 +58,7 @@ class cTvguideConfig {
         int channelRows;
         int numGrids;
         int displayTime;
+        int displayHorizontalTime;
         int displayStatusHeader;
         int displayChannelGroups;
         int displayTimeBase;
