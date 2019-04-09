@@ -493,7 +493,8 @@ cRecMenuItemSelect::cRecMenuItemSelect(cString text,
                                        int initialVal,
                                        bool active,
                                        int *callback,
-                                       eRecMenuState action) {
+                                       eRecMenuState action,
+                                       bool refresh) {
     selectable = true;
     this->text = text;
     strings = Strings;
@@ -504,6 +505,7 @@ cRecMenuItemSelect::cRecMenuItemSelect(cString text,
         this->currentVal = initialVal;
     this->active = active;
     this->callback = callback;
+    this->refresh = refresh;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
@@ -571,14 +573,20 @@ eRecMenuState cRecMenuItemSelect::ProcessKey(eKeys Key) {
             if (callback)
                 *callback = currentVal;
             DrawValue();
-            return rmsConsumed;
+            if (refresh)
+                return rmsRefresh;
+            else
+                return rmsConsumed;
             break;
         case kRight:
             currentVal = (currentVal+1)%numValues;
             if (callback)
                 *callback = currentVal;
             DrawValue();
-            return rmsConsumed;
+            if (refresh)
+                return rmsRefresh;
+            else
+                return rmsConsumed;
             break;
         case kOk:
             return action;

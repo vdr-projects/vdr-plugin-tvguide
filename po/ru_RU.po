@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-07 14:23+0200\n"
+"POT-Creation-Date: 2019-04-12 14:35+0200\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -363,6 +363,9 @@ msgstr "С канала"
 msgid "Stop Channel"
 msgstr "По канал"
 
+msgid "Channel Group"
+msgstr ""
+
 msgid "Start after"
 msgstr "С"
 
@@ -521,6 +524,12 @@ msgstr "точное совпадение"
 
 msgid "regular expression"
 msgstr "регулярные выражения"
+
+msgid "Interval"
+msgstr ""
+
+msgid "only FTA"
+msgstr ""
 
 msgid "General Settings"
 msgstr "Основные настройки"

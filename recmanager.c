@@ -495,6 +495,22 @@ void cRecManager::GetSearchTimers(std::vector<cTVGuideSearchTimer> *searchTimer)
     std::sort(searchTimer->begin(), searchTimer->end());
 }
 
+void cRecManager::GetChannelGroups(std::vector<std::string> *channelGroups) {
+    if (!epgSearchAvailable) {
+            return;
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        std::list<std::string> channelGroupList;
+        channelGroupList = epgSearch->handler->ChanGrpList();
+
+        for (std::list<std::string>::iterator it = channelGroupList.begin(); it != channelGroupList.end(); it++) {
+            channelGroups->push_back(*it);
+        }
+    }
+    std::sort(channelGroups->begin(), channelGroups->end());
+}
+
 int cRecManager::CreateSearchTimer(std::string epgSearchString) {
     int timerID = -1;
     if (!epgSearchAvailable)

@@ -82,9 +82,10 @@ public:
     bool UseSubtitle(void) { return useSubtitle; };
     bool UseDescription(void) { return useDescription; };
     int SearchMode(void) { return mode; };
-    bool UseChannel(void) { return useChannel; };
+    int UseChannel(void) { return useChannel; };
     int StartChannel(void) { return (channelMin)?channelMin->Number():0; };
     int StopChannel(void) { return (channelMax)?channelMax->Number():0; };
+    std::string ChannelGroup(void) { return channelGroup; };
     bool UseTime(void) { return useTime; };
     int StartTime(void) { return startTime; };
     int StopTime(void) { return stopTime; };
@@ -110,9 +111,10 @@ public:
     void SetUseTitle(bool useTitle) { this->useTitle = useTitle; };
     void SetUseSubtitle(bool useSubtitle) { this->useSubtitle = useSubtitle; };
     void SetUseDesription(bool useDescription) { this->useDescription = useDescription; };
-    void SetUseChannel(bool useChannel) { this->useChannel = useChannel; };
+    void SetUseChannel(int useChannel) { this->useChannel = useChannel; };
     void SetStartChannel(int startChannel);
     void SetStopChannel(int stopChannel);
+    void SetChannelGroup(std::string channelGroup) { this->channelGroup = channelGroup; };
     void SetUseTime(bool useTime) { this->useTime = useTime; };
     void SetStartTime(int startTime) { this->startTime = startTime; };
     void SetStopTime(int stopTime) { this->stopTime = stopTime; };
@@ -135,6 +137,7 @@ public:
     int GetNumTimers(void);
     int GetNumRecordings(void);
     void GetSearchModes(std::vector<std::string> *searchModes);
+    void GetUseChannelModes(std::vector<std::string> *useChannelModes);
     void Dump(void);
 };
 

@@ -577,7 +577,6 @@ void cTVGuideSearchTimer::GetSearchModes(std::vector<std::string> *searchModes) 
     searchModes->push_back(tr("regular expression"));
 }
 
-
 void cTVGuideSearchTimer::Dump(void) {
     esyslog("tvguide searchtimer: strTimer: %s", strTimer.c_str());
     esyslog("tvguide searchtimer: ID: %d", ID);
@@ -617,3 +616,10 @@ void cTVGuideSearchTimer::SetStopChannel(int stopChannel)
    channelMax = Channels.GetByNumber(stopChannel);
 #endif
 };
+
+void cTVGuideSearchTimer::GetUseChannelModes(std::vector<std::string> *useChannelModes) {
+    useChannelModes->push_back(tr("No"));
+    useChannelModes->push_back(tr("Interval"));
+    useChannelModes->push_back(tr("Channel Group"));
+    useChannelModes->push_back(tr("only FTA"));
+}

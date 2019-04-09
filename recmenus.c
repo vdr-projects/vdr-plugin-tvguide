@@ -722,10 +722,11 @@ int cRecMenuSearchTimers::GetTotalNumMenuItems(void) {
 }
 
 // --- cRecMenuSearchTimerEdit  ---------------------------------------------------------
-cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions) {
+cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions, std::vector<std::string> channelGroups) {
     deleteMenuItems = false;
     this->advancedOptions = advancedOptions;
     this->searchTimer = searchTimer;
+    this->channelGroups = channelGroups;
     strncpy(searchString, searchTimer.SearchString().c_str(), TEXTINPUTLENGTH);
     timerActive = searchTimer.Active();
     mode = searchTimer.SearchMode();
@@ -735,6 +736,8 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     useChannel = searchTimer.UseChannel();
     startChannel = searchTimer.StartChannel();
     stopChannel = searchTimer.StopChannel();
+    channelGroup = searchTimer.ChannelGroup();
+    channelgroupIndex = -1;
     useTime = searchTimer.UseTime();
     startTime = searchTimer.StartTime();
     stopTime = searchTimer.StopTime();
@@ -780,6 +783,10 @@ cRecMenuSearchTimerEdit::~cRecMenuSearchTimerEdit(void) {
         delete *it;
     }
     useChannelSubMenu.clear();
+    for (std::vector<cRecMenuItem*>::iterator it = useGroupSubMenu.begin(); it != useGroupSubMenu.end(); it++) {
+        delete *it;
+    }
+    useGroupSubMenu.clear();
     for (std::vector<cRecMenuItem*>::iterator it = useTimeSubMenu.begin(); it != useTimeSubMenu.end(); it++) {
         delete *it;
     }
@@ -795,22 +802,45 @@ cRecMenuSearchTimerEdit::~cRecMenuSearchTimerEdit(void) {
     currentMenuItems.clear();
 }
 
+int cRecMenuSearchTimerEdit::SplitChannelGroups(std::vector<std::string> *channelGroups, std::vector<std::string> *channelgroups) {
+    int i = 0;
+    int j = 0;
+    for (std::vector<std::string>::iterator it = channelGroups->begin(); it != channelGroups->end(); it++) {
+        std::string a = *it;
+        splitstring s(a.c_str());
+        std::vector<std::string> value = s.split('|', 0);
+        dsyslog ("%s %s %d %s\n", __FILE__, __func__,  __LINE__, s.c_str());
+        std::vector<std::string>::iterator ito = value.begin();
+        channelgroups->push_back(*ito);
+	std::string b = *ito;
+	if (b.compare(channelGroup) == 0)
+            j = i;
+        i++;
+    }
+    return j;
+}
+
 void cRecMenuSearchTimerEdit::InitMenuItems(void) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
 
     useChannelPos = 6;
     useTimePos = 7;
     useDayOfWeekPos = 8;
     avoidRepeatsPos = 14;
 
-    mainMenuItems.push_back(new cRecMenuItemText(tr("Search String"), searchString, TEXTINPUTLENGTH, false, searchString));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), timerActive, false, false, &timerActive, rmsSearchTimerSave));
     std::vector<std::string> searchModes;
     searchTimer.GetSearchModes(&searchModes);
+    std::vector<std::string> useChannelModes;
+    searchTimer.GetUseChannelModes(&useChannelModes);
+    channelgroupIndex = SplitChannelGroups(&channelGroups, &channelgroups);
+
+    mainMenuItems.push_back(new cRecMenuItemText(tr("Search String"), searchString, TEXTINPUTLENGTH, false, searchString));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), timerActive, false, false, &timerActive, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemSelect(tr("Search Mode"), searchModes, mode, false, &mode, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Title"), useTitle, false, false, &useTitle, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Subtitle"), useSubtitle, false, false, &useSubtitle, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Description"), useDescription, false, false, &useDescription, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Limit Channels"), useChannel, true, false, &useChannel, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Limit Channels"), useChannelModes, useChannel, false, &useChannel, rmsSearchTimerSave, true));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Time"), useTime, true, false, &useTime, rmsSearchTimerSave));
     if (!advancedOptions) {
         mainMenuItems.push_back(new cRecMenuItemButton(tr("Display advanced Options"), rmsSearchTimerEditAdvanced, false));
@@ -842,6 +872,8 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
     useChannelSubMenu.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels.GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
 #endif
 
+    useGroupSubMenu.push_back(new cRecMenuItemSelect(tr("Channel Group"), channelgroups, channelgroupIndex, false, &channelgroupIndex, rmsSearchTimerSave));
+
     useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start after"), startTime, false, &startTime, rmsSearchTimerSave));
     useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start before"), stopTime, false, &stopTime, rmsSearchTimerSave));
 
@@ -856,6 +888,7 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
 
 
 void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     bool reDraw = false;
     if (GetCurrentNumMenuItems() > 0) {
         InitMenu(false);
@@ -867,15 +900,17 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
     
     for (int i = 0; i < numMainMenuItems; i++) {
         currentMenuItems.push_back(mainMenuItems[i]);
-        if ((i == useChannelPos) && useChannel)
+        if ((i == useChannelPos) && (useChannel == 1))
             AddSubMenu(&useChannelSubMenu);
+        else if ((i == useChannelPos) && (useChannel == 2) && (channelgroups.size() > 0))
+            AddSubMenu(&useGroupSubMenu);
         else if ((i == useTimePos) && useTime)
             AddSubMenu(&useTimeSubMenu);
         else if (advancedOptions && (i == useDayOfWeekPos) && useDayOfWeek)
             AddSubMenu(&useDayOfWeekSubMenu);
         else if (advancedOptions && (i == avoidRepeatsPos) && avoidRepeats)
             AddSubMenu(&avoidRepeatSubMenu);
-    }    
+    }
 
     int numMenuItemsAll = currentMenuItems.size();
     int start = GetStartIndex();
@@ -901,17 +936,26 @@ void cRecMenuSearchTimerEdit::AddSubMenu(std::vector<cRecMenuItem*> *subMenu) {
 
 
 cTVGuideSearchTimer cRecMenuSearchTimerEdit::GetSearchTimer(void) {
+    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     searchTimer.SetSearchString(searchString);
     searchTimer.SetActive(timerActive);
     searchTimer.SetSearchMode(mode);
     searchTimer.SetUseTitle(useTitle);
     searchTimer.SetUseSubtitle(useSubtitle);
     searchTimer.SetUseDesription(useDescription);
-    searchTimer.SetUseChannel(useChannel);
-    if (useChannel) {
+    if (useChannel == 1) {
         searchTimer.SetStartChannel(startChannel);
         searchTimer.SetStopChannel(stopChannel);
     }
+    if (useChannel == 2) {
+        if (channelgroups.size() > 0) {
+            std::string & channelGroup = channelgroups[channelgroupIndex];
+            searchTimer.SetChannelGroup(channelGroup);
+        } else {
+            useChannel = 0;
+        }
+    }
+    searchTimer.SetUseChannel(useChannel);
     searchTimer.SetUseTime(useTime);
     if (useTime) {
         searchTimer.SetStartTime(startTime);

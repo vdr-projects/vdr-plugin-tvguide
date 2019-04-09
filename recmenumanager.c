@@ -311,7 +311,9 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 if (epgSearchTemplates.size() > 0) {
                     activeMenu = new cRecMenuSearchTimerTemplates(searchTimer, epgSearchTemplates);
                 } else {
-                    activeMenu = new cRecMenuSearchTimerEdit(searchTimer, false);
+                    std::vector<std::string> channelGroups;
+                    recManager->GetChannelGroups(&channelGroups);
+                    activeMenu = new cRecMenuSearchTimerEdit(searchTimer, false, channelGroups);
                 }
             }
             activeMenu->Display();
@@ -329,12 +331,14 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 searchTimer = menu->GetSearchTimer();
             } else if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
-                advancedOptions = (nextState == rmsSearchTimerEditAdvanced)?true:false;
+                advancedOptions = (nextState == rmsSearchTimerEditAdvanced) ? true : false;
             } else if (cRecMenuSearchTimerTemplates *menu = dynamic_cast<cRecMenuSearchTimerTemplates*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
             } else break;
             delete activeMenu;
-            activeMenu = new cRecMenuSearchTimerEdit(searchTimer, advancedOptions);
+            std::vector<std::string> channelGroups;
+            recManager->GetChannelGroups(&channelGroups);
+            activeMenu = new cRecMenuSearchTimerEdit(searchTimer, advancedOptions, channelGroups);
             activeMenu->Display();
             break; }
         case rmsSearchTimerTest: {

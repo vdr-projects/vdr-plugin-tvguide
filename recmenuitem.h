@@ -247,6 +247,7 @@ private:
     cString text;
     int currentVal;
     int *callback;
+    bool refresh;
     std::vector<std::string> strings;
     int numValues;
     cPixmap *pixmapVal;
@@ -257,7 +258,8 @@ public:
                        int initialVal,
                        bool active = false,
                        int *callback = NULL,
-                       eRecMenuState action = rmsNotConsumed);
+                       eRecMenuState action = rmsNotConsumed,
+                       bool refresh = false);
     virtual ~cRecMenuItemSelect(void);
     void SetPixmaps(void);
     void Hide(void);

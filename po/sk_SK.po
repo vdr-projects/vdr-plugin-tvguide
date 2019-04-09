@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-07 14:23+0200\n"
+"POT-Creation-Date: 2019-04-12 14:35+0200\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -363,6 +363,9 @@ msgstr "Od kanálu"
 msgid "Stop Channel"
 msgstr "Po kanál"
 
+msgid "Channel Group"
+msgstr ""
+
 msgid "Start after"
 msgstr "Zaèiatok po"
 
@@ -521,6 +524,12 @@ msgstr "presná zhoda"
 
 msgid "regular expression"
 msgstr "regulárny výraz"
+
+msgid "Interval"
+msgstr ""
+
+msgid "only FTA"
+msgstr ""
 
 msgid "General Settings"
 msgstr "V¹eobecné nastavenia"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-07 14:23+0200\n"
+"POT-Creation-Date: 2019-04-12 14:35+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -363,6 +363,9 @@ msgstr "Startkanal"
 msgid "Stop Channel"
 msgstr "Stopkanal"
 
+msgid "Channel Group"
+msgstr "Kanalgruppe"
+
 msgid "Start after"
 msgstr "Beginn nach"
 
@@ -521,6 +524,12 @@ msgstr "exakt"
 
 msgid "regular expression"
 msgstr "Regulärer Ausdruck"
+
+msgid "Interval"
+msgstr "Bereich"
+
+msgid "only FTA"
+msgstr "ohne PayTV"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"

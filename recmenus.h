@@ -209,8 +209,10 @@ class cRecMenuSearchTimerEdit: public cRecMenu {
 private:
     bool advancedOptions;
     cTVGuideSearchTimer searchTimer;
+    std::vector<std::string> channelGroups;
     std::vector<cRecMenuItem*> mainMenuItems;
     std::vector<cRecMenuItem*> useChannelSubMenu;
+    std::vector<cRecMenuItem*> useGroupSubMenu;
     std::vector<cRecMenuItem*> useTimeSubMenu;
     std::vector<cRecMenuItem*> useDayOfWeekSubMenu;
     std::vector<cRecMenuItem*> avoidRepeatSubMenu;
@@ -226,9 +228,12 @@ private:
     bool useTitle;
     bool useSubtitle;
     bool useDescription;
-    bool useChannel;
+    int useChannel;
     int startChannel;
     int stopChannel;
+    std::string  channelGroup;
+    std::vector<std::string> channelgroups;
+    int channelgroupIndex;
     bool useTime;
     int startTime;
     int stopTime;
@@ -249,8 +254,9 @@ private:
     bool useInFavorites;
     void InitMenuItems(void);
     void AddSubMenu(std::vector<cRecMenuItem*> *subMenu);
+    int SplitChannelGroups(std::vector<std::string> *channelGroups, std::vector<std::string> *channelgroups);
 public:
-    cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions);
+    cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions, std::vector<std::string> channelGroups);
     void CreateMenuItems(void);
     virtual ~cRecMenuSearchTimerEdit(void);
     cTVGuideSearchTimer GetSearchTimer(void);
