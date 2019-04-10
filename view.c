@@ -16,7 +16,6 @@ cView::cView(void) {
     pixmapBackground = NULL;
     pixmapHeader = NULL;
     pixmapHeaderLogo = NULL;
-    pixmapHeaderIcon = NULL;
     pixmapContent = NULL;
     pixmapTabs = NULL;
     pixmapScrollbar = NULL;
@@ -47,8 +46,6 @@ cView::~cView(void) {
         delete pixmapHeader;
     if (pixmapHeaderLogo)
         osdManager.releasePixmap(pixmapHeaderLogo);   
-    if (pixmapHeaderIcon)
-        osdManager.releasePixmap(pixmapHeaderIcon);
     if (pixmapContent)
         osdManager.releasePixmap(pixmapContent);
     if (pixmapTabs)
@@ -157,10 +154,8 @@ void cView::DrawHeader(void) {
         int height = fontManager.FontDetailHeader->Height() + 10;
         int posX = headerWidth - widthIcon - 25;
         int posY = ySubtitle - 5;
-        if (!pixmapHeaderIcon)
-            pixmapHeaderIcon = osdManager.requestPixmap(7, cRect(posX, posY, widthIcon, height));
-        pixmapHeaderIcon->DrawRectangle(cRect(0, 0, widthIcon, height), iconColor);
-        pixmapHeaderIcon->DrawText(cPoint(5, 5), *recIconText, theme.Color(clrFont), iconColor, fontManager.FontDetailHeader);
+        pixmapHeader->DrawRectangle( cRect(posX, posY, widthIcon, height), iconColor);
+        pixmapHeader->DrawText(cPoint(posX + 5, posY + 5), *recIconText, theme.Color(clrFont), iconColor, fontManager.FontDetailHeader);
     }
 }
 
