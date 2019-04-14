@@ -167,3 +167,17 @@ Version 1.2.5
 - Eliminate a seqfault in "cRecManager::DeleteSearchTimer"
 - Show Inactive timer in DrawHeader
 - Add "switchMode" to setup menu
+
+Version 1.2.6
+
+- Some changes for VDR < 2.3.0
+- Changes for Rec Icon in DrawHeader and Grid
+- Eliminate a compiler warning in searchtimer.c
+- Correct an error in setup page
+- Optical changes in displaymode vertical
+- Different setup parameter for displayTime in horizontal and vertical mode
+- Optimizations in setup menu
+- Add .gitignore
+- Channelgroup in cRecMenuSearchTimerEdit
+  (Create and modify of channelgroups isn't yet possible, should be done in epgsearch)
+- Change channel icon size in cRecMenuSearchTimerEdit
