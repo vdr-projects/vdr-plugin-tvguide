@@ -1988,9 +1988,9 @@ void cRecMenuItemChannelChooser::DrawValue(void) {
         int logoWidth = height * tvguideConfig.logoWidthRatio / tvguideConfig.logoHeightRatio;
         int logoX = textX - logoWidth - 10;
         cImageLoader imgLoader;
-        if (imgLoader.LoadLogo(channel, logoWidth, height)) {
+        if (imgLoader.LoadLogo(channel, logoWidth, height - 10)) {
             cImage logo = imgLoader.GetImage();
-            pixmapChannel->DrawImage(cPoint(logoX, 0), logo);
+            pixmapChannel->DrawImage(cPoint(logoX, 5), logo);
         }
     } else {
         cString textVal = tr("all Channels");
