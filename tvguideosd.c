@@ -238,13 +238,16 @@ void cTvGuideOsd::channelForward() {
     bool colAdded = false;
     if (!colRight) {
         const cChannel *channelRight = activeGrid->column->getChannel();
+        const cChannels *channels;
 #if VDRVERSNUM >= 20301
-	{
+        {
         LOCK_CHANNELS_READ;
-        while (channelRight = Channels->Next(channelRight)) {
+        channels = Channels;
+        }
 #else
-        while (channelRight = Channels.Next(channelRight)) {
+        channels = &Channels;
 #endif
+        while (channelRight = channels->Next(channelRight)) {
             if (!channelRight->GroupSep()) {
                 if (channelGroups->IsInLastGroup(channelRight)) {
                     break;
@@ -258,9 +261,6 @@ void cTvGuideOsd::channelForward() {
                 }
             }
         }
-#if VDRVERSNUM >= 20301
-        } //LOCK_CHANNELS_READ
-#endif
         if (colRight) {
             colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
@@ -297,13 +297,16 @@ void cTvGuideOsd::channelBack() {
     bool colAdded = false;
     if (!colLeft) {
         const cChannel *channelLeft = activeGrid->column->getChannel();
+        const cChannels *channels;
 #if VDRVERSNUM >= 20301
 	{
 	LOCK_CHANNELS_READ;
-	while (channelLeft = Channels->Prev(channelLeft)) {
+	channels = Channels;
+        }
 #else
-        while (channelLeft = Channels.Prev(channelLeft)) {
+        channels = &Channels;
 #endif
+        while (channelLeft = channels->Prev(channelLeft)) {
             if (!channelLeft->GroupSep()) {
                 colLeft = new cChannelColumn(0, channelLeft, myTime);
                 if (colLeft->readGrids()) {
@@ -314,9 +317,6 @@ void cTvGuideOsd::channelBack() {
                 }
             }
         }
-#if VDRVERSNUM >= 20301
-	} //LOCK_CHANNELS_READ
-#endif
         if (colLeft) {
             colAdded = true;
             if (columns.Count() == tvguideConfig.numGrids) {
