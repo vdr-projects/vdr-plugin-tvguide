@@ -1810,13 +1810,13 @@ cRecMenuItemEvent::~cRecMenuItemEvent(void) {
 void cRecMenuItemEvent::SetPixmaps(void) {
     if (!pixmap) {
         pixmap = osdManager.requestPixmap(4, cRect(x, y, width, height));
-        pixmapText = osdManager.requestPixmap(5, cRect(x, y, width, height));
+        pixmapText = osdManager.requestPixmap(5, cRect(x, y, width - height / 2 - 10, height));
         pixmapText->Fill(clrTransparent);
         pixmapIcons = osdManager.requestPixmap(6, cRect(x, y, width, height));
         pixmapIcons->Fill(clrTransparent);
     } else {
         pixmap->SetViewPort(cRect(x, y, width, height));
-        pixmapText->SetViewPort(cRect(x, y, width, height));
+        pixmapText->SetViewPort(cRect(x, y, width - height / 2 - 10, height));
         pixmapIcons->SetViewPort(cRect(x, y, width, height));
     }
 }
@@ -1869,7 +1869,7 @@ int cRecMenuItemEvent::DrawIcons(void) {
     int iconY = (height - iconSize) / 2;
     std::string iconInfo;
     if (active) {
-        iconInfo = (iconActive==0)?"info_active":"info_inactive";
+        iconInfo = (iconActive == 0) ? "info_active" : "info_inactive";
     } else {
         iconInfo = "info_inactive";
     }
@@ -1879,7 +1879,6 @@ int cRecMenuItemEvent::DrawIcons(void) {
         iconsX += iconSize + 5;
     }
 
-    iconY = height - iconSize - 10;
     if (event->HasTimer()) {
         cImage *imgHasTimer = imgCache.GetIcon("activetimer", iconSize, iconSize);
         if (imgHasTimer) {
@@ -2694,18 +2693,19 @@ void cRecMenuItemSearchTimer::SetPixmaps(void) {
 
 void cRecMenuItemSearchTimer::Draw(void) {
     int textX = DrawIcons();
+    bool timerIsActive = timer.IsActive();
     pixmapText->Fill(clrTransparent);
     textX += 20;
-    cString label;
-    if (timer.Active()) {
-        label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
-    } else {
-        label = cString::sprintf("\"%s\" (%s)", timer.SearchString().c_str(), tr("inactive"));
-    }
+    cString label = cString::sprintf("\"%s\"", timer.GetSearchString().c_str());
+    cString inactive = cString::sprintf("(%s)", tr("inactive"));
     int numTimersActive = timer.GetNumTimers();
     int numRecordings = timer.GetNumRecordings();
+
     cString info = cString::sprintf("%s: %d, %s: %d", tr("active timers"), numTimersActive, tr("recordings done"), numRecordings);
-    pixmapText->DrawText(cPoint(textX, 5 + (height/2 - font->Height())/2), *label, colorText, clrTransparent, font);
+    pixmapText->DrawText(cPoint(textX, 5 + (height/2 - font->Height()) / 2), *label, colorText, clrTransparent, font);
+    if (!timerIsActive) {
+        pixmapText->DrawText(cPoint(textX, 5 + (height - font->Height()) / 2), *inactive, colorText, clrTransparent, font, width - textX - 20, 0, taRight);
+    }
     pixmapText->DrawText(cPoint(textX, height/2 + (height/2 - fontSmall->Height())/2), *info, colorText, clrTransparent, fontSmall);
 }
 
