@@ -2693,10 +2693,10 @@ void cRecMenuItemSearchTimer::SetPixmaps(void) {
 
 void cRecMenuItemSearchTimer::Draw(void) {
     int textX = DrawIcons();
-    bool timerIsActive = timer.IsActive();
+    bool timerIsActive = timer.Active();
     pixmapText->Fill(clrTransparent);
     textX += 20;
-    cString label = cString::sprintf("\"%s\"", timer.GetSearchString().c_str());
+    cString label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
     cString inactive = cString::sprintf("(%s)", tr("inactive"));
     int numTimersActive = timer.GetNumTimers();
     int numRecordings = timer.GetNumRecordings();
