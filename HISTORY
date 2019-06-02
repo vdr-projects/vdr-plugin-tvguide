@@ -181,3 +181,9 @@ Version 1.2.6
 - Channelgroup in cRecMenuSearchTimerEdit
   (Create and modify of channelgroups isn't yet possible, should be done in epgsearch)
 - Change channel icon size in cRecMenuSearchTimerEdit
+
+Version 1.2.7
+
+- Eliminate a "invalid lock sequence report" in tvguideosd.c
+- Optical changes in favorites and searchtimer menu
+- Changes in README

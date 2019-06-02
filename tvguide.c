@@ -26,7 +26,7 @@
 #error "VDR-2.0.0 API version or greater is required!"
 #endif
 
-static const char *VERSION        = "1.2.6";
+static const char *VERSION        = "1.2.7";
 static const char *DESCRIPTION    = tr("A fancy 2d EPG Viewer");
 static const char *MAINMENUENTRY  = "Tvguide";
 
