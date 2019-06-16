@@ -632,7 +632,7 @@ cRecMenuSearchTimerTemplates::cRecMenuSearchTimerTemplates(cTVGuideSearchTimer s
     this->templates = templates;
     SetWidthPercent(70);
     cString message = tr("Configure Search Timer for Search String");
-    cString infoText = cString::sprintf("%s:\n%s", *message, searchTimer.SearchString().c_str());
+    cString infoText = cString::sprintf("%s:\n%s", *message, searchTimer.GetSearchString().c_str());
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
@@ -727,8 +727,8 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     this->advancedOptions = advancedOptions;
     this->searchTimer = searchTimer;
     this->channelGroups = channelGroups;
-    strncpy(searchString, searchTimer.SearchString().c_str(), TEXTINPUTLENGTH);
-    timerActive = searchTimer.Active();
+    strncpy(searchString, searchTimer.GetSearchString().c_str(), TEXTINPUTLENGTH);
+    timerActive = searchTimer.IsActive();
     mode = searchTimer.SearchMode();
     useTitle = searchTimer.UseTitle();
     useSubtitle = searchTimer.UseSubtitle();
@@ -1001,7 +1001,7 @@ cRecMenuSearchTimerDeleteConfirm::cRecMenuSearchTimerDeleteConfirm(cTVGuideSearc
     this->searchTimer = searchTimer;
     SetWidthPercent(70);
     cString message = tr("Really delete Search Timer");
-    cString infoText = cString::sprintf("%s \"%s\"?", *message, searchTimer.SearchString().c_str());
+    cString infoText = cString::sprintf("%s \"%s\"?", *message, searchTimer.GetSearchString().c_str());
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
@@ -1051,7 +1051,7 @@ cRecMenuSearchTimerTemplatesCreate::cRecMenuSearchTimerTemplatesCreate(TVGuideEP
     cString message2 = tr("Search Term");
     cString message3 = tr("Using Template");
     
-    cString infoText = cString::sprintf("%s\n%s: \"%s\"\n%s \"%s\"", *message1, *message2, searchTimer.SearchString().c_str(), *message3, templ.name.c_str());
+    cString infoText = cString::sprintf("%s\n%s: \"%s\"\n%s \"%s\"", *message1, *message2, searchTimer.GetSearchString().c_str(), *message3, templ.name.c_str());
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText);
     infoItem->CalculateHeight(width - 2 * border);
     AddMenuItem(infoItem);

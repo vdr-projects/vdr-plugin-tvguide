@@ -367,12 +367,12 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             if (numSearchResults) {
                 activeMenuBuffer = activeMenu;
                 activeMenuBuffer->Hide();
-                activeMenu = new cRecMenuSearchTimerResults(searchTimer.SearchString(), searchResult, numSearchResults, "", recState);
+                activeMenu = new cRecMenuSearchTimerResults(searchTimer.GetSearchString(), searchResult, numSearchResults, "", recState);
                 activeMenu->Display();
             } else {
                activeMenuBuffer = activeMenu;
                activeMenuBuffer->Hide();
-               activeMenu = new cRecMenuSearchTimerNothingFound(searchTimer.SearchString());
+               activeMenu = new cRecMenuSearchTimerNothingFound(searchTimer.GetSearchString());
                activeMenu->Display();
             }
             break; }

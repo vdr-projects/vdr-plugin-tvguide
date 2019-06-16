@@ -76,8 +76,8 @@ public:
     std::string BuildSearchString(void);
     int GetID(void) { return ID; };
     //GETTER
-    std::string SearchString(void) const { return searchString; };
-    bool Active(void);
+    std::string GetSearchString(void) const { return searchString; };
+    bool IsActive(void);
     bool UseTitle(void) { return useTitle; };
     bool UseSubtitle(void) { return useSubtitle; };
     bool UseDescription(void) { return useDescription; };

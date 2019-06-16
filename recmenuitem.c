@@ -2693,10 +2693,10 @@ void cRecMenuItemSearchTimer::SetPixmaps(void) {
 
 void cRecMenuItemSearchTimer::Draw(void) {
     int textX = DrawIcons();
-    bool timerIsActive = timer.Active();
+    bool timerIsActive = timer.IsActive();
     pixmapText->Fill(clrTransparent);
     textX += 20;
-    cString label = cString::sprintf("\"%s\"", timer.SearchString().c_str());
+    cString label = cString::sprintf("\"%s\"", timer.GetSearchString().c_str());
     cString inactive = cString::sprintf("(%s)", tr("inactive"));
     int numTimersActive = timer.GetNumTimers();
     int numRecordings = timer.GetNumRecordings();
@@ -2822,7 +2822,7 @@ void cRecMenuItemFavorite::Draw(void) {
     int textX = DrawIcons();
     pixmapText->Fill(clrTransparent);
     textX += 20;
-    cString label = cString::sprintf("\"%s\"", favorite.SearchString().c_str());
+    cString label = cString::sprintf("\"%s\"", favorite.GetSearchString().c_str());
     pixmapText->DrawText(cPoint(textX, (height - fontLarge->Height())/2), *label, colorText, clrTransparent, fontLarge);
 }
 

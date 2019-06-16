@@ -591,9 +591,9 @@ void cRecManager::DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTi
     if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
         bool success = epgSearch->handler->DelSearchTimer(searchTimerID);
         if (success) {
-            esyslog("tvguide: search timer \"%s\" sucessfully deleted", searchTimer->SearchString().c_str());
+            esyslog("tvguide: search timer \"%s\" sucessfully deleted", searchTimer->GetSearchString().c_str());
         } else {
-            esyslog("tvguide: error deleting search timer \"%s\"", searchTimer->SearchString().c_str());
+            esyslog("tvguide: error deleting search timer \"%s\"", searchTimer->GetSearchString().c_str());
         }
     }
 }
