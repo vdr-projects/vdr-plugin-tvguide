@@ -526,7 +526,6 @@ bool cTVGuideSearchTimer::IsActive(void) {
     return false;
 }
 
-
 int cTVGuideSearchTimer::GetNumTimers(void) {
     int numTimers = 0;
     if (ID < 0)
@@ -575,26 +574,37 @@ void cTVGuideSearchTimer::GetSearchModes(std::vector<std::string> *searchModes) 
     searchModes->push_back(tr("one term must exist"));
     searchModes->push_back(tr("exact match"));
     searchModes->push_back(tr("regular expression"));
+    searchModes->push_back(tr("fuzzy"));
 }
 
-void cTVGuideSearchTimer::Dump(void) {
-    esyslog("tvguide searchtimer: strTimer: %s", strTimer.c_str());
-    esyslog("tvguide searchtimer: ID: %d", ID);
-    esyslog("tvguide searchtimer: searchString: %s", searchString.c_str());
-    esyslog("tvguide searchtimer: useTime: %d", useTime);
-    esyslog("tvguide searchtimer: startTime: %d", startTime);
-    esyslog("tvguide searchtimer: stopTime: %d", stopTime);
-    esyslog("tvguide searchtimer: useChannel: %d", useChannel);
-    if (channelMin)
-	    esyslog("tvguide searchtimer: channelMin: %s", channelMin->Name());
-    if (channelMax)
-	    esyslog("tvguide searchtimer: channelMax: %s", channelMax->Name());
-    esyslog("tvguide searchtimer: channelGroup: %s", channelGroup.c_str());
-    esyslog("tvguide searchtimer: useCase: %d", useCase);
-    esyslog("tvguide searchtimer: mode: %d", mode);
-    esyslog("tvguide searchtimer: useTitle: %d", useTitle);
-    esyslog("tvguide searchtimer: useSubtitle: %d", useSubtitle);
-    esyslog("tvguide searchtimer: useDescription: %d", useDescription);
+void cTVGuideSearchTimer::GetUseChannelModes(std::vector<std::string> *useChannelModes) {
+    useChannelModes->push_back(tr("No"));
+    useChannelModes->push_back(tr("Interval"));
+    useChannelModes->push_back(tr("Channel Group"));
+    useChannelModes->push_back(tr("only FTA"));
+}
+
+void cTVGuideSearchTimer::GetCompareDateModes(std::vector<std::string> *compareDateModes) {
+    compareDateModes->push_back(tr("No"));
+    compareDateModes->push_back(tr("same day"));
+    compareDateModes->push_back(tr("same week"));
+    compareDateModes->push_back(tr("same month"));
+}
+
+void cTVGuideSearchTimer::GetSearchTimerModes(std::vector<std::string> *searchTimerModes) {
+    searchTimerModes->push_back(tr("Record"));
+    searchTimerModes->push_back(tr("Announce by OSD"));
+    searchTimerModes->push_back(tr("Switch only"));
+    searchTimerModes->push_back(tr("Announce and switch"));
+    searchTimerModes->push_back(tr("Announce by mail"));
+    searchTimerModes->push_back(tr("Inactive record"));
+}
+
+void cTVGuideSearchTimer::GetDelModes(std::vector<std::string> *delModes) {
+    delModes->push_back(tr("no"));
+    delModes->push_back(tr("count recordings"));
+    delModes->push_back(tr("count days"));
+
 }
 
 void cTVGuideSearchTimer::SetStartChannel(int startChannel)
@@ -617,9 +627,22 @@ void cTVGuideSearchTimer::SetStopChannel(int stopChannel)
 #endif
 };
 
-void cTVGuideSearchTimer::GetUseChannelModes(std::vector<std::string> *useChannelModes) {
-    useChannelModes->push_back(tr("No"));
-    useChannelModes->push_back(tr("Interval"));
-    useChannelModes->push_back(tr("Channel Group"));
-    useChannelModes->push_back(tr("only FTA"));
+void cTVGuideSearchTimer::Dump(void) {
+    esyslog("tvguide searchtimer: strTimer: %s", strTimer.c_str());
+    esyslog("tvguide searchtimer: ID: %d", ID);
+    esyslog("tvguide searchtimer: searchString: %s", searchString.c_str());
+    esyslog("tvguide searchtimer: useTime: %d", useTime);
+    esyslog("tvguide searchtimer: startTime: %d", startTime);
+    esyslog("tvguide searchtimer: stopTime: %d", stopTime);
+    esyslog("tvguide searchtimer: useChannel: %d", useChannel);
+    if (channelMin)
+            esyslog("tvguide searchtimer: channelMin: %s", channelMin->Name());
+    if (channelMax)
+            esyslog("tvguide searchtimer: channelMax: %s", channelMax->Name());
+    esyslog("tvguide searchtimer: channelGroup: %s", channelGroup.c_str());
+    esyslog("tvguide searchtimer: useCase: %d", useCase);
+    esyslog("tvguide searchtimer: mode: %d", mode);
+    esyslog("tvguide searchtimer: useTitle: %d", useTitle);
+    esyslog("tvguide searchtimer: useSubtitle: %d", useSubtitle);
+    esyslog("tvguide searchtimer: useDescription: %d", useDescription);
 }

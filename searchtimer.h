@@ -138,6 +138,9 @@ public:
     int GetNumRecordings(void);
     void GetSearchModes(std::vector<std::string> *searchModes);
     void GetUseChannelModes(std::vector<std::string> *useChannelModes);
+    void GetSearchTimerModes(std::vector<std::string> *searchTimerModes);
+    void GetCompareDateModes(std::vector<std::string> *compareDateModes);
+    void GetDelModes(std::vector<std::string> *delModes);
     void Dump(void);
 };
 
