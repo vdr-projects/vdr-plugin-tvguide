@@ -604,7 +604,6 @@ void cTVGuideSearchTimer::GetDelModes(std::vector<std::string> *delModes) {
     delModes->push_back(tr("no"));
     delModes->push_back(tr("count recordings"));
     delModes->push_back(tr("count days"));
-
 }
 
 void cTVGuideSearchTimer::SetStartChannel(int startChannel)
@@ -636,9 +635,9 @@ void cTVGuideSearchTimer::Dump(void) {
     esyslog("tvguide searchtimer: stopTime: %d", stopTime);
     esyslog("tvguide searchtimer: useChannel: %d", useChannel);
     if (channelMin)
-            esyslog("tvguide searchtimer: channelMin: %s", channelMin->Name());
+        esyslog("tvguide searchtimer: channelMin: %s", channelMin->Name());
     if (channelMax)
-            esyslog("tvguide searchtimer: channelMax: %s", channelMax->Name());
+        esyslog("tvguide searchtimer: channelMax: %s", channelMax->Name());
     esyslog("tvguide searchtimer: channelGroup: %s", channelGroup.c_str());
     esyslog("tvguide searchtimer: useCase: %d", useCase);
     esyslog("tvguide searchtimer: mode: %d", mode);
