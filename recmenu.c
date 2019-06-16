@@ -5,7 +5,7 @@
 
 cRecMenu::cRecMenu(void) {
     border = geoManager.borderRecMenus;
-    height = 2*border;
+    height = 2 * border;
     headerHeight = 0;
     footerHeight = 0;
     currentHeight = 0;
@@ -54,25 +54,29 @@ int cRecMenu::CalculateOptimalWidth(void) {
 }
 
 bool cRecMenu::CalculateHeight(bool reDraw) {
-    int newHeight = 2*border;
-    if (header)
+    int newHeight = 2 * border;
+    bool returnvalue = false;
+    if (header) {
         newHeight += headerHeight;
-    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
-        newHeight += (*item)->GetHeight(); 
     }
-    if (footer)
+    for (std::list<cRecMenuItem*>::iterator item = menuItems.begin(); item != menuItems.end(); item++) {
+        newHeight += (*item)->GetHeight();
+    }
+    if (footer) {
         newHeight += footerHeight;
+    }
 
     y = (geoManager.osdHeight - newHeight) / 2;
 
     if (newHeight != height) {
         height = newHeight;
-        if (scrollable && !reDraw) {
-            width += scrollbarWidth + border;
-        }
-        return true;
+        returnvalue = true;
     }
-    return false;
+    if (scrollable && !reDraw) {
+        width += scrollbarWidth + border;
+        returnvalue = true;
+    }
+    return returnvalue;
 }
 
 void cRecMenu::CreatePixmap(void) {
@@ -141,7 +145,6 @@ void cRecMenu::InitMenu(bool complete) {
 
 }
 
-
 void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
     item->Show();
     if (!inFront)
@@ -153,7 +156,7 @@ void cRecMenu::AddMenuItem(cRecMenuItem *item, bool inFront) {
 bool cRecMenu::AddMenuItemInitial(cRecMenuItem *item, bool inFront) {
     currentHeight += item->GetHeight();
     int totalHeight = headerHeight + footerHeight + currentHeight + 2*border;
-    if (totalHeight >= geoManager.osdHeight - 10) {
+    if (totalHeight >= geoManager.osdHeight - 80) {
         scrollable = true;
         currentHeight -= item->GetHeight();
         if (deleteMenuItems) {
@@ -434,14 +437,16 @@ void cRecMenu::JumpBegin(void) {
             if (currentItem >= numItems)
                 break;
         }
-        Arrange(true);
+        if (CalculateHeight(true))
+            CreatePixmap();
+        Arrange(false);
         startIndex = 0;
-        stopIndex = numItems-1;
+        stopIndex = numItems - 1;
         cRecMenuItem *first = menuItems.front();
         first->setActive();
         first->setBackground();
         first->Draw();
-        Display(true);    
+        Display(false);    
     }
 }
 
@@ -470,7 +475,7 @@ void cRecMenu::JumpEnd(void) {
         activeItem->setBackground();
         ClearMenuItems();
         int totalNumItems = GetTotalNumMenuItems();
-        int currentItem = totalNumItems-1;
+        int currentItem = totalNumItems - 1;
         int itemsAdded = 0;
         cRecMenuItem *newItem = NULL;
         while (newItem = GetMenuItem(currentItem)) {
@@ -480,7 +485,9 @@ void cRecMenu::JumpEnd(void) {
             if (itemsAdded >= numItems)
                 break;
         }
-        Arrange(true);
+        if (CalculateHeight(true))
+            CreatePixmap();
+        Arrange(false);
         stopIndex = totalNumItems;
         startIndex = stopIndex - numItems;
         if (footer) {
@@ -493,7 +500,7 @@ void cRecMenu::JumpEnd(void) {
             last->setBackground();
             last->Draw();
         }
-        Display(true);
+        Display(false);
     }
 }
 
