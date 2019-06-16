@@ -808,11 +808,10 @@ int cRecMenuSearchTimerEdit::SplitChannelGroups(std::vector<std::string> *channe
         std::string a = *it;
         splitstring s(a.c_str());
         std::vector<std::string> value = s.split('|', 0);
-        dsyslog ("%s %s %d %s\n", __FILE__, __func__,  __LINE__, s.c_str());
         std::vector<std::string>::iterator ito = value.begin();
         channelgroups->push_back(*ito);
-	std::string b = *ito;
-	if (b.compare(channelGroup) == 0)
+        std::string b = *ito;
+        if (b.compare(channelGroup) == 0)
             j = i;
         i++;
     }
