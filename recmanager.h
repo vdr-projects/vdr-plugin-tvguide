@@ -46,7 +46,9 @@ public:
     const cEvent **PerformSearch(Epgsearch_searchresults_v1_0 data, int &numResults);
     void ReadEPGSearchTemplates(std::vector<TVGuideEPGSearchTemplate> *epgTemplates);
     void GetSearchTimers(std::vector<cTVGuideSearchTimer> *timers);
+    void GetSearchExtCats(std::vector<std::string> *searchExtCats);
     void GetChannelGroups(std::vector<std::string> *channelGroups);
+    void GetBlacklists(std::vector<std::string> *blacklists);
     int CreateSearchTimer(std::string epgSearchString);
     bool SaveSearchTimer(cTVGuideSearchTimer *searchTimer);
     void DeleteSearchTimer(cTVGuideSearchTimer *searchTimer, bool delTimers);

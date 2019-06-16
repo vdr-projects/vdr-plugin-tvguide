@@ -495,20 +495,50 @@ void cRecManager::GetSearchTimers(std::vector<cTVGuideSearchTimer> *searchTimer)
     std::sort(searchTimer->begin(), searchTimer->end());
 }
 
+void cRecManager::GetSearchExtCats(std::vector<std::string> *searchExtCats) {
+    if (!epgSearchAvailable) {
+            return;
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        std::list<std::string> list;
+        list = epgSearch->handler->ExtEPGInfoList();
+
+        for (std::list<std::string>::iterator it = list.begin(); it != list.end(); it++) {
+            searchExtCats->push_back(*it);
+        }
+    }
+}
+
 void cRecManager::GetChannelGroups(std::vector<std::string> *channelGroups) {
     if (!epgSearchAvailable) {
             return;
     }
     Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
     if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
-        std::list<std::string> channelGroupList;
-        channelGroupList = epgSearch->handler->ChanGrpList();
+        std::list<std::string> list;
+        list = epgSearch->handler->ChanGrpList();
 
-        for (std::list<std::string>::iterator it = channelGroupList.begin(); it != channelGroupList.end(); it++) {
+        for (std::list<std::string>::iterator it = list.begin(); it != list.end(); it++) {
             channelGroups->push_back(*it);
         }
     }
     std::sort(channelGroups->begin(), channelGroups->end());
+}
+
+void cRecManager::GetBlacklists(std::vector<std::string> *blacklists) {
+    if (!epgSearchAvailable) {
+            return;
+    }
+    Epgsearch_services_v1_1 *epgSearch = new Epgsearch_services_v1_1;
+    if (epgSearchPlugin->Service("Epgsearch-services-v1.1", epgSearch)) {
+        std::list<std::string> list;
+        list = epgSearch->handler->BlackList();
+
+        for (std::list<std::string>::iterator it = list.begin(); it != list.end(); it++) {
+            blacklists->push_back(*it);
+        }
+    }
 }
 
 int cRecManager::CreateSearchTimer(std::string epgSearchString) {
