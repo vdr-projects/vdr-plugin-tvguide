@@ -722,9 +722,8 @@ int cRecMenuSearchTimers::GetTotalNumMenuItems(void) {
 }
 
 // --- cRecMenuSearchTimerEdit  ---------------------------------------------------------
-cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions, std::vector<std::string> channelGroups) {
+cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, std::vector<std::string> channelGroups) {
     deleteMenuItems = false;
-    this->advancedOptions = advancedOptions;
     this->searchTimer = searchTimer;
     this->channelGroups = channelGroups;
     strncpy(searchString, searchTimer.GetSearchString().c_str(), TEXTINPUTLENGTH);
@@ -768,7 +767,7 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     cRecMenuItemInfo *infoItem = new cRecMenuItemInfo(*infoText, true);
     infoItem->CalculateHeight(width - 2 * border);
     SetHeader(infoItem);
-    cRecMenuItemButtonYesNo *footerButton = new cRecMenuItemButtonYesNo(tr("Save Search Timer"), tr("Cancel"), rmsSearchTimerSave, rmsSearchTimers, (advancedOptions)?false:true);
+    cRecMenuItemButtonYesNo *footerButton = new cRecMenuItemButtonYesNo(tr("Save Search Timer"), tr("Cancel"), rmsSearchTimerSave, rmsSearchTimers, false);
     SetFooter(footerButton);
     InitMenuItems();
     CreateMenuItems();
@@ -842,9 +841,6 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Description"), useDescription, false, false, &useDescription, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemSelect(tr("Limit Channels"), useChannelModes, useChannel, false, &useChannel, rmsSearchTimerSave, true));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Time"), useTime, true, false, &useTime, rmsSearchTimerSave));
-    if (!advancedOptions) {
-        mainMenuItems.push_back(new cRecMenuItemButton(tr("Display advanced Options"), rmsSearchTimerEditAdvanced, false));
-    } else {
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Limit Days of the Week"), useDayOfWeek, true, false, &useDayOfWeek, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Priority"), priority, 0, 99, false, &priority, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, 99, false, &lifetime, rmsSearchTimerSave));
@@ -855,8 +851,6 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), useVPS, false, false, &useVPS, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), avoidRepeats, true, false, &avoidRepeats, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), useInFavorites, false, false, &useInFavorites, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemButton(tr("Hide advanced Options"), rmsSearchTimerEdit, false));
-    }
     mainMenuItems.push_back(new cRecMenuItemButton(tr("Display Results for Search Timer"), rmsSearchTimerTest, false));
 
     if (startChannel == 0)
@@ -877,13 +871,11 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
     useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start after"), startTime, false, &startTime, rmsSearchTimerSave));
     useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start before"), stopTime, false, &stopTime, rmsSearchTimerSave));
 
-    if (advancedOptions) {
         useDayOfWeekSubMenu.push_back(new cRecMenuItemDayChooser(tr("Select Days"), dayOfWeek, false, &dayOfWeek));
         avoidRepeatSubMenu.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 0, 30, false, &allowedRepeats, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
         avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));
-    }
 }
 
 
@@ -906,16 +898,16 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
             AddSubMenu(&useGroupSubMenu);
         else if ((i == useTimePos) && useTime)
             AddSubMenu(&useTimeSubMenu);
-        else if (advancedOptions && (i == useDayOfWeekPos) && useDayOfWeek)
+        else if ((i == useDayOfWeekPos) && useDayOfWeek)
             AddSubMenu(&useDayOfWeekSubMenu);
-        else if (advancedOptions && (i == avoidRepeatsPos) && avoidRepeats)
+        else if ((i == avoidRepeatsPos) && avoidRepeats)
             AddSubMenu(&avoidRepeatSubMenu);
     }
 
     int numMenuItemsAll = currentMenuItems.size();
     int start = GetStartIndex();
      for (int i = start; i < numMenuItemsAll; i++) {
-        if ((i == start) && !reDraw && advancedOptions) {
+        if ((i == start) && !reDraw) {
             currentMenuItems[i]->setActive();
         }
         if (!AddMenuItemInitial(currentMenuItems[i])) {

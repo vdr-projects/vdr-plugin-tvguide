@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-16 14:37+0200\n"
+"POT-Creation-Date: 2019-06-17 11:52+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: fiveten_59\n"
 "Language-Team: \n"
@@ -324,9 +324,6 @@ msgstr "Limite Canale"
 msgid "Use Time"
 msgstr "Utilizza Time"
 
-msgid "Display advanced Options"
-msgstr "Mostra Opzioni avanzate"
-
 msgid "Limit Days of the Week"
 msgstr "Limite dei giorni della settimana"
 
@@ -350,9 +347,6 @@ msgstr "Evita ripetizioni"
 
 msgid "Use in Favorites"
 msgstr "Utilizza nei favoriti"
-
-msgid "Hide advanced Options"
-msgstr "Nascondi Opzioni avanzate"
 
 msgid "Display Results for Search Timer"
 msgstr "Mostra risultati per il Search Timer"
@@ -995,3 +989,9 @@ msgstr "TheMovieDB Popularità"
 
 msgid "TheMovieDB Vote Average"
 msgstr "Voto medio di TheMovieDB"
+
+#~ msgid "Display advanced Options"
+#~ msgstr "Mostra Opzioni avanzate"
+
+#~ msgid "Hide advanced Options"
+#~ msgstr "Nascondi Opzioni avanzate"

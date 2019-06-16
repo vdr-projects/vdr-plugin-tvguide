@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-16 14:37+0200\n"
+"POT-Creation-Date: 2019-06-17 11:52+0200\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -324,9 +324,6 @@ msgstr "Obmedzi» kanály"
 msgid "Use Time"
 msgstr "Pou¾i» èas"
 
-msgid "Display advanced Options"
-msgstr ""
-
 msgid "Limit Days of the Week"
 msgstr ""
 
@@ -349,9 +346,6 @@ msgid "Avoid Repeats"
 msgstr ""
 
 msgid "Use in Favorites"
-msgstr ""
-
-msgid "Hide advanced Options"
 msgstr ""
 
 msgid "Display Results for Search Timer"

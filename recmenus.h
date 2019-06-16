@@ -207,7 +207,6 @@ public:
 // --- cRecMenuSearchTimerEdit  ---------------------------------------------------------
 class cRecMenuSearchTimerEdit: public cRecMenu {
 private:
-    bool advancedOptions;
     cTVGuideSearchTimer searchTimer;
     std::vector<std::string> channelGroups;
     std::vector<cRecMenuItem*> mainMenuItems;
@@ -256,7 +255,7 @@ private:
     void AddSubMenu(std::vector<cRecMenuItem*> *subMenu);
     int SplitChannelGroups(std::vector<std::string> *channelGroups, std::vector<std::string> *channelgroups);
 public:
-    cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, bool advancedOptions, std::vector<std::string> channelGroups);
+    cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, std::vector<std::string> channelGroups);
     void CreateMenuItems(void);
     virtual ~cRecMenuSearchTimerEdit(void);
     cTVGuideSearchTimer GetSearchTimer(void);

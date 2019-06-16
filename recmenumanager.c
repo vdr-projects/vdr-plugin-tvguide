@@ -313,7 +313,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
                 } else {
                     std::vector<std::string> channelGroups;
                     recManager->GetChannelGroups(&channelGroups);
-                    activeMenu = new cRecMenuSearchTimerEdit(searchTimer, false, channelGroups);
+                    activeMenu = new cRecMenuSearchTimerEdit(searchTimer, channelGroups);
                 }
             }
             activeMenu->Display();
@@ -326,19 +326,17 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
         case rmsSearchTimerEditAdvanced: {
             //caller: cRecMenuSearchTimers, cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplates
             cTVGuideSearchTimer searchTimer;
-            bool advancedOptions = false;
             if (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
             } else if (cRecMenuSearchTimerEdit *menu = dynamic_cast<cRecMenuSearchTimerEdit*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
-                advancedOptions = (nextState == rmsSearchTimerEditAdvanced) ? true : false;
             } else if (cRecMenuSearchTimerTemplates *menu = dynamic_cast<cRecMenuSearchTimerTemplates*>(activeMenu)) {
                 searchTimer = menu->GetSearchTimer();
             } else break;
             delete activeMenu;
             std::vector<std::string> channelGroups;
             recManager->GetChannelGroups(&channelGroups);
-            activeMenu = new cRecMenuSearchTimerEdit(searchTimer, advancedOptions, channelGroups);
+            activeMenu = new cRecMenuSearchTimerEdit(searchTimer, channelGroups);
             activeMenu->Display();
             break; }
         case rmsSearchTimerTest: {

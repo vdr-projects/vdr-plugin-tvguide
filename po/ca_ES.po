@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-16 14:37+0200\n"
+"POT-Creation-Date: 2019-06-17 11:52+0200\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -327,9 +327,6 @@ msgstr "Canals restringits"
 msgid "Use Time"
 msgstr "Utilitza temps"
 
-msgid "Display advanced Options"
-msgstr ""
-
 msgid "Limit Days of the Week"
 msgstr ""
 
@@ -352,9 +349,6 @@ msgid "Avoid Repeats"
 msgstr ""
 
 msgid "Use in Favorites"
-msgstr ""
-
-msgid "Hide advanced Options"
 msgstr ""
 
 msgid "Display Results for Search Timer"
