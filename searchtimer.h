@@ -3,7 +3,8 @@
 
 
 class cTVGuideSearchTimer {
-private:
+friend class cRecMenuSearchTimerEdit;
+protected:
     std::string strTimer;
     int         ID;
     std::string searchString;
@@ -108,6 +109,8 @@ public:
     void SetSearchString(std::string searchString) { this->searchString = searchString; };
     void SetActive(bool active) { useAsSearchTimer = active; };
     void SetSearchMode(int searchMode) { mode = searchMode; };
+    void SetFuzzyTolerance(int fuzzyTolerance) { this->fuzzyTolerance = fuzzyTolerance; };
+    void SetUseCase(bool useCase) { this->useCase = useCase; };
     void SetUseTitle(bool useTitle) { this->useTitle = useTitle; };
     void SetUseSubtitle(bool useSubtitle) { this->useSubtitle = useSubtitle; };
     void SetUseDesription(bool useDescription) { this->useDescription = useDescription; };
@@ -120,8 +123,14 @@ public:
     void SetStopTime(int stopTime) { this->stopTime = stopTime; };
     void SetUseDayOfWeek(bool useDayOfWeek) { this->useDayOfWeek = useDayOfWeek; };
     void SetDayOfWeek(int VDRDayOfWeek);
+    void SetUseDuration(bool useDuration) { this->useDuration = useDuration; };
+    void SetMinDuration(int minDuration) { this->minDuration = minDuration; };
+    void SetMaxDuration(int maxDuration) { this->maxDuration = maxDuration; };
     void SetUseEpisode(int useEpisode) { this->useEpisode = useEpisode; };
     void SetDirectory(std::string directory) { this-> directory = directory; };
+    void SetDelAfterDays(int delAfterDays) { this->delAfterDays = delAfterDays; };
+    void SetRecordingsKeep(int recordingsKeep) { this->recordingsKeep = recordingsKeep; };
+    void SetPauseOnNrRecordings(int  pauseOnNrRecordings) { this-> pauseOnNrRecordings = pauseOnNrRecordings; };
     void SetPriority(int priority) { this->priority = priority; };
     void SetLifetime(int lifetime) { this->lifetime = lifetime; };
     void SetMarginStart(int marginStart) { this->marginStart = marginStart; };
@@ -129,10 +138,20 @@ public:
     void SetUseVPS(bool useVPS) { this->useVPS = useVPS; };
     void SetAvoidRepeats(bool avoidRepeats) { this->avoidRepeats = avoidRepeats; };
     void SetAllowedRepeats(int allowedRepeats) { this->allowedRepeats = allowedRepeats; };
+    void SetRepeatsWithinDays(int repeatsWithinDays) { this-> repeatsWithinDays = repeatsWithinDays; };
     void SetCompareTitle(bool compareTitle) { this->compareTitle = compareTitle; };
     void SetCompareSubtitle(bool compareSubtitle) { this->compareSubtitle = compareSubtitle; };
     void SetCompareSummary(bool compareSummary) { this->compareSummary = compareSummary; };
+    void SetCompareSummaryMatchInPercent(int compareSummaryMatchInPercent) { this->compareSummaryMatchInPercent = compareSummaryMatchInPercent; };
+    void SetCompareDate(int compareDate) { this->compareDate = compareDate; };
     void SetUseInFavorites(bool useInFavorites) { this->useInFavorites = useInFavorites; };
+    void SetUseAsSearchTimer(bool useAsSearchTimer) { this->useAsSearchTimer = useAsSearchTimer; };
+    void SetAction(int action) { this->action = action; };
+    void SetSwitchMinsBefore(int switchMinsBefore) { this->switchMinsBefore = switchMinsBefore; };
+    void SetUnmuteSoundOnSwitch(bool unmuteSoundOnSwitch) { this->unmuteSoundOnSwitch = unmuteSoundOnSwitch; };
+    void SetDelMode(bool delMode) { this->delMode = delMode; };
+    void SetDelAfterCountRecs(bool delAfterCountRecs) { this->delAfterCountRecs = delAfterCountRecs; };
+    void SetDelAfterDaysOfFirstRec(bool delAfterDaysOfFirstRec) { this->delAfterDaysOfFirstRec = delAfterDaysOfFirstRec; };
     //COMMON
     int GetNumTimers(void);
     int GetNumRecordings(void);
