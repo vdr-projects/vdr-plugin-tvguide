@@ -275,7 +275,7 @@ cRecMenuItemInfo::~cRecMenuItemInfo(void) {
 
 void cRecMenuItemInfo::CalculateHeight(int textWidth) {
     wrapper.Set(*text, fontInfo, textWidth);
-    height = fontInfo->Height() * wrapper.Lines() + 2*border;
+    height = fontInfo->Height() * wrapper.Lines() + 2 * border;
 }
 
 void cRecMenuItemInfo::setBackground(void) {
@@ -300,15 +300,19 @@ cRecMenuItemInt::cRecMenuItemInt(cString text,
                                 int initialVal,
                                 int minVal,
                                 int maxVal,
+//                                bool refresh;
                                 bool active, 
                                 int *callback,
-                                eRecMenuState action) {
+                                eRecMenuState action,
+                                int indent) {
     selectable = true;
     this->text = text;
     this->currentVal = initialVal;
     this->minVal = minVal;
     this->maxVal = maxVal;
+//    this->refresh = refresh;
     this->active = active;
+    this->indent = indent;
     this->callback = callback;
     this->action = action;
     height = 3 * font->Height() / 2;
@@ -348,7 +352,7 @@ void cRecMenuItemInt::setBackground() {
 
 void cRecMenuItemInt::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -371,7 +375,7 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
                     *callback = currentVal;
                 DrawValue();
             }
-            return rmsConsumed;
+            return (currentVal == 0) ? rmsRefresh : rmsConsumed;
             break;
         case kRight:
             fresh = true;
@@ -381,7 +385,7 @@ eRecMenuState cRecMenuItemInt::ProcessKey(eKeys Key) {
                     *callback = currentVal;
                 DrawValue();
             }
-            return rmsConsumed;
+            return (currentVal == 1) ? rmsRefresh : rmsConsumed;
             break;
         case k0 ... k9:
             if (fresh) {
@@ -410,13 +414,34 @@ cRecMenuItemBool::cRecMenuItemBool(cString text,
                                    bool refresh,
                                    bool active,
                                    bool *callback,
-                                   eRecMenuState action) {
+                                   eRecMenuState action,
+                                   int indent) {
     selectable = true;
     this->text = text;
     this->yes = initialVal;
     this->refresh = refresh;
     this->active = active;
     this->callback = callback;
+    this->indent = indent;
+    this->action = action;
+    height = 3 * font->Height() / 2;
+    pixmapVal = NULL;
+}
+
+cRecMenuItemBool::cRecMenuItemBool(cString text,
+                                   bool initialVal,
+                                   bool refresh,
+                                   bool active,
+                                   int *callback,
+                                   eRecMenuState action,
+                                   int indent) {
+    selectable = true;
+    this->text = text;
+    this->yes = initialVal;
+    this->refresh = refresh;
+    this->active = active;
+    this->callback = (bool*)callback;
+    this->indent = indent;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
@@ -449,7 +474,7 @@ void cRecMenuItemBool::Show(void) {
 
 void cRecMenuItemBool::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -494,7 +519,8 @@ cRecMenuItemSelect::cRecMenuItemSelect(cString text,
                                        bool active,
                                        int *callback,
                                        eRecMenuState action,
-                                       bool refresh) {
+                                       bool refresh,
+                                       int indent) {
     selectable = true;
     this->text = text;
     strings = Strings;
@@ -506,6 +532,7 @@ cRecMenuItemSelect::cRecMenuItemSelect(cString text,
     this->active = active;
     this->callback = callback;
     this->refresh = refresh;
+    this->indent = indent;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
@@ -538,7 +565,7 @@ void cRecMenuItemSelect::Show(void) {
 
 void cRecMenuItemSelect::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -602,12 +629,14 @@ cRecMenuItemSelectDirectory::cRecMenuItemSelectDirectory(cString text,
                                                          bool active,
                                                          char *callback,
                                                          eRecMenuState action,
-                                                         bool isSearchTimer) {
+                                                         bool isSearchTimer,
+                                                         int indent) {
     selectable = true;
     this->text = text;
     this->originalFolder = originalFolder;
     this->active = active;
     this->callback = callback;
+    this->indent = indent;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
@@ -646,7 +675,7 @@ void cRecMenuItemSelectDirectory::Show(void) {
 
 void cRecMenuItemSelectDirectory::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -1297,7 +1326,8 @@ cRecMenuItemTime::cRecMenuItemTime(cString text,
                                    int initialVal,
                                    bool active,
                                    int *callback,
-                                   eRecMenuState action) {
+                                   eRecMenuState action,
+                                   int indent) {
     selectable = true;
     this->text = text;
     this->value = initialVal;
@@ -1307,6 +1337,7 @@ cRecMenuItemTime::cRecMenuItemTime(cString text,
     fresh = true;
     this->active = active;
     this->callback = callback;
+    this->indent = indent;
     this->action = action;
     height = 3 * font->Height() / 2;
     pixmapVal = NULL;
@@ -1339,7 +1370,7 @@ void cRecMenuItemTime::Show(void) {
 
 void cRecMenuItemTime::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -1721,7 +1752,7 @@ cRecMenuItemTimerConflictHeader::cRecMenuItemTimerConflictHeader(time_t conflict
     this->conflictStop = conflictStop;
     this->overlapStart = overlapStart;
     this->overlapStop = overlapStop;
-    height = 3*font->Height()/2;
+    height = 3 * font->Height() / 2;
     pixmapStatus = NULL;
 }
 
@@ -1795,7 +1826,7 @@ cRecMenuItemEvent::cRecMenuItemEvent(const cEvent *event,
     this->action2 = action2;
     iconActive = 0;
     this->active = active;
-    height = font->Height() + 2*fontSmall->Height() + 10;
+    height = font->Height() + 2 * fontSmall->Height() + 10;
     pixmapText = NULL;
     pixmapIcons = NULL;
 }
@@ -1929,7 +1960,8 @@ cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
                                                        const cChannel *initialChannel,
                                                        bool active,
                                                        int *callback,
-                                                       eRecMenuState action) {
+                                                       eRecMenuState action,
+                                                       int indent) {
     selectable = true;
     this->text = text;
     this->channel = initialChannel;
@@ -1941,8 +1973,10 @@ cRecMenuItemChannelChooser::cRecMenuItemChannelChooser(cString text,
     fresh = true;
     this->active = active;
     this->callback = callback;
+    this->indent = indent;
     this->action = action;
-    height = 2 * font->Height();
+    height = 3 * font->Height() / 2;
+//    height = 2 * font->Height();
     pixmapChannel = NULL;
 }
 
@@ -1973,7 +2007,7 @@ void cRecMenuItemChannelChooser::Show(void) {
 
 void cRecMenuItemChannelChooser::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawValue();    
 }
 
@@ -2103,7 +2137,8 @@ eRecMenuState cRecMenuItemChannelChooser::ProcessKey(eKeys Key) {
 cRecMenuItemDayChooser::cRecMenuItemDayChooser(cString text,
                                                int weekdays,
                                                bool active,
-                                               int *callback) {
+                                               int *callback,
+                                               int indent) {
     selectable = true;
     this->text = text;
     if (weekdays < 1)
@@ -2111,7 +2146,9 @@ cRecMenuItemDayChooser::cRecMenuItemDayChooser(cString text,
     this->weekdays = weekdays;
     this->active = active;
     this->callback = callback;
-    height = 2 * font->Height();
+    this->indent = indent;
+    height = 3 * font->Height() / 2;
+//    height = 2 * font->Height();
     selectedDay = 0;
     pixmapWeekdays = NULL;
     pixmapWeekdaysSelect = NULL;
@@ -2173,7 +2210,7 @@ void cRecMenuItemDayChooser::setBackground() {
 
 void cRecMenuItemDayChooser::Draw(void) {
     int textY = (height - font->Height()) / 2;
-    pixmap->DrawText(cPoint(10, textY), *text, colorText, colorTextBack, font);
+    pixmap->DrawText(cPoint(10 + indent * 30, textY), *text, colorText, colorTextBack, font);
     DrawDays();
 }
 
@@ -2248,7 +2285,7 @@ cRecMenuItemRecording::cRecMenuItemRecording(const cRecording *recording, bool a
     selectable = true;
     this->recording = recording;
     this->active = active;
-    height = font->Height() + 2*fontSmall->Height() + 10;
+    height = font->Height() + 2 * fontSmall->Height() + 10;
     pixmapText = NULL;
 }
 

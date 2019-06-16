@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-04-12 14:35+0200\n"
+"POT-Creation-Date: 2019-06-16 14:37+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: fiveten_59\n"
 "Language-Team: \n"
@@ -525,10 +525,49 @@ msgstr "exakt"
 msgid "regular expression"
 msgstr "Regulärer Ausdruck"
 
+msgid "fuzzy"
+msgstr ""
+
 msgid "Interval"
 msgstr ""
 
 msgid "only FTA"
+msgstr ""
+
+msgid "same day"
+msgstr ""
+
+msgid "same week"
+msgstr ""
+
+msgid "same month"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Announce by OSD"
+msgstr ""
+
+msgid "Switch only"
+msgstr ""
+
+msgid "Announce and switch"
+msgstr ""
+
+msgid "Announce by mail"
+msgstr ""
+
+msgid "Inactive record"
+msgstr ""
+
+msgid "no"
+msgstr "No"
+
+msgid "count recordings"
+msgstr ""
+
+msgid "count days"
 msgstr ""
 
 msgid "General Settings"
@@ -926,9 +965,6 @@ msgstr "Überblick"
 
 msgid "yes"
 msgstr "Si"
-
-msgid "no"
-msgstr "No"
 
 msgid "Adult"
 msgstr "Per adulti"

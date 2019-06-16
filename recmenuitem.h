@@ -195,6 +195,8 @@ private:
     int *callback;
     int minVal;
     int maxVal;
+//    bool refresh;
+    int indent;
     cPixmap *pixmapVal;
     bool fresh;
     void DrawValue(void);
@@ -203,9 +205,11 @@ public:
                     int initialVal,
                     int minVal,
                     int maxVal,
+//                    bool refresh = false,
                     bool active = false,
                     int *callback = NULL,
-                    eRecMenuState action = rmsNotConsumed);
+                    eRecMenuState action = rmsNotConsumed,
+                    int indent = 0);
     virtual ~cRecMenuItemInt(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -221,6 +225,7 @@ class cRecMenuItemBool : public cRecMenuItem {
 private:
     cString text;
     bool yes;
+    int indent;
     bool *callback;
     cPixmap *pixmapVal;
     bool refresh;
@@ -231,7 +236,15 @@ public:
                      bool refresh = false,
                      bool active = false,
                      bool *callback = NULL,
-                     eRecMenuState action = rmsNotConsumed);
+                     eRecMenuState action = rmsNotConsumed,
+                     int indent = 0);
+    cRecMenuItemBool(cString text,
+                     bool initialVal,
+                     bool refresh = false,
+                     bool active = false,
+                     int *callback = NULL,
+                     eRecMenuState action = rmsNotConsumed,
+                     int indent = 0);
     virtual ~cRecMenuItemBool(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -248,6 +261,7 @@ private:
     int currentVal;
     int *callback;
     bool refresh;
+    int indent;
     std::vector<std::string> strings;
     int numValues;
     cPixmap *pixmapVal;
@@ -259,7 +273,8 @@ public:
                        bool active = false,
                        int *callback = NULL,
                        eRecMenuState action = rmsNotConsumed,
-                       bool refresh = false);
+                       bool refresh = false,
+                       int indent = 0);
     virtual ~cRecMenuItemSelect(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -278,6 +293,7 @@ private:
     std::vector<std::string> folders;
     int currentVal;
     char *callback;
+    int indent;
     int numValues;
     cPixmap *pixmapVal;
     void DrawValue(void);
@@ -289,7 +305,8 @@ public:
                                 bool active = false,
                                 char *callback = NULL,
                                 eRecMenuState action = rmsNotConsumed,
-                                bool isSearchTimer = false);
+                                bool isSearchTimer = false,
+                                int indent = 0);
     virtual ~cRecMenuItemSelectDirectory(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -363,6 +380,7 @@ private:
     cString text;
     int value;
     int *callback;
+    int indent;
     int mm;
     int hh;
     int pos;
@@ -374,7 +392,8 @@ public:
                     int initialVal,
                     bool active = false,
                     int *callback = NULL,
-                    eRecMenuState action = rmsNotConsumed);
+                    eRecMenuState action = rmsNotConsumed,
+                    int indent = 0);
     virtual ~cRecMenuItemTime(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -494,6 +513,7 @@ private:
     const cChannel *channel;
     int channelNumber;
     int *callback;
+    int indent;
     bool initialChannelSet;
     bool fresh;
     cPixmap *pixmapChannel;
@@ -503,7 +523,8 @@ public:
                                 const cChannel *initialChannel,
                                 bool active = false,
                                 int *callback = NULL,
-                                eRecMenuState action = rmsNotConsumed);
+                                eRecMenuState action = rmsNotConsumed,
+                                int indent = 0);
     virtual ~cRecMenuItemChannelChooser(void);
     void SetPixmaps(void);
     void Hide(void);
@@ -519,6 +540,7 @@ private:
     cString text;
     int weekdays;
     int *callback;
+    int indent;
     bool epgsearchMode;
     std::string days;
     int daysX;
@@ -536,7 +558,8 @@ public:
     cRecMenuItemDayChooser (cString text,
                             int weekdays,
                             bool active = false,
-                            int *callback = NULL);
+                            int *callback = NULL,
+                            int indent = 0);
     virtual ~cRecMenuItemDayChooser(void);
     void SetPixmaps(void);
     void Hide(void);
