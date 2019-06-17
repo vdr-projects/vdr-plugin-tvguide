@@ -723,6 +723,7 @@ int cRecMenuSearchTimers::GetTotalNumMenuItems(void) {
 
 // --- cRecMenuSearchTimerEdit  ---------------------------------------------------------
 cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, std::vector<std::string> channelGroups) {
+    init = true;   
     deleteMenuItems = false;
     this->searchTimer = searchTimer;
     this->channelGroups = channelGroups;
@@ -776,7 +777,6 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     SetHeader(infoItem);
     cRecMenuItemButtonYesNo *footerButton = new cRecMenuItemButtonYesNo(tr("Save Search Timer"), tr("Cancel"), rmsSearchTimerSave, rmsSearchTimers, false);
     SetFooter(footerButton);
-    InitMenuItems();
     CreateMenuItems();
 }
 
@@ -805,13 +805,19 @@ int cRecMenuSearchTimerEdit::SplitChannelGroups(std::vector<std::string> *channe
     return j;
 }
 
-void cRecMenuSearchTimerEdit::InitMenuItems(void) {
-    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
+void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
 
-    useChannelPos = 6;
-    useTimePos = 7;
-    useDayOfWeekPos = 8;
-    avoidRepeatsPos = 14;
+    int activeMenuItem = 0;
+
+    if (mainMenuItems.size() > 0) {
+        for (long unsigned int index = 0; index < mainMenuItems.size(); index++) {
+            if (mainMenuItems[index]->isActive()) {
+                activeMenuItem = index;
+                break;
+            }
+        }
+        mainMenuItems.clear();
+    }
 
     mainMenuItems.push_back(new cRecMenuItemText(tr("Search String"), searchString, TEXTINPUTLENGTH, false, searchString));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), timerActive, false, false, &timerActive, rmsSearchTimerSave));
@@ -856,36 +862,28 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));
-}
 
-
-void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
-    dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     bool reDraw = false;
     if (GetCurrentNumMenuItems() > 0) {
         InitMenu(false);
-        currentMenuItems.clear();
         reDraw = true;
     }
     
-   int numMainMenuItems = mainMenuItems.size();
-    
-    for (int i = 0; i < numMainMenuItems; i++) {
-        currentMenuItems.push_back(mainMenuItems[i]);
-    }
+    numMenuItems = mainMenuItems.size();
 
-    int numMenuItemsAll = currentMenuItems.size();
     int start = GetStartIndex();
-     for (int i = start; i < numMenuItemsAll; i++) {
-        if ((i == start) && !reDraw) {
-            currentMenuItems[i]->setActive();
-        }
+    for (int i = start; i < numMenuItems; i++) {
         if (!AddMenuItemInitial(currentMenuItems[i])) {
             break;
         }
     }
-    numMenuItems = currentMenuItems.size();
-    CalculateHeight();
+    if (reDraw)
+        mainMenuItems[activeMenuItem]->setActive();
+
+    if (init) {
+        init = !init;
+    }
+    CalculateHeight(!reDraw);
     CreatePixmap();
     Arrange();
 }

@@ -218,6 +218,7 @@ private:
     std::vector<std::string> channelgroups;
     std::vector<cRecMenuItem*> mainMenuItems;
     std::vector<cRecMenuItem*> currentMenuItems;
+    bool init;
     int numMenuItems;
     int useChannelPos;
     int useTimePos;
@@ -252,7 +253,6 @@ private:
     bool compareSubtitle;
     bool compareSummary;
     bool useInFavorites;
-    void InitMenuItems(void);
     int SplitChannelGroups(std::vector<std::string> *channelGroups, std::vector<std::string> *channelgroups);
 public:
     cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer, std::vector<std::string> channelGroups);
