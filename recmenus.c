@@ -727,36 +727,10 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     deleteMenuItems = false;
     this->searchTimer = searchTimer;
     this->channelGroups = channelGroups;
-    strncpy(searchString, searchTimer.GetSearchString().c_str(), TEXTINPUTLENGTH);
-    timerActive = searchTimer.IsActive();
-    mode = searchTimer.SearchMode();
-    useTitle = searchTimer.UseTitle();
-    useSubtitle = searchTimer.UseSubtitle();
-    useDescription = searchTimer.UseDescription();
-    useChannel = searchTimer.UseChannel();
-    startChannel = searchTimer.StartChannel();
-    stopChannel = searchTimer.StopChannel();
-    channelGroup = searchTimer.ChannelGroup();
+    strncpy(searchString, searchTimer.searchString.c_str(), TEXTINPUTLENGTH);
     channelgroupIndex = -1;
-    useTime = searchTimer.UseTime();
-    startTime = searchTimer.StartTime();
-    stopTime = searchTimer.StopTime();
-    useDayOfWeek = searchTimer.UseDayOfWeek();
-    dayOfWeek = searchTimer.DayOfWeek();
-    priority = searchTimer.Priority();
-    lifetime = searchTimer.Lifetime();
-    useEpisode = searchTimer.UseEpisode();
-    std::string dir = searchTimer.Directory();
+    std::string dir = searchTimer.directory;
     strncpy(directory, dir.c_str(), TEXTINPUTLENGTH);
-    marginStart = searchTimer.MarginStart();
-    marginStop = searchTimer.MarginStop();
-    useVPS = searchTimer.UseVPS();
-    avoidRepeats = searchTimer.AvoidRepeats();
-    allowedRepeats = searchTimer.AllowedRepeats();
-    compareTitle = searchTimer.CompareTitle();
-    compareSubtitle = searchTimer.CompareSubtitle();
-    compareSummary = searchTimer.CompareSummary();
-    useInFavorites = searchTimer.UseInFavorites();
 
     searchTimer.GetSearchModes(&searchModes);
     searchTimer.GetUseChannelModes(&useChannelModes);
@@ -798,7 +772,7 @@ int cRecMenuSearchTimerEdit::SplitChannelGroups(std::vector<std::string> *channe
         std::vector<std::string>::iterator ito = value.begin();
         channelgroups->push_back(*ito);
         std::string b = *ito;
-        if (b.compare(channelGroup) == 0)
+        if (b.compare(searchTimer.channelGroup) == 0)
             j = i;
         i++;
     }
@@ -820,48 +794,53 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
     }
 
     mainMenuItems.push_back(new cRecMenuItemText(tr("Search String"), searchString, TEXTINPUTLENGTH, false, searchString));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), timerActive, false, false, &timerActive, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Search Mode"), searchModes, mode, false, &mode, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Title"), useTitle, false, false, &useTitle, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Subtitle"), useSubtitle, false, false, &useSubtitle, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Description"), useDescription, false, false, &useDescription, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Limit Channels"), useChannelModes, useChannel, false, &useChannel, rmsSearchTimerSave, true));
-    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Time"), useTime, true, false, &useTime, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Limit Days of the Week"), useDayOfWeek, true, false, &useDayOfWeek, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemInt(tr("Priority"), priority, 0, 99, false, &priority, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemInt(tr("Lifetime"), lifetime, 0, 99, false, &lifetime, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for start in minutes"), marginStart, 0, 30, false, &marginStart, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for stop in minutes"), marginStop, 0, 30, false, &marginStop, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Series Recording"), useEpisode, false, false, &useEpisode, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), searchTimer.useAsSearchTimer, true, false, &searchTimer.useAsSearchTimer, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Search Mode"), searchModes, searchTimer.mode, false, &searchTimer.mode, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Title"), searchTimer.useTitle, false, false, &searchTimer.useTitle, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Subtitle"), searchTimer.useSubtitle, false, false, &searchTimer.useSubtitle, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Description"), searchTimer.useDescription, false, false, &searchTimer.useDescription, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Limit Channels"), useChannelModes, searchTimer.useChannel, false, &searchTimer.useChannel, rmsSearchTimerSave, true));
+    mainMenuItems.push_back(new cRecMenuItemBool(tr("Use Time"), searchTimer.useTime, true, false, &searchTimer.useTime, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Limit Days of the Week"), searchTimer.useDayOfWeek, true, false, &searchTimer.useDayOfWeek, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Priority"), searchTimer.priority, 0, 99, false, &searchTimer.priority, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Lifetime"), searchTimer.lifetime, 0, 99, false, &searchTimer.lifetime, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for start in minutes"), searchTimer.marginStart, 0, 30, false, &searchTimer.marginStart, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Time margin for stop in minutes"), searchTimer.marginStop, 0, 30, false, &searchTimer.marginStop, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Series Recording"), searchTimer.useEpisode, false, false, &searchTimer.useEpisode, rmsSearchTimerSave));
         mainMenuItems.push_back(new cRecMenuItemSelectDirectory(tr("Folder"), std::string(directory), false, directory, rmsSearchTimerSave, true));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), useVPS, false, false, &useVPS, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), avoidRepeats, true, false, &avoidRepeats, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), useInFavorites, false, false, &useInFavorites, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Use VPS"), searchTimer.useVPS, false, false, &searchTimer.useVPS, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Avoid Repeats"), searchTimer.avoidRepeats, true, false, &searchTimer.avoidRepeats, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Use in Favorites"), searchTimer.useInFavorites, false, false, &searchTimer.useInFavorites, rmsSearchTimerSave));
     mainMenuItems.push_back(new cRecMenuItemButton(tr("Display Results for Search Timer"), rmsSearchTimerTest, false));
 
-    if (startChannel == 0)
-        startChannel = 1;
-    if (stopChannel == 0)
-        stopChannel = 1;
+    if (searchTimer.useChannel == 1) {
+        startChannel = (searchTimer.channelMin) ? searchTimer.channelMin->Number() : 0;
+        stopChannel = (searchTimer.channelMax) ? searchTimer.channelMax->Number() : 0;
+        if (startChannel == 0) startChannel = 1;
+        if (stopChannel == 0) stopChannel = 1;
 #if VDRVERSNUM >= 20301
-    LOCK_CHANNELS_READ;
-    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels->GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels->GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
+        {
+        LOCK_CHANNELS_READ;
+        mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels->GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels->GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
+        }
 #else
-    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels.GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels.GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels.GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels.GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
 #endif
+    }
+    else if ((searchTimer.useChannel == 2) && (channelgroups.size() > 0)) {
+        mainMenuItems.push_back(new cRecMenuItemSelect(tr("Channel Group"), channelgroups, channelgroupIndex, false, &channelgroupIndex, rmsSearchTimerSave));
+    }
 
-    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Channel Group"), channelgroups, channelgroupIndex, false, &channelgroupIndex, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start after"), searchTimer.startTime, false, &searchTimer.startTime, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start before"), searchTimer.stopTime, false, &searchTimer.stopTime, rmsSearchTimerSave));
 
-    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start after"), startTime, false, &startTime, rmsSearchTimerSave));
-    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start before"), stopTime, false, &stopTime, rmsSearchTimerSave));
-
-        mainMenuItems.push_back(new cRecMenuItemDayChooser(tr("Select Days"), dayOfWeek, false, &dayOfWeek));
-        mainMenuItems.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 0, 30, false, &allowedRepeats, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
-        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemDayChooser(tr("Select Days"), searchTimer.dayOfWeek, false, &searchTimer.dayOfWeek));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), searchTimer.allowedRepeats, 0, 30, false, &searchTimer.allowedRepeats, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Title"), searchTimer.compareTitle, false, false, &searchTimer.compareTitle, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), searchTimer.compareSubtitle, false, false, &searchTimer.compareSubtitle, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Description"), searchTimer.compareSummary, false, false, &searchTimer.compareSummary, rmsSearchTimerSave));
 
     bool reDraw = false;
     if (GetCurrentNumMenuItems() > 0) {
@@ -891,50 +870,50 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
 cTVGuideSearchTimer cRecMenuSearchTimerEdit::GetSearchTimer(void) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
     searchTimer.SetSearchString(searchString);
-    searchTimer.SetActive(timerActive);
-    searchTimer.SetSearchMode(mode);
-    searchTimer.SetUseTitle(useTitle);
-    searchTimer.SetUseSubtitle(useSubtitle);
-    searchTimer.SetUseDesription(useDescription);
-    if (useChannel == 1) {
+    searchTimer.SetSearchMode(searchTimer.mode);
+    searchTimer.SetUseTitle(searchTimer.useTitle);
+    searchTimer.SetUseSubtitle(searchTimer.useSubtitle);
+    searchTimer.SetUseDesription(searchTimer.useDescription);
+    if (searchTimer.useChannel == 1) {
         searchTimer.SetStartChannel(startChannel);
         searchTimer.SetStopChannel(stopChannel);
     }
-    if (useChannel == 2) {
+    if (searchTimer.useChannel == 2) {
         if (channelgroups.size() > 0) {
             std::string & channelGroup = channelgroups[channelgroupIndex];
             searchTimer.SetChannelGroup(channelGroup);
         } else {
-            useChannel = 0;
+            searchTimer.useChannel = 0;
         }
     }
-    searchTimer.SetUseChannel(useChannel);
-    searchTimer.SetUseTime(useTime);
-    if (useTime) {
-        searchTimer.SetStartTime(startTime);
-        searchTimer.SetStopTime(stopTime);
+    searchTimer.SetUseChannel(searchTimer.useChannel);
+    searchTimer.SetUseTime(searchTimer.useTime);
+    if (searchTimer.useTime) {
+        searchTimer.SetStartTime(searchTimer.startTime);
+        searchTimer.SetStopTime(searchTimer.stopTime);
     }
-    searchTimer.SetUseDayOfWeek(useDayOfWeek);
-    if (useDayOfWeek) {
-        searchTimer.SetDayOfWeek(dayOfWeek);
+    searchTimer.SetUseDayOfWeek(searchTimer.useDayOfWeek);
+    if (searchTimer.useDayOfWeek) {
+        searchTimer.SetDayOfWeek(searchTimer.dayOfWeek);
     }
-    searchTimer.SetPriority(priority);
-    searchTimer.SetLifetime(lifetime);
-    searchTimer.SetUseEpisode(useEpisode);
+    searchTimer.SetUseAsSearchTimer(searchTimer.useAsSearchTimer);
+    searchTimer.SetPriority(searchTimer.priority);
+    searchTimer.SetLifetime(searchTimer.lifetime);
+    searchTimer.SetUseEpisode(searchTimer.useEpisode);
     std::string dir(directory);
     std::replace(dir.begin(), dir.end(), '/', '~');
     searchTimer.SetDirectory(dir);
-    searchTimer.SetMarginStart(marginStart);
-    searchTimer.SetMarginStop(marginStop);
-    searchTimer.SetUseVPS(useVPS);
-    searchTimer.SetAvoidRepeats(avoidRepeats);
-    if (avoidRepeats) {
-        searchTimer.SetAllowedRepeats(allowedRepeats);
-        searchTimer.SetCompareTitle(compareTitle);
-        searchTimer.SetCompareSubtitle(compareSubtitle);
-        searchTimer.SetCompareSummary(compareSummary);
+    searchTimer.SetMarginStart(searchTimer.marginStart);
+    searchTimer.SetMarginStop(searchTimer.marginStop);
+    searchTimer.SetUseVPS(searchTimer.useVPS);
+    searchTimer.SetAvoidRepeats(searchTimer.avoidRepeats);
+    if (searchTimer.avoidRepeats) {
+        searchTimer.SetAllowedRepeats(searchTimer.allowedRepeats);
+        searchTimer.SetCompareTitle(searchTimer.compareTitle);
+        searchTimer.SetCompareSubtitle(searchTimer.compareSubtitle);
+        searchTimer.SetCompareSummary(searchTimer.compareSummary);
     }
-    searchTimer.SetUseInFavorites(useInFavorites);
+    searchTimer.SetUseInFavorites(searchTimer.useInFavorites);
     return searchTimer;
 }
 

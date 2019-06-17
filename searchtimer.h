@@ -79,35 +79,10 @@ public:
     //GETTER
     std::string GetSearchString(void) const { return searchString; };
     bool IsActive(void);
-    bool UseTitle(void) { return useTitle; };
-    bool UseSubtitle(void) { return useSubtitle; };
-    bool UseDescription(void) { return useDescription; };
-    int SearchMode(void) { return mode; };
-    int UseChannel(void) { return useChannel; };
-    int StartChannel(void) { return (channelMin)?channelMin->Number():0; };
-    int StopChannel(void) { return (channelMax)?channelMax->Number():0; };
-    std::string ChannelGroup(void) { return channelGroup; };
-    bool UseTime(void) { return useTime; };
-    int StartTime(void) { return startTime; };
-    int StopTime(void) { return stopTime; };
-    bool UseDayOfWeek(void) { return useDayOfWeek; };
     int DayOfWeek(void);
-    int UseEpisode(void) { return useEpisode; };
-    std::string Directory(void) { return directory; };
-    int Priority(void) { return priority; };
-    int Lifetime(void) { return lifetime; };
-    int MarginStart(void) { return marginStart; };
-    int MarginStop(void) { return marginStop; };
-    bool UseVPS(void) { return useVPS; };
-    bool AvoidRepeats(void) { return avoidRepeats; };
-    int AllowedRepeats(void) { return allowedRepeats; };
-    bool CompareTitle(void) { return compareTitle; };
-    bool CompareSubtitle(void) { return compareSubtitle; };
-    bool CompareSummary(void) { return compareSummary; };
     bool UseInFavorites(void) { return useInFavorites; };
     //SETTER
     void SetSearchString(std::string searchString) { this->searchString = searchString; };
-    void SetActive(bool active) { useAsSearchTimer = active; };
     void SetSearchMode(int searchMode) { mode = searchMode; };
     void SetFuzzyTolerance(int fuzzyTolerance) { this->fuzzyTolerance = fuzzyTolerance; };
     void SetUseCase(bool useCase) { this->useCase = useCase; };
