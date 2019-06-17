@@ -217,7 +217,6 @@ private:
     std::vector<std::string> delModes;
     std::vector<std::string> channelgroups;
     std::vector<cRecMenuItem*> mainMenuItems;
-    std::vector<cRecMenuItem*> currentMenuItems;
     bool init;
     int numMenuItems;
     int useChannelPos;

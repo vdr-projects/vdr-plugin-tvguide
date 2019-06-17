@@ -759,7 +759,6 @@ cRecMenuSearchTimerEdit::~cRecMenuSearchTimerEdit(void) {
         delete *it;
     }
     mainMenuItems.clear();
-    currentMenuItems.clear();
 }
 
 int cRecMenuSearchTimerEdit::SplitChannelGroups(std::vector<std::string> *channelGroups, std::vector<std::string> *channelgroups) {
@@ -852,7 +851,7 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
 
     int start = GetStartIndex();
     for (int i = start; i < numMenuItems; i++) {
-        if (!AddMenuItemInitial(currentMenuItems[i])) {
+        if (!AddMenuItemInitial(mainMenuItems[i])) {
             break;
         }
     }
@@ -923,7 +922,7 @@ int cRecMenuSearchTimerEdit::GetTotalNumMenuItems(void) {
 
 cRecMenuItem *cRecMenuSearchTimerEdit::GetMenuItem(int number) {
     if ((number > -1) && (number < numMenuItems)) {
-        return currentMenuItems[number];
+        return mainMenuItems[number];
     }
     return NULL;
 }
