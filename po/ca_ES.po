@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 11:52+0200\n"
+"POT-Creation-Date: 2019-06-17 15:58+0200\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -303,56 +303,32 @@ msgstr ""
 msgid "Save Search Timer"
 msgstr ""
 
-msgid "Search String"
+msgid "Search term"
 msgstr ""
 
 msgid "Active"
 msgstr ""
 
-msgid "Search Mode"
-msgstr "Mode de cerca"
-
-msgid "Use Title"
-msgstr "Utilitza títol"
-
-msgid "Use Subtitle"
-msgstr "Utilitza subtítol"
-
-msgid "Use Description"
-msgstr "Utilitza descripció"
-
-msgid "Limit Channels"
-msgstr "Canals restringits"
-
-msgid "Use Time"
-msgstr "Utilitza temps"
-
-msgid "Limit Days of the Week"
+msgid "Search mode"
 msgstr ""
 
-msgid "Time margin for start in minutes"
+msgid "Tolerance"
 msgstr ""
 
-msgid "Time margin for stop in minutes"
+msgid "Match case"
 msgstr ""
 
-msgid "Series Recording"
+msgid "Use title"
 msgstr ""
 
-msgid "Folder"
+msgid "Use subtitle"
 msgstr ""
 
-msgid "Use VPS"
+msgid "Use description"
 msgstr ""
 
-msgid "Avoid Repeats"
+msgid "Use channel"
 msgstr ""
-
-msgid "Use in Favorites"
-msgstr ""
-
-msgid "Display Results for Search Timer"
-msgstr "Mostra resultats de la cerca"
 
 msgid "Start Channel"
 msgstr "Inicia canal"
@@ -363,16 +339,70 @@ msgstr "Atura canal"
 msgid "Channel Group"
 msgstr ""
 
+msgid "Use time"
+msgstr ""
+
 msgid "Start after"
 msgstr "Comença després"
 
 msgid "Start before"
 msgstr "Comença abans"
 
-msgid "Select Days"
+msgid "Use duration"
 msgstr ""
 
-msgid "Number of allowed repeats"
+msgid "Min. duration"
+msgstr ""
+
+msgid "Max. duration"
+msgstr ""
+
+msgid "Use day of week"
+msgstr ""
+
+msgid "Day of week"
+msgstr ""
+
+msgid "Use in Favorites"
+msgstr ""
+
+msgid "Use as search timer"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Switch ... minutes before start"
+msgstr ""
+
+msgid "Unmute sound"
+msgstr ""
+
+msgid "Ask ... minutes before start"
+msgstr ""
+
+msgid "Series Recording"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Delete recordings after ... days"
+msgstr ""
+
+msgid "Keep ... recordings"
+msgstr ""
+
+msgid "Pause when ... recordings exist"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Allowed repeats"
+msgstr ""
+
+msgid "Only repeats within ... days"
 msgstr ""
 
 msgid "Compare Title"
@@ -383,6 +413,33 @@ msgstr ""
 
 msgid "Compare Description"
 msgstr ""
+
+msgid "Min. match in %"
+msgstr ""
+
+msgid "Compare date"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Auto delete"
+msgstr ""
+
+msgid "after ... recordings"
+msgstr ""
+
+msgid "after ... days after first rec."
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Mostra resultats de la cerca"
 
 msgid "Really delete Search Timer"
 msgstr ""
@@ -458,6 +515,9 @@ msgstr "No s'ha creat el canvi de temporitzador"
 
 msgid "Switch Timer deleted"
 msgstr "Canvi de temporitzador esborrat"
+
+msgid "Search Mode"
+msgstr "Mode de cerca"
 
 msgid "Channel to Search"
 msgstr "Canal a cercar"
@@ -822,6 +882,9 @@ msgstr ""
 msgid "Folder for instant Recordings"
 msgstr ""
 
+msgid "Folder"
+msgstr ""
+
 msgid "Use Remotetimers"
 msgstr "Utilitza temporitzadors remots"
 
@@ -992,6 +1055,21 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
+
+#~ msgid "Use Title"
+#~ msgstr "Utilitza títol"
+
+#~ msgid "Use Subtitle"
+#~ msgstr "Utilitza subtítol"
+
+#~ msgid "Use Description"
+#~ msgstr "Utilitza descripció"
+
+#~ msgid "Limit Channels"
+#~ msgstr "Canals restringits"
+
+#~ msgid "Use Time"
+#~ msgstr "Utilitza temps"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "REEMISSIONS"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 11:52+0200\n"
+"POT-Creation-Date: 2019-06-17 15:58+0200\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -300,56 +300,32 @@ msgstr ""
 msgid "Save Search Timer"
 msgstr ""
 
-msgid "Search String"
+msgid "Search term"
 msgstr ""
 
 msgid "Active"
 msgstr ""
 
-msgid "Search Mode"
-msgstr "Re¾im vyhµadávania"
-
-msgid "Use Title"
-msgstr "Pou¾i» názov"
-
-msgid "Use Subtitle"
-msgstr "Pou¾i» titulky"
-
-msgid "Use Description"
-msgstr "Pou¾i» popis"
-
-msgid "Limit Channels"
-msgstr "Obmedzi» kanály"
-
-msgid "Use Time"
-msgstr "Pou¾i» èas"
-
-msgid "Limit Days of the Week"
+msgid "Search mode"
 msgstr ""
 
-msgid "Time margin for start in minutes"
+msgid "Tolerance"
 msgstr ""
 
-msgid "Time margin for stop in minutes"
+msgid "Match case"
 msgstr ""
 
-msgid "Series Recording"
+msgid "Use title"
 msgstr ""
 
-msgid "Folder"
+msgid "Use subtitle"
 msgstr ""
 
-msgid "Use VPS"
+msgid "Use description"
 msgstr ""
 
-msgid "Avoid Repeats"
+msgid "Use channel"
 msgstr ""
-
-msgid "Use in Favorites"
-msgstr ""
-
-msgid "Display Results for Search Timer"
-msgstr "Pozrie» výsledky pre vyhµadávanie plánov"
 
 msgid "Start Channel"
 msgstr "Od kanálu"
@@ -360,16 +336,70 @@ msgstr "Po kanál"
 msgid "Channel Group"
 msgstr ""
 
+msgid "Use time"
+msgstr ""
+
 msgid "Start after"
 msgstr "Zaèiatok po"
 
 msgid "Start before"
 msgstr "Zaèiatok pred"
 
-msgid "Select Days"
+msgid "Use duration"
 msgstr ""
 
-msgid "Number of allowed repeats"
+msgid "Min. duration"
+msgstr ""
+
+msgid "Max. duration"
+msgstr ""
+
+msgid "Use day of week"
+msgstr ""
+
+msgid "Day of week"
+msgstr ""
+
+msgid "Use in Favorites"
+msgstr ""
+
+msgid "Use as search timer"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Switch ... minutes before start"
+msgstr ""
+
+msgid "Unmute sound"
+msgstr ""
+
+msgid "Ask ... minutes before start"
+msgstr ""
+
+msgid "Series Recording"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Delete recordings after ... days"
+msgstr ""
+
+msgid "Keep ... recordings"
+msgstr ""
+
+msgid "Pause when ... recordings exist"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Allowed repeats"
+msgstr ""
+
+msgid "Only repeats within ... days"
 msgstr ""
 
 msgid "Compare Title"
@@ -380,6 +410,33 @@ msgstr ""
 
 msgid "Compare Description"
 msgstr ""
+
+msgid "Min. match in %"
+msgstr ""
+
+msgid "Compare date"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Auto delete"
+msgstr ""
+
+msgid "after ... recordings"
+msgstr ""
+
+msgid "after ... days after first rec."
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Pozrie» výsledky pre vyhµadávanie plánov"
 
 msgid "Really delete Search Timer"
 msgstr ""
@@ -455,6 +512,9 @@ msgstr "Plán prepnutia nie je vytvorený"
 
 msgid "Switch Timer deleted"
 msgstr "Plán prepnutia vymazaný"
+
+msgid "Search Mode"
+msgstr "Re¾im vyhµadávania"
 
 msgid "Channel to Search"
 msgstr "Hµada» na kanále"
@@ -819,6 +879,9 @@ msgstr ""
 msgid "Folder for instant Recordings"
 msgstr ""
 
+msgid "Folder"
+msgstr ""
+
 msgid "Use Remotetimers"
 msgstr "Pou¾i» vzdialený plánovaè"
 
@@ -989,6 +1052,21 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
+
+#~ msgid "Use Title"
+#~ msgstr "Pou¾i» názov"
+
+#~ msgid "Use Subtitle"
+#~ msgstr "Pou¾i» titulky"
+
+#~ msgid "Use Description"
+#~ msgstr "Pou¾i» popis"
+
+#~ msgid "Limit Channels"
+#~ msgstr "Obmedzi» kanály"
+
+#~ msgid "Use Time"
+#~ msgstr "Pou¾i» èas"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "Repríza tohto programu"

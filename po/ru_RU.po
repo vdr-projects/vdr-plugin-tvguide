@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 11:52+0200\n"
+"POT-Creation-Date: 2019-06-17 15:58+0200\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -300,56 +300,32 @@ msgstr ""
 msgid "Save Search Timer"
 msgstr ""
 
-msgid "Search String"
+msgid "Search term"
 msgstr ""
 
 msgid "Active"
 msgstr ""
 
-msgid "Search Mode"
-msgstr "Режим поиска"
-
-msgid "Use Title"
-msgstr "Искать в названиях"
-
-msgid "Use Subtitle"
-msgstr "Искать в эпизодах"
-
-msgid "Use Description"
-msgstr "Искать в описаниях"
-
-msgid "Limit Channels"
-msgstr "Ограничить список каналов"
-
-msgid "Use Time"
-msgstr "Время"
-
-msgid "Limit Days of the Week"
+msgid "Search mode"
 msgstr ""
 
-msgid "Time margin for start in minutes"
+msgid "Tolerance"
 msgstr ""
 
-msgid "Time margin for stop in minutes"
+msgid "Match case"
 msgstr ""
 
-msgid "Series Recording"
+msgid "Use title"
 msgstr ""
 
-msgid "Folder"
+msgid "Use subtitle"
 msgstr ""
 
-msgid "Use VPS"
+msgid "Use description"
 msgstr ""
 
-msgid "Avoid Repeats"
+msgid "Use channel"
 msgstr ""
-
-msgid "Use in Favorites"
-msgstr ""
-
-msgid "Display Results for Search Timer"
-msgstr "Тест"
 
 msgid "Start Channel"
 msgstr "С канала"
@@ -360,16 +336,70 @@ msgstr "По канал"
 msgid "Channel Group"
 msgstr ""
 
+msgid "Use time"
+msgstr ""
+
 msgid "Start after"
 msgstr "С"
 
 msgid "Start before"
 msgstr "До"
 
-msgid "Select Days"
+msgid "Use duration"
 msgstr ""
 
-msgid "Number of allowed repeats"
+msgid "Min. duration"
+msgstr ""
+
+msgid "Max. duration"
+msgstr ""
+
+msgid "Use day of week"
+msgstr ""
+
+msgid "Day of week"
+msgstr ""
+
+msgid "Use in Favorites"
+msgstr ""
+
+msgid "Use as search timer"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Switch ... minutes before start"
+msgstr ""
+
+msgid "Unmute sound"
+msgstr ""
+
+msgid "Ask ... minutes before start"
+msgstr ""
+
+msgid "Series Recording"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Delete recordings after ... days"
+msgstr ""
+
+msgid "Keep ... recordings"
+msgstr ""
+
+msgid "Pause when ... recordings exist"
+msgstr ""
+
+msgid "Avoid Repeats"
+msgstr ""
+
+msgid "Allowed repeats"
+msgstr ""
+
+msgid "Only repeats within ... days"
 msgstr ""
 
 msgid "Compare Title"
@@ -380,6 +410,33 @@ msgstr ""
 
 msgid "Compare Description"
 msgstr ""
+
+msgid "Min. match in %"
+msgstr ""
+
+msgid "Compare date"
+msgstr ""
+
+msgid "Time margin for start in minutes"
+msgstr ""
+
+msgid "Time margin for stop in minutes"
+msgstr ""
+
+msgid "Use VPS"
+msgstr ""
+
+msgid "Auto delete"
+msgstr ""
+
+msgid "after ... recordings"
+msgstr ""
+
+msgid "after ... days after first rec."
+msgstr ""
+
+msgid "Display Results for Search Timer"
+msgstr "Тест"
 
 msgid "Really delete Search Timer"
 msgstr ""
@@ -455,6 +512,9 @@ msgstr "Таймер переключения НЕ был создан!"
 
 msgid "Switch Timer deleted"
 msgstr "Таймер переключения удален"
+
+msgid "Search Mode"
+msgstr "Режим поиска"
 
 msgid "Channel to Search"
 msgstr "Канал для поиска"
@@ -819,6 +879,9 @@ msgstr ""
 msgid "Folder for instant Recordings"
 msgstr ""
 
+msgid "Folder"
+msgstr ""
+
 msgid "Use Remotetimers"
 msgstr "RemoteTimers benutzen"
 
@@ -989,6 +1052,21 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
+
+#~ msgid "Use Title"
+#~ msgstr "Искать в названиях"
+
+#~ msgid "Use Subtitle"
+#~ msgstr "Искать в эпизодах"
+
+#~ msgid "Use Description"
+#~ msgstr "Искать в описаниях"
+
+#~ msgid "Limit Channels"
+#~ msgstr "Ограничить список каналов"
+
+#~ msgid "Use Time"
+#~ msgstr "Время"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "ПОВТОРЫ ЭТОЙ ПЕРЕДАЧИ"

@@ -10,6 +10,15 @@
 #include "switchtimer.h"
 #include "recmanager.h"
 
+typedef enum {
+    searchTimerActionRecord = 0,
+    searchTimerActionAnnounceViaOSD,
+    searchTimerActionSwitchOnly,
+    searchTimerActionAnnounceAndSwitch,
+    searchTimerActionAnnounceViaMail,
+    searchTimerActionInactiveRecord
+} searchTimerAction;
+
 // --- cRecMenuMain  ---------------------------------------------------------
 class cRecMenuMain : public cRecMenu {
 public:
