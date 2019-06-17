@@ -778,26 +778,6 @@ cRecMenuSearchTimerEdit::~cRecMenuSearchTimerEdit(void) {
         delete *it;
     }
     mainMenuItems.clear();
-    for (std::vector<cRecMenuItem*>::iterator it = useChannelSubMenu.begin(); it != useChannelSubMenu.end(); it++) {
-        delete *it;
-    }
-    useChannelSubMenu.clear();
-    for (std::vector<cRecMenuItem*>::iterator it = useGroupSubMenu.begin(); it != useGroupSubMenu.end(); it++) {
-        delete *it;
-    }
-    useGroupSubMenu.clear();
-    for (std::vector<cRecMenuItem*>::iterator it = useTimeSubMenu.begin(); it != useTimeSubMenu.end(); it++) {
-        delete *it;
-    }
-    useTimeSubMenu.clear();
-    for (std::vector<cRecMenuItem*>::iterator it = useDayOfWeekSubMenu.begin(); it != useDayOfWeekSubMenu.end(); it++) {
-        delete *it;
-    }
-    useDayOfWeekSubMenu.clear();
-    for (std::vector<cRecMenuItem*>::iterator it = avoidRepeatSubMenu.begin(); it != avoidRepeatSubMenu.end(); it++) {
-        delete *it;
-    }
-    avoidRepeatSubMenu.clear();
     currentMenuItems.clear();
 }
 
@@ -858,23 +838,23 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
         stopChannel = 1;
 #if VDRVERSNUM >= 20301
     LOCK_CHANNELS_READ;
-    useChannelSubMenu.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels->GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
-    useChannelSubMenu.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels->GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels->GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels->GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
 #else
-    useChannelSubMenu.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels.GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
-    useChannelSubMenu.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels.GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Start Channel"), Channels.GetByNumber(startChannel), false, &startChannel, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemChannelChooser(tr("Stop Channel"), Channels.GetByNumber(stopChannel), false, &stopChannel, rmsSearchTimerSave));
 #endif
 
-    useGroupSubMenu.push_back(new cRecMenuItemSelect(tr("Channel Group"), channelgroups, channelgroupIndex, false, &channelgroupIndex, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemSelect(tr("Channel Group"), channelgroups, channelgroupIndex, false, &channelgroupIndex, rmsSearchTimerSave));
 
-    useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start after"), startTime, false, &startTime, rmsSearchTimerSave));
-    useTimeSubMenu.push_back(new cRecMenuItemTime(tr("Start before"), stopTime, false, &stopTime, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start after"), startTime, false, &startTime, rmsSearchTimerSave));
+    mainMenuItems.push_back(new cRecMenuItemTime(tr("Start before"), stopTime, false, &stopTime, rmsSearchTimerSave));
 
-        useDayOfWeekSubMenu.push_back(new cRecMenuItemDayChooser(tr("Select Days"), dayOfWeek, false, &dayOfWeek));
-        avoidRepeatSubMenu.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 0, 30, false, &allowedRepeats, rmsSearchTimerSave));
-        avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
-        avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
-        avoidRepeatSubMenu.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemDayChooser(tr("Select Days"), dayOfWeek, false, &dayOfWeek));
+        mainMenuItems.push_back(new cRecMenuItemInt(tr("Number of allowed repeats"), allowedRepeats, 0, 30, false, &allowedRepeats, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Title"), compareTitle, false, false, &compareTitle, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Subtitle"), compareSubtitle, false, false, &compareSubtitle, rmsSearchTimerSave));
+        mainMenuItems.push_back(new cRecMenuItemBool(tr("Compare Description"), compareSummary, false, false, &compareSummary, rmsSearchTimerSave));
 }
 
 
@@ -891,16 +871,6 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
     
     for (int i = 0; i < numMainMenuItems; i++) {
         currentMenuItems.push_back(mainMenuItems[i]);
-        if ((i == useChannelPos) && (useChannel == 1))
-            AddSubMenu(&useChannelSubMenu);
-        else if ((i == useChannelPos) && (useChannel == 2) && (channelgroups.size() > 0))
-            AddSubMenu(&useGroupSubMenu);
-        else if ((i == useTimePos) && useTime)
-            AddSubMenu(&useTimeSubMenu);
-        else if ((i == useDayOfWeekPos) && useDayOfWeek)
-            AddSubMenu(&useDayOfWeekSubMenu);
-        else if ((i == avoidRepeatsPos) && avoidRepeats)
-            AddSubMenu(&avoidRepeatSubMenu);
     }
 
     int numMenuItemsAll = currentMenuItems.size();
@@ -918,13 +888,6 @@ void cRecMenuSearchTimerEdit::CreateMenuItems(void) {
     CreatePixmap();
     Arrange();
 }
-
-void cRecMenuSearchTimerEdit::AddSubMenu(std::vector<cRecMenuItem*> *subMenu) {
-    for (std::vector<cRecMenuItem*>::iterator it = subMenu->begin(); it < subMenu->end(); it++) {
-        currentMenuItems.push_back(*it);
-    }
-}
-
 
 cTVGuideSearchTimer cRecMenuSearchTimerEdit::GetSearchTimer(void) {
     dsyslog ("%s %s %d\n", __FILE__, __func__,  __LINE__);
