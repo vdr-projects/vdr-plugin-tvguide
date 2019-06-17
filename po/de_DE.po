@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 15:58+0200\n"
+"POT-Creation-Date: 2019-04-22 14:34+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: Horst\n"
 "Language-Team: \n"
@@ -301,43 +301,43 @@ msgid "Save Search Timer"
 msgstr "Suchtimer speichern"
 
 msgid "Search term"
-msgstr ""
+msgstr "Suchbegriff"
 
 msgid "Active"
 msgstr "Aktiv"
 
 msgid "Search mode"
-msgstr ""
+msgstr "Suchmodus"
 
 msgid "Tolerance"
-msgstr ""
+msgstr "Toleranz"
 
 msgid "Match case"
-msgstr ""
+msgstr "Groß/klein"
 
 msgid "Use title"
-msgstr ""
+msgstr "Verwende Titel"
 
 msgid "Use subtitle"
-msgstr ""
+msgstr "Verwende Untertitel"
 
 msgid "Use description"
-msgstr ""
+msgstr "Verwende Beschreibung"
 
 msgid "Use channel"
-msgstr ""
+msgstr "Verwende Kanal"
 
-msgid "Start Channel"
-msgstr "Startkanal"
+msgid "from channel"
+msgstr "von Kanal"
 
-msgid "Stop Channel"
-msgstr "Stopkanal"
+msgid "to channel"
+msgstr "bis Kanal"
 
-msgid "Channel Group"
+msgid "Channel group"
 msgstr "Kanalgruppe"
 
 msgid "Use time"
-msgstr ""
+msgstr "Verwende Uhrzeit"
 
 msgid "Start after"
 msgstr "Beginn nach"
@@ -346,94 +346,94 @@ msgid "Start before"
 msgstr "Beginn vor"
 
 msgid "Use duration"
-msgstr ""
+msgstr "Verwende Dauer"
 
 msgid "Min. duration"
-msgstr ""
+msgstr "Min. Dauer"
 
 msgid "Max. duration"
-msgstr ""
+msgstr "Max. Dauer"
 
 msgid "Use day of week"
-msgstr ""
+msgstr "Verwende Wochentag"
 
 msgid "Day of week"
-msgstr ""
+msgstr "Wochentag"
 
 msgid "Use in Favorites"
 msgstr "Als Favorit benutzen"
 
 msgid "Use as search timer"
-msgstr ""
+msgstr "Als Suchtimer verwenden"
 
 msgid "Action"
-msgstr ""
+msgstr "Aktion"
 
 msgid "Switch ... minutes before start"
-msgstr ""
+msgstr "Umschalten ... Minuten vor Start"
 
 msgid "Unmute sound"
-msgstr ""
+msgstr "Ton anschalten"
 
 msgid "Ask ... minutes before start"
-msgstr ""
+msgstr "Nachfrage ... Minuten vor Start"
 
 msgid "Series Recording"
 msgstr "Serienaufnahme"
 
 msgid "Directory"
-msgstr ""
+msgstr "Verzeichnis"
 
 msgid "Delete recordings after ... days"
-msgstr ""
+msgstr "Aufn. nach ... Tagen löschen"
 
 msgid "Keep ... recordings"
-msgstr ""
+msgstr "Behalte ... Aufnahmen"
 
 msgid "Pause when ... recordings exist"
-msgstr ""
+msgstr "Pause, wenn ... Aufnahmen exist."
 
 msgid "Avoid Repeats"
-msgstr "Wiederholungen vermeiden"
+msgstr "Vermeide Wiederholung"
 
 msgid "Allowed repeats"
-msgstr ""
+msgstr "Erlaubte Wiederholungen"
 
 msgid "Only repeats within ... days"
-msgstr ""
+msgstr "Nur Wiederh. innerhalb von ... Tagen"
 
 msgid "Compare Title"
-msgstr "Titel vergleichen"
+msgstr "Vergleiche Titel"
 
 msgid "Compare Subtitle"
-msgstr "Untertitel vergleichen"
+msgstr "Vergleiche Untertitel"
 
 msgid "Compare Description"
-msgstr "Beschreibung vergleichen"
+msgstr "Vergleiche Beschreibung"
 
 msgid "Min. match in %"
-msgstr ""
+msgstr "Min. Übereinstimmung in %"
 
 msgid "Compare date"
-msgstr ""
+msgstr "Vergleiche Zeitpunkt"
 
 msgid "Time margin for start in minutes"
-msgstr "Zeit vor Start in Minuten"
+msgstr "Vorlauf zum Timer-Beginn (min)"
 
 msgid "Time margin for stop in minutes"
-msgstr "Zeit nach Ende in Minuten"
+msgstr "Nachlauf zum Timer-Ende (min)"
 
 msgid "Use VPS"
-msgstr "VPS benutzen"
+msgstr "Verwende VPS"
 
 msgid "Auto delete"
-msgstr ""
+msgstr "automatisch löschen"
 
 msgid "after ... recordings"
-msgstr ""
+msgstr "nach ... Aufnahmen"
 
 msgid "after ... days after first rec."
-msgstr ""
+msgstr "nach ... Tagen nach erster Aufn."
 
 msgid "Display Results for Search Timer"
 msgstr "Ergebnisse für Suchtimer anzeigen"
@@ -580,49 +580,52 @@ msgid "regular expression"
 msgstr "Regulärer Ausdruck"
 
 msgid "fuzzy"
-msgstr ""
+msgstr "unscharf"
 
 msgid "Interval"
 msgstr "Bereich"
+
+msgid "Channel Group"
+msgstr "Kanalgruppe"
 
 msgid "only FTA"
 msgstr "ohne PayTV"
 
 msgid "same day"
-msgstr ""
+msgstr "gleicher Tag"
 
 msgid "same week"
-msgstr ""
+msgstr "gleiche Woche"
 
 msgid "same month"
-msgstr ""
+msgstr "gleicher Monat"
 
 msgid "Record"
-msgstr ""
+msgstr "Aufnehmen"
 
 msgid "Announce by OSD"
-msgstr ""
+msgstr "per OSD ankündigen"
 
 msgid "Switch only"
-msgstr ""
+msgstr "Nur umschalten"
 
 msgid "Announce and switch"
-msgstr ""
+msgstr "Ankündigen und Umschalten"
 
 msgid "Announce by mail"
-msgstr ""
+msgstr "per Mail ankündigen"
 
 msgid "Inactive record"
-msgstr ""
+msgstr "inaktive Aufnahme"
 
 msgid "no"
 msgstr "Nein"
 
 msgid "count recordings"
-msgstr ""
+msgstr "Anzahl Aufnahmen"
 
 msgid "count days"
-msgstr ""
+msgstr "Anzahl Tage"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
@@ -888,6 +891,12 @@ msgstr "RemoteTimers benutzen"
 msgid "Limit channels in favorites"
 msgstr "Kanäle in Favoriten beschränken"
 
+msgid "Start Channel"
+msgstr "von Kanal"
+
+msgid "Stop Channel"
+msgstr "bis Kanal"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr "\"Was läuft jetzt\" in Favoriten benutzen"
 
@@ -1052,33 +1061,6 @@ msgstr "TheMovieDB Popularität"
 
 msgid "TheMovieDB Vote Average"
 msgstr "TheMovieDB durchschnittliche Bewertung"
-
-#~ msgid "Search String"
-#~ msgstr "Suchbegriff"
-
-#~ msgid "Use Title"
-#~ msgstr "Titel benutzen"
-
-#~ msgid "Use Subtitle"
-#~ msgstr "Untertitel benutzen"
-
-#~ msgid "Use Description"
-#~ msgstr "Beschreibung benutzen"
-
-#~ msgid "Limit Channels"
-#~ msgstr "Kanäle einschränken"
-
-#~ msgid "Use Time"
-#~ msgstr "Zeit benutzen"
-
-#~ msgid "Limit Days of the Week"
-#~ msgstr "Wochentage beschränken"
-
-#~ msgid "Select Days"
-#~ msgstr "Tage bestimmen"
-
-#~ msgid "Number of allowed repeats"
-#~ msgstr "Anzahl erlaubter Wiederholungen"
 
 #~ msgid "Display advanced Options"
 #~ msgstr "Erweiterte Optionen anzeigen"

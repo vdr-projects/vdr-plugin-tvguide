@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 15:58+0200\n"
+"POT-Creation-Date: 2019-04-22 14:34+0200\n"
 "PO-Revision-Date: 2013-09-21 17:49+0200\n"
 "Last-Translator: My friend <Sampep> Thanks David <Gabychan> <gbonich@gmail.com>\n"
 "Language-Team: \n"
@@ -319,28 +319,28 @@ msgid "Match case"
 msgstr ""
 
 msgid "Use title"
-msgstr ""
+msgstr "Utilitza títol"
 
 msgid "Use subtitle"
-msgstr ""
+msgstr "Utilitza subtítol"
 
 msgid "Use description"
-msgstr ""
+msgstr "Utilitza descripció"
 
 msgid "Use channel"
-msgstr ""
+msgstr "Canals restringits"
 
-msgid "Start Channel"
+msgid "from channel"
 msgstr "Inicia canal"
 
-msgid "Stop Channel"
+msgid "to channel"
 msgstr "Atura canal"
 
-msgid "Channel Group"
+msgid "Channel group"
 msgstr ""
 
 msgid "Use time"
-msgstr ""
+msgstr "Utilitza temps"
 
 msgid "Start after"
 msgstr "Comença després"
@@ -349,7 +349,7 @@ msgid "Start before"
 msgstr "Comença abans"
 
 msgid "Use duration"
-msgstr ""
+msgstr "Utilitza Durada"
 
 msgid "Min. duration"
 msgstr ""
@@ -586,6 +586,9 @@ msgid "fuzzy"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Channel Group"
 msgstr ""
 
 msgid "only FTA"
@@ -891,6 +894,12 @@ msgstr "Utilitza temporitzadors remots"
 msgid "Limit channels in favorites"
 msgstr ""
 
+msgid "Start Channel"
+msgstr "Inicia canal"
+
+msgid "Stop Channel"
+msgstr "Atura canal"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr ""
 
@@ -1055,21 +1064,6 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
-
-#~ msgid "Use Title"
-#~ msgstr "Utilitza títol"
-
-#~ msgid "Use Subtitle"
-#~ msgstr "Utilitza subtítol"
-
-#~ msgid "Use Description"
-#~ msgstr "Utilitza descripció"
-
-#~ msgid "Limit Channels"
-#~ msgstr "Canals restringits"
-
-#~ msgid "Use Time"
-#~ msgstr "Utilitza temps"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "REEMISSIONS"

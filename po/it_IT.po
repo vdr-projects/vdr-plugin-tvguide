@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 0.0.1\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 15:58+0200\n"
+"POT-Creation-Date: 2019-04-22 14:34+0200\n"
 "PO-Revision-Date: 2012-08-25 17:49+0200\n"
 "Last-Translator: fiveten_59\n"
 "Language-Team: \n"
@@ -307,7 +307,7 @@ msgid "Active"
 msgstr "Attivo"
 
 msgid "Search mode"
-msgstr ""
+msgstr "Modalità di ricerca"
 
 msgid "Tolerance"
 msgstr ""
@@ -316,28 +316,28 @@ msgid "Match case"
 msgstr ""
 
 msgid "Use title"
-msgstr ""
+msgstr "Usa Titolo"
 
 msgid "Use subtitle"
-msgstr ""
+msgstr "Usa Sottotitolo"
 
 msgid "Use description"
-msgstr ""
+msgstr "Usa Descrizione"
 
 msgid "Use channel"
-msgstr ""
+msgstr "Limite Canale"
 
-msgid "Start Channel"
+msgid "from channel"
 msgstr "Avvia il Canale"
 
-msgid "Stop Channel"
+msgid "to channel"
 msgstr "Ferma il Canale"
 
-msgid "Channel Group"
+msgid "Channel group"
 msgstr ""
 
 msgid "Use time"
-msgstr ""
+msgstr "Utilizza Time"
 
 msgid "Start after"
 msgstr "Avvia dopo"
@@ -355,10 +355,10 @@ msgid "Max. duration"
 msgstr ""
 
 msgid "Use day of week"
-msgstr ""
+msgstr "Usa giorno feriale"
 
 msgid "Day of week"
-msgstr ""
+msgstr "Seleziona i giorni"
 
 msgid "Use in Favorites"
 msgstr "Utilizza nei favoriti"
@@ -583,6 +583,9 @@ msgid "fuzzy"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Channel Group"
 msgstr ""
 
 msgid "only FTA"
@@ -888,6 +891,12 @@ msgstr "Usa Remotetimers"
 msgid "Limit channels in favorites"
 msgstr "Limite dei canali nei favoriti"
 
+msgid "Start Channel"
+msgstr "Avvia il Canale"
+
+msgid "Stop Channel"
+msgstr "Ferma il Canale"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr "Usa \"In programma ora\" nei favoriti"
 
@@ -1052,30 +1061,6 @@ msgstr "TheMovieDB Popularità"
 
 msgid "TheMovieDB Vote Average"
 msgstr "Voto medio di TheMovieDB"
-
-#~ msgid "Search String"
-#~ msgstr "Suchbegriff"
-
-#~ msgid "Use Title"
-#~ msgstr "Usa Titolo"
-
-#~ msgid "Use Subtitle"
-#~ msgstr "Usa Sottotitolo"
-
-#~ msgid "Use Description"
-#~ msgstr "Usa Descrizione"
-
-#~ msgid "Limit Channels"
-#~ msgstr "Limite Canale"
-
-#~ msgid "Use Time"
-#~ msgstr "Utilizza Time"
-
-#~ msgid "Limit Days of the Week"
-#~ msgstr "Limite dei giorni della settimana"
-
-#~ msgid "Select Days"
-#~ msgstr "Seleziona i giorni"
 
 #~ msgid "Number of allowed repeats"
 #~ msgstr "Numero di ripetizioni permesse"

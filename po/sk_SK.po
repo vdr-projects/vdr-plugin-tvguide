@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.1.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 15:58+0200\n"
+"POT-Creation-Date: 2019-04-22 14:34+0200\n"
 "PO-Revision-Date: 2013-09-15 00:12+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: \n"
@@ -316,28 +316,28 @@ msgid "Match case"
 msgstr ""
 
 msgid "Use title"
-msgstr ""
+msgstr "Pou¾i» názov"
 
 msgid "Use subtitle"
-msgstr ""
+msgstr "Pou¾i» titulky"
 
 msgid "Use description"
-msgstr ""
+msgstr "Pou¾i» popis"
 
 msgid "Use channel"
+msgstr "Obmedzi» kanály"
+
+msgid "from channel"
 msgstr ""
 
-msgid "Start Channel"
-msgstr "Od kanálu"
+msgid "to channel"
+msgstr ""
 
-msgid "Stop Channel"
-msgstr "Po kanál"
-
-msgid "Channel Group"
+msgid "Channel group"
 msgstr ""
 
 msgid "Use time"
-msgstr ""
+msgstr "Pou¾i» èas"
 
 msgid "Start after"
 msgstr "Zaèiatok po"
@@ -583,6 +583,9 @@ msgid "fuzzy"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Channel Group"
 msgstr ""
 
 msgid "only FTA"
@@ -888,6 +891,12 @@ msgstr "Pou¾i» vzdialený plánovaè"
 msgid "Limit channels in favorites"
 msgstr ""
 
+msgid "Start Channel"
+msgstr "Od kanálu"
+
+msgid "Stop Channel"
+msgstr "Po kanál"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr ""
 
@@ -1052,21 +1061,6 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
-
-#~ msgid "Use Title"
-#~ msgstr "Pou¾i» názov"
-
-#~ msgid "Use Subtitle"
-#~ msgstr "Pou¾i» titulky"
-
-#~ msgid "Use Description"
-#~ msgstr "Pou¾i» popis"
-
-#~ msgid "Limit Channels"
-#~ msgstr "Obmedzi» kanály"
-
-#~ msgid "Use Time"
-#~ msgstr "Pou¾i» èas"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "Repríza tohto programu"

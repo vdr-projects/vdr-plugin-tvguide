@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-tvguide 1.0.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2019-06-17 15:58+0200\n"
+"POT-Creation-Date: 2019-04-22 14:34+0200\n"
 "PO-Revision-Date: 2013-09-25 17:49+0400\n"
 "Last-Translator: AmiD, ilya\n"
 "Language-Team: Russia-Cherepovets(wm.amid@gmail.com)\n"
@@ -316,28 +316,28 @@ msgid "Match case"
 msgstr ""
 
 msgid "Use title"
-msgstr ""
+msgstr "Искать в названиях"
 
 msgid "Use subtitle"
-msgstr ""
+msgstr "Искать в эпизодах"
 
 msgid "Use description"
-msgstr ""
+msgstr "Искать в описаниях"
 
 msgid "Use channel"
+msgstr "Ограничить список каналов"
+
+msgid "from channel"
 msgstr ""
 
-msgid "Start Channel"
-msgstr "С канала"
+msgid "to channel"
+msgstr ""
 
-msgid "Stop Channel"
-msgstr "По канал"
-
-msgid "Channel Group"
+msgid "Channel group"
 msgstr ""
 
 msgid "Use time"
-msgstr ""
+msgstr "Время"
 
 msgid "Start after"
 msgstr "С"
@@ -583,6 +583,9 @@ msgid "fuzzy"
 msgstr ""
 
 msgid "Interval"
+msgstr ""
+
+msgid "Channel Group"
 msgstr ""
 
 msgid "only FTA"
@@ -888,6 +891,12 @@ msgstr "RemoteTimers benutzen"
 msgid "Limit channels in favorites"
 msgstr ""
 
+msgid "Start Channel"
+msgstr "С канала"
+
+msgid "Stop Channel"
+msgstr "По канал"
+
 msgid "Use \"What's on now\" in favorites"
 msgstr ""
 
@@ -1052,21 +1061,6 @@ msgstr ""
 
 msgid "TheMovieDB Vote Average"
 msgstr ""
-
-#~ msgid "Use Title"
-#~ msgstr "Искать в названиях"
-
-#~ msgid "Use Subtitle"
-#~ msgstr "Искать в эпизодах"
-
-#~ msgid "Use Description"
-#~ msgstr "Искать в описаниях"
-
-#~ msgid "Limit Channels"
-#~ msgstr "Ограничить список каналов"
-
-#~ msgid "Use Time"
-#~ msgstr "Время"
 
 #~ msgid "RERUNS OF THIS SHOW"
 #~ msgstr "ПОВТОРЫ ЭТОЙ ПЕРЕДАЧИ"
