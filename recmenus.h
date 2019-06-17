@@ -208,7 +208,14 @@ public:
 class cRecMenuSearchTimerEdit: public cRecMenu {
 private:
     cTVGuideSearchTimer searchTimer;
+    cTVGuideSearchTimer sT;
+    std::vector<std::string> searchModes;
+    std::vector<std::string> useChannelModes;
     std::vector<std::string> channelGroups;
+    std::vector<std::string> compareDateModes;
+    std::vector<std::string> searchTimerModes;
+    std::vector<std::string> delModes;
+    std::vector<std::string> channelgroups;
     std::vector<cRecMenuItem*> mainMenuItems;
     std::vector<cRecMenuItem*> currentMenuItems;
     int numMenuItems;
@@ -226,7 +233,6 @@ private:
     int startChannel;
     int stopChannel;
     std::string  channelGroup;
-    std::vector<std::string> channelgroups;
     int channelgroupIndex;
     bool useTime;
     int startTime;

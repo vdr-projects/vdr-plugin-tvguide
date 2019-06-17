@@ -757,6 +757,13 @@ cRecMenuSearchTimerEdit::cRecMenuSearchTimerEdit(cTVGuideSearchTimer searchTimer
     compareSummary = searchTimer.CompareSummary();
     useInFavorites = searchTimer.UseInFavorites();
 
+    searchTimer.GetSearchModes(&searchModes);
+    searchTimer.GetUseChannelModes(&useChannelModes);
+    searchTimer.GetCompareDateModes(&compareDateModes);
+    searchTimer.GetSearchTimerModes(&searchTimerModes);
+    searchTimer.GetDelModes(&delModes);
+    channelgroupIndex = SplitChannelGroups(&channelGroups, &channelgroups);
+
     SetWidthPercent(70);
     cString infoText;
     if (searchTimer.GetID() > -1) {
@@ -805,12 +812,6 @@ void cRecMenuSearchTimerEdit::InitMenuItems(void) {
     useTimePos = 7;
     useDayOfWeekPos = 8;
     avoidRepeatsPos = 14;
-
-    std::vector<std::string> searchModes;
-    searchTimer.GetSearchModes(&searchModes);
-    std::vector<std::string> useChannelModes;
-    searchTimer.GetUseChannelModes(&useChannelModes);
-    channelgroupIndex = SplitChannelGroups(&channelGroups, &channelgroups);
 
     mainMenuItems.push_back(new cRecMenuItemText(tr("Search String"), searchString, TEXTINPUTLENGTH, false, searchString));
     mainMenuItems.push_back(new cRecMenuItemBool(tr("Active"), timerActive, false, false, &timerActive, rmsSearchTimerSave));
