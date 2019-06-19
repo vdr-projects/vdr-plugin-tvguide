@@ -322,8 +322,7 @@ eOSState cRecMenuManager::StateMachine(eRecMenuState nextState) {
             //caller: main menu
             DisplaySearchTimerList();
             break; }
-        case rmsSearchTimerEdit:
-        case rmsSearchTimerEditAdvanced: {
+        case rmsSearchTimerEdit: {
             //caller: cRecMenuSearchTimers, cRecMenuSearchTimerEdit, cRecMenuSearchTimerTemplates
             cTVGuideSearchTimer searchTimer;
             if (cRecMenuSearchTimers *menu = dynamic_cast<cRecMenuSearchTimers*>(activeMenu)) {

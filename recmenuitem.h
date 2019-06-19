@@ -46,7 +46,6 @@ enum eRecMenuState {
     rmsSearchTimerOptions,
     rmsSearchTimers,
     rmsSearchTimerEdit,
-    rmsSearchTimerEditAdvanced,
     rmsSearchTimerTest,
     rmsSearchTimerSave,
     rmsSearchTimerCreateWithTemplate,
