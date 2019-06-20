@@ -62,9 +62,9 @@ cPluginTvguide::~cPluginTvguide() {
 
 const char *cPluginTvguide::CommandLineHelp(void) {
     return 
-         "  -e <IMAGESDIR>, --epgimages=<IMAGESDIR> Set directory where epgimages are stored.\n"
-	       "  -i <ICONDIR>, --icons=<ICONDIR>         Set directory where icons are stored.\n"
-         "  -l <LOGODIR>, --logodir=<LOGODIR>       Set directory where logos are stored.\n";
+         "  -e <IMAGESDIR>, --epgimages=<IMAGESDIR>  Set directory where epgimages are stored.\n"
+         "  -i <ICONDIR>,   --iconpath=<ICONDIR>     Set directory where icons are stored.\n"
+         "  -l <LOGODIR>,   --logopath=<LOGODIR>     Set directory where logos are stored.\n";
 }
 
 bool cPluginTvguide::ProcessArgs(int argc, char *argv[]) {

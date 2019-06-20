@@ -44,13 +44,13 @@ After "normal" Plugin installation you have to care about the paths for the
 used Icons, the channel logos and epg images. The following paths can be set
 at startup:
 
--l path, --logodir=path
+-l path, --logopath=path
     Path to the logos (Default: <ResourceDirectory>/plugins/tvguide/channellogos/).
 
 -e path, --epgimages=path
     Path to the epgimages (Default: <CacheDirectory>/plugins/tvguide/epgimages/).
 
--i path, --icons=path
+-i path, --iconpath=path
     Path to the icons directory (Default: <ResourceDirectory>/plugins/tvguide/epgimages/).
 
 <ResourceDirectory> and <CacheDirectory> is taken from your VDR configuration 
