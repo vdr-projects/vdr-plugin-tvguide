@@ -187,3 +187,13 @@ Version 1.2.7
 - Eliminate a "invalid lock sequence report" in tvguideosd.c
 - Optical changes in favorites and searchtimer menu
 - Changes in README
+
+Version 1.2.8
+
+- Some refactoring
+- Update i18n
+- Add almost all search timer options to cRecMenuSearchTimerEdit,
+  only one is missing: "Use content descriptor"
+  (Create and modify of channelgroups and blacklists isn't possible,
+  because the epgsearch service interface doesn't support that, 
+  should be done in epgsearch)
